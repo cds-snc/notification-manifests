@@ -3,7 +3,15 @@ on: [pull_request]
 jobs:
   testing_manifest:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Run manifest build
-      run: |
-        make staging-debug > /dev/null 2>&1
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Add fake .env
+        run: |
+          cp env.example env/staging/.env
+
+      - name: Run manifest build
+        run: |
+          make staging-debug > /dev/null 2>&1
