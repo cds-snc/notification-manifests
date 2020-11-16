@@ -1,3 +1,7 @@
+decrypt-production:
+	cd env/production &&\
+	aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env
+
 decrypt-staging:
 	cd env/staging &&\
 	aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env

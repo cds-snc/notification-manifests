@@ -1,13 +1,12 @@
 name: "Merge to main (Production)"
 
-on: [pull_request]
-#  - push:
-#    branches:
-#      - main
-#    paths:
-#      - ".github/workflows/merge_to_main_production.yaml"
-#      - "env/production/**"
-#      - "PRODUCTION_VERSION"
+on:
+  - push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/merge_to_main_production.yaml"
+      - "env/production/**"
 
 defaults:
   run:
@@ -25,10 +24,21 @@ jobs:
         run: |
           git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
-      - name: Add fake .env
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Decrypt production env
         run: |
-          cp env.example env/production/.env
+          make decrypt-production
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster
 
       - name: Apply changes
         run: |
-          kubectl kustomize env/production
+          kubectl apply -k env/production --kubeconfig=/home/runner/.kube/config
