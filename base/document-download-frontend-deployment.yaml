@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: document-download-frontend
+  name:  document-download-frontend
+  namespace: notification-canada-ca
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: document-download-frontend
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: document-download-frontend
+    spec:
+      containers:
+        - image: document-download-frontend
+          imagePullPolicy: Always
+          name: document-download-frontend
+          env:
+            - name: ADMIN_BASE_URL
+              value: https://$(BASE_DOMAIN)
+            - name: ADMIN_CLIENT_SECRET
+              value: '$(ADMIN_CLIENT_SECRET)'
+            - name: ADMIN_CLIENT_USER_NAME
+              value: '$(ADMIN_CLIENT_USER_NAME)'
+            - name: API_HOST_NAME
+              value: http://api.notification-canada-ca.svc.cluster.local:6011
+            - name: DEBUG
+              value: 'False'
+            - name: DOCUMENT_DOWNLOAD_API_HOST_NAME
+              value: 'https://api.document.$(BASE_DOMAIN)'
+            - name: HTTP_PROTOCOL
+              value: 'https'
+            - name: PORT
+              value: '7001'
+            - name: SECRET_KEY
+              value: '$(SECRET_KEY)'
+          resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status: {}

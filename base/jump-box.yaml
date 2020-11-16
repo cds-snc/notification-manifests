@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jump-box
+  namespace: notification-canada-ca
+  labels:
+    app: jump-box
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jump-box
+  template:
+    metadata:
+      labels:
+        app: jump-box
+    spec:
+      containers:
+        - name: jump-box
+          image: alpine/socat
+          command: ["sh", "-c", "tail -f /dev/null"]
+          ports:
+            - containerPort: 5430
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: jump-box
+  name: jump-box
+  namespace: notification-canada-ca
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5430
+      targetPort: 5430
+  selector:
+    app: jump-box

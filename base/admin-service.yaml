@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: admin
+  name: admin
+  namespace: notification-canada-ca
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 6012
+      targetPort: 6012
+  selector:
+    app: admin
+

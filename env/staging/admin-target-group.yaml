@@ -1,0 +1,10 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: admin-targetgroup
+  namespace: notification-canada-ca
+spec:
+  serviceRef:
+    name: admin
+    port: 6012
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:239043911459:targetgroup/notification-canada-ca-alb-admin/f840461ae7a91ff0

@@ -1,0 +1,18 @@
+bases:
+  - github.com/cds-snc/notification-manifests//base?ref=v0.0.1
+
+resources:
+  - cwagent-fluentd-quickstart.yaml
+
+configMapGenerator:
+- name: application-config
+  env: .env
+
+vars:
+  - name: CLUSTER_NAME
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.CLUSTER_NAME

@@ -1,0 +1,20 @@
+resources:
+  - namespace.yaml
+  - cert-manager.yaml
+  - alb-ingress-controller.yaml
+  - redis-deployment.yaml
+  - redis-service.yaml
+  - jump-box.yaml
+  - api-deployment.yaml
+  - api-service.yaml
+  - admin-deployment.yaml
+  - admin-service.yaml
+  - celery-beat-deployment.yaml
+  - celery-deployment.yaml
+  - celery-sms-deployment.yaml
+  - hasura-deployment.yaml
+  - hasura-service.yaml
+  - document-download-api-deployment.yaml
+  - document-download-api-service.yaml
+  - document-download-frontend-deployment.yaml
+  - document-download-frontend-service.yaml

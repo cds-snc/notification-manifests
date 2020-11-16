@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hasura
+  namespace: notification-canada-ca
+  labels:
+    app: hasura
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hasura
+  template:
+    metadata:
+      labels:
+        app: hasura
+    spec:
+      containers:
+        - name: graphql-engine
+          image: hasura/graphql-engine:v1.3.2
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+          command:
+            - graphql-engine
+            - serve
+            - --enable-console
+          env:
+            - name: HASURA_GRAPHQL_DATABASE_URL
+              value: $(POSTGRES_SQL)
+            - name: HASURA_GRAPHQL_ACCESS_KEY
+              value: $(HASURA_ACCESS_KEY)
+            - name: HASURA_GRAPHQL_ENABLE_TELEMETRY
+              value: "false"
+            - name: HASURA_GRAPHQL_JWT_SECRET
+              value: '{"type":"HS256", "key": "$(HASURA_JWT_KEY)"}'
+            - name: HASURA_GRAPHQL_ENABLED_LOG_TYPES
+              value: "startup,http-log,webhook-log,websocket-log,query-log"

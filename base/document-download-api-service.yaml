@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: document-download-api
+  name: document-download-api
+  namespace: notification-canada-ca
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 7000
+      targetPort: 7000
+  selector:
+    app: document-download-api
+

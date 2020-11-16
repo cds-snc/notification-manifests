@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: document-download-api 
+  name:  document-download-api
+  namespace: notification-canada-ca
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: document-download-api 
+  template:
+    metadata:
+      labels:
+        app: document-download-api
+    spec:
+      containers:
+        - image: document-download-api
+          imagePullPolicy: Always
+          name: document-download-api 
+          env:
+            - name: AUTH_TOKENS
+              value: '$(AUTH_TOKENS)'
+            - name: AWS_REGION
+              value: '$(AWS_REGION)'
+            - name: DEBUG
+              value: 'False'
+            - name: DOCUMENTS_BUCKET
+              value: '$(DOCUMENTS_BUCKET)'
+            - name: FRONTEND_HOSTNAME
+              value: 'document.$(BASE_DOMAIN)'
+            - name: HTTP_SCHEME
+              value: 'https'
+            - name: MLWR_HOST
+              value: '$(MLWR_HOST)'
+            - name: MLWR_USER
+              value: '$(MLWR_USER)'
+            - name: MLWR_KEY
+              value: '$(MLWR_KEY)'
+            - name: SECRET_KEY
+              value: '$(SECRET_KEY)'
+          resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status: {}

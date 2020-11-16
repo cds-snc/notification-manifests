@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: admin
+  name:  admin
+  namespace: notification-canada-ca
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      initContainers:
+        - name: init-postgres
+          image: alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "until nslookup api.notification-canada-ca.svc.cluster.local; do echo waiting for postgres; sleep 2; done;",
+            ]
+      containers:
+        - image: admin
+          imagePullPolicy: Always
+          name: admin
+          env:
+            - name: ADMIN_BASE_URL
+              value: https://$(BASE_DOMAIN)
+            - name: ADMIN_CLIENT_SECRET
+              value: '$(ADMIN_CLIENT_SECRET)'
+            - name: API_HOST_NAME
+              value: http://api.notification-canada-ca.svc.cluster.local:6011
+            - name: ASSET_UPLOAD_BUCKET_NAME
+              value: '$(ASSET_UPLOAD_BUCKET_NAME)'
+            - name: AWS_REGION
+              value: '$(AWS_REGION)'
+            - name: BULK_SEND_AWS_ACCESS_KEY
+              value: '$(BULK_SEND_AWS_ACCESS_KEY)'
+            - name: BULK_SEND_AWS_SECRET_KEY
+              value: '$(BULK_SEND_AWS_SECRET_KEY)'
+            - name: BULK_SEND_AWS_BUCKET
+              value: '$(BULK_SEND_AWS_BUCKET)'
+            - name: BULK_SEND_AWS_REGION
+              value: '$(BULK_SEND_AWS_REGION)'
+            - name: BULK_SEND_TEST_SERVICE_ID
+              value: '$(BULK_SEND_TEST_SERVICE_ID)'
+            - name: CONTACT_EMAIL
+              value: 'max.neuvians@cds-snc.ca'
+            - name: CSV_UPLOAD_BUCKET_NAME
+              value: '$(CSV_UPLOAD_BUCKET_NAME)'
+            - name: DANGEROUS_SALT
+              value: '$(DANGEROUS_SALT)'
+            - name: HC_EN_SERVICE_ID
+              value: '$(HC_EN_SERVICE_ID)'
+            - name: FLASK_APP
+              value: 'application.py'
+            - name: NOTIFY_ENVIRONMENT
+              value: '$(ENVIRONMENT)'
+            - name: SENDING_DOMAIN
+              value: '$(BASE_DOMAIN)'
+            - name: SQLALCHEMY_DATABASE_URI
+              value: '$(POSTGRES_SQL)'
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: REDIS_URL
+              value: redis://redis.notification-canada-ca.svc.cluster.local:6379
+            - name: REDIS_ENABLED
+              value: "1"
+            - name: SECRET_KEY
+              value: '$(SECRET_KEY)'
+            - name: SENTRY_URL
+              value: 'https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933'
+            - name: SHOW_STYLEGUIDE
+              value: 'true'
+            - name: NEW_RELIC_MONITOR_MODE
+              value: '$(NEW_RELIC_MONITOR_MODE)'
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "700Mi"
+            limits:
+              cpu: "1200m"
+              memory: "900Mi"
+          ports:
+            - containerPort: 6012
+          readinessProbe:
+            tcpSocket:
+              port: 6012
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: 6012
+            initialDelaySeconds: 3
+            periodSeconds: 3
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status: {}
