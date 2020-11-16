@@ -34,4 +34,5 @@ jobs:
 
       - name: Test changes
         run: |
+          cp env.example env/production/.env
           kubectl kustomize env/production
