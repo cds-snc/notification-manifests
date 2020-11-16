@@ -55,7 +55,7 @@ spec:
             - name: BULK_SEND_TEST_SERVICE_ID
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: CONTACT_EMAIL
-              value: 'max.neuvians@cds-snc.ca'
+              value: '$(CONTACT_EMAIL)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
