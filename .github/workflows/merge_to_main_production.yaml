@@ -1,0 +1,33 @@
+name: "Merge to main (Production)"
+
+on:
+  - pull_request
+  - push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/merge_to_main_production.yaml"
+      - "env/production/**"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  kubectl-apply:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # Fetches entire history, so we can analyze commits since last tag
+          fetch-depth: 0
+
+      - name: Configure GitHub with token
+        run: |
+          git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+      - name: Test changes
+        run: |
+          kubectl apply -k env/production --kubeconfig=/home/runner/.kube/config --dry-run
