@@ -3,11 +3,11 @@ on: [pull_request]
 jobs:
   testing_manifest:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-    - name: Run manifest build
-      run: |
-        make staging-debug > /dev/null 2>&1
+      - name: Run manifest build
+        run: |
+          make staging-debug > /dev/null 2>&1
