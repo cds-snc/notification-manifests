@@ -40,4 +40,4 @@ jobs:
 
       - name: Test changes
         run: |
-          kubectl get nodes --kubeconfig=/github/home/.kube/config
+          kubectl get nodes --kubeconfig=/home/runner/.kube/config
