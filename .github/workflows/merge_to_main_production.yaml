@@ -21,11 +21,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Download tagged version
+      - name: Set tag
         run: |
           TAG=`cat PRODUCTION_VERSION`
-          mkdir cloned
-          git --branch $TAG --single-branch -C cloned clone https://${GITHUB_TOKEN}@github.com/cds-snc/notification-manifests .
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Checkout tag
+        uses: actions/checkout@v2
+        with:
+          ref: $tag
+          path: cloned
 
       - name: Test changes
         run: |
