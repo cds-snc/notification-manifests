@@ -1,13 +1,13 @@
 name: "Merge to main (Production)"
 
-on:
-  - pull_request
-  - push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/merge_to_main_production.yaml"
-      - "env/production/**"
+on: [pull_request]
+  # - pull_request
+  # - push:
+  #  branches:
+  #    - main
+  #  paths:
+  #    - ".github/workflows/merge_to_main_production.yaml"
+  #    - "env/production/**"
 
 defaults:
   run:
