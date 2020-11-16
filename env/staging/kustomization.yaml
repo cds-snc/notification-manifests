@@ -152,6 +152,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.BULK_SEND_TEST_SERVICE_ID
+- name: CONTACT_EMAIL
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.CONTACT_EMAIL
 - name: CSV_UPLOAD_BUCKET_NAME
   objref:
     kind: ConfigMap
