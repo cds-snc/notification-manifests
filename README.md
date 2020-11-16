@@ -40,6 +40,8 @@ under the `vars:` key.
 
 You can now reference the variable in you other manifest files using `$(FOO)`.
 
+You also need to add the new vairable in `env.example` so that we can run CI without using any actual live variables.
+
 The last thing you need to do is re-encrypt the `.env` file to make sure the variable gets saved. You can use the `make encrypt-staging` command to do this.
 
 ## How are image tag sets?

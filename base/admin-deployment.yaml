@@ -55,7 +55,7 @@ spec:
             - name: BULK_SEND_TEST_SERVICE_ID
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: CONTACT_EMAIL
-              value: 'max.neuvians@cds-snc.ca'
+              value: '$(CONTACT_EMAIL)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
@@ -96,15 +96,23 @@ spec:
           ports:
             - containerPort: 6012
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /_status
               port: 6012
-            initialDelaySeconds: 3
+            initialDelaySeconds: 10
             periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /_status
               port: 6012
-            initialDelaySeconds: 3
+            initialDelaySeconds: 30
             periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
