@@ -15,4 +15,4 @@ jobs:
 
       - name: Run manifest build
         run: |
-          make staging-debug > /dev/null 2>&1
+          make staging-debug
