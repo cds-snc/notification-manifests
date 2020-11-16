@@ -8,6 +8,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Add fake .env
+        run: |
+          cd env/staging
+          touch .env
+
       - name: Run manifest build
         run: |
-          make staging-debug
+          make staging-debug > /dev/null 2>&1
