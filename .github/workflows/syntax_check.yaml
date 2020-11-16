@@ -10,8 +10,7 @@ jobs:
 
       - name: Add fake .env
         run: |
-          cd env/staging
-          touch .env
+          cp env.example env/staging/.env
 
       - name: Run manifest build
         run: |

@@ -25,8 +25,7 @@ jobs:
         run: |
           TAG=`cat PRODUCTION_VERSION`
           mkdir cloned
-          cd cloned
-          git clone https://${GITHUB_TOKEN}@github.com/cds-snc/notification-manifests?ref=$TAG .
+          git -b $TAG -C cloned clone https://${GITHUB_TOKEN}@github.com/cds-snc/notification-manifests .
 
       - name: Test changes
         run: |
