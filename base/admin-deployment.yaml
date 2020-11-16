@@ -95,7 +95,7 @@ spec:
               memory: "900Mi"
           ports:
             - containerPort: 6012
-          startupProbe:
+          readinessProbe:
             httpGet:
               path: /_status
               port: 6012
