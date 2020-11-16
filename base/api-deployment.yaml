@@ -185,16 +185,22 @@ spec:
             - containerPort: 6011
           readinessProbe:
             httpGet:
-              path: /
+              path: /_status
               port: 6011
             initialDelaySeconds: 10
             periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
           livenessProbe:
             httpGet:
-              path: /
+              path: /_status
               port: 6011
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
             periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
