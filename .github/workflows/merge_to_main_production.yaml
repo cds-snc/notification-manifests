@@ -30,4 +30,4 @@ jobs:
 
       - name: Test changes
         run: |
-          kubectl apply -k env/production --dry-run=client
+          kubectl kustomize env/production
