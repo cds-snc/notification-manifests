@@ -196,7 +196,7 @@ spec:
             httpGet:
               path: /_status
               port: 6011
-            initialDelaySeconds: 0
+            initialDelaySeconds: 30
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 1
