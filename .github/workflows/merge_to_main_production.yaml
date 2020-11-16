@@ -20,13 +20,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          # Fetches entire history, so we can analyze commits since last tag
-          fetch-depth: 0
 
-      - name: Configure GitHub with token
+      - name: Download tagged version
         run: |
-          git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+          TAG=`cat PRODUCTION_VERSION`
+          git -C cloned clone github.com/cds-snc/notification-manifests?ref=$TAG
 
       - name: Test changes
         run: |
