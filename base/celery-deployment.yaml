@@ -55,7 +55,7 @@ spec:
             - name: HC_EN_SERVICE_ID
               value: '$(HC_EN_SERVICE_ID)'
             - name: MLWR_HOST
-              value: '$(MLWR_HOST)'
+              value: 'False'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY

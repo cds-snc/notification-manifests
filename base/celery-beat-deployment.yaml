@@ -50,7 +50,7 @@ spec:
             - name: FIDO2_DOMAIN
               value: '$(BASE_DOMAIN)'
             - name: MLWR_HOST
-              value: '$(MLWR_HOST)'
+              value: 'False'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY
