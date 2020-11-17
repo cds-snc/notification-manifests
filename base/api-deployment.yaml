@@ -55,8 +55,6 @@ spec:
               value: '$(BASE_DOMAIN)'
             - name: FLASK_APP
               value: application.py
-            - name: MLWR_HOST
-              value: 'False'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY
