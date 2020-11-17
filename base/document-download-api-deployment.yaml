@@ -33,8 +33,6 @@ spec:
               value: 'document.$(BASE_DOMAIN)'
             - name: HTTP_SCHEME
               value: 'https'
-            - name: MLWR_HOST
-              value: 'False'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY
