@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery
-    # profile: fargate
-  name:  celery
+    app: celery-fargate
+    profile: fargate
+  name:  celery-fargate
   namespace: notification-canada-ca
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: celery
+      app: celery-fargate
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,13 +20,13 @@ spec:
   template:
     metadata:
       labels:
-        app: celery
-        # profile: fargate
+        app: celery-fargate
+        profile: fargate
     spec:
       containers:
         - image: api
           imagePullPolicy: Always
-          name: celery
+          name: celery-fargate
           env:
             - name: ADMIN_BASE_URL
               value: https://$(BASE_DOMAIN)
@@ -88,12 +88,11 @@ spec:
               value: '$(SENTRY_URL)'
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
-          command: ["/bin/sh"]
-          args: ["-c", "sh /app/scripts/run_celery.sh"]
-          # command: ["sh", "-c", "tail -f /dev/null"]
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
+          # command: ["/bin/sh"]
+          # args: ["-c", "sh /app/scripts/run_celery.sh"]
+          command: ["sh", "-c", "tail -f /dev/null"]
+      securityContext:
+        fsGroup: 65534
+      serviceAccountName: notification-service-account
       terminationGracePeriodSeconds: 30
 status: {}
