@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: celery
-    # profile: fargate
+    profile: fargate
   name:  celery
   namespace: notification-canada-ca
 spec:
@@ -21,7 +21,7 @@ spec:
     metadata:
       labels:
         app: celery
-        # profile: fargate
+        profile: fargate
     spec:
       containers:
         - image: api
@@ -92,10 +92,8 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery.sh"]
-          # command: ["sh", "-c", "tail -f /dev/null"]
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
+      securityContext:
+        fsGroup: 65534
+      serviceAccountName: notification-service-account
       terminationGracePeriodSeconds: 30
 status: {}
