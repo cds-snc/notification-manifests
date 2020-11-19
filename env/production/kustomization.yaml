@@ -11,13 +11,13 @@ resources:
 
 images:
   - name: admin
-    newName: gcr.io/cdssnc/notify/admin:latest
+    newName: gcr.io/cdssnc/notify/admin:33f5819
   - name: api
-    newName: gcr.io/cdssnc/notify/api:latest
+    newName: gcr.io/cdssnc/notify/api:823c3f0
   - name: document-download-api
-    newName: gcr.io/cdssnc/notify/document-download-api:latest
+    newName: gcr.io/cdssnc/notify/document-download-api:3f040c2b
   - name: document-download-frontend
-    newName: gcr.io/cdssnc/notify/document-download-frontend:latest
+    newName: gcr.io/cdssnc/notify/document-download-frontend:60d40eb
 
 configMapGenerator:
 - name: application-config
