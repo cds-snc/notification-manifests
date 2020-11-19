@@ -33,6 +33,7 @@ jobs:
 
       - name: Run manifest build
         run: |
+          cp env.example env/production/.env
           make production-debug > /dev/null 2>&1
 
       - name: Decrypt production env
