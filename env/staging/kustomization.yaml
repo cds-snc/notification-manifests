@@ -251,6 +251,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.MLWR_KEY
+- name: NEW_RELIC_LICENSE_KEY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.NEW_RELIC_LICENSE_KEY
 - name: NEW_RELIC_MONITOR_MODE
   objref:
     kind: ConfigMap

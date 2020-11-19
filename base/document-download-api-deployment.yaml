@@ -39,6 +39,14 @@ spec:
               value: '$(MLWR_KEY)'
             - name: SECRET_KEY
               value: '$(SECRET_KEY)'
+            - name: NEW_RELIC_APP_NAME
+              value: 'notification-document-api-$(ENVIRONMENT)'
+            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+              value: 'true'
+            - name: NEW_RELIC_LICENSE_KEY
+              value: '$(NEW_RELIC_LICENSE_KEY)'
+            - name: NEW_RELIC_MONITOR_MODE
+              value: '$(NEW_RELIC_MONITOR_MODE)'  
           resources: {}
       dnsPolicy: ClusterFirst
       restartPolicy: Always

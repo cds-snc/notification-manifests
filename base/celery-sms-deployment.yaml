@@ -94,8 +94,14 @@ spec:
               value: '$(TWILIO_FROM_NUMBER)'
             - name: SENTRY_URL
               value: '$(SENTRY_URL)'
+            - name: NEW_RELIC_APP_NAME
+              value: 'notification-celery-sms-$(ENVIRONMENT)'
+            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+              value: 'true'
+            - name: NEW_RELIC_LICENSE_KEY
+              value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'
+              value: '$(NEW_RELIC_MONITOR_MODE)'   
 
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_sms.sh"]
