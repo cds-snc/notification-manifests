@@ -84,8 +84,14 @@ spec:
               value: 'https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933'
             - name: SHOW_STYLEGUIDE
               value: 'true'
+            - name: NEW_RELIC_APP_NAME
+              value: 'notification-admin-$(ENVIRONMENT)'
+            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+              value: 'true'
+            - name: NEW_RELIC_LICENSE_KEY
+              value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'
+              value: '$(NEW_RELIC_MONITOR_MODE)'  
           resources:
             requests:
               cpu: "500m"
