@@ -31,6 +31,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
+      - name: Run manifest build
+        run: |
+          make production-debug > /dev/null 2>&1
+
       - name: Decrypt production env
         run: |
           make decrypt-production
