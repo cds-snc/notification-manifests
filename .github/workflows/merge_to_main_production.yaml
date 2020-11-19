@@ -1,7 +1,7 @@
 name: "Merge to main (Production)"
 
 on:
-  - push:
+  push:
     branches:
       - main
     paths:
