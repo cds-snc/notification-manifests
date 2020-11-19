@@ -2,15 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-beat
-  name:  celery-beat
+    app: celery-fargate
+    profile: fargate
+  name:  celery-fargate
   namespace: notification-canada-ca
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: celery-beat
+      app: celery-fargate
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,36 +20,40 @@ spec:
   template:
     metadata:
       labels:
-        app: celery-beat
+        app: celery-fargate
+        profile: fargate
     spec:
-      initContainers:
-        - name: init-postgres
-          image: alpine
-          command:
-            [
-              "sh",
-              "-c",
-              "until nslookup $(POSTGRES_HOST); do echo waiting for postgres; sleep 2; done;",
-            ]
       containers:
         - image: api
           imagePullPolicy: Always
-          name: celery-beat
+          name: celery-fargate
           env:
             - name: ADMIN_BASE_URL
               value: https://$(BASE_DOMAIN)
             - name: ADMIN_CLIENT_SECRET
               value: '$(ADMIN_CLIENT_SECRET)'
+            - name: API_HOST_NAME
+              value: 'http://api.notification-canada-ca.svc.cluster.local:6011'
+            - name: ASSET_UPLOAD_BUCKET_NAME
+              value: '$(ASSET_UPLOAD_BUCKET_NAME)'
+            - name: AWS_PINPOINT_APP_ID
+              value: '$(AWS_PINPOINT_APP_ID)'
+            - name: AWS_PINPOINT_KEYWORD
+              value: '$(AWS_PINPOINT_KEYWORD)'
             - name: AWS_REGION
               value: '$(AWS_REGION)'
             - name: BULK_SEND_TEST_SERVICE_ID
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
+            - name: CSV_UPLOAD_BUCKET_NAME
+              value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
               value: '$(DANGEROUS_SALT)'
             - name: DOCUMENT_DOWNLOAD_API_HOST
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
             - name: FIDO2_DOMAIN
               value: '$(BASE_DOMAIN)'
+            - name: HC_EN_SERVICE_ID
+              value: '$(HC_EN_SERVICE_ID)'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY
@@ -79,14 +84,15 @@ spec:
               value: '$(TWILIO_AUTH_TOKEN)'
             - name: TWILIO_FROM_NUMBER
               value: '$(TWILIO_FROM_NUMBER)'
+            - name: SENTRY_URL
+              value: '$(SENTRY_URL)'
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
-          command: ["/bin/sh"]
-          args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
-          resources: {}
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
+          # command: ["/bin/sh"]
+          # args: ["-c", "sh /app/scripts/run_celery.sh"]
+          command: ["sh", "-c", "tail -f /dev/null"]
+      securityContext:
+        fsGroup: 65534
+      serviceAccountName: notification-service-account
       terminationGracePeriodSeconds: 30
 status: {}

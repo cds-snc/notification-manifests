@@ -3,6 +3,7 @@ bases:
 
 resources:
   - cwagent-fluentd-quickstart.yaml
+  - notification-service-account.yaml
   - api-target-group.yaml
   - admin-target-group.yaml
   - document-download-api-target-group.yaml

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: document-download-api 
+    app: document-download-api
   name:  document-download-api
   namespace: notification-canada-ca
 spec:
@@ -10,7 +10,7 @@ spec:
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: document-download-api 
+      app: document-download-api
   template:
     metadata:
       labels:
@@ -19,7 +19,7 @@ spec:
       containers:
         - image: document-download-api
           imagePullPolicy: Always
-          name: document-download-api 
+          name: document-download-api
           env:
             - name: AUTH_TOKENS
               value: '$(AUTH_TOKENS)'
@@ -33,8 +33,6 @@ spec:
               value: 'document.$(BASE_DOMAIN)'
             - name: HTTP_SCHEME
               value: 'https'
-            - name: MLWR_HOST
-              value: '$(MLWR_HOST)'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY
