@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: celery
+  name: celery
+  namespace: notification-canada-ca
+spec:
+  selector:
+    app: celery

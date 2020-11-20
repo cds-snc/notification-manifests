@@ -11,7 +11,9 @@ resources:
   - admin-service.yaml
   - celery-beat-deployment.yaml
   - celery-deployment.yaml
+  - celery-service.yaml
   - celery-sms-deployment.yaml
+  - celery-sms-service.yaml
   - hasura-deployment.yaml
   - hasura-service.yaml
   - document-download-api-deployment.yaml
