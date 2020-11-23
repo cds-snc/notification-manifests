@@ -42,6 +42,8 @@ spec:
               value: http://api.notification-canada-ca.svc.cluster.local:6011
             - name: ASSET_UPLOAD_BUCKET_NAME
               value: '$(ASSET_UPLOAD_BUCKET_NAME)'
+            - name: ASSET_DOMAIN
+              value: '$(ASSET_DOMAIN)'
             - name: AWS_REGION
               value: '$(AWS_REGION)'
             - name: BULK_SEND_AWS_ACCESS_KEY
@@ -91,7 +93,7 @@ spec:
             - name: NEW_RELIC_LICENSE_KEY
               value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'  
+              value: '$(NEW_RELIC_MONITOR_MODE)'
           resources:
             requests:
               cpu: "500m"

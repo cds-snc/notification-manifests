@@ -48,6 +48,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ASSET_UPLOAD_BUCKET_NAME
+- name: ASSET_DOMAIN
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ASSET_DOMAIN
 - name: AUTH_TOKENS
   objref:
     kind: ConfigMap
