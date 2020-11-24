@@ -43,7 +43,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   concurrencyPolicy: Forbid
-  schedule: '5 * * * *'
+  schedule: '0 16 * * 1-4'
   jobTemplate:
     spec:
       backoffLimit: 2
