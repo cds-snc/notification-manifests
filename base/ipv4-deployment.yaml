@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipv4
+  namespace: notification-canada-ca
+  labels:
+    app: ipv4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipv4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: ipv4
+    spec:
+      containers:
+        - name: ipv4
+          image: gcr.io/cdssnc/ipv4-geolocate-webservice:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /8.8.8.8
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /8.8.8.8
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+          - name: PORT
+            value: "8080"
