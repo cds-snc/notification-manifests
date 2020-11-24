@@ -20,3 +20,6 @@ resources:
   - document-download-api-service.yaml
   - document-download-frontend-deployment.yaml
   - document-download-frontend-service.yaml
+  - ipv4-deployment.yaml
+  - ipv4-service.yaml
+  - ipv4-deployment-restart.yaml
