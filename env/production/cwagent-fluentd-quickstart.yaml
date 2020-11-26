@@ -68,7 +68,7 @@ data:
       "logs":{
           "metrics_collected":{
             "kubernetes":{
-                "cluster_name":"notification-canada-ca-staging-eks-cluster",
+                "cluster_name":"notification-canada-ca-production-eks-cluster",
                 "metrics_collection_interval":60
             }
           },
@@ -89,7 +89,7 @@ kind: ConfigMap
 metadata:
   name: cwagentconfig
   namespace: amazon-cloudwatch
-  
+
 ---
 
 # deploy cwagent as daemonset
