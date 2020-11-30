@@ -83,7 +83,7 @@ spec:
             - name: SECRET_KEY
               value: '$(SECRET_KEY)'
             - name: SENTRY_URL
-              value: 'https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933'
+              value: '$(SENTRY_URL)'
             - name: SHOW_STYLEGUIDE
               value: 'true'
             - name: NEW_RELIC_APP_NAME
