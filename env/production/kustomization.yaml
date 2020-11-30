@@ -1,6 +1,6 @@
 # See https://github.com/kubernetes-sigs/kustomize/blob/v2.0.3/examples/remoteBuild.md
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.10.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.11.0
 
 resources:
   - cwagent-fluentd-quickstart.yaml
