@@ -11,11 +11,11 @@ resources:
 
 images:
   - name: admin
-    newName: gcr.io/cdssnc/notify/admin:33f5819
+    newName: gcr.io/cdssnc/notify/admin:a47ee76
   - name: api
-    newName: gcr.io/cdssnc/notify/api:823c3f0
+    newName: gcr.io/cdssnc/notify/api:1fd2b42
   - name: document-download-api
-    newName: gcr.io/cdssnc/notify/document-download-api:3f040c2b
+    newName: gcr.io/cdssnc/notify/document-download-api:266bbc54
   - name: document-download-frontend
     newName: gcr.io/cdssnc/notify/document-download-frontend:60d40eb
 
