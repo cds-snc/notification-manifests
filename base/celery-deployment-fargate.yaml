@@ -54,6 +54,8 @@ spec:
               value: '$(BASE_DOMAIN)'
             - name: HC_EN_SERVICE_ID
               value: '$(HC_EN_SERVICE_ID)'
+            - name: HC_FR_SERVICE_ID
+              value: '$(HC_FR_SERVICE_ID)'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY

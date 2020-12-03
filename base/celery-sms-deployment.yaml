@@ -62,6 +62,8 @@ spec:
               value: '$(BASE_DOMAIN)'
             - name: HC_EN_SERVICE_ID
               value: '$(HC_EN_SERVICE_ID)'
+            - name: HC_FR_SERVICE_ID
+              value: '$(HC_FR_SERVICE_ID)'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY
@@ -101,7 +103,7 @@ spec:
             - name: NEW_RELIC_LICENSE_KEY
               value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'   
+              value: '$(NEW_RELIC_MONITOR_MODE)'
 
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_sms.sh"]

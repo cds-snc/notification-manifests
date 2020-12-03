@@ -136,6 +136,8 @@ spec:
               value: '$(FRESH_DESK_API_KEY)'
             - name: HC_EN_SERVICE_ID
               value: '$(HC_EN_SERVICE_ID)'
+            - name: HC_FR_SERVICE_ID
+              value: '$(HC_FR_SERVICE_ID)'
             - name: MLWR_HOST
               value: 'False'
             - name: MLWR_USER
@@ -177,7 +179,7 @@ spec:
             - name: NEW_RELIC_LICENSE_KEY
               value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'     
+              value: '$(NEW_RELIC_MONITOR_MODE)'
           resources:
             requests:
               cpu: "400m"
