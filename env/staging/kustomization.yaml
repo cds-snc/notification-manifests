@@ -237,6 +237,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.HC_EN_SERVICE_ID
+- name: HC_FR_SERVICE_ID
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.HC_FR_SERVICE_ID
 - name: MLWR_HOST
   objref:
     kind: ConfigMap
