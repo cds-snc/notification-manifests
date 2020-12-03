@@ -64,6 +64,8 @@ spec:
               value: '$(DANGEROUS_SALT)'
             - name: HC_EN_SERVICE_ID
               value: '$(HC_EN_SERVICE_ID)'
+            - name: HC_FR_SERVICE_ID
+              value: '$(HC_FR_SERVICE_ID)'
             - name: FLASK_APP
               value: 'application.py'
             - name: NOTIFY_ENVIRONMENT
