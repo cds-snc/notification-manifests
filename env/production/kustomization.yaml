@@ -12,9 +12,9 @@ images:
   - name: api
     newName: public.ecr.aws/v6b8u5o6/notify-api:cc3409f
   - name: document-download-api
-    newName: gcr.io/cdssnc/notify/document-download-api:266bbc54
+    newName: public.ecr.aws/v6b8u5o6/notify-document-download-api:1cfbd32
   - name: document-download-frontend
-    newName: gcr.io/cdssnc/notify/document-download-frontend:60d40eb
+    newName: public.ecr.aws/v6b8u5o6/notify-document-download-frontend:69a23c8
 configMapGenerator:
   - name: application-config
     env: .env
