@@ -135,7 +135,7 @@ spec:
         - --secure-port=4443
         - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
         - --kubelet-use-node-status-port
-        image: $(AWS_ECR_URL)/metrics-server/metrics-server:v0.4.1
+        image: k8s.gcr.io/metrics-server/metrics-server:v0.4.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
