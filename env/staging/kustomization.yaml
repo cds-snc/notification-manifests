@@ -11,13 +11,13 @@ resources:
 
 images:
   - name: admin
-    newName: gcr.io/cdssnc/notify/admin:latest
+    newName: $(AWS_ECR_URL)/cdssnc/notify/admin:latest
   - name: api
-    newName: gcr.io/cdssnc/notify/api:latest
+    newName: $(AWS_ECR_URL)/cdssnc/notify/api:latest
   - name: document-download-api
-    newName: gcr.io/cdssnc/notify/document-download-api:latest
+    newName: $(AWS_ECR_URL)/cdssnc/notify/document-download-api:latest
   - name: document-download-frontend
-    newName: gcr.io/cdssnc/notify/document-download-frontend:latest
+    newName: $(AWS_ECR_URL)/cdssnc/notify/document-download-frontend:latest
 
 configMapGenerator:
 - name: application-config

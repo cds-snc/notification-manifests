@@ -13,7 +13,7 @@
 
 ## Checklist if releasing new version:
 - [ ] I made sure that both API and Admin changes are present in Notify
-- [ ] I have checked if the docker images I am referencing exist - ex: https://gcr.io/cdssnc/notify/admin:7ddcb76
+- [ ] I have checked if the docker images I am referencing exist - ex: https://public.ecr.aws/v6b8u5o6/cdssnc/notify/admin:7ddcb76
 
 ## Checklist if making changes to Kubernetes:
 - [ ] I know how to get kubectl credentials in case it catches on fire

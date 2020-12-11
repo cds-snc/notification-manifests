@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: ipv4
-          image: gcr.io/cdssnc/ipv4-geolocate-webservice:latest
+          image: $(AWS_ECR_URL)/cdssnc/ipv4-geolocate-webservice:latest
           ports:
             - containerPort: 8080
           readinessProbe:

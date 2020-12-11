@@ -51,13 +51,13 @@ To adjust what images are used in the environments, you need to set them in the 
 ```
 images:
   - name: admin
-    newName: gcr.io/cdssnc/notify/admin:latest
+    newName: public.ecr.aws/v6b8u5o6/cdssnc/notify/admin:latest
   - name: api
-    newName: gcr.io/cdssnc/notify/api:latest
+    newName: public.ecr.aws/v6b8u5o6/cdssnc/notify/api:latest
   - name: document-download-api
-    newName: gcr.io/cdssnc/notify/document-download-api:latest
+    newName: public.ecr.aws/v6b8u5o6/cdssnc/notify/document-download-api:latest
   - name: document-download-frontend
-    newName: gcr.io/cdssnc/notify/document-download-frontend:latest
+    newName: public.ecr.aws/v6b8u5o6/cdssnc/notify/document-download-frontend:latest
 ```
 
 Will set the images in the base deployment to use `latest`.

@@ -8,13 +8,13 @@ resources:
   - document-download-frontend-target-group.yaml
 images:
   - name: admin
-    newName: gcr.io/cdssnc/notify/admin:0eab80d
+    newName: $(AWS_ECR_URL)/cdssnc/notify/admin:0eab80d
   - name: api
-    newName: gcr.io/cdssnc/notify/api:1fd2b42
+    newName: $(AWS_ECR_URL)/cdssnc/notify/api:1fd2b42
   - name: document-download-api
-    newName: gcr.io/cdssnc/notify/document-download-api:266bbc54
+    newName: $(AWS_ECR_URL)/cdssnc/notify/document-download-api:266bbc54
   - name: document-download-frontend
-    newName: gcr.io/cdssnc/notify/document-download-frontend:60d40eb
+    newName: $(AWS_ECR_URL)/cdssnc/notify/document-download-frontend:60d40eb
 configMapGenerator:
   - name: application-config
     env: .env
