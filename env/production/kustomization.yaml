@@ -8,7 +8,7 @@ resources:
   - document-download-frontend-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/v6b8u5o6/notify-admin:f66ce71
+    newName: public.ecr.aws/v6b8u5o6/notify-admin:4a276a5
   - name: api
     newName: public.ecr.aws/v6b8u5o6/notify-api:cc3409f
   - name: document-download-api
