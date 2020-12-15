@@ -46,14 +46,8 @@ spec:
               value: '$(ASSET_DOMAIN)'
             - name: AWS_REGION
               value: '$(AWS_REGION)'
-            - name: BULK_SEND_AWS_ACCESS_KEY
-              value: '$(BULK_SEND_AWS_ACCESS_KEY)'
-            - name: BULK_SEND_AWS_SECRET_KEY
-              value: '$(BULK_SEND_AWS_SECRET_KEY)'
             - name: BULK_SEND_AWS_BUCKET
               value: '$(BULK_SEND_AWS_BUCKET)'
-            - name: BULK_SEND_AWS_REGION
-              value: '$(BULK_SEND_AWS_REGION)'
             - name: BULK_SEND_TEST_SERVICE_ID
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: CONTACT_EMAIL

@@ -119,20 +119,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.BASE_DOMAIN
-  - name: BULK_SEND_AWS_ACCESS_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.BULK_SEND_AWS_ACCESS_KEY
-  - name: BULK_SEND_AWS_SECRET_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.BULK_SEND_AWS_SECRET_KEY
   - name: BULK_SEND_AWS_BUCKET
     objref:
       kind: ConfigMap
@@ -140,13 +126,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.BULK_SEND_AWS_BUCKET
-  - name: BULK_SEND_AWS_REGION
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.BULK_SEND_AWS_REGION
   - name: BULK_SEND_TEST_SERVICE_ID
     objref:
       kind: ConfigMap
