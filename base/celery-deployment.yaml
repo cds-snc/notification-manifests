@@ -98,7 +98,13 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery.sh"]
-          # command: ["sh", "-c", "tail -f /dev/null"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "500Mi"
+            limits:
+              cpu: "550m"
+              memory: "600Mi"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
