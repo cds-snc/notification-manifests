@@ -23,3 +23,10 @@ spec:
           env:
           - name: PORT
             value: "6379"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+            limits:
+              cpu: "200m"
+              memory: "200Mi"
