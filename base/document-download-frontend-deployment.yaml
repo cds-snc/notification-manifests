@@ -51,7 +51,9 @@ spec:
             - name: NEW_RELIC_LICENSE_KEY
               value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'  
+              value: '$(NEW_RELIC_MONITOR_MODE)'
+            - name: NOTIFY_ENVIRONMENT
+              value: '$(ENVIRONMENT)'
           resources: {}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
