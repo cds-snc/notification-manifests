@@ -17,3 +17,13 @@ metadata:
   namespace: notification-canada-ca
 spec:
   replicas: 2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: documentation
+  name:  documentation
+  namespace: notification-canada-ca
+spec:
+  replicas: 1

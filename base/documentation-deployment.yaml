@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: documentation
+  namespace: notification-canada-ca
+  labels:
+    app: documentation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: documentation
+  template:
+    metadata:
+      labels:
+        app: documentation
+    spec:
+      containers:
+        - name: documentation
+          image: documentation
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+          - name: AWS_REGION
+            value: '$(AWS_REGION)'
+          - name: PORT
+            value: "80"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+            limits:
+              cpu: "900m"
+              memory: "200Mi"
+          readinessProbe:
+            httpGet:
+              path: /index.html
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /index.html
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

@@ -18,6 +18,8 @@ images:
     newName: public.ecr.aws/cds-snc/notify-document-download-api:latest
   - name: document-download-frontend
     newName: public.ecr.aws/cds-snc/notify-document-download-frontend:latest
+  - name: documentation
+    newName: public.ecr.aws/cds-snc/notify-documentation:latest
 
 configMapGenerator:
 - name: application-config
