@@ -25,11 +25,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-          env:
-          - name: AWS_REGION
-            value: '$(AWS_REGION)'
-          - name: PORT
-            value: "80"
           resources:
             requests:
               cpu: "100m"
