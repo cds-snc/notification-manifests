@@ -10,6 +10,10 @@ spec:
   selector:
     matchLabels:
       app: documentation
+  strategy: 
+    type: RollingUpdate 
+    rollingUpdate: 
+      maxUnavailable: 0 
   template:
     metadata:
       labels:
@@ -31,7 +35,7 @@ spec:
               cpu: "100m"
               memory: "100Mi"
             limits:
-              cpu: "900m"
+              cpu: "200m"
               memory: "200Mi"
           readinessProbe:
             httpGet:
