@@ -73,7 +73,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: REDIS_URL
-              value: redis://redis.notification-canada-ca.svc.cluster.local:6379
+              value: '$(REDIS_URL)'
             - name: REDIS_ENABLED
               value: "1"
             - name: SECRET_KEY
