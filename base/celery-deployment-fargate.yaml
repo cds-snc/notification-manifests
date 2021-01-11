@@ -67,7 +67,7 @@ spec:
             - name: NOTIFICATION_QUEUE_PREFIX
               value: 'eks-notification-canada-ca'
             - name: REDIS_URL
-              value: redis://redis.notification-canada-ca.svc.cluster.local:6379
+              value: '$(REDIS_URL)'
             - name: REDIS_ENABLED
               value: '1'
             - name: SECRET_KEY
