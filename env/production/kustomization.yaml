@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.18.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.18.1
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -266,6 +266,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.POSTGRES_SQL
+  - name: REDIS_URL
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.REDIS_URL
   - name: SECRET_KEY
     objref:
       kind: ConfigMap
