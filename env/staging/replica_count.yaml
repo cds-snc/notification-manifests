@@ -17,3 +17,30 @@ metadata:
   namespace: notification-canada-ca
 spec:
   replicas: 2
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: admin-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 2
+  maxReplicas: 4
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 2
+  maxReplicas: 4
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: celery-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 1
+  maxReplicas: 3
