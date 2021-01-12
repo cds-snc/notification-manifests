@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.17.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.18.1
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -9,9 +9,9 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:0294af0
+    newName: public.ecr.aws/cds-snc/notify-admin:7b95a95
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:4ffba88
+    newName: public.ecr.aws/cds-snc/notify-api:a35f8fe
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:1cfbd32
   - name: document-download-frontend
@@ -269,6 +269,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.POSTGRES_SQL
+  - name: REDIS_URL
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.REDIS_URL
   - name: SECRET_KEY
     objref:
       kind: ConfigMap
