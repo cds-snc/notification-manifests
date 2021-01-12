@@ -2,8 +2,6 @@ resources:
   - namespace.yaml
   - cert-manager.yaml
   - alb-ingress-controller.yaml
-  - redis-deployment.yaml
-  - redis-service.yaml
   - jump-box.yaml
   - api-deployment.yaml
   - api-service.yaml
