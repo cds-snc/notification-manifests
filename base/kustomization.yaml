@@ -7,11 +7,14 @@ resources:
   - jump-box.yaml
   - api-deployment.yaml
   - api-service.yaml
+  - api-hpa.yaml
   - admin-deployment.yaml
   - admin-service.yaml
+  - admin-hpa.yaml
   - celery-beat-deployment.yaml
   - celery-deployment.yaml
   - celery-service.yaml
+  - celery-hpa.yaml
   - celery-sms-deployment.yaml
   - celery-sms-service.yaml
   - hasura-deployment.yaml
