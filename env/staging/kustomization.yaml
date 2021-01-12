@@ -8,6 +8,7 @@ resources:
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
   - document-download-frontend-target-group.yaml
+  - documentation-target-group.yaml
 
 images:
   - name: admin
