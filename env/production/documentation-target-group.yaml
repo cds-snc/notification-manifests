@@ -1,0 +1,10 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: documentation-targetgroup
+  namespace: notification-canada-ca
+spec:
+  serviceRef:
+    name: documentation
+    port: 80
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:296255494825:targetgroup/notification-documentation/1f2326a53fe2bd21
