@@ -17,7 +17,7 @@ images:
   - name: document-download-frontend
     newName: public.ecr.aws/cds-snc/notify-document-download-frontend:69a23c8
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:039e96c
+    newName: public.ecr.aws/cds-snc/notify-documentation:620c119
 configMapGenerator:
   - name: application-config
     env: .env
