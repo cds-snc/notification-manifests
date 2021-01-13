@@ -44,10 +44,8 @@ spec:
               value: 'http://api.notification-canada-ca.svc.cluster.local:6011'
             - name: ASSET_UPLOAD_BUCKET_NAME
               value: '$(ASSET_UPLOAD_BUCKET_NAME)'
-            - name: AWS_PINPOINT_APP_ID
-              value: '$(AWS_PINPOINT_APP_ID)'
-            - name: AWS_PINPOINT_KEYWORD
-              value: '$(AWS_PINPOINT_KEYWORD)'
+            - name: AWS_PINPOINT_REGION
+              value: '$(AWS_PINPOINT_REGION)'
             - name: AWS_REGION
               value: '$(AWS_REGION)'
             - name: BULK_SEND_TEST_SERVICE_ID
