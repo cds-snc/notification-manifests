@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.20.2
+  - github.com/cds-snc/notification-manifests//base?ref=v0.21.0
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -59,20 +59,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.AUTH_TOKENS
-  - name: AWS_PINPOINT_APP_ID
+  - name: AWS_PINPOINT_REGION
     objref:
       kind: ConfigMap
       name: application-config
       apiVersion: v1
     fieldref:
-      fieldpath: data.AWS_PINPOINT_APP_ID
-  - name: AWS_PINPOINT_KEYWORD
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_PINPOINT_KEYWORD
+      fieldpath: data.AWS_PINPOINT_REGION
   - name: AWS_REGION
     objref:
       kind: ConfigMap
