@@ -132,6 +132,8 @@ spec:
               value: '$(FRESH_DESK_API_URL)'
             - name: FRESH_DESK_API_KEY
               value: '$(FRESH_DESK_API_KEY)'
+            - name: FRESH_DESK_PRODUCT_ID
+              value: '$(FRESH_DESK_PRODUCT_ID)'
             - name: HC_EN_SERVICE_ID
               value: '$(HC_EN_SERVICE_ID)'
             - name: HC_FR_SERVICE_ID

@@ -191,6 +191,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FRESH_DESK_API_KEY
+- name: FRESH_DESK_PRODUCT_ID
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.FRESH_DESK_PRODUCT_ID
 - name: HASURA_ACCESS_KEY
   objref:
     kind: ConfigMap
