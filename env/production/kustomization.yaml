@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.22.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.24.0
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -185,6 +185,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FRESH_DESK_API_KEY
+  - name: FRESH_DESK_PRODUCT_ID
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FRESH_DESK_PRODUCT_ID
   - name: HASURA_ACCESS_KEY
     objref:
       kind: ConfigMap
