@@ -26,7 +26,7 @@ metadata:
   name:  celery
   namespace: notification-canada-ca
 spec:
-  replicas: 6
+  replicas: 3
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -62,5 +62,5 @@ metadata:
   name: celery-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 6
-  maxReplicas: 6
+  minReplicas: 3
+  maxReplicas: 15
