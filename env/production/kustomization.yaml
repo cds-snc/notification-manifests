@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.24.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.25.1
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -290,6 +290,20 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.SENDGRID_API_KEY
+  - name: SQLALCHEMY_DATABASE_READER_URI
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SQLALCHEMY_DATABASE_READER_URI
+  - name: SQLALCHEMY_POOL_SIZE
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SQLALCHEMY_POOL_SIZE
   - name: TWILIO_ACCOUNT_SID
     objref:
       kind: ConfigMap
