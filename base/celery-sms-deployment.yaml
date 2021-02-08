@@ -82,6 +82,8 @@ spec:
               value: '$(SENDGRID_API_KEY)'
             - name: SQLALCHEMY_DATABASE_URI
               value: '$(POSTGRES_SQL)'
+            - name: SQLALCHEMY_DATABASE_READER_URI
+              value: '$(SQLALCHEMY_DATABASE_READER_URI)'
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
