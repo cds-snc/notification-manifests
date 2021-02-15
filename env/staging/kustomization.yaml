@@ -338,3 +338,10 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.SENTRY_URL
+- name: EXTRA_MIME_TYPES
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.EXTRA_MIME_TYPES
