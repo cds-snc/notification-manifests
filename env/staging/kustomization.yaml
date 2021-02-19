@@ -345,3 +345,10 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.EXTRA_MIME_TYPES
+- name: IP_GEOLOCATE_SERVICE
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.IP_GEOLOCATE_SERVICE
