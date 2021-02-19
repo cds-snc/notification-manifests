@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.27.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.28.0
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -9,7 +9,7 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:f9e44c7
+    newName: public.ecr.aws/cds-snc/notify-admin:89e5bf7
   - name: api
     newName: public.ecr.aws/cds-snc/notify-api:af13120
   - name: document-download-api
@@ -339,3 +339,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.EXTRA_MIME_TYPES
+  - name: IP_GEOLOCATE_SERVICE
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.IP_GEOLOCATE_SERVICE
