@@ -91,7 +91,7 @@ spec:
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: IP_GEOLOCATE_SERVICE
-              value: http://ipv4.notification-canada-ca.svc.cluster.local:8080/
+              value: '$(IP_GEOLOCATE_SERVICE)'
           resources:
             requests:
               cpu: "500m"
