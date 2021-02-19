@@ -22,6 +22,10 @@ spec:
       containers:
         - name: ipv4
           image: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice:latest
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "100Mi"
           ports:
             - containerPort: 8080
           readinessProbe:
