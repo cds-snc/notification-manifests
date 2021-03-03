@@ -15,7 +15,7 @@ images:
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:e577c8b
   - name: document-download-frontend
-    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:dde3b65
+    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:a21acdc
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:b4cc499
 configMapGenerator:
