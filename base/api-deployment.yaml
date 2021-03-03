@@ -51,6 +51,8 @@ spec:
               value: '$(DANGEROUS_SALT)'
             - name: DOCUMENT_DOWNLOAD_API_HOST
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
+            - name: DOCUMENTATION_DOMAIN
+              value: 'documentation.$(BASE_DOMAIN)'
             - name: FIDO2_DOMAIN
               value: '$(BASE_DOMAIN)'
             - name: FLASK_APP
