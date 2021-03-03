@@ -56,6 +56,8 @@ spec:
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
               value: '$(DANGEROUS_SALT)'
+            - name: DOCUMENTATION_DOMAIN
+              value: 'documentation.$(BASE_DOMAIN)'
             - name: HC_EN_SERVICE_ID
               value: '$(HC_EN_SERVICE_ID)'
             - name: HC_FR_SERVICE_ID
