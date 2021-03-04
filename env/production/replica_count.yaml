@@ -63,4 +63,4 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 15
+  maxReplicas: 10
