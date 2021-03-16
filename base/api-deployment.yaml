@@ -89,6 +89,10 @@ spec:
               value: '$(TWILIO_FROM_NUMBER)'
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
+            - name: ZENDESK_SELL_API_URL
+              value: 'https://api.getbase.com'
+            - name: ZENDESK_SELL_API_KEY
+              value: '$(ZENDESK_SELL_API_KEY)'
           command:
             [
               "sh",
@@ -186,6 +190,10 @@ spec:
               value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
+            - name: ZENDESK_SELL_API_URL
+              value: 'https://api.getbase.com'
+            - name: ZENDESK_SELL_API_KEY
+              value: '$(ZENDESK_SELL_API_KEY)'
           resources:
             requests:
               cpu: "400m"
