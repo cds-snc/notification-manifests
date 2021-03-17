@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: document-download-frontend
-  name:  document-download-frontend
+  name: document-download-frontend
   namespace: notification-canada-ca
 spec:
   replicas: 1
@@ -54,7 +54,24 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: NOTIFY_ENVIRONMENT
               value: '$(ENVIRONMENT)'
-          resources: {}
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "400Mi"
+            limits:
+              cpu: "400m"
+              memory: "800Mi"
+          ports:
+            - containerPort: 7001
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 7001
+            initialDelaySeconds: 1
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
