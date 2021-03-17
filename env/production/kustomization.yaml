@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.31.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.32.0
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -346,3 +346,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.IP_GEOLOCATE_SERVICE
+  - name: ZENDESK_SELL_API_KEY
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.ZENDESK_SELL_API_KEY
