@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: document-download-api
-  name:  document-download-api
+  name: document-download-api
   namespace: notification-canada-ca
 spec:
   replicas: 1
@@ -11,6 +11,11 @@ spec:
   selector:
     matchLabels:
       app: document-download-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -51,7 +56,24 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: NOTIFY_ENVIRONMENT
               value: '$(ENVIRONMENT)'
-          resources: {}
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "400Mi"
+            limits:
+              cpu: "400m"
+              memory: "800Mi"
+          ports:
+            - containerPort: 7000
+          readinessProbe:
+            httpGet:
+              path: /_status
+              port: 7000
+            initialDelaySeconds: 1
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
