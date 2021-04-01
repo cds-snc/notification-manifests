@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.33.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.34.0
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -353,3 +353,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.ZENDESK_SELL_API_KEY
+  - name: AWS_US_TOLL_FREE_NUMBER
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.AWS_US_TOLL_FREE_NUMBER
