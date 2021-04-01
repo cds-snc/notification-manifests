@@ -33,6 +33,8 @@ spec:
               value: '$(ADMIN_CLIENT_SECRET)'
             - name: ASSET_UPLOAD_BUCKET_NAME
               value: '$(ASSET_UPLOAD_BUCKET_NAME)'
+            - name: ASSET_DOMAIN
+              value: '$(ASSET_DOMAIN)'
             - name: AWS_ROUTE53_ZONE
               value: '$(AWS_ROUTE53_ZONE)'
             - name: AWS_SES_REGION
@@ -114,6 +116,8 @@ spec:
               value: 'http://api.notification-canada-ca.svc.cluster.local:6011'
             - name: ASSET_UPLOAD_BUCKET_NAME
               value: '$(ASSET_UPLOAD_BUCKET_NAME)'
+            - name: ASSET_DOMAIN
+              value: '$(ASSET_DOMAIN)'
             - name: AWS_PINPOINT_REGION
               value: '$(AWS_PINPOINT_REGION)'
             - name: AWS_REGION
