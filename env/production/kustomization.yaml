@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.33.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.34.0
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -9,15 +9,15 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:7013191
+    newName: public.ecr.aws/cds-snc/notify-admin:5a53697
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:be5ba9f
+    newName: public.ecr.aws/cds-snc/notify-api:c1483a3
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:44888d9
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:eb2ea6a
   - name: document-download-frontend
     newName: public.ecr.aws/cds-snc/notify-document-download-frontend:3a650d0
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:f65cc15
+    newName: public.ecr.aws/cds-snc/notify-documentation:d21ce0e
 configMapGenerator:
   - name: application-config
     env: .env
@@ -353,3 +353,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.ZENDESK_SELL_API_KEY
+  - name: AWS_US_TOLL_FREE_NUMBER
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.AWS_US_TOLL_FREE_NUMBER
