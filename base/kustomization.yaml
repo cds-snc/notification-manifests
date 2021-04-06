@@ -18,6 +18,7 @@ resources:
   - hasura-deployment.yaml
   - hasura-service.yaml
   - document-download-api-deployment.yaml
+  - document-download-api-hpa.yaml
   - document-download-api-service.yaml
   - document-download-frontend-deployment.yaml
   - document-download-frontend-service.yaml
