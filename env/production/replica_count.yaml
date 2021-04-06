@@ -64,12 +64,3 @@ metadata:
 spec:
   minReplicas: 3
   maxReplicas: 10
----
-apiVersion: autoscaling/v2beta2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: document-download-api-hpa
-  namespace: notification-canada-ca
-spec:
-  minReplicas: 1
-  maxReplicas: 1
