@@ -89,6 +89,8 @@ spec:
               value: '$(TWILIO_AUTH_TOKEN)'
             - name: TWILIO_FROM_NUMBER
               value: '$(TWILIO_FROM_NUMBER)'
+            - name: AWS_US_TOLL_FREE_NUMBER
+              value: '$(AWS_US_TOLL_FREE_NUMBER)'
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: ZENDESK_SELL_API_URL
@@ -184,6 +186,8 @@ spec:
               value: '$(TWILIO_AUTH_TOKEN)'
             - name: TWILIO_FROM_NUMBER
               value: '$(TWILIO_FROM_NUMBER)'
+            - name: AWS_US_TOLL_FREE_NUMBER
+              value: '$(AWS_US_TOLL_FREE_NUMBER)'
             - name: SENTRY_URL
               value: '$(SENTRY_URL)'
             - name: NEW_RELIC_APP_NAME

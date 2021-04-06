@@ -79,6 +79,8 @@ spec:
               value: '$(TWILIO_AUTH_TOKEN)'
             - name: TWILIO_FROM_NUMBER
               value: '$(TWILIO_FROM_NUMBER)'
+            - name: AWS_US_TOLL_FREE_NUMBER
+              value: '$(AWS_US_TOLL_FREE_NUMBER)'
             - name: NEW_RELIC_APP_NAME
               value: 'notification-celery-beat-$(ENVIRONMENT)'
             - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
@@ -86,7 +88,7 @@ spec:
             - name: NEW_RELIC_LICENSE_KEY
               value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'   
+              value: '$(NEW_RELIC_MONITOR_MODE)'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
           resources: {}
