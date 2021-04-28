@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.35.0
+  - github.com/cds-snc/notification-manifests//base?ref=v0.36.0
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -9,9 +9,9 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:af89c04
+    newName: public.ecr.aws/cds-snc/notify-admin:99091bd
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:0161b00
+    newName: public.ecr.aws/cds-snc/notify-api:90d5caf
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:35b4d6e
   - name: document-download-frontend
