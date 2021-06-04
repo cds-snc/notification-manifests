@@ -8,6 +8,7 @@
 ## If you are releasing a new version of notify, what components are you updating
 - [ ] API
 - [ ] Admin
+- [ ] Documentation
 - [ ] Document API
 - [ ] Document UI
 
