@@ -6,7 +6,7 @@ metadata:
   name:  api
   namespace: notification-canada-ca
 spec:
-  replicas: 2
+  replicas: 4
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -17,6 +17,16 @@ metadata:
   namespace: notification-canada-ca
 spec:
   replicas: 2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery
+  name:  celery
+  namespace: notification-canada-ca
+spec:
+  replicas: 3
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,7 +45,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 2
-  maxReplicas: 4
+  maxReplicas: 2
 ---
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
@@ -43,7 +53,7 @@ metadata:
   name: api-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 2
+  minReplicas: 4
   maxReplicas: 4
 ---
 apiVersion: autoscaling/v2beta2
@@ -52,8 +62,8 @@ metadata:
   name: celery-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 1
-  maxReplicas: 3
+  minReplicas: 3
+  maxReplicas: 10
 ---
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
