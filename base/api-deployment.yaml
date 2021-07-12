@@ -97,8 +97,6 @@ spec:
               value: 'https://api.getbase.com'
             - name: ZENDESK_SELL_API_KEY
               value: '$(ZENDESK_SELL_API_KEY)'
-            - name: FF_NOTIFICATION_CELERY_PERSISTANCE
-              value: '$(FF_NOTIFICATION_CELERY_PERSISTANCE)'
           command:
             [
               "sh",
