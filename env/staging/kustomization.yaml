@@ -44,6 +44,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ADMIN_CLIENT_SECRET
+- name: API_DISABLED_SERVICE_IDS
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.API_DISABLED_SERVICE_IDS
 - name: ASSET_UPLOAD_BUCKET_NAME
   objref:
     kind: ConfigMap
