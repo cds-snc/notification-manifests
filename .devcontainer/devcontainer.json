@@ -1,0 +1,52 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.187.0/containers/alpine
+{
+	"name": "Alpine",
+	"build": {
+		"dockerfile": "Dockerfile",
+		// Update 'VARIANT' to pick an Alpine version: 3.10, 3.11, 3.12, 3.13
+		"args": {
+			"VARIANT": "3.13"
+		}
+	},
+	// Set *default* container specific settings.json values on container create. 
+	"settings": {
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.linting.pylintPath": "/usr/local/bin/pylint",
+		"python.pythonPath": "/usr/local/bin/python",
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+	// Add the IDs of extensions you want installed when the container is created.
+	// Note that some extensions may not work in Alpine Linux. See https://aka.ms/vscode-remote/linux.
+	"extensions": [
+		"alefragnani.bookmarks",
+		"christian-kohler.path-intellisense",
+		"coenraads.bracket-pair-colorizer-2",
+		"donjayamanne.githistory",
+		"eamodio.gitlens",
+		"github.vscode-pull-request-github",
+		"louiswt.regexp-preview",
+		"mhutchie.git-graph",
+		"ms-azuretools.vscode-docker",
+		"ms-kubernetes-tools.vscode-kubernetes-tools",
+		"oderwat.indent-rainbow",
+		"pmbenjamin.vscode-snyk",
+		"redhat.vscode-yaml",
+		"richie5um2.vscode-sort-json",
+		"tabnine.tabnine-vscode",
+		"usernamehw.errorlens",
+		"visualstudioexptteam.vscodeintellicode",
+		"yzhang.markdown-all-in-one"
+	],
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "/usr/local/bin/notify-dev-entrypoint.sh",
+	
+	 // Uncomment when using a ptrace-based debugger like C++, Go, and Rust
+	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}
