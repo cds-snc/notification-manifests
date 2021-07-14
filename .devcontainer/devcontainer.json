@@ -11,10 +11,6 @@
 	},
 	// Set *default* container specific settings.json values on container create. 
 	"settings": {
-		"python.linting.enabled": true,
-		"python.linting.pylintEnabled": true,
-		"python.linting.pylintPath": "/usr/local/bin/pylint",
-		"python.pythonPath": "/usr/local/bin/python",
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
 	// Add the IDs of extensions you want installed when the container is created.
