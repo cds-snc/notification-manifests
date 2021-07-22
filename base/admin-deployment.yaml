@@ -105,7 +105,7 @@ spec:
             - containerPort: 6012
           readinessProbe:
             httpGet:
-              path: /_status
+              path: /_status?simple=true
               port: 6012
             initialDelaySeconds: 10
             periodSeconds: 3
