@@ -39,7 +39,7 @@ You should leverage the appropriate commands in the Makefile:
 AWS_PROFILE=notify-staging make decrypt-staging
 # Change values in the decrypted file at env/staging/.env
 # Encrypt the decrypted file that you just edited
-AWS_PROFILE=notify-staging make encrypt-staging
+AWS_PROFILE=notify-staging make decrypt-staging
 # Creates a new file at env/staging/.env.enc.aws which is safe to commit
 ```
 
