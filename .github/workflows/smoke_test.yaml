@@ -29,8 +29,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
 
+    - name: install python requirements
+      run: pip install -r smoke_tests/requirements.txt
+
     - name: Run smoke tests on staging
-      run: /bin/bash -c "python smoke_tests/smoke_test.py"
+      run: python smoke_tests/smoke_test.py
 
     - name: Notify Slack channel if this job failed in default branch
       if: ${{ failure() && github.ref == 'refs/heads/master' }}
