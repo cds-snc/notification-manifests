@@ -14,6 +14,8 @@ jobs:
     - name: Install libcurl
       run: sudo apt-get update && sudo apt-get install libssl-dev libcurl4-openssl-dev
     - uses: actions/checkout@v2
+      with:
+        repository: cds-snc/notification-api
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
@@ -25,15 +27,15 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('smoke_tests/requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
 
     - name: install python requirements
-      run: pip install -r smoke_tests/requirements.txt
+      run: pip install -r requirements.txt
 
     - name: Run smoke tests on staging
-      run: python smoke_tests/smoke_test.py
+      run: make smoke-test
 
     - name: Notify Slack channel if this job failed in default branch
       if: ${{ failure() && github.ref == 'refs/heads/master' }}
