@@ -39,4 +39,6 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Run smoke tests on staging
+      env:
+        SMOKE_ADMIN_CLIENT_SECRET: ${{ secrets.SMOKE_ADMIN_CLIENT_SECRET}}
       run: make smoke-test
