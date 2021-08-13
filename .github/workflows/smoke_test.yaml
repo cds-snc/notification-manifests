@@ -41,4 +41,14 @@ jobs:
     - name: Run smoke tests on staging
       env:
         SMOKE_ADMIN_CLIENT_SECRET: ${{ secrets.SMOKE_ADMIN_CLIENT_SECRET}}
+        SMOKE_API_HOST_NAME: ${{ secrets.SMOKE_API_HOST_NAME}}
+        SMOKE_API_KEY: ${{ secrets.SMOKE_API_KEY}}
+        SMOKE_AWS_ACCESS_KEY_ID: ${{ secrets.SMOKE_AWS_ACCESS_KEY_ID}}
+        SMOKE_AWS_SECRET_ACCESS_KEY: ${{ secrets.SMOKE_AWS_SECRET_ACCESS_KEY}}
+        SMOKE_CSV_UPLOAD_BUCKET_NAME: ${{ secrets.SMOKE_CSV_UPLOAD_BUCKET_NAME}}
+        SMOKE_EMAIL_TEMPLATE_ID: ${{ secrets.SMOKE_EMAIL_TEMPLATE_ID}}
+        SMOKE_EMAIL_TO: ${{ secrets.SMOKE_EMAIL_TO}}
+        SMOKE_SERVICE_ID: ${{ secrets.SMOKE_SERVICE_ID}}
+        SMOKE_SMS_TEMPLATE_ID: ${{ secrets.SMOKE_SMS_TEMPLATE_ID}}
+        SMOKE_USER_ID: ${{ secrets.SMOKE_USER_ID}}
       run: make smoke-test
