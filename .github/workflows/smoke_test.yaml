@@ -17,7 +17,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: cds-snc/notification-api
-        ref: improve-smoke-tests
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -48,6 +47,7 @@ jobs:
         SMOKE_CSV_UPLOAD_BUCKET_NAME: ${{ secrets.SMOKE_CSV_UPLOAD_BUCKET_NAME}}
         SMOKE_EMAIL_TEMPLATE_ID: ${{ secrets.SMOKE_EMAIL_TEMPLATE_ID}}
         SMOKE_EMAIL_TO: ${{ secrets.SMOKE_EMAIL_TO}}
+        SMOKE_SMS_TO: ${{ secrets.SMOKE_SMS_TO}}
         SMOKE_SERVICE_ID: ${{ secrets.SMOKE_SERVICE_ID}}
         SMOKE_SMS_TEMPLATE_ID: ${{ secrets.SMOKE_SMS_TEMPLATE_ID}}
         SMOKE_USER_ID: ${{ secrets.SMOKE_USER_ID}}
