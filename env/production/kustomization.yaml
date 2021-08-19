@@ -360,3 +360,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.AWS_US_TOLL_FREE_NUMBER
+  - name: FF_NOTIFICATION_CELERY_PERSISTENCE
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_NOTIFICATION_CELERY_PERSISTENCE
