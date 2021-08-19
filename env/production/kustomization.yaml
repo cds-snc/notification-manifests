@@ -11,7 +11,7 @@ images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:58239a3
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:2f0eb99
+    newName: public.ecr.aws/cds-snc/notify-api:fb99aeb
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:95d88f3
   - name: document-download-frontend
@@ -360,3 +360,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.AWS_US_TOLL_FREE_NUMBER
+  - name: FF_NOTIFICATION_CELERY_PERSISTENCE
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_NOTIFICATION_CELERY_PERSISTENCE
