@@ -30,13 +30,6 @@ patches:
  - replica_count.yaml
 
 vars:
-- name: ALLOW_HTML_SERVICE_IDS
-  objref:
-    kind: ConfigMap
-    name: application-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.ALLOW_HTML_SERVICE_IDS
 - name: ADMIN_CLIENT_USER_NAME
   objref:
     kind: ConfigMap
