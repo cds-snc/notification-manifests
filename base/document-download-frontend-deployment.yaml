@@ -32,6 +32,8 @@ spec:
               value: '$(ADMIN_CLIENT_SECRET)'
             - name: ADMIN_CLIENT_USER_NAME
               value: '$(ADMIN_CLIENT_USER_NAME)'
+            - name: ALLOW_HTML_SERVICE_IDS
+              value: '$(ALLOW_HTML_SERVICE_IDS)'
             - name: API_HOST_NAME
               value: http://api.notification-canada-ca.svc.cluster.local:6011
             - name: DEBUG
