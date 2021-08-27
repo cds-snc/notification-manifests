@@ -39,6 +39,8 @@ spec:
               value: https://$(BASE_DOMAIN)
             - name: ADMIN_CLIENT_SECRET
               value: '$(ADMIN_CLIENT_SECRET)'
+            - name: ALLOW_HTML_SERVICE_IDS
+              value: '$(ALLOW_HTML_SERVICE_IDS)'
             - name: AWS_REGION
               value: '$(AWS_REGION)'
             - name: BULK_SEND_TEST_SERVICE_ID
