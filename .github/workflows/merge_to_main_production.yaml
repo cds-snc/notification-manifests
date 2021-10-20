@@ -48,6 +48,12 @@ jobs:
         run: |
           kubectl apply -k env/production --kubeconfig=/home/runner/.kube/config
 
+      - name: Copy api-lambda image from public ECR
+
+      - name: tag api-lambda image and push to private ECR
+
+      - name: Deploy api-lambda function with new image
+
       - name: Add deployment to New Relic
         run: |
           for application_id in 283469061 283468826 283468685; do
