@@ -55,7 +55,7 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name api-lambda \
-            --image-uri $REGISTRY/api-lambda:release
+            --image-uri $REGISTRY/api-lambda:d2e091e
 
       - name: Add deployment to New Relic
         run: |
