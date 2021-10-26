@@ -9,7 +9,8 @@ on:
       - "env/production/**"
 
 env:
-  REGISTRY: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+  PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+  API_LAMBDA_IMAGE: api-lambda:d2e091e
 
 defaults:
   run:
@@ -55,7 +56,7 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name api-lambda \
-            --image-uri $REGISTRY/api-lambda:d2e091e
+            --image-uri $PRIVATE_ECR/$API_LAMBDA_IMAGE
 
       - name: Add deployment to New Relic
         run: |
