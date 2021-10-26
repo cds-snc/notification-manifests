@@ -9,7 +9,7 @@ on:
       - "env/production/**"
 
 env:
-  REGISTRY: ${{ secrets.AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+  REGISTRY: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
 
 defaults:
   run:
