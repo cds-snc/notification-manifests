@@ -1,383 +1,211 @@
-bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.39.1
-resources:
-  - cwagent-fluentd-quickstart.yaml
-  - api-target-group.yaml
-  - admin-target-group.yaml
-  - document-download-api-target-group.yaml
-  - document-download-frontend-target-group.yaml
-  - documentation-target-group.yaml
-images:
-  - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:5c8ac94
-  - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:d2e091e
-  - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:e79edf7
-  - name: document-download-frontend
-    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:04e5355
-  - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:adb6372
-configMapGenerator:
-  - name: application-config
-    env: .env
-patches:
-  - replica_count.yaml
-vars:
-  - name: ADMIN_CLIENT_USER_NAME
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.ADMIN_CLIENT_USER_NAME
-  - name: ADMIN_CLIENT_SECRET
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.ADMIN_CLIENT_SECRET
-  - name: ALLOW_HTML_SERVICE_IDS
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.ALLOW_HTML_SERVICE_IDS
-  - name: ASSET_UPLOAD_BUCKET_NAME
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.ASSET_UPLOAD_BUCKET_NAME
-  - name: ASSET_DOMAIN
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.ASSET_DOMAIN
-  - name: AUTH_TOKENS
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AUTH_TOKENS
-  - name: AWS_PINPOINT_REGION
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_PINPOINT_REGION
-  - name: AWS_REGION
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_REGION
-  - name: AWS_ROUTE53_ZONE
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_ROUTE53_ZONE
-  - name: AWS_SES_REGION
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_SES_REGION
-  - name: AWS_SES_SMTP
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_SES_SMTP
-  - name: AWS_SES_ACCESS_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_SES_ACCESS_KEY
-  - name: AWS_SES_SECRET_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_SES_SECRET_KEY
-  - name: BASE_DOMAIN
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.BASE_DOMAIN
-  - name: BULK_SEND_AWS_BUCKET
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.BULK_SEND_AWS_BUCKET
-  - name: BULK_SEND_TEST_SERVICE_ID
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.BULK_SEND_TEST_SERVICE_ID
-  - name: CONTACT_EMAIL
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.CONTACT_EMAIL
-  - name: CSV_UPLOAD_BUCKET_NAME
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.CSV_UPLOAD_BUCKET_NAME
-  - name: CLUSTER_NAME
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.CLUSTER_NAME
-  - name: DOCUMENTS_BUCKET
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.DOCUMENTS_BUCKET
-  - name: DANGEROUS_SALT
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.DANGEROUS_SALT
-  - name: ENVIRONMENT
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.ENVIRONMENT
-  - name: FRESH_DESK_API_URL
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FRESH_DESK_API_URL
-  - name: FRESH_DESK_API_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FRESH_DESK_API_KEY
-  - name: FRESH_DESK_PRODUCT_ID
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FRESH_DESK_PRODUCT_ID
-  - name: HASURA_ACCESS_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.HASURA_ACCESS_KEY
-  - name: HASURA_JWT_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.HASURA_JWT_KEY
-  - name: HC_EN_SERVICE_ID
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.HC_EN_SERVICE_ID
-  - name: HC_FR_SERVICE_ID
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.HC_FR_SERVICE_ID
-  - name: MLWR_HOST
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.MLWR_HOST
-  - name: MLWR_USER
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.MLWR_USER
-  - name: MLWR_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.MLWR_KEY
-  - name: NEW_RELIC_LICENSE_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.NEW_RELIC_LICENSE_KEY
-  - name: NEW_RELIC_MONITOR_MODE
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.NEW_RELIC_MONITOR_MODE
-  - name: POSTGRES_HOST
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.POSTGRES_HOST
-  - name: POSTGRES_SQL
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.POSTGRES_SQL
-  - name: REDIS_URL
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.REDIS_URL
-  - name: SECRET_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.SECRET_KEY
-  - name: SENDGRID_API_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.SENDGRID_API_KEY
-  - name: SQLALCHEMY_DATABASE_READER_URI
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.SQLALCHEMY_DATABASE_READER_URI
-  - name: SQLALCHEMY_POOL_SIZE
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.SQLALCHEMY_POOL_SIZE
-  - name: TWILIO_ACCOUNT_SID
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.TWILIO_ACCOUNT_SID
-  - name: TWILIO_AUTH_TOKEN
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.TWILIO_AUTH_TOKEN
-  - name: TWILIO_FROM_NUMBER
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.TWILIO_FROM_NUMBER
-  - name: SENTRY_URL
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.SENTRY_URL
-  - name: EXTRA_MIME_TYPES
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.EXTRA_MIME_TYPES
-  - name: IP_GEOLOCATE_SERVICE
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.IP_GEOLOCATE_SERVICE
-  - name: ZENDESK_SELL_API_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.ZENDESK_SELL_API_KEY
-  - name: AWS_US_TOLL_FREE_NUMBER
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.AWS_US_TOLL_FREE_NUMBER
-  - name: FF_NOTIFICATION_CELERY_PERSISTENCE
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_NOTIFICATION_CELERY_PERSISTENCE
-  - name: FF_BATCH_INSERTION
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_BATCH_INSERTION
+YmFzZXM6CiAgLSBnaXRodWIuY29tL2Nkcy1zbmMvbm90aWZpY2F0aW9uLW1h
+bmlmZXN0cy8vYmFzZT9yZWY9djAuMzkuMQpyZXNvdXJjZXM6CiAgLSBjd2Fn
+ZW50LWZsdWVudGQtcXVpY2tzdGFydC55YW1sCiAgLSBhcGktdGFyZ2V0LWdy
+b3VwLnlhbWwKICAtIGFkbWluLXRhcmdldC1ncm91cC55YW1sCiAgLSBkb2N1
+bWVudC1kb3dubG9hZC1hcGktdGFyZ2V0LWdyb3VwLnlhbWwKICAtIGRvY3Vt
+ZW50LWRvd25sb2FkLWZyb250ZW5kLXRhcmdldC1ncm91cC55YW1sCiAgLSBk
+b2N1bWVudGF0aW9uLXRhcmdldC1ncm91cC55YW1sCmltYWdlczoKICAtIG5h
+bWU6IGFkbWluCiAgICBuZXdOYW1lOiBwdWJsaWMuZWNyLmF3cy9jZHMtc25j
+L25vdGlmeS1hZG1pbjo1YzhhYzk0CiAgLSBuYW1lOiBhcGkKICAgIG5ld05h
+bWU6IHB1YmxpYy5lY3IuYXdzL2Nkcy1zbmMvbm90aWZ5LWFwaTpkMmUwOTFl
+CiAgLSBuYW1lOiBkb2N1bWVudC1kb3dubG9hZC1hcGkKICAgIG5ld05hbWU6
+IHB1YmxpYy5lY3IuYXdzL2Nkcy1zbmMvbm90aWZ5LWRvY3VtZW50LWRvd25s
+b2FkLWFwaTplNzllZGY3CiAgLSBuYW1lOiBkb2N1bWVudC1kb3dubG9hZC1m
+cm9udGVuZAogICAgbmV3TmFtZTogcHVibGljLmVjci5hd3MvY2RzLXNuYy9u
+b3RpZnktZG9jdW1lbnQtZG93bmxvYWQtZnJvbnRlbmQ6MDRlNTM1NQogIC0g
+bmFtZTogZG9jdW1lbnRhdGlvbgogICAgbmV3TmFtZTogcHVibGljLmVjci5h
+d3MvY2RzLXNuYy9ub3RpZnktZG9jdW1lbnRhdGlvbjphZGI2MzcyCmNvbmZp
+Z01hcEdlbmVyYXRvcjoKICAtIG5hbWU6IGFwcGxpY2F0aW9uLWNvbmZpZwog
+ICAgZW52OiAuZW52CnBhdGNoZXM6CiAgLSByZXBsaWNhX2NvdW50LnlhbWwK
+dmFyczoKICAtIG5hbWU6IEFETUlOX0NMSUVOVF9VU0VSX05BTUUKICAgIG9i
+anJlZjoKICAgICAga2luZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFwcGxp
+Y2F0aW9uLWNvbmZpZwogICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmllbGRy
+ZWY6CiAgICAgIGZpZWxkcGF0aDogZGF0YS5BRE1JTl9DTElFTlRfVVNFUl9O
+QU1FCiAgLSBuYW1lOiBBRE1JTl9DTElFTlRfU0VDUkVUCiAgICBvYmpyZWY6
+CiAgICAgIGtpbmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBhcHBsaWNhdGlv
+bi1jb25maWcKICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZpZWxkcmVmOgog
+ICAgICBmaWVsZHBhdGg6IGRhdGEuQURNSU5fQ0xJRU5UX1NFQ1JFVAogIC0g
+bmFtZTogQUxMT1dfSFRNTF9TRVJWSUNFX0lEUwogICAgb2JqcmVmOgogICAg
+ICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29u
+ZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAg
+ZmllbGRwYXRoOiBkYXRhLkFMTE9XX0hUTUxfU0VSVklDRV9JRFMKICAtIG5h
+bWU6IEFTU0VUX1VQTE9BRF9CVUNLRVRfTkFNRQogICAgb2JqcmVmOgogICAg
+ICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29u
+ZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAg
+ZmllbGRwYXRoOiBkYXRhLkFTU0VUX1VQTE9BRF9CVUNLRVRfTkFNRQogIC0g
+bmFtZTogQVNTRVRfRE9NQUlOCiAgICBvYmpyZWY6CiAgICAgIGtpbmQ6IENv
+bmZpZ01hcAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1jb25maWcKICAgICAg
+YXBpVmVyc2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAgICBmaWVsZHBhdGg6
+IGRhdGEuQVNTRVRfRE9NQUlOCiAgLSBuYW1lOiBBVVRIX1RPS0VOUwogICAg
+b2JqcmVmOgogICAgICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBw
+bGljYXRpb24tY29uZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVs
+ZHJlZjoKICAgICAgZmllbGRwYXRoOiBkYXRhLkFVVEhfVE9LRU5TCiAgLSBu
+YW1lOiBBV1NfUElOUE9JTlRfUkVHSU9OCiAgICBvYmpyZWY6CiAgICAgIGtp
+bmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1jb25maWcK
+ICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAgICBmaWVs
+ZHBhdGg6IGRhdGEuQVdTX1BJTlBPSU5UX1JFR0lPTgogIC0gbmFtZTogQVdT
+X1JFR0lPTgogICAgb2JqcmVmOgogICAgICBraW5kOiBDb25maWdNYXAKICAg
+ICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFwaVZlcnNpb246
+IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBkYXRhLkFXU19S
+RUdJT04KICAtIG5hbWU6IEFXU19ST1VURTUzX1pPTkUKICAgIG9ianJlZjoK
+ICAgICAga2luZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFwcGxpY2F0aW9u
+LWNvbmZpZwogICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmllbGRyZWY6CiAg
+ICAgIGZpZWxkcGF0aDogZGF0YS5BV1NfUk9VVEU1M19aT05FCiAgLSBuYW1l
+OiBBV1NfU0VTX1JFR0lPTgogICAgb2JqcmVmOgogICAgICBraW5kOiBDb25m
+aWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFw
+aVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBk
+YXRhLkFXU19TRVNfUkVHSU9OCiAgLSBuYW1lOiBBV1NfU0VTX1NNVFAKICAg
+IG9ianJlZjoKICAgICAga2luZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFw
+cGxpY2F0aW9uLWNvbmZpZwogICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmll
+bGRyZWY6CiAgICAgIGZpZWxkcGF0aDogZGF0YS5BV1NfU0VTX1NNVFAKICAt
+IG5hbWU6IEFXU19TRVNfQUNDRVNTX0tFWQogICAgb2JqcmVmOgogICAgICBr
+aW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmln
+CiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmll
+bGRwYXRoOiBkYXRhLkFXU19TRVNfQUNDRVNTX0tFWQogIC0gbmFtZTogQVdT
+X1NFU19TRUNSRVRfS0VZCiAgICBvYmpyZWY6CiAgICAgIGtpbmQ6IENvbmZp
+Z01hcAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1jb25maWcKICAgICAgYXBp
+VmVyc2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAgICBmaWVsZHBhdGg6IGRh
+dGEuQVdTX1NFU19TRUNSRVRfS0VZCiAgLSBuYW1lOiBCQVNFX0RPTUFJTgog
+ICAgb2JqcmVmOgogICAgICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTog
+YXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBm
+aWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBkYXRhLkJBU0VfRE9NQUlOCiAg
+LSBuYW1lOiBCVUxLX1NFTkRfQVdTX0JVQ0tFVAogICAgb2JqcmVmOgogICAg
+ICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29u
+ZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAg
+ZmllbGRwYXRoOiBkYXRhLkJVTEtfU0VORF9BV1NfQlVDS0VUCiAgLSBuYW1l
+OiBCVUxLX1NFTkRfVEVTVF9TRVJWSUNFX0lECiAgICBvYmpyZWY6CiAgICAg
+IGtpbmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1jb25m
+aWcKICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAgICBm
+aWVsZHBhdGg6IGRhdGEuQlVMS19TRU5EX1RFU1RfU0VSVklDRV9JRAogIC0g
+bmFtZTogQ09OVEFDVF9FTUFJTAogICAgb2JqcmVmOgogICAgICBraW5kOiBD
+b25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAg
+IGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRo
+OiBkYXRhLkNPTlRBQ1RfRU1BSUwKICAtIG5hbWU6IENTVl9VUExPQURfQlVD
+S0VUX05BTUUKICAgIG9ianJlZjoKICAgICAga2luZDogQ29uZmlnTWFwCiAg
+ICAgIG5hbWU6IGFwcGxpY2F0aW9uLWNvbmZpZwogICAgICBhcGlWZXJzaW9u
+OiB2MQogICAgZmllbGRyZWY6CiAgICAgIGZpZWxkcGF0aDogZGF0YS5DU1Zf
+VVBMT0FEX0JVQ0tFVF9OQU1FCiAgLSBuYW1lOiBDTFVTVEVSX05BTUUKICAg
+IG9ianJlZjoKICAgICAga2luZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFw
+cGxpY2F0aW9uLWNvbmZpZwogICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmll
+bGRyZWY6CiAgICAgIGZpZWxkcGF0aDogZGF0YS5DTFVTVEVSX05BTUUKICAt
+IG5hbWU6IERPQ1VNRU5UU19CVUNLRVQKICAgIG9ianJlZjoKICAgICAga2lu
+ZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFwcGxpY2F0aW9uLWNvbmZpZwog
+ICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmllbGRyZWY6CiAgICAgIGZpZWxk
+cGF0aDogZGF0YS5ET0NVTUVOVFNfQlVDS0VUCiAgLSBuYW1lOiBEQU5HRVJP
+VVNfU0FMVAogICAgb2JqcmVmOgogICAgICBraW5kOiBDb25maWdNYXAKICAg
+ICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFwaVZlcnNpb246
+IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBkYXRhLkRBTkdF
+Uk9VU19TQUxUCiAgLSBuYW1lOiBFTlZJUk9OTUVOVAogICAgb2JqcmVmOgog
+ICAgICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24t
+Y29uZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAg
+ICAgZmllbGRwYXRoOiBkYXRhLkVOVklST05NRU5UCiAgLSBuYW1lOiBGUkVT
+SF9ERVNLX0FQSV9VUkwKICAgIG9ianJlZjoKICAgICAga2luZDogQ29uZmln
+TWFwCiAgICAgIG5hbWU6IGFwcGxpY2F0aW9uLWNvbmZpZwogICAgICBhcGlW
+ZXJzaW9uOiB2MQogICAgZmllbGRyZWY6CiAgICAgIGZpZWxkcGF0aDogZGF0
+YS5GUkVTSF9ERVNLX0FQSV9VUkwKICAtIG5hbWU6IEZSRVNIX0RFU0tfQVBJ
+X0tFWQogICAgb2JqcmVmOgogICAgICBraW5kOiBDb25maWdNYXAKICAgICAg
+bmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFwaVZlcnNpb246IHYx
+CiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBkYXRhLkZSRVNIX0RF
+U0tfQVBJX0tFWQogIC0gbmFtZTogRlJFU0hfREVTS19QUk9EVUNUX0lECiAg
+ICBvYmpyZWY6CiAgICAgIGtpbmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBh
+cHBsaWNhdGlvbi1jb25maWcKICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZp
+ZWxkcmVmOgogICAgICBmaWVsZHBhdGg6IGRhdGEuRlJFU0hfREVTS19QUk9E
+VUNUX0lECiAgLSBuYW1lOiBIQVNVUkFfQUNDRVNTX0tFWQogICAgb2JqcmVm
+OgogICAgICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRp
+b24tY29uZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoK
+ICAgICAgZmllbGRwYXRoOiBkYXRhLkhBU1VSQV9BQ0NFU1NfS0VZCiAgLSBu
+YW1lOiBIQVNVUkFfSldUX0tFWQogICAgb2JqcmVmOgogICAgICBraW5kOiBD
+b25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAg
+IGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRo
+OiBkYXRhLkhBU1VSQV9KV1RfS0VZCiAgLSBuYW1lOiBIQ19FTl9TRVJWSUNF
+X0lECiAgICBvYmpyZWY6CiAgICAgIGtpbmQ6IENvbmZpZ01hcAogICAgICBu
+YW1lOiBhcHBsaWNhdGlvbi1jb25maWcKICAgICAgYXBpVmVyc2lvbjogdjEK
+ICAgIGZpZWxkcmVmOgogICAgICBmaWVsZHBhdGg6IGRhdGEuSENfRU5fU0VS
+VklDRV9JRAogIC0gbmFtZTogSENfRlJfU0VSVklDRV9JRAogICAgb2JqcmVm
+OgogICAgICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRp
+b24tY29uZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoK
+ICAgICAgZmllbGRwYXRoOiBkYXRhLkhDX0ZSX1NFUlZJQ0VfSUQKICAtIG5h
+bWU6IE1MV1JfSE9TVAogICAgb2JqcmVmOgogICAgICBraW5kOiBDb25maWdN
+YXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFwaVZl
+cnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBkYXRh
+Lk1MV1JfSE9TVAogIC0gbmFtZTogTUxXUl9VU0VSCiAgICBvYmpyZWY6CiAg
+ICAgIGtpbmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1j
+b25maWcKICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAg
+ICBmaWVsZHBhdGg6IGRhdGEuTUxXUl9VU0VSCiAgLSBuYW1lOiBNTFdSX0tF
+WQogICAgb2JqcmVmOgogICAgICBraW5kOiBDb25maWdNYXAKICAgICAgbmFt
+ZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAg
+ICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBkYXRhLk1MV1JfS0VZCiAg
+LSBuYW1lOiBORVdfUkVMSUNfTElDRU5TRV9LRVkKICAgIG9ianJlZjoKICAg
+ICAga2luZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFwcGxpY2F0aW9uLWNv
+bmZpZwogICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmllbGRyZWY6CiAgICAg
+IGZpZWxkcGF0aDogZGF0YS5ORVdfUkVMSUNfTElDRU5TRV9LRVkKICAtIG5h
+bWU6IE5FV19SRUxJQ19NT05JVE9SX01PREUKICAgIG9ianJlZjoKICAgICAg
+a2luZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFwcGxpY2F0aW9uLWNvbmZp
+ZwogICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmllbGRyZWY6CiAgICAgIGZp
+ZWxkcGF0aDogZGF0YS5ORVdfUkVMSUNfTU9OSVRPUl9NT0RFCiAgLSBuYW1l
+OiBQT1NUR1JFU19IT1NUCiAgICBvYmpyZWY6CiAgICAgIGtpbmQ6IENvbmZp
+Z01hcAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1jb25maWcKICAgICAgYXBp
+VmVyc2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAgICBmaWVsZHBhdGg6IGRh
+dGEuUE9TVEdSRVNfSE9TVAogIC0gbmFtZTogUE9TVEdSRVNfU1FMCiAgICBv
+YmpyZWY6CiAgICAgIGtpbmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBhcHBs
+aWNhdGlvbi1jb25maWcKICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZpZWxk
+cmVmOgogICAgICBmaWVsZHBhdGg6IGRhdGEuUE9TVEdSRVNfU1FMCiAgLSBu
+YW1lOiBSRURJU19VUkwKICAgIG9ianJlZjoKICAgICAga2luZDogQ29uZmln
+TWFwCiAgICAgIG5hbWU6IGFwcGxpY2F0aW9uLWNvbmZpZwogICAgICBhcGlW
+ZXJzaW9uOiB2MQogICAgZmllbGRyZWY6CiAgICAgIGZpZWxkcGF0aDogZGF0
+YS5SRURJU19VUkwKICAtIG5hbWU6IFNFQ1JFVF9LRVkKICAgIG9ianJlZjoK
+ICAgICAga2luZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFwcGxpY2F0aW9u
+LWNvbmZpZwogICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmllbGRyZWY6CiAg
+ICAgIGZpZWxkcGF0aDogZGF0YS5TRUNSRVRfS0VZCiAgLSBuYW1lOiBTRU5E
+R1JJRF9BUElfS0VZCiAgICBvYmpyZWY6CiAgICAgIGtpbmQ6IENvbmZpZ01h
+cAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1jb25maWcKICAgICAgYXBpVmVy
+c2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAgICBmaWVsZHBhdGg6IGRhdGEu
+U0VOREdSSURfQVBJX0tFWQogIC0gbmFtZTogU1FMQUxDSEVNWV9EQVRBQkFT
+RV9SRUFERVJfVVJJCiAgICBvYmpyZWY6CiAgICAgIGtpbmQ6IENvbmZpZ01h
+cAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1jb25maWcKICAgICAgYXBpVmVy
+c2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAgICBmaWVsZHBhdGg6IGRhdGEu
+U1FMQUxDSEVNWV9EQVRBQkFTRV9SRUFERVJfVVJJCiAgLSBuYW1lOiBTUUxB
+TENIRU1ZX1BPT0xfU0laRQogICAgb2JqcmVmOgogICAgICBraW5kOiBDb25m
+aWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFw
+aVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBk
+YXRhLlNRTEFMQ0hFTVlfUE9PTF9TSVpFCiAgLSBuYW1lOiBUV0lMSU9fQUND
+T1VOVF9TSUQKICAgIG9ianJlZjoKICAgICAga2luZDogQ29uZmlnTWFwCiAg
+ICAgIG5hbWU6IGFwcGxpY2F0aW9uLWNvbmZpZwogICAgICBhcGlWZXJzaW9u
+OiB2MQogICAgZmllbGRyZWY6CiAgICAgIGZpZWxkcGF0aDogZGF0YS5UV0lM
+SU9fQUNDT1VOVF9TSUQKICAtIG5hbWU6IFRXSUxJT19BVVRIX1RPS0VOCiAg
+ICBvYmpyZWY6CiAgICAgIGtpbmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBh
+cHBsaWNhdGlvbi1jb25maWcKICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZp
+ZWxkcmVmOgogICAgICBmaWVsZHBhdGg6IGRhdGEuVFdJTElPX0FVVEhfVE9L
+RU4KICAtIG5hbWU6IFRXSUxJT19GUk9NX05VTUJFUgogICAgb2JqcmVmOgog
+ICAgICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24t
+Y29uZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAg
+ICAgZmllbGRwYXRoOiBkYXRhLlRXSUxJT19GUk9NX05VTUJFUgogIC0gbmFt
+ZTogU0VOVFJZX1VSTAogICAgb2JqcmVmOgogICAgICBraW5kOiBDb25maWdN
+YXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAgIGFwaVZl
+cnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRoOiBkYXRh
+LlNFTlRSWV9VUkwKICAtIG5hbWU6IEVYVFJBX01JTUVfVFlQRVMKICAgIG9i
+anJlZjoKICAgICAga2luZDogQ29uZmlnTWFwCiAgICAgIG5hbWU6IGFwcGxp
+Y2F0aW9uLWNvbmZpZwogICAgICBhcGlWZXJzaW9uOiB2MQogICAgZmllbGRy
+ZWY6CiAgICAgIGZpZWxkcGF0aDogZGF0YS5FWFRSQV9NSU1FX1RZUEVTCiAg
+LSBuYW1lOiBJUF9HRU9MT0NBVEVfU0VSVklDRQogICAgb2JqcmVmOgogICAg
+ICBraW5kOiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29u
+ZmlnCiAgICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAg
+ZmllbGRwYXRoOiBkYXRhLklQX0dFT0xPQ0FURV9TRVJWSUNFCiAgLSBuYW1l
+OiBaRU5ERVNLX1NFTExfQVBJX0tFWQogICAgb2JqcmVmOgogICAgICBraW5k
+OiBDb25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAg
+ICAgIGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRw
+YXRoOiBkYXRhLlpFTkRFU0tfU0VMTF9BUElfS0VZCiAgLSBuYW1lOiBBV1Nf
+VVNfVE9MTF9GUkVFX05VTUJFUgogICAgb2JqcmVmOgogICAgICBraW5kOiBD
+b25maWdNYXAKICAgICAgbmFtZTogYXBwbGljYXRpb24tY29uZmlnCiAgICAg
+IGFwaVZlcnNpb246IHYxCiAgICBmaWVsZHJlZjoKICAgICAgZmllbGRwYXRo
+OiBkYXRhLkFXU19VU19UT0xMX0ZSRUVfTlVNQkVSCiAgLSBuYW1lOiBGRl9O
+T1RJRklDQVRJT05fQ0VMRVJZX1BFUlNJU1RFTkNFCiAgICBvYmpyZWY6CiAg
+ICAgIGtpbmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBhcHBsaWNhdGlvbi1j
+b25maWcKICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZpZWxkcmVmOgogICAg
+ICBmaWVsZHBhdGg6IGRhdGEuRkZfTk9USUZJQ0FUSU9OX0NFTEVSWV9QRVJT
+SVNURU5DRQogIC0gbmFtZTogRkZfQkFUQ0hfSU5TRVJUSU9OCiAgICBvYmpy
+ZWY6CiAgICAgIGtpbmQ6IENvbmZpZ01hcAogICAgICBuYW1lOiBhcHBsaWNh
+dGlvbi1jb25maWcKICAgICAgYXBpVmVyc2lvbjogdjEKICAgIGZpZWxkcmVm
+OgogICAgICBmaWVsZHBhdGg6IGRhdGEuRkZfQkFUQ0hfSU5TRVJUSU9OCg==
+
+An addendum
