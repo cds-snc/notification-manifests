@@ -99,6 +99,8 @@ spec:
               value: '$(ZENDESK_SELL_API_KEY)'
             - name: FF_NOTIFICATION_CELERY_PERSISTENCE
               value: '$(FF_NOTIFICATION_CELERY_PERSISTENCE)'
+            - name: FF_BATCH_INSERTION
+              value: '$(FF_BATCH_INSERTION)'
           command:
             [
               "sh",
@@ -208,6 +210,8 @@ spec:
               value: '$(ZENDESK_SELL_API_KEY)'
             - name: FF_NOTIFICATION_CELERY_PERSISTENCE
               value: '$(FF_NOTIFICATION_CELERY_PERSISTENCE)'
+            - name: FF_BATCH_INSERTION
+              value: '$(FF_BATCH_INSERTION)'
           resources:
             requests:
               cpu: "400m"

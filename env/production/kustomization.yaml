@@ -374,3 +374,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_NOTIFICATION_CELERY_PERSISTENCE
+  - name: FF_BATCH_INSERTION
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_BATCH_INSERTION
