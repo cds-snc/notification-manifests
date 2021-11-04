@@ -9,15 +9,15 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:5c8ac94
+    newName: public.ecr.aws/cds-snc/notify-admin:e2a81818df95c91eb8f6f35ab7c14d3b982a8871
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:d2e091e
+    newName: public.ecr.aws/cds-snc/notify-api:4688aeeee3a7aae07a1db33c90071d8fff2306c6
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:e79edf7
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:e79edf761a1ac73a37735eb49303f513a9b5fb67
   - name: document-download-frontend
-    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:04e5355
+    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:04e535570201f5f1819376aade493134ee7e8946
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:adb6372
+    newName: public.ecr.aws/cds-snc/notify-documentation:adb6372d7a65a701813782c42c25e36e492a2d10
 configMapGenerator:
   - name: application-config
     env: .env
