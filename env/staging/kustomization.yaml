@@ -387,3 +387,17 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FF_BATCH_INSERTION
+- name: RECAPTCHA_PUBLIC_KEY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.RECAPTCHA_PUBLIC_KEY
+- name: RECAPTCHA_PRIVATE_KEY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.RECAPTCHA_PRIVATE_KEY
