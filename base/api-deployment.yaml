@@ -94,7 +94,7 @@ spec:
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: ZENDESK_SELL_API_URL
-              value: 'https://api.getbase.com'
+              value: '$(ZENDESK_SELL_API_URL)'
             - name: ZENDESK_SELL_API_KEY
               value: '$(ZENDESK_SELL_API_KEY)'
             - name: FF_NOTIFICATION_CELERY_PERSISTENCE
