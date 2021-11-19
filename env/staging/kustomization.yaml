@@ -359,6 +359,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.IP_GEOLOCATE_SERVICE
+- name: ZENDESK_SELL_API_URL
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ZENDESK_SELL_API_URL
 - name: ZENDESK_SELL_API_KEY
   objref:
     kind: ConfigMap
