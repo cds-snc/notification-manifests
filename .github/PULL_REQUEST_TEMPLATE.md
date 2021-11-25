@@ -30,3 +30,4 @@
 - [ ] I have verified that any affected pods were restarted successfully
 - [ ] I have verified that I can still log into [Notify production](https://notification.canada.ca)
 - [ ] I have verified that the smoke tests still pass on production
+- [ ] I have communicated the release in the #notify Slack channel.
