@@ -11,7 +11,7 @@ images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:8afe9e5
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:60774a2
+    newName: public.ecr.aws/cds-snc/notify-api:5393d89
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:e79edf7
   - name: document-download-frontend
@@ -359,7 +359,7 @@ vars:
       name: application-config
       apiVersion: v1
     fieldref:
-      fieldpath: data.ZENDESK_SELL_API_URL  
+      fieldpath: data.ZENDESK_SELL_API_URL
   - name: ZENDESK_SELL_API_KEY
     objref:
       kind: ConfigMap
