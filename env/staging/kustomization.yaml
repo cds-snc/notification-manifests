@@ -373,6 +373,20 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ZENDESK_SELL_API_KEY
+- name: ZENDESK_API_URL
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ZENDESK_API_URL
+- name: ZENDESK_API_KEY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ZENDESK_API_KEY
 - name: AWS_US_TOLL_FREE_NUMBER
   objref:
     kind: ConfigMap
