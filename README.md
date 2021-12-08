@@ -12,6 +12,8 @@ This repository uses version 2.0.3 of [Kustomize](https://github.com/kubernetes-
 
 ## How are environment variables set?
 
+To set the variables for the API Lambda see [this](https://github.com/cds-snc/notification-terraform#awslambda-api)
+
 `Kustomize` can dynamically inject environment variables when it compiles the configuration. To do this it reads out the environment variables and creates a `ConfigMap` object using an `.env` file that is in the same directory as the overlay that is being called from (ex. `/env/staging/.env`). As it is bad practice to save environment variables to a Git repository, the `.env` is ignored, and instead saved in an encrypted envelope using AWS KMS as `.env.enc.aws` files.
 
 This means that before the overlay is applied, the file needs to be decrypted.
