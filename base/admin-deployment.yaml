@@ -68,6 +68,8 @@ spec:
               value: 'application.py'
             - name: NOTIFY_ENVIRONMENT
               value: '$(ENVIRONMENT)'
+            - name: MIXPANEL_PROJECT_TOKEN
+              value: '$(MIXPANEL_PROJECT_TOKEN)'
             - name: SENDING_DOMAIN
               value: '$(BASE_DOMAIN)'
             - name: SQLALCHEMY_DATABASE_URI
