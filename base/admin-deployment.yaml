@@ -70,6 +70,8 @@ spec:
               value: '$(ENVIRONMENT)'
             - name: SENDING_DOMAIN
               value: '$(BASE_DOMAIN)'
+            - name: SENSITIVE_SERVICES
+              value: '$(SENSITIVE_SERVICES)'
             - name: SQLALCHEMY_DATABASE_URI
               value: '$(POSTGRES_SQL)'
             - name: STATSD_HOST
