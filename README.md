@@ -35,14 +35,24 @@ AWS_PROFILE=notify-staging make decrypt-staging
 
 You should leverage the appropriate commands in the Makefile:
 - the `make encrypt-staging` command that will encrypt environment variables in staging ;
-- the `make encrypt-production` command that will encrypt environment variables in production.
 
 ```sh
 AWS_PROFILE=notify-staging make decrypt-staging
 # Change values in the decrypted file at env/staging/.env
 # Encrypt the decrypted file that you just edited
-AWS_PROFILE=notify-staging make decrypt-staging
+AWS_PROFILE=notify-staging make encrypt-staging
 # Creates a new file at env/staging/.env.enc.aws which is safe to commit
+```
+
+- the `make encrypt-production` command that will encrypt environment variables in production.
+
+
+```sh
+AWS_PROFILE=notify-production make decrypt-production
+# Change values in the decrypted file at env/production/.env
+# Encrypt the decrypted file that you just edited
+AWS_PROFILE=notify-production make encrypt-production
+# Creates a new file at env/production/.env.enc.aws which is safe to commit
 ```
 
 ## How do I add a new environment variable?

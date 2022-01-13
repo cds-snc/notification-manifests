@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.39.1
+  - github.com/cds-snc/notification-manifests//base?ref=v0.44.2
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -9,13 +9,13 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:582ef33
+    newName: public.ecr.aws/cds-snc/notify-admin:ca390c1
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:e2bfcfd
+    newName: public.ecr.aws/cds-snc/notify-api:578c65b
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:3328569
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:71932ff
   - name: document-download-frontend
-    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:04e5355
+    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:9a26e73
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:adb6372
 configMapGenerator:
@@ -227,6 +227,11 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.HC_FR_SERVICE_ID
+  - name: MIXPANEL_PROJECT_TOKEN
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
   - name: MLWR_HOST
     objref:
       kind: ConfigMap
@@ -297,6 +302,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.SENDGRID_API_KEY
+  - name: SENSITIVE_SERVICES
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SENSITIVE_SERVICES
   - name: SQLALCHEMY_DATABASE_READER_URI
     objref:
       kind: ConfigMap
