@@ -94,11 +94,17 @@ spec:
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: ZENDESK_SELL_API_URL
-              value: 'https://api.getbase.com'
+              value: '$(ZENDESK_SELL_API_URL)'
             - name: ZENDESK_SELL_API_KEY
               value: '$(ZENDESK_SELL_API_KEY)'
+            - name: ZENDESK_API_URL
+              value: '$(ZENDESK_API_URL)'
+            - name: ZENDESK_API_KEY
+              value: '$(ZENDESK_API_KEY)'
             - name: FF_NOTIFICATION_CELERY_PERSISTENCE
               value: '$(FF_NOTIFICATION_CELERY_PERSISTENCE)'
+            - name: FF_BATCH_INSERTION
+              value: '$(FF_BATCH_INSERTION)'
           command:
             [
               "sh",
@@ -114,6 +120,8 @@ spec:
               value: https://$(BASE_DOMAIN)
             - name: ADMIN_CLIENT_SECRET
               value: '$(ADMIN_CLIENT_SECRET)'
+            - name: ALLOW_HTML_SERVICE_IDS
+              value: '$(ALLOW_HTML_SERVICE_IDS)'
             - name: API_HOST_NAME
               value: 'http://api.notification-canada-ca.svc.cluster.local:6011'
             - name: ASSET_UPLOAD_BUCKET_NAME
@@ -204,8 +212,14 @@ spec:
               value: 'https://api.getbase.com'
             - name: ZENDESK_SELL_API_KEY
               value: '$(ZENDESK_SELL_API_KEY)'
+            - name: ZENDESK_API_URL
+              value: '$(ZENDESK_API_URL)'
+            - name: ZENDESK_API_KEY
+              value: '$(ZENDESK_API_KEY)'
             - name: FF_NOTIFICATION_CELERY_PERSISTENCE
               value: '$(FF_NOTIFICATION_CELERY_PERSISTENCE)'
+            - name: FF_BATCH_INSERTION
+              value: '$(FF_BATCH_INSERTION)'
           resources:
             requests:
               cpu: "400m"

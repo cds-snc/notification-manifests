@@ -8,6 +8,10 @@ on:
       - ".github/workflows/merge_to_main_production.yaml"
       - "env/production/**"
 
+env:
+  PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+  API_LAMBDA_IMAGE: api-lambda:578c65b
+
 defaults:
   run:
     shell: bash
@@ -47,6 +51,12 @@ jobs:
       - name: Apply changes
         run: |
           kubectl apply -k env/production --kubeconfig=/home/runner/.kube/config
+
+      - name: Deploy lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name api-lambda \
+            --image-uri $PRIVATE_ECR/$API_LAMBDA_IMAGE
 
       - name: Add deployment to New Relic
         run: |

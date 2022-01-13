@@ -9,13 +9,13 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:58239a3
+    newName: public.ecr.aws/cds-snc/notify-admin:ca390c1
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:0a3e873
+    newName: public.ecr.aws/cds-snc/notify-api:578c65b
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:95d88f3
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:71932ff
   - name: document-download-frontend
-    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:7323565
+    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:9a26e73
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:adb6372
 configMapGenerator:
@@ -38,6 +38,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.ADMIN_CLIENT_SECRET
+  - name: ALLOW_HTML_SERVICE_IDS
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.ALLOW_HTML_SERVICE_IDS
   - name: ASSET_UPLOAD_BUCKET_NAME
     objref:
       kind: ConfigMap
@@ -290,6 +297,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.SENDGRID_API_KEY
+  - name: SENSITIVE_SERVICES
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SENSITIVE_SERVICES
   - name: SQLALCHEMY_DATABASE_READER_URI
     objref:
       kind: ConfigMap
@@ -346,6 +360,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.IP_GEOLOCATE_SERVICE
+  - name: ZENDESK_SELL_API_URL
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.ZENDESK_SELL_API_URL
   - name: ZENDESK_SELL_API_KEY
     objref:
       kind: ConfigMap
@@ -353,6 +374,20 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.ZENDESK_SELL_API_KEY
+  - name: ZENDESK_API_URL
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.ZENDESK_API_URL
+  - name: ZENDESK_API_KEY
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.ZENDESK_API_KEY
   - name: AWS_US_TOLL_FREE_NUMBER
     objref:
       kind: ConfigMap
@@ -360,3 +395,17 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.AWS_US_TOLL_FREE_NUMBER
+  - name: FF_NOTIFICATION_CELERY_PERSISTENCE
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_NOTIFICATION_CELERY_PERSISTENCE
+  - name: FF_BATCH_INSERTION
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_BATCH_INSERTION

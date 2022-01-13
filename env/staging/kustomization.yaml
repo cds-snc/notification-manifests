@@ -44,6 +44,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ADMIN_CLIENT_SECRET
+- name: ALLOW_HTML_SERVICE_IDS
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ALLOW_HTML_SERVICE_IDS
 - name: ASSET_UPLOAD_BUCKET_NAME
   objref:
     kind: ConfigMap
@@ -226,6 +233,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.HC_FR_SERVICE_ID
+- name: MIXPANEL_PROJECT_TOKEN
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.MIXPANEL_PROJECT_TOKEN
 - name: MLWR_HOST
   objref:
     kind: ConfigMap
@@ -352,6 +366,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.IP_GEOLOCATE_SERVICE
+- name: ZENDESK_SELL_API_URL
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ZENDESK_SELL_API_URL
 - name: ZENDESK_SELL_API_KEY
   objref:
     kind: ConfigMap
@@ -359,6 +380,20 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ZENDESK_SELL_API_KEY
+- name: ZENDESK_API_URL
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ZENDESK_API_URL
+- name: ZENDESK_API_KEY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ZENDESK_API_KEY
 - name: AWS_US_TOLL_FREE_NUMBER
   objref:
     kind: ConfigMap
@@ -373,3 +408,24 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FF_NOTIFICATION_CELERY_PERSISTENCE
+- name: FF_BATCH_INSERTION
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.FF_BATCH_INSERTION
+- name: RECAPTCHA_PUBLIC_KEY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.RECAPTCHA_PUBLIC_KEY
+- name: RECAPTCHA_PRIVATE_KEY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.RECAPTCHA_PRIVATE_KEY
