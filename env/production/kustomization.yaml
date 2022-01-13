@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.39.1
+  - github.com/cds-snc/notification-manifests//base?ref=v0.44.2
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
