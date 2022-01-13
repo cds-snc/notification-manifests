@@ -227,6 +227,11 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.HC_FR_SERVICE_ID
+  - name: MIXPANEL_PROJECT_TOKEN
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
   - name: MLWR_HOST
     objref:
       kind: ConfigMap
