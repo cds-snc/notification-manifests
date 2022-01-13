@@ -6,6 +6,12 @@ decrypt-staging:
 	cd env/staging &&\
 	aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env
 
+diff-staging: decrypt-staging
+	cd env/staging &&\
+	curl -L -o .previous.env.enc.aws https://github.com/cds-snc/notification-manifests/blob/main/env/staging/.env.enc.aws?raw=true &&\
+	aws kms decrypt --ciphertext-blob fileb://.previous.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env &&\
+	diff .previous.env .env
+
 encrypt-production:
 	cd env/production &&\
 	aws kms encrypt --key-id e9461cc1-4524-4b50-b6e6-583013da2904 --plaintext fileb://.env --output text --query CiphertextBlob --region ca-central-1 | base64 --decode > .env.enc.aws
