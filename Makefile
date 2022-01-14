@@ -6,6 +6,24 @@ decrypt-staging:
 	@cd env/staging &&\
 	aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env
 
+check-staging: decrypt-staging
+	@cd env/staging &&\
+	curl -L -o .previous.env.enc.aws https://github.com/cds-snc/notification-manifests/blob/main/env/staging/.env.enc.aws?raw=true > /dev/null 2>&1 &&\
+	aws kms decrypt --ciphertext-blob fileb://.previous.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env &&\
+	sed -i.bak 's/=.*/=<hidden>/' .env &&\
+	sed -i.bak 's/=.*/=<hidden>/' .previous.env &&\
+	rm .*.bak &&\
+	diff -wB --old-line-format='-%L' --new-line-format='' --unchanged-line-format='' .previous.env .env | wc -l | xargs test 0 -eq
+
+check-production: decrypt-production
+	@cd env/production &&\
+	curl -L -o .previous.env.enc.aws https://github.com/cds-snc/notification-manifests/blob/main/env/production/.env.enc.aws?raw=true > /dev/null 2>&1 &&\
+	aws kms decrypt --ciphertext-blob fileb://.previous.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env &&\
+	sed -i.bak 's/=.*/=<hidden>/' .env &&\
+	sed -i.bak 's/=.*/=<hidden>/' .previous.env &&\
+	rm *.bak &&\
+	diff -wB --old-line-format='-%L' --new-line-format='' --unchanged-line-format='' .previous.env .env | wc -l | xargs test 0 -eq
+
 diff-staging: decrypt-staging
 	@cd env/staging &&\
 	curl -L -o .previous.env.enc.aws https://github.com/cds-snc/notification-manifests/blob/main/env/staging/.env.enc.aws?raw=true > /dev/null 2>&1 &&\
