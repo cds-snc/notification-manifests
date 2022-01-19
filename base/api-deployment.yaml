@@ -45,6 +45,8 @@ spec:
               value: '$(AWS_SES_ACCESS_KEY)'
             - name: AWS_SES_SECRET_KEY
               value: '$(AWS_SES_SECRET_KEY)'
+            - name: BATCH_INSERTION_CHUNK_SIZE
+              value: '$(BATCH_INSERTION_CHUNK_SIZE)'
             - name: BULK_SEND_TEST_SERVICE_ID
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: CSV_UPLOAD_BUCKET_NAME
@@ -142,6 +144,8 @@ spec:
               value: '$(AWS_SES_ACCESS_KEY)'
             - name: AWS_SES_SECRET_KEY
               value: '$(AWS_SES_SECRET_KEY)'
+            - name: BATCH_INSERTION_CHUNK_SIZE
+              value: '$(BATCH_INSERTION_CHUNK_SIZE)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
