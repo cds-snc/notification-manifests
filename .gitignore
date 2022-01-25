@@ -1,5 +1,8 @@
 .DS_Store
 .env
+.env.zip
 .previous.env
+.previous.env.zip
+.previous.env.zip.enc.aws
 .previous.env.enc.aws
 *kubeconfig*
