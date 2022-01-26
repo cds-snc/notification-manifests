@@ -20,33 +20,33 @@ decrypt-previous-staging:
 	@cd env/staging &&\
 	curl -L -o .previous.env.zip.enc.aws https://github.com/cds-snc/notification-manifests/blob/main/env/staging/.env.zip.enc.aws?raw=true > /dev/null 2>&1 &&\
 	aws kms decrypt --ciphertext-blob fileb://.previous.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env.zip &&\
-	unzip -o .previous.env.zip
+	unzip -o .previous.env.zip && mv .env .previous.env
 
 decrypt-previous-production:
 	@cd env/production &&\
 	curl -L -o .previous.env.zip.enc.aws https://github.com/cds-snc/notification-manifests/blob/main/env/production/.env.zip.enc.aws?raw=true > /dev/null 2>&1 &&\
 	aws kms decrypt --ciphertext-blob fileb://.previous.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env.zip &&\
-	unzip -o .previous.env.zip
+	unzip -o .previous.env.zip && mv .env .previous.env
 
-check-staging: decrypt-staging decrypt-previous-staging
+check-staging: decrypt-previous-staging decrypt-staging
 	@cd env/staging &&\
 	sed -i.bak 's/=.*/=<hidden>/' .env &&\
 	sed -i.bak 's/=.*/=<hidden>/' .previous.env &&\
 	rm .*.bak &&\
 	diff -wB --old-line-format='-%L' --new-line-format='' --unchanged-line-format='' .previous.env .env | wc -l | xargs test 0 -eq
 
-check-production: decrypt-production decrypt-previous-production
+check-production:decrypt-previous-production decrypt-production 
 	@cd env/production &&\
 	sed -i.bak 's/=.*/=<hidden>/' .env &&\
 	sed -i.bak 's/=.*/=<hidden>/' .previous.env &&\
 	rm *.bak &&\
 	diff -wB --old-line-format='-%L' --new-line-format='' --unchanged-line-format='' .previous.env .env | wc -l | xargs test 0 -eq
 
-diff-staging: decrypt-staging decrypt-previous-staging
+diff-staging: decrypt-previous-staging decrypt-staging
 	@cd env/staging &&\
 	diff .previous.env .env
 
-diff-production: decrypt-production decrypt-previous-production
+diff-production: decrypt-previous-production decrypt-production
 	@cd env/production &&\
 	diff .previous.env .env
 
