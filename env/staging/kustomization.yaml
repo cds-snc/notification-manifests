@@ -415,6 +415,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FF_BATCH_INSERTION
+- name: FF_REDIS_BATCH_SAVING
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.FF_REDIS_BATCH_SAVING
 - name: RECAPTCHA_PUBLIC_KEY
   objref:
     kind: ConfigMap
