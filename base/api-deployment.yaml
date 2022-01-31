@@ -226,6 +226,9 @@ spec:
               value: '$(FF_NOTIFICATION_CELERY_PERSISTENCE)'
             - name: FF_BATCH_INSERTION
               value: '$(FF_BATCH_INSERTION)'
+            - name: FF_REDIS_BATCH_SAVING
+              value: '$(FF_REDIS_BATCH_SAVING)'
+
           resources:
             requests:
               cpu: "400m"
