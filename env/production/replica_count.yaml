@@ -45,7 +45,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 2
-  maxReplicas: 2
+  maxReplicas: 3
 ---
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
@@ -54,7 +54,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 4
-  maxReplicas: 4
+  maxReplicas: 8
 ---
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
@@ -72,4 +72,4 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 1
-  maxReplicas: 1
+  maxReplicas: 2
