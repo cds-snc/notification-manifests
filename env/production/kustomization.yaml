@@ -22,7 +22,7 @@ configMapGenerator:
   - name: application-config
     env: .env
 patches:
-  - replica_count.yaml
+  - https://raw.githubusercontent.com/cds-snc/notification-manifests/v0.44.2/env/production/replica_count.yaml
 vars:
   - name: ADMIN_CLIENT_USER_NAME
     objref:
