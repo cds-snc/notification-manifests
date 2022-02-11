@@ -1,5 +1,5 @@
 bases:
-  - github.com/cds-snc/notification-manifests//base?ref=v0.44.2
+  - ../../base
 resources:
   - cwagent-fluentd-quickstart.yaml
   - api-target-group.yaml
@@ -22,7 +22,7 @@ configMapGenerator:
   - name: application-config
     env: .env
 patches:
-  - https://raw.githubusercontent.com/cds-snc/notification-manifests/v0.44.2/env/production/replica_count.yaml
+  - replica_count.yaml
 vars:
   - name: ADMIN_CLIENT_USER_NAME
     objref:
