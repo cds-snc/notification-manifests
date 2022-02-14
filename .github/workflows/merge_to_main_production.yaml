@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/merge_to_main_production.yaml"
-      - "env/production/**"
+      - "VERSION"
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
