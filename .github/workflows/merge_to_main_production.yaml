@@ -32,7 +32,7 @@ jobs:
       - name: Checkout target Prod version
         uses: actions/checkout@v2
         with:
-          ref: ${{ env.TARGET_VERSION }}
+          ref: v${{ env.TARGET_VERSION }}
 
       - name: Inject token authentication
         run: |
