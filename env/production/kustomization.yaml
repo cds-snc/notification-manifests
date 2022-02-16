@@ -421,3 +421,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.BATCH_INSERTION_CHUNK_SIZE
+  - name: FF_REDIS_BATCH_SAVING
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_REDIS_BATCH_SAVING
