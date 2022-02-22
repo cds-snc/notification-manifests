@@ -82,7 +82,9 @@ data:
                 "metrics_collection_interval":15,
                 "metrics_aggregation_interval":60
             },
-            "emf": { }
+            "emf": {
+                "service_address":":25888",
+            }
           }
       }
     }
