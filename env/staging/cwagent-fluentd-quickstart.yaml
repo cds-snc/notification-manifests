@@ -83,7 +83,7 @@ data:
                 "metrics_aggregation_interval":60
             },
             "emf": {
-                "service_address":":25888",
+                "service_address":":8135",
             }
           }
       }
