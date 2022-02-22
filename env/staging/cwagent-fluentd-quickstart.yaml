@@ -70,8 +70,7 @@ data:
             "kubernetes":{
                 "cluster_name":"notification-canada-ca-staging-eks-cluster",
                 "metrics_collection_interval":60
-            },
-            "emf": { }
+            }
           },
           "force_flush_interval":5
       },
@@ -82,7 +81,8 @@ data:
                 "service_address":":8125",
                 "metrics_collection_interval":15,
                 "metrics_aggregation_interval":60
-            }
+            },
+            "emf": { }
           }
       }
     }
