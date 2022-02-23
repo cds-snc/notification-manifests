@@ -115,6 +115,9 @@ spec:
             - containerPort: 8125
               hostPort: 8125
               protocol: UDP
+            - containerPort: 25888
+              hostPort: 25888
+              protocol: TCP
           resources:
             limits:
               cpu:  200m
