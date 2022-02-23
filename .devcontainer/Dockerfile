@@ -1,11 +1,45 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.187.0/containers/alpine/.devcontainer/base.Dockerfile
+FROM mcr.microsoft.com/vscode/devcontainers/base:0-debian
 
-# [Choice] Alpine version: 3.13, 3.12, 3.11, 3.10
-ARG VARIANT="3.13"
-FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
+RUN apt-get update \
+    && apt-get -y install --no-install-recommends apt-utils 2>&1 \
+    && apt-get -y install \
+        build-essential \
+        curl \
+        fd-find \
+        emacs \
+        exa \
+        git \
+        iproute2 \
+        less \
+        libsodium-dev \
+        lsb-release \
+        man-db \
+        manpages \
+        openssh-client \
+        postgresql-client \
+        procps \
+        net-tools \
+        sudo \
+        tldr \
+        unzip \
+        vim \
+        zsh \
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 
-# ** [Optional] Uncomment this section to install additional packages. **
-RUN apk update \
-    && apk add --no-cache postgresql-client openssh-client less iproute2 procps curl unzip net-tools emacs exa mandoc make aws-cli
+# Install kubens
+RUN git clone -b v0.9.4 --single-branch https://github.com/ahmetb/kubectx /opt/kubectx \
+    && ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx \
+    && ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 
-COPY scripts/notify-dev-entrypoint.sh /usr/local/bin/
+# Install AWS cli
+RUN curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
+    && unzip awscliv2.zip \
+    && aws/install \
+    && rm -rf \
+        awscliv2.zip \
+        aws \
+        /usr/local/aws-cli/v2/*/dist/awscli/examples
+    
+COPY .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
