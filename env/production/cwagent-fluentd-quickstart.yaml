@@ -117,7 +117,10 @@ spec:
               protocol: UDP
             - containerPort: 25888
               hostPort: 25888
-              protocol: TCP              
+              protocol: TCP
+            - containerPort: 25888
+              hostPort: 25888
+              protocol: UDP              
           resources:
             limits:
               cpu:  200m
