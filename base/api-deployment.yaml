@@ -228,6 +228,8 @@ spec:
               value: '$(FF_BATCH_INSERTION)'
             - name: FF_REDIS_BATCH_SAVING
               value: '$(FF_REDIS_BATCH_SAVING)'
+            - name: CLOUDWATCH_METRICS_ENABLED
+              value: 'False'
 
           resources:
             requests:

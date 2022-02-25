@@ -104,6 +104,8 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: FF_BATCH_INSERTION
               value: '$(FF_BATCH_INSERTION)'
+            - name: CLOUDWATCH_METRICS_ENABLED
+              value: 'False'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery.sh"]
           resources:
