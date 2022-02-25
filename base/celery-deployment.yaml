@@ -105,7 +105,7 @@ spec:
             - name: FF_BATCH_INSERTION
               value: '$(FF_BATCH_INSERTION)'
             - name: CLOUDWATCH_METRICS_ENABLED
-              value: 'False'
+              value: 'True'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery.sh"]
           resources:
