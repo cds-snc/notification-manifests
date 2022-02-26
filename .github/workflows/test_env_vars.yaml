@@ -1,0 +1,75 @@
+name: "Test environment variables are in sync"
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test_env_vars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get example env var keys
+        run: |
+          ENV_KEYS_EXAMPLE="$(make env-keys-example)"
+          echo "ENV_KEYS_EXAMPLE=$ENV_KEYS_EXAMPLE" >> $GITHUB_ENV
+
+      - name: Configure AWS staging credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Get staging env var keys
+        run: |
+          make decrypt-staging
+          ENV_KEYS_STAGING="$(make env-keys-staging)"
+          echo "ENV_KEYS_STAGING=$ENV_KEYS_STAGING" >> $GITHUB_ENV
+
+      - name: Configure AWS production credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Get production env var keys
+        run: |
+          make decrypt-production
+          ENV_KEYS_PRODUCTION="$(make env-keys-production)"
+          echo "ENV_KEYS_PRODUCTION=$ENV_KEYS_PRODUCTION" >> $GITHUB_ENV
+
+      - name: Test example and staging env vars
+        uses: ./.github/actions/diff-env-vars
+        with:
+          env1-name: EXAMPLE
+          env1-vars: ${{ env.ENV_KEYS_EXAMPLE }}
+          env2-name: STAGING
+          env2-vars: ${{ env.ENV_KEYS_STAGING }}
+
+      - name: Test example and production env vars
+        uses: ./.github/actions/diff-env-vars
+        with:
+          env1-name: EXAMPLE
+          env1-vars: ${{ env.ENV_KEYS_EXAMPLE }}
+          env2-name: PRODUCTION
+          env2-vars: ${{ env.ENV_KEYS_PRODUCTION }}
+
+      - name: Test staging and production env vars
+        uses: ./.github/actions/diff-env-vars
+        with:
+          env1-name: STAGING
+          env1-vars: ${{ env.ENV_KEYS_STAGING }}
+          env2-name: PRODUCTION
+          env2-vars: ${{ env.ENV_KEYS_PRODUCTION }}

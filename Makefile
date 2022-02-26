@@ -83,3 +83,12 @@ staging-clear:
 
 staging-debug:
 	kubectl kustomize env/staging
+
+env-keys-example:
+	@cat env.example | xargs -L1 | cut -f1 -d"=" | sort | tr "\n" "|"
+
+env-keys-production:
+	@cat env/production/.env | xargs -L1 | cut -f1 -d"=" | sort | tr "\n" "|"
+
+env-keys-staging:
+	@cat env/staging/.env | xargs -L1 | cut -f1 -d"=" | sort | tr "\n" "|"
