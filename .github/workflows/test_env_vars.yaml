@@ -60,6 +60,7 @@ jobs:
 
       - name: Test example and production env vars
         uses: ./.github/actions/diff-env-vars
+        if: always()
         with:
           env1-name: EXAMPLE
           env1-vars: ${{ env.ENV_KEYS_EXAMPLE }}
@@ -68,6 +69,7 @@ jobs:
 
       - name: Test staging and production env vars
         uses: ./.github/actions/diff-env-vars
+        if: always()
         with:
           env1-name: STAGING
           env1-vars: ${{ env.ENV_KEYS_STAGING }}
