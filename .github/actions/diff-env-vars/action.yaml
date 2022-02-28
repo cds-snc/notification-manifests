@@ -21,10 +21,8 @@ runs:
       if: inputs.env1-vars != inputs.env2-vars
       run: |
         echo -e "❌ \e[31mVariables ARE NOT equal\e[0m"
-        echo -e "\e[35m${{ inputs.env1-name }}:\e[0m ${{ inputs.env1-vars }}"
-        echo -e "\e[35m${{ inputs.env2-name }}:\e[0m ${{ inputs.env2-vars }}"
         echo -e "\e[35mDIFF:\e[0m"
         echo "${{ inputs.env1-vars }}" | tr "|" "\n" > ${{ inputs.env1-name }}
         echo "${{ inputs.env2-vars }}" | tr "|" "\n" > ${{ inputs.env2-name }}
-        diff --unified ${{ inputs.env1-name }} ${{ inputs.env2-name }}
+        diff --unified=0 ${{ inputs.env1-name }} ${{ inputs.env2-name }}
       shell: bash
