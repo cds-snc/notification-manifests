@@ -1,0 +1,28 @@
+name: Diff environment variables
+description: Check if two environments have the same environment variable names
+inputs:
+  env1-name:
+    description: The name of the first environment
+    required: true
+  env1-vars:
+    description: The first environment's varaible names
+    required: true
+  env2-name:
+    description: The name of the second environment
+    required: true
+  env2-vars:
+    description: The second envrionment's variable names
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Display diff if variables are not equal
+      if: inputs.env1-vars != inputs.env2-vars
+      run: |
+        echo -e "❌ \e[31mVariables ARE NOT equal\e[0m"
+        echo -e "\e[35mDIFF:\e[0m"
+        echo "${{ inputs.env1-vars }}" | tr "|" "\n" > ${{ inputs.env1-name }}
+        echo "${{ inputs.env2-vars }}" | tr "|" "\n" > ${{ inputs.env2-name }}
+        diff --unified=0 ${{ inputs.env1-name }} ${{ inputs.env2-name }}
+      shell: bash
