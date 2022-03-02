@@ -22,6 +22,7 @@ jobs:
       - name: Get example env var keys
         run: |
           ENV_KEYS_EXAMPLE="$(make env-keys-example)"
+          echo "::add-mask::$ENV_KEYS_EXAMPLE"
           echo "ENV_KEYS_EXAMPLE=$ENV_KEYS_EXAMPLE" >> $GITHUB_ENV
 
       - name: Configure AWS staging credentials
@@ -35,6 +36,7 @@ jobs:
         run: |
           make decrypt-staging
           ENV_KEYS_STAGING="$(make env-keys-staging)"
+          echo "::add-mask::$ENV_KEYS_STAGING"
           echo "ENV_KEYS_STAGING=$ENV_KEYS_STAGING" >> $GITHUB_ENV
 
       - name: Configure AWS production credentials
@@ -48,6 +50,7 @@ jobs:
         run: |
           make decrypt-production
           ENV_KEYS_PRODUCTION="$(make env-keys-production)"
+          echo "::add-mask::$ENV_KEYS_PRODUCTION"
           echo "ENV_KEYS_PRODUCTION=$ENV_KEYS_PRODUCTION" >> $GITHUB_ENV
 
       - name: Test example and staging env vars
