@@ -167,7 +167,7 @@ spec:
             - name: HC_FR_SERVICE_ID
               value: '$(HC_FR_SERVICE_ID)'
             - name: MLWR_HOST
-              value: 'False'
+              value: '$(MLWR_HOST)'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY
