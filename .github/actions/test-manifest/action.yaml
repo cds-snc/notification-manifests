@@ -11,8 +11,9 @@ runs:
     - name: Test manifest build
       shell: bash
       run: |
+        exec 5>&1        
+        MANIFEST="$(make ${{ inputs.build-target }} | tee /dev/fd/5)"
         EXIT=0
-        MANIFEST="$(make ${{ inputs.build-target }})"
 
         if echo "$MANIFEST" | grep 'value: $('
         then
