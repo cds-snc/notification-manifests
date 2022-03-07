@@ -4,15 +4,18 @@ inputs:
   build-target:
     description: Name of the manifest build target
     required: true
+  echo-manifest:
+    description: Echo the built manifest to the logs
+    default: "false"
+    required: false
 
 runs:
   using: "composite"
   steps:
     - name: Test manifest build
       shell: bash
-      run: |
-        exec 5>&1        
-        MANIFEST="$(make ${{ inputs.build-target }} | tee /dev/fd/5)"
+      run: |     
+        MANIFEST="$(make ${{ inputs.build-target }})"
         EXIT=0
 
         if echo "$MANIFEST" | grep 'value: $('
@@ -25,6 +28,11 @@ runs:
         then
           echo "❌ Unreplaced environment variable found"
           EXIT=1
+        fi
+
+        if [ "${{ inputs.echo-manifest }}" = "true" ]
+        then
+          echo "$MANIFEST"
         fi
 
         exit $EXIT

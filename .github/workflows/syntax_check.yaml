@@ -21,6 +21,7 @@ jobs:
         if: always()
         with:
           build-target: staging-debug
+          echo-manifest: true
 
       - name: Test production manifest build
         uses: ./.github/actions/test-manifest
