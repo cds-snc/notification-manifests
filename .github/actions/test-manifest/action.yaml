@@ -11,16 +11,19 @@ runs:
     - name: Test manifest build
       shell: bash
       run: |
+        EXIT=0
         MANIFEST="$(make ${{ inputs.build-target }})"
 
         if echo "$MANIFEST" | grep 'value: $('
         then
           echo "❌ Undefined environment variable found"
-          exit 1
+          EXIT=1
         fi
 
         if echo "$MANIFEST" | grep 'well-defined vars that were never replaced'
         then
           echo "❌ Unreplaced environment variable found"
-          exit 1
+          EXIT=1
         fi
+
+        exit $EXIT
