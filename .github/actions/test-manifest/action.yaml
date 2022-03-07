@@ -1,0 +1,24 @@
+name: Test manifest build
+description: Test if a Kustomize manifest build works
+inputs:
+  build-target:
+    description: Name of the manifest build target
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Test manifest build
+      shell: bash
+      run: |
+        MANIFEST="$(make ${{ inputs.build-target }})"
+
+        if echo "$MANIFEST" | grep 'value: $('; then;
+          echo "❌ Undefined environment variable found";
+          exit 1;
+        fi
+
+        if echo "$MANIFEST" | grep 'well-defined vars that were never replaced'; then;
+          echo "❌ Unreplaced environment variable found";
+          exit 1;
+        fi
