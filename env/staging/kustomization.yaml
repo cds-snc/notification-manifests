@@ -310,6 +310,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.SENDGRID_API_KEY
+- name: SENSITIVE_SERVICES
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SENSITIVE_SERVICES    
 - name: SQLALCHEMY_DATABASE_READER_URI
   objref:
     kind: ConfigMap
