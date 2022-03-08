@@ -25,6 +25,8 @@ jobs:
 
       - name: Checkout newly merged pr
         uses: actions/checkout@v2
+        with:
+          ref: 'refs/pull/${{ github.event.number }}/merge'
 
       - name: Get current Prod Version
         run: |
