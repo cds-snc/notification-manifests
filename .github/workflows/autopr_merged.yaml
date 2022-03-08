@@ -1,0 +1,80 @@
+name: "Tag and release to production"
+
+on: 
+  pull_request:
+    types: [closed]
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged && (contains(github.event.pull_request.title, '[AUTO-PR]') || contains(github.event.pull_request.title, '[MANIFEST]')) }}
+    
+    steps:
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+
+      - name: Checkout newly merged pr
+        uses: actions/checkout@v2
+
+      - name: Get current Prod Version
+        run: |
+          CURRENT_VERSION=`cat VERSION`
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+
+      - name: Branch protection OFF
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: |
+            null
+          enforce_admins: |
+            null
+          required_pull_request_reviews: |
+            null
+          restrictions: | 
+            null 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_REPO_ADMIN_CI_TOKEN }}
+
+      - name: Update version file
+        env:
+          NEW_VERSION: ${{ steps.tag_version.outputs.new_tag }}
+          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
+        run: |
+          echo $NEW_VERSION > VERSION
+
+      - name: setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          
+      - name: commit
+        env:
+          NEW_VERSION: ${{ steps.tag_version.outputs.new_tag }}
+          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
+        run: |
+          git add VERSION
+          git commit -m "Bump Version ${CURRENT_VERSION} -> ${NEW_VERSION}"
+          git push origin main
+
+      - name: Branch protection ON
+        if: always()
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            null 
+          enforce_admins: |
+            true
+          required_pull_request_reviews: |
+            required_approving_review_count: 1
+          restrictions: | 
+            null 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_REPO_ADMIN_CI_TOKEN }}
