@@ -26,7 +26,6 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v2
         with:
-          ref: $GITHUB_HEAD_REF
           token: ${{ env.GITHUB_TOKEN }}
 
       - name: Get current Prod Version
@@ -51,12 +50,16 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: |
-            null
+          required_status_checks: | 
+            strict: true
+            contexts:
+              - testing_manifest 
+          required_linear_history: |
+            true
           enforce_admins: |
             null
           required_pull_request_reviews: |
-            null
+            required_approving_review_count: 1
           restrictions: | 
             null 
         env:
@@ -79,6 +82,8 @@ jobs:
           repository: ${{ github.repository }}
           required_status_checks: | 
             strict: true
+            contexts:
+              - testing_manifest 
           required_linear_history: |
             true
           enforce_admins: |
