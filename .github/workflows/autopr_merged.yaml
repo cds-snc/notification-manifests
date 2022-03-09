@@ -25,6 +25,8 @@ jobs:
 
       - name: Checkout main branch
         uses: actions/checkout@v2
+        with:
+          ref: $GITHUB_HEAD_REF
 
       - name: Get current Prod Version
         run: |
@@ -76,8 +78,6 @@ jobs:
           repository: ${{ github.repository }}
           required_status_checks: | 
             strict: true
-            checks:
-              - testing_manifest
           required_linear_history: |
             true
           enforce_admins: |
