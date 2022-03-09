@@ -75,7 +75,11 @@ jobs:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
           required_status_checks: | 
-            null 
+            strict: true
+            checks:
+              - testing_manifest
+          required_linear_history: |
+            true
           enforce_admins: |
             true
           required_pull_request_reviews: |
