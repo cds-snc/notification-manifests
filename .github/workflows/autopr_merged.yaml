@@ -23,10 +23,8 @@ jobs:
           github_token: ${{ env.GITHUB_TOKEN }}
           release_branches: main
 
-      - name: Checkout newly merged pr
+      - name: Checkout main branch
         uses: actions/checkout@v2
-        with:
-          ref: 'refs/pull/${{ github.event.number }}/merge'
 
       - name: Get current Prod Version
         run: |
