@@ -10,6 +10,9 @@ jobs:
     if: github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged && (contains(github.event.pull_request.title, '[AUTO-PR]') || contains(github.event.pull_request.title, '[MANIFEST]'))
     
     steps:
+
+      # Generate a bot token that will be used for all workflow actions.
+      # This is required as the default repo GITHUB_TOKEN does not trigger new workflow runs.
       - name: Obtain a Notify PR Bot GitHub App Installation Access Token
         run: |
           TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.GH_APP_CREDENTIALS_TOKEN }})"
