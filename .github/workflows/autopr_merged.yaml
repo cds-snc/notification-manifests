@@ -43,7 +43,7 @@ jobs:
       - name: setup git config
         run: |
           git config user.name "Notify PR Bot"
-          git config user.email "<>"
+          git config user.email "action@github.com"
 
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
@@ -52,8 +52,8 @@ jobs:
           repository: ${{ github.repository }}
           required_status_checks: | 
             strict: true
-            contexts:
-              - testing_manifest 
+            checks:
+              - context: testing_manifest
           required_linear_history: |
             true
           enforce_admins: |
@@ -82,8 +82,8 @@ jobs:
           repository: ${{ github.repository }}
           required_status_checks: | 
             strict: true
-            contexts:
-              - testing_manifest 
+            checks:
+              - context: testing_manifest
           required_linear_history: |
             true
           enforce_admins: |
