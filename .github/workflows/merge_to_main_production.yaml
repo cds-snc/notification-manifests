@@ -10,7 +10,7 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:2777e4a
+  API_LAMBDA_IMAGE: api-lambda:e39d2ac
 
 defaults:
   run:
@@ -32,7 +32,7 @@ jobs:
       - name: Checkout target Prod version
         uses: actions/checkout@v2
         with:
-          ref: v${{ env.TARGET_VERSION }}
+          ref: ${{ env.TARGET_VERSION }}
 
       - name: Inject token authentication
         run: |
