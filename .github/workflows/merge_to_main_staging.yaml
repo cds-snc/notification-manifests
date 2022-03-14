@@ -31,9 +31,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      - name: Decrypt staging env
+      - name: Retrieve environment variables from secret manager
+        working-directory: env/staging
         run: |
-          make decrypt-staging
+          aws secretsmanager get-secret-value --secret-id environment_variables | jq -r '.SecretString' | jq -r 'to_entries|map("\(.key|ascii_upcase)=\(.value|tostring)")|.[] > .env'
 
       - name: Configure kubeconfig
         run: |
