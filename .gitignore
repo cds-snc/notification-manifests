@@ -1,6 +1,7 @@
 .DS_Store
 .env
 .env.zip
+.env.json
 .previous.env
 .previous.env.zip
 .previous.env.zip.enc.aws
