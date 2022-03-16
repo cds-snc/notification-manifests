@@ -10,6 +10,9 @@ jobs:
     if: github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged && (contains(github.event.pull_request.title, '[AUTO-PR]') || contains(github.event.pull_request.title, '[MANIFEST]'))
     
     steps:
+
+      # Generate a bot token that will be used for all workflow actions.
+      # This is required as the default repo GITHUB_TOKEN does not trigger new workflow runs.
       - name: Obtain a Notify PR Bot GitHub App Installation Access Token
         run: |
           TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.GH_APP_CREDENTIALS_TOKEN }})"
@@ -26,7 +29,7 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v2
         with:
-          ref: $GITHUB_HEAD_REF
+          token: ${{ env.GITHUB_TOKEN }}
 
       - name: Get current Prod Version
         run: |
@@ -43,14 +46,16 @@ jobs:
       - name: setup git config
         run: |
           git config user.name "Notify PR Bot"
-          git config user.email "<>"
+          git config user.email "action@github.com"
 
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: |
+          required_status_checks: | 
+            null
+          required_linear_history: |
             null
           enforce_admins: |
             null
@@ -78,6 +83,8 @@ jobs:
           repository: ${{ github.repository }}
           required_status_checks: | 
             strict: true
+            checks:
+              - context: testing_manifest
           required_linear_history: |
             true
           enforce_admins: |

@@ -5,7 +5,6 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/merge_to_main_production.yaml"
       - "VERSION"
 
 env:
