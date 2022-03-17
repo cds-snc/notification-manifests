@@ -2,6 +2,7 @@
 .env
 .env.zip
 .env.json
+.current.env.json
 .previous.env
 .previous.env.zip
 .previous.env.zip.enc.aws
