@@ -9,9 +9,9 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:a3b05f2
+    newName: public.ecr.aws/cds-snc/notify-admin:6ab3c13
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:d5b0d46
+    newName: public.ecr.aws/cds-snc/notify-api:b2af3b7
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:127bb96
   - name: document-download-frontend
