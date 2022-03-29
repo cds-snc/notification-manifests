@@ -65,7 +65,7 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name api-lambda \
-            --image-uri $PRIVATE_ECR/$API_LAMBDA_IMAGE
+            --image-uri $PRIVATE_ECR/$API_LAMBDA_IMAGE > /dev/null 2>&1
 
       - name: Add deployment to New Relic
         run: |
