@@ -85,10 +85,10 @@ staging-debug:
 	kubectl kustomize env/staging
 
 env-keys-example:
-	@cat env.example | xargs -L1 | grep "=" | cut -f1 -d"=" | sort | tr "\n" "|"
+	@cat env.example | xargs -0 -L1 | grep "=" | cut -f1 -d"=" | sort | tr "\n" "|"
 
 env-keys-production:
-	@cat env/production/.env | xargs -L1 | grep "=" | cut -f1 -d"=" | sort | tr "\n" "|"
+	@cat env/production/.env | xargs -0 -L1 | grep "=" | cut -f1 -d"=" | sort | tr "\n" "|"
 
 env-keys-staging:
-	@cat env/staging/.env | xargs -L1 | grep "=" | cut -f1 -d"=" | sort | tr "\n" "|"
+	@cat env/staging/.env | xargs -0 -L1 | grep "=" | cut -f1 -d"=" | sort | tr "\n" "|"
