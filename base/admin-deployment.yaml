@@ -100,6 +100,8 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: IP_GEOLOCATE_SERVICE
               value: '$(IP_GEOLOCATE_SERVICE)'
+            - name: GC_ARTICLES_API
+              value: '$(GC_ARTICLES_API)'
             - name: GC_ARTICLES_API_AUTH_USERNAME
               value: '$(GC_ARTICLES_API_AUTH_USERNAME)'
             - name: GC_ARTICLES_API_AUTH_PASSWORD

@@ -436,6 +436,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.BATCH_INSERTION_CHUNK_SIZE
+- name: GC_ARTICLES_API
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.GC_ARTICLES_API
 - name: GC_ARTICLES_API_AUTH_USERNAME
   objref:
     kind: ConfigMap
