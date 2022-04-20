@@ -27,7 +27,7 @@ spec:
             [
               "sh",
               "-c",
-              "until nslookup api.notification-canada-ca.svc.cluster.local; do echo waiting for postgres; sleep 2; done;",
+              "until nc -z -w 2 api.$(BASE_DOMAIN) 443; do echo waiting for api; sleep 2; done;",
             ]
       containers:
         - image: admin
@@ -41,7 +41,7 @@ spec:
             - name: ALLOW_HTML_SERVICE_IDS
               value: '$(ALLOW_HTML_SERVICE_IDS)'
             - name: API_HOST_NAME
-              value: http://api.notification-canada-ca.svc.cluster.local:6011
+              value: '$(API_HOST_NAME)'
             - name: ASSET_UPLOAD_BUCKET_NAME
               value: '$(ASSET_UPLOAD_BUCKET_NAME)'
             - name: ASSET_DOMAIN

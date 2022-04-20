@@ -35,7 +35,7 @@ spec:
             - name: ALLOW_HTML_SERVICE_IDS
               value: '$(ALLOW_HTML_SERVICE_IDS)'
             - name: API_HOST_NAME
-              value: http://api.notification-canada-ca.svc.cluster.local:6011
+              value: '$(API_HOST_NAME)'
             - name: DEBUG
               value: 'False'
             - name: DOCUMENT_DOWNLOAD_API_HOST_NAME
