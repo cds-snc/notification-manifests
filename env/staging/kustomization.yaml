@@ -51,6 +51,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ALLOW_HTML_SERVICE_IDS
+- name: API_HOST_NAME
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.API_HOST_NAME    
 - name: ASSET_UPLOAD_BUCKET_NAME
   objref:
     kind: ConfigMap
