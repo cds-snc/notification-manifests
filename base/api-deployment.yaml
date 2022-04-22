@@ -58,7 +58,7 @@ spec:
             - name: DOCUMENTATION_DOMAIN
               value: 'documentation.$(BASE_DOMAIN)'
             - name: FIDO2_DOMAIN
-              value: '$(BASE_DOMAIN)'
+              value: '$(FIDO2_DOMAIN)'
             - name: FLASK_APP
               value: application.py
             - name: MLWR_USER
@@ -155,7 +155,7 @@ spec:
             - name: DOCUMENT_DOWNLOAD_API_HOST
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
             - name: FIDO2_DOMAIN
-              value: '$(BASE_DOMAIN)'
+              value: '$(FIDO2_DOMAIN)'
             - name: FRESH_DESK_API_URL
               value: '$(FRESH_DESK_API_URL)'
             - name: FRESH_DESK_API_KEY

@@ -50,7 +50,7 @@ spec:
             - name: DOCUMENT_DOWNLOAD_API_HOST
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
             - name: FIDO2_DOMAIN
-              value: '$(BASE_DOMAIN)'
+              value: '$(FIDO2_DOMAIN)'
             - name: MLWR_USER
               value: '$(MLWR_USER)'
             - name: MLWR_KEY
