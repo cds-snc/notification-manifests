@@ -191,6 +191,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ENVIRONMENT
+- name: FIDO2_DOMAIN
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.FIDO2_DOMAIN
 - name: FRESH_DESK_API_URL
   objref:
     kind: ConfigMap
