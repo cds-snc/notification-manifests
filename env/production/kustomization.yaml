@@ -462,4 +462,11 @@ vars:
       name: application-config
       apiVersion: v1
     fieldref:
-      fieldpath: data.GC_ARTICLES_API_AUTH_PASSWORD      
+      fieldpath: data.GC_ARTICLES_API_AUTH_PASSWORD
+  - name: FF_PRIORITY_LANES
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_PRIORITY_LANES
