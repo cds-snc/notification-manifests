@@ -9,7 +9,7 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:0fb06a1
+  API_LAMBDA_IMAGE: api-lambda:ee69408
 
 defaults:
   run:
