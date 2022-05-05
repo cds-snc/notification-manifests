@@ -44,6 +44,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
+      # Pin kubectl until https://github.com/aws/aws-cli/issues/6920 is fixed
+      - uses: azure/setup-kubectl@v2.0
+        with:
+          version: 'v1.23.6'
+
       - name: Run manifest build
         run: |
           cp env.example env/production/.env
