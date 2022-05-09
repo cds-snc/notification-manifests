@@ -1,0 +1,44 @@
+name: Update lambda function
+description: Updates a lambda function, publishes a new version and updates the function alias
+inputs:
+  alias-name:
+    description: Name of the alias to update
+    required: true
+  function-name:
+    description: Name of the function to update
+    required: true
+  image-uri:
+    description: Image tag to update the function with (if not specified, only the lambda description is updated to trigger a reload)
+    default: ''
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+  
+    - name: Update lambda image
+      if: inputs.image-uri != ''
+      shell: bash
+      run: |
+        aws lambda update-function-code \
+          --function-name ${{ inputs.function-name }} \
+          --image-uri ${{ inputs.image-uri }} > /dev/null 2>&1
+
+    - name: Update lambda description
+      if: inputs.image-uri == ''
+      shell: bash
+      run: |
+        aws lambda update-function-configuration \
+          --function-name ${{ inputs.function-name }} \
+          --description $(date -u +"%Y-%m-%dT%H:%M:%SZ") > /dev/null 2>&1
+
+    - name: Publish version and update alias
+      shell: bash
+      run: |
+        aws lambda wait function-updated --function-name ${{ inputs.function-name }}
+        VERSION="$(aws lambda publish-version --function-name ${{ inputs.function-name }} | jq -r '.Version')"
+
+        aws lambda update-alias \
+          --function-name ${{ inputs.function-name }} \
+          --name ${{ inputs.alias-name }} \
+          --function-version "$VERSION" > /dev/null 2>&1

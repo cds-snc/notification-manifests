@@ -9,6 +9,9 @@ on:
       - ".github/workflows/merge_to_main_staging.yaml"
       - "env/staging/**"
 
+env:
+  KUBECTL_VERSION: 1.23.6
+
 defaults:
   run:
     shell: bash
@@ -30,6 +33,13 @@ jobs:
           aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
+
+      - name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          mv kubectl /usr/local/bin/
+          kubectl version --client
 
       - name: Decrypt staging env
         run: |

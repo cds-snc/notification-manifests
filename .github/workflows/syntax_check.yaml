@@ -3,6 +3,9 @@ name: Testing manifest
 on: 
   - pull_request
 
+env:
+  KUBECTL_VERSION: 1.23.6
+
 jobs:
   testing_manifest:
     runs-on: ubuntu-latest
@@ -10,6 +13,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          mv kubectl /usr/local/bin/
+          kubectl version --client
 
       - name: Add fake .env
         run: |
