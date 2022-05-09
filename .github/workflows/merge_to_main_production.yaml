@@ -70,10 +70,11 @@ jobs:
           kubectl apply -k env/production --kubeconfig=/home/runner/.kube/config
 
       - name: Deploy lambda
-        run: |
-          aws lambda update-function-code \
-            --function-name api-lambda \
-            --image-uri $PRIVATE_ECR/$API_LAMBDA_IMAGE > /dev/null 2>&1
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: api-lambda
+          image-uri: $PRIVATE_ECR/$API_LAMBDA_IMAGE
 
       - name: Add deployment to New Relic
         run: |
