@@ -232,7 +232,8 @@ spec:
               value: 'True'
             - name: FF_PRIORITY_LANES
               value: '$(FF_PRIORITY_LANES)'
-           resources:
+
+          resources:
             requests:
               cpu: "400m"
               memory: "700Mi"
