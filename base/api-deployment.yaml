@@ -230,8 +230,9 @@ spec:
               value: '$(FF_REDIS_BATCH_SAVING)'
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: 'True'
-
-          resources:
+            - name: FF_PRIORITY_LANES
+              value: '$(FF_PRIORITY_LANES)'
+           resources:
             requests:
               cpu: "400m"
               memory: "700Mi"
