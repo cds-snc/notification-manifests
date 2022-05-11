@@ -15,7 +15,7 @@ runs:
     - name: Test manifest build
       shell: bash
       run: |     
-        MANIFEST="$(make ${{ inputs.build-target }})"
+        MANIFEST="$(make ${{ inputs.build-target }} 2>&1)"
         EXIT=0
 
         if echo "$MANIFEST" | grep 'value: $('
