@@ -106,6 +106,8 @@ spec:
               value: '$(FF_BATCH_INSERTION)'
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: 'True'
+            - name: FF_PRIORITY_LANES
+              value: '$(FF_PRIORITY_LANES)'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery.sh"]
           resources:
