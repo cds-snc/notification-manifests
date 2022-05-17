@@ -108,7 +108,8 @@ spec:
               value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
-
+            - name: FF_PRIORITY_LANES
+              value: '$(FF_PRIORITY_LANES)'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_sms.sh"]
       dnsPolicy: ClusterFirst
