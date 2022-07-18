@@ -11,13 +11,13 @@ images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:3b7352a
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:b058276
+    newName: public.ecr.aws/cds-snc/notify-api:80177d7
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:cde452f
   - name: document-download-frontend
     newName: public.ecr.aws/cds-snc/notify-document-download-frontend:b4b9582
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:b0b5a31
+    newName: public.ecr.aws/cds-snc/notify-documentation:7dfdb33
 configMapGenerator:
   - name: application-config
     env: .env
