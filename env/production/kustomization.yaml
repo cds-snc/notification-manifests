@@ -414,20 +414,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.AWS_US_TOLL_FREE_NUMBER
-  - name: FF_NOTIFICATION_CELERY_PERSISTENCE
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_NOTIFICATION_CELERY_PERSISTENCE
-  - name: FF_BATCH_INSERTION
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_BATCH_INSERTION
   - name: BATCH_INSERTION_CHUNK_SIZE
     objref:
       kind: ConfigMap
@@ -435,13 +421,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.BATCH_INSERTION_CHUNK_SIZE
-  - name: FF_REDIS_BATCH_SAVING
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_REDIS_BATCH_SAVING
   - name: GC_ARTICLES_API
     objref:
       kind: ConfigMap
@@ -463,10 +442,3 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.GC_ARTICLES_API_AUTH_PASSWORD
-  - name: FF_PRIORITY_LANES
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_PRIORITY_LANES
