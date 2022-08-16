@@ -10,7 +10,6 @@
 - [ ] Admin
 - [ ] Documentation
 - [ ] Document download API
-- [ ] Document download frontend
 
 ## Checklist if releasing new version:
 - [ ] I made sure that the changes are as expected in [Notify staging](https://staging.notification.cdssandbox.xyz/)
@@ -20,7 +19,6 @@
     - [ ] [admin](https://gallery.ecr.aws/v6b8u5o6/notify-admin)
     - [ ] [documentation](https://gallery.ecr.aws/v6b8u5o6/notify-documentation)
     - [ ] [document download API](https://gallery.ecr.aws/v6b8u5o6/notify-document-download-api)
-    - [ ] [document download frontend](https://gallery.ecr.aws/v6b8u5o6/notify-document-download-frontend)
 
 ## Checklist if making changes to Kubernetes:
 - [ ] I know how to get kubectl credentials in case it catches on fire

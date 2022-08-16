@@ -34,8 +34,6 @@ spec:
               value: 'False'
             - name: DOCUMENTS_BUCKET
               value: '$(DOCUMENTS_BUCKET)'
-            - name: FRONTEND_HOSTNAME
-              value: 'document.$(BASE_DOMAIN)'
             - name: BACKEND_HOSTNAME
               value: 'api.document.$(BASE_DOMAIN)'
             - name: HTTP_SCHEME

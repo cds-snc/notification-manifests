@@ -5,7 +5,6 @@ resources:
   - api-target-group.yaml
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
-  - document-download-frontend-target-group.yaml
   - documentation-target-group.yaml
 images:
   - name: admin
@@ -14,8 +13,6 @@ images:
     newName: public.ecr.aws/cds-snc/notify-api:ebd05e3
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:52e63ae
-  - name: document-download-frontend
-    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:b4b9582
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:df2d564
 configMapGenerator:

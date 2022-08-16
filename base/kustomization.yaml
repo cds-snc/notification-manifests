@@ -20,8 +20,6 @@ resources:
   - document-download-api-deployment.yaml
   - document-download-api-hpa.yaml
   - document-download-api-service.yaml
-  - document-download-frontend-deployment.yaml
-  - document-download-frontend-service.yaml
   - documentation-deployment.yaml
   - documentation-service.yaml
   - ipv4-deployment.yaml
