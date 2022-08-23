@@ -448,4 +448,4 @@ vars:
       name: application-config
       apiVersion: v1
     fieldref:
-      fieldpath: data.WAF_SECRET  
+      fieldpath: data.WAF_SECRET
