@@ -97,6 +97,7 @@ images:
   - name: api
     newName: public.ecr.aws/cds-snc/notify-api:latest
   - name: document-download-api
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:latest
 ```
 
 Will set the images in the base deployment to use `latest`.
