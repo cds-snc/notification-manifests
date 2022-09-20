@@ -106,6 +106,8 @@ spec:
               value: '$(GC_ARTICLES_API_AUTH_USERNAME)'
             - name: GC_ARTICLES_API_AUTH_PASSWORD
               value: '$(GC_ARTICLES_API_AUTH_PASSWORD)'
+            - name: WAF_SECRET
+              value: '$(WAF_SECRET)'
           resources:
             requests:
               cpu: "500m"
