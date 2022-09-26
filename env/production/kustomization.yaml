@@ -185,6 +185,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.ENVIRONMENT
+  - name: FF_SPIKE_SMS_DAILY_LIMIT
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_SPIKE_SMS_DAILY_LIMIT
   - name: FIDO2_DOMAIN
     objref:
       kind: ConfigMap
