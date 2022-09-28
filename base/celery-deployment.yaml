@@ -108,6 +108,12 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: 'True'
+          lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash"]
+                # Gracefully shutdown nginx
+              args: ["-c", " /app/scripts/run_celery_exit.sh"]
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery.sh"]
           resources:
