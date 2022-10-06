@@ -66,6 +66,8 @@ spec:
               value: '$(HC_FR_SERVICE_ID)'
             - name: FF_SPIKE_SMS_DAILY_LIMIT
               value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
+            - name: FF_SMS_PARTS_UI
+              value: '$(FF_SMS_PARTS_UI)'
             - name: FLASK_APP
               value: 'application.py'
             - name: NOTIFY_ENVIRONMENT
