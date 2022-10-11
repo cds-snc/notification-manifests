@@ -21,13 +21,13 @@ jobs:
 
       - name: Bump version and push tag
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0
+        uses: mathieudutour/github-tag-action@d745f2e74aaf1ee82e747b181f7a0967978abee0 # tag=v6.0
         with:
           github_token: ${{ env.GITHUB_TOKEN }}
           release_branches: main
 
       - name: Checkout main branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # tag=v2
         with:
           token: ${{ env.GITHUB_TOKEN }}
 

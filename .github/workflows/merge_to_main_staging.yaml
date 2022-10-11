@@ -22,13 +22,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # tag=v2
         with:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838 # tag=v1
         with:
           aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
@@ -75,7 +75,7 @@ jobs:
           function-name: api-lambda
 
       - name: Bump version and push tag
-        uses: mathieudutour/github-tag-action@v4.6
+        uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # tag=v4.6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: main
