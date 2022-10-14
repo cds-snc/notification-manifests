@@ -8,13 +8,13 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:80e4bb0
+    newName: public.ecr.aws/cds-snc/notify-admin:f31c266
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:475c83d
+    newName: public.ecr.aws/cds-snc/notify-api:ecbed80
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:d438f6d
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:96b8cd1
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:f612701
+    newName: public.ecr.aws/cds-snc/notify-documentation:604f7fc
 configMapGenerator:
   - name: application-config
     env: .env
@@ -175,6 +175,20 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.ENVIRONMENT
+  - name: FF_SPIKE_SMS_DAILY_LIMIT
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_SPIKE_SMS_DAILY_LIMIT
+  - name: FF_SMS_PARTS_UI
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_SMS_PARTS_UI
   - name: FIDO2_DOMAIN
     objref:
       kind: ConfigMap
@@ -432,3 +446,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.GC_ARTICLES_API_AUTH_PASSWORD
+  - name: WAF_SECRET
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.WAF_SECRET

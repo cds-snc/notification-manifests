@@ -64,6 +64,10 @@ spec:
               value: '$(HC_EN_SERVICE_ID)'
             - name: HC_FR_SERVICE_ID
               value: '$(HC_FR_SERVICE_ID)'
+            - name: FF_SPIKE_SMS_DAILY_LIMIT
+              value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
+            - name: FF_SMS_PARTS_UI
+              value: '$(FF_SMS_PARTS_UI)'
             - name: FLASK_APP
               value: 'application.py'
             - name: NOTIFY_ENVIRONMENT
@@ -106,6 +110,8 @@ spec:
               value: '$(GC_ARTICLES_API_AUTH_USERNAME)'
             - name: GC_ARTICLES_API_AUTH_PASSWORD
               value: '$(GC_ARTICLES_API_AUTH_PASSWORD)'
+            - name: WAF_SECRET
+              value: '$(WAF_SECRET)'
           resources:
             requests:
               cpu: "500m"
