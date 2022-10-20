@@ -5,7 +5,6 @@ resources:
   - api-target-group.yaml
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
-  - document-download-frontend-target-group.yaml
   - documentation-target-group.yaml
 images:
   - name: admin
@@ -14,8 +13,6 @@ images:
     newName: public.ecr.aws/cds-snc/notify-api:45630d2
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:96b8cd1
-  - name: document-download-frontend
-    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:b4b9582
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:604f7fc
 configMapGenerator:
@@ -24,13 +21,6 @@ configMapGenerator:
 patches:
   - replica_count.yaml
 vars:
-  - name: ADMIN_CLIENT_USER_NAME
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.ADMIN_CLIENT_USER_NAME
   - name: ADMIN_CLIENT_SECRET
     objref:
       kind: ConfigMap

@@ -7,7 +7,6 @@ resources:
   - api-target-group.yaml
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
-  - document-download-frontend-target-group.yaml
   - documentation-target-group.yaml
 
 images:
@@ -17,8 +16,6 @@ images:
     newName: public.ecr.aws/cds-snc/notify-api:latest
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:latest
-  - name: document-download-frontend
-    newName: public.ecr.aws/cds-snc/notify-document-download-frontend:latest
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:latest
 
@@ -30,13 +27,6 @@ patches:
  - replica_count.yaml
 
 vars:
-- name: ADMIN_CLIENT_USER_NAME
-  objref:
-    kind: ConfigMap
-    name: application-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.ADMIN_CLIENT_USER_NAME
 - name: ADMIN_CLIENT_SECRET
   objref:
     kind: ConfigMap
