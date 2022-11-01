@@ -1,3 +1,12 @@
+## What happens when your PR merges?
+- Prefix the title of your PR:
+    - `fix:` - tag `main` as a new patch release
+    - `feat:` - tag `main` as a new minor release
+    - `BREAKING CHANGE:` - tag `main` as a new major release
+    - `[MANIFEST]` - tag `main` as a new patch release and deploy to production
+    - `chore:` - use for changes to non-app code (ex: GitHub actions)
+- Alternatively, change the [VERSION file](https://github.com/cds-snc/notification-manifests/blob/main/VERSION) - this will not create a new tag, but rather will release the tag in `VERSION` to production.
+
 ## What are you changing?
 - [ ] Releasing a new version of Notify
 - [ ] Changing kubernetes configuration
