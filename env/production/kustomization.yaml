@@ -12,7 +12,7 @@ images:
   - name: api
     newName: public.ecr.aws/cds-snc/notify-api:5239b5e
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:713ca69
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:7b41ec5
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:604f7fc
 configMapGenerator:
