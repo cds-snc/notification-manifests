@@ -18,13 +18,13 @@ decrypt-staging-orig:
 
 decrypt-previous-staging:
 	@cd env/staging &&\
-	git cat-file blob main:env/staging/.env.zip.enc.aws > .previous.env.zip.enc.aws &&\
+	git cat-file blob origin/main:env/staging/.env.zip.enc.aws > .previous.env.zip.enc.aws &&\
 	aws kms decrypt --ciphertext-blob fileb://.previous.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env.zip &&\
 	unzip -o .previous.env.zip && mv .env .previous.env
 
 decrypt-previous-production:
 	@cd env/production &&\
-	git cat-file blob main:env/production/.env.zip.enc.aws > .previous.env.zip.enc.aws &&\
+	git cat-file blob origin/main:env/production/.env.zip.enc.aws > .previous.env.zip.enc.aws &&\
 	aws kms decrypt --ciphertext-blob fileb://.previous.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env.zip &&\
 	unzip -o .previous.env.zip && mv .env .previous.env
 
@@ -52,13 +52,13 @@ diff-production: decrypt-previous-production decrypt-production
 
 diff-production-orig: decrypt-production
 	@cd env/production &&\
-	git cat-file blob main:env/production/.env.enc.aws > .previous.env.enc.aws &&\
+	git cat-file blob origin/main:env/production/.env.enc.aws > .previous.env.enc.aws &&\
 	aws kms decrypt --ciphertext-blob fileb://.previous.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env &&\
 	diff .previous.env .env
 
 diff-staging-orig: decrypt-staging
 	@cd env/staging &&\
-	git cat-file blob main:env/staging/.env.enc.aws > .previous.env.enc.aws &&\
+	git cat-file blob origin/main:env/staging/.env.enc.aws > .previous.env.enc.aws &&\
 	aws kms decrypt --ciphertext-blob fileb://.previous.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env &&\
 	diff .previous.env .env
 
