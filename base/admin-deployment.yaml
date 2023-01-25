@@ -86,6 +86,8 @@ spec:
                   fieldPath: spec.nodeName
             - name: REDIS_URL
               value: '$(REDIS_URL)'
+            - name: REDIS_PUBLISH_URL
+              value: '$(REDIS_PUBLISH_URL)'
             - name: REDIS_ENABLED
               value: "1"
             - name: SECRET_KEY
