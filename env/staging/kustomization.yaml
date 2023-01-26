@@ -314,6 +314,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.REDIS_URL
+- name: REDIS_PUBLISH_URL
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.REDIS_PUBLISH_URL
 - name: SECRET_KEY
   objref:
     kind: ConfigMap
