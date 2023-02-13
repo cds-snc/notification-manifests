@@ -322,12 +322,12 @@ vars:
   fieldref:
     fieldpath: data.REDIS_PUBLISH_URL
 - name: SCAN_FILES_DOCUMENTS_BUCKET
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.SCAN_FILES_DOCUMENTS_BUCKET
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SCAN_FILES_DOCUMENTS_BUCKET
 - name: SECRET_KEY
   objref:
     kind: ConfigMap
