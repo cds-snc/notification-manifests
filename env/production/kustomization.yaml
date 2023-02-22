@@ -8,11 +8,11 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:baf56e9
+    newName: public.ecr.aws/cds-snc/notify-admin:e367cbc
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:ad87b6c
+    newName: public.ecr.aws/cds-snc/notify-api:c98d410
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:dce41bb
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:2098786
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:0a238ee
 configMapGenerator:
