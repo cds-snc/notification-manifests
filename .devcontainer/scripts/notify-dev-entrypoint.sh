@@ -32,5 +32,8 @@ echo -e "complete -F __start_kubectl k" >> ~/.zshrc
 
 cd /workspaces/notification-manifests
 
+# kubent
+ sh -c "$(curl -sSL https://git.io/install-kubent)"
+
 # Warm up git index prior to display status in prompt
 git status
