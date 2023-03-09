@@ -125,7 +125,7 @@ spec:
               memory: "500Mi"
             limits:
               cpu: "550m"
-              memory: "600Mi"
+              memory: "1024Mi"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
