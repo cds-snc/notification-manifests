@@ -108,6 +108,8 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: 'True'
+            - name: FF_BOUNCE_RATE_V1
+              value: '$(FF_BOUNCE_RATE_V1)'
           lifecycle:
             preStop:
               exec:
