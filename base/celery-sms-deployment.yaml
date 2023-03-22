@@ -114,6 +114,8 @@ spec:
               value: '$(NEW_RELIC_LICENSE_KEY)'
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
+            - name: FF_BOUNCE_RATE_V1
+              value: '$(FF_BOUNCE_RATE_V1)'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_sms.sh"]
       dnsPolicy: ClusterFirst

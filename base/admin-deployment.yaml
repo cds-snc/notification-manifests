@@ -114,6 +114,8 @@ spec:
               value: '$(GC_ARTICLES_API_AUTH_PASSWORD)'
             - name: WAF_SECRET
               value: '$(WAF_SECRET)'
+            - name: FF_BOUNCE_RATE_V1
+              value: '$(FF_BOUNCE_RATE_V1)'
           resources:
             requests:
               cpu: "500m"

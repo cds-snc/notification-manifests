@@ -228,6 +228,8 @@ spec:
               value: '$(ZENDESK_API_KEY)'
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: 'True'
+            - name: FF_BOUNCE_RATE_V1
+              value: '$(FF_BOUNCE_RATE_V1)'
           resources:
             requests:
               cpu: "400m"
