@@ -517,4 +517,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.SALESFORCE_GENERIC_ACCOUNT_ID
-
+  - name: FF_BOUNCE_RATE_V1
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_BOUNCE_RATE_V1
