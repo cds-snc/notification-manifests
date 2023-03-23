@@ -21,21 +21,26 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: "3.10"
 
     - name: Upgrade pip
       run: python -m pip install --upgrade pip
 
-    - name: Get requirements from cache
+    - name: Get packages from cache
       uses: actions/cache@v2
       with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        path: ~/.local
+        key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
         restore-keys: |
-          ${{ runner.os }}-pip-
+          poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-
 
-    - name: Install python requirements
-      run: pip install -r requirements.txt
+    - name: Install poetry
+      env:
+        POETRY_VERSION: "1.3.2"
+      run: pip install poetry==${POETRY_VERSION} && poetry --version
+
+    - name: Install requirements
+      run: poetry install
 
     - name: Run smoke tests on staging
       env:
@@ -52,4 +57,4 @@ jobs:
         SMOKE_SMS_TEMPLATE_ID: ${{ secrets.SMOKE_SMS_TEMPLATE_ID}}
         SMOKE_USER_ID: ${{ secrets.SMOKE_USER_ID}}
         SMOKE_POLL_TIMEOUT: ${{ secrets.SMOKE_POLL_TIMEOUT}}
-      run: make smoke-test
+      run: poetry run make smoke-test
