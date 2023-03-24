@@ -47,7 +47,7 @@ vars:
     name: application-config
     apiVersion: v1
   fieldref:
-    fieldpath: data.API_HOST_NAME    
+    fieldpath: data.API_HOST_NAME
 - name: ASSET_UPLOAD_BUCKET_NAME
   objref:
     kind: ConfigMap
@@ -327,7 +327,7 @@ vars:
     name: application-config
     apiVersion: v1
   fieldref:
-    fieldpath: data.SENSITIVE_SERVICES    
+    fieldpath: data.SENSITIVE_SERVICES
 - name: SQLALCHEMY_DATABASE_READER_URI
   objref:
     kind: ConfigMap
@@ -454,3 +454,17 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.WAF_SECRET
+- name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+- name: CRM_ORG_LIST_URL
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.CRM_ORG_LIST_URL
