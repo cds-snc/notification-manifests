@@ -60,10 +60,6 @@ spec:
               value: '$(HC_EN_SERVICE_ID)'
             - name: HC_FR_SERVICE_ID
               value: '$(HC_FR_SERVICE_ID)'
-            - name: MLWR_USER
-              value: '$(MLWR_USER)'
-            - name: MLWR_KEY
-              value: '$(MLWR_KEY)'
             - name: NOTIFY_EMAIL_DOMAIN
               value: '$(BASE_DOMAIN)'
             - name: NOTIFY_ENVIRONMENT
