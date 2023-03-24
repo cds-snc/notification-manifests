@@ -38,10 +38,6 @@ spec:
               value: 'api.document.$(BASE_DOMAIN)'
             - name: HTTP_SCHEME
               value: 'https'
-            - name: MLWR_USER
-              value: '$(MLWR_USER)'
-            - name: MLWR_KEY
-              value: '$(MLWR_KEY)'
             - name: SCAN_FILES_DOCUMENTS_BUCKET
               value: '$(SCAN_FILES_DOCUMENTS_BUCKET)'
             - name: SECRET_KEY

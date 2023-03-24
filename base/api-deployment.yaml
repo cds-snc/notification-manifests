@@ -65,10 +65,6 @@ spec:
               value: '$(FIDO2_DOMAIN)'
             - name: FLASK_APP
               value: application.py
-            - name: MLWR_USER
-              value: '$(MLWR_USER)'
-            - name: MLWR_KEY
-              value: '$(MLWR_KEY)'
             - name: NOTIFY_EMAIL_DOMAIN
               value: '$(BASE_DOMAIN)'
             - name: NOTIFY_ENVIRONMENT
