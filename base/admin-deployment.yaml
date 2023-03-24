@@ -114,6 +114,10 @@ spec:
               value: '$(GC_ARTICLES_API_AUTH_PASSWORD)'
             - name: WAF_SECRET
               value: '$(WAF_SECRET)'
+            - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+              value: '$(CRM_GITHUB_PERSONAL_ACCESS_TOKEN)'
+            - name: CRM_ORG_LIST_URL
+              value: '$(CRM_ORG_LIST_URL)'                            
           resources:
             requests:
               cpu: "500m"
