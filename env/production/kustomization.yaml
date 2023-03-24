@@ -446,17 +446,3 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.WAF_SECRET
-  - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-  - name: CRM_ORG_LIST_URL
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.CRM_ORG_LIST_URL      
