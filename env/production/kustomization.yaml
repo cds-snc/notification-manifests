@@ -250,27 +250,6 @@ vars:
       kind: ConfigMap
       name: application-config
       apiVersion: v1
-  - name: MLWR_HOST
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.MLWR_HOST
-  - name: MLWR_USER
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.MLWR_USER
-  - name: MLWR_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.MLWR_KEY
   - name: NEW_RELIC_LICENSE_KEY
     objref:
       kind: ConfigMap
