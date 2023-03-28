@@ -36,14 +36,14 @@ subjects:
     name: ipv4-deployment-restart
     namespace: notification-canada-ca
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: ipv4-deployment-restart
   namespace: notification-canada-ca
 spec:
   concurrencyPolicy: Forbid
-  schedule: '0 16 * * 1-4'
+  schedule: "0 16 * * 1-4"
   jobTemplate:
     spec:
       backoffLimit: 2
@@ -56,7 +56,7 @@ spec:
             - name: kubectl
               image: bitnami/kubectl
               command:
-                - 'kubectl'
-                - 'rollout'
-                - 'restart'
-                - 'deployment/ipv4'
+                - "kubectl"
+                - "rollout"
+                - "restart"
+                - "deployment/ipv4"
