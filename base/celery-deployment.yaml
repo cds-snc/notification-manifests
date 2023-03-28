@@ -36,6 +36,8 @@ spec:
               value: '$(ALLOW_HTML_SERVICE_IDS)'
             - name: API_HOST_NAME
               value: '$(API_HOST_NAME)'
+            - name: ASSET_DOMAIN
+              value: '$(ASSET_DOMAIN)'
             - name: ASSET_UPLOAD_BUCKET_NAME
               value: '$(ASSET_UPLOAD_BUCKET_NAME)'
             - name: AWS_PINPOINT_REGION
@@ -62,10 +64,6 @@ spec:
               value: '$(HC_EN_SERVICE_ID)'
             - name: HC_FR_SERVICE_ID
               value: '$(HC_FR_SERVICE_ID)'
-            - name: MLWR_USER
-              value: '$(MLWR_USER)'
-            - name: MLWR_KEY
-              value: '$(MLWR_KEY)'
             - name: NOTIFY_EMAIL_DOMAIN
               value: '$(BASE_DOMAIN)'
             - name: NOTIFY_ENVIRONMENT
