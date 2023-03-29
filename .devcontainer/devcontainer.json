@@ -8,7 +8,6 @@
 			"OCTANT_VERSION": "0.25.1"
 		},
 	},
-
 	"features": {
 		"kubectl-helm-minikube": {
 			"version": "latest",
@@ -16,11 +15,9 @@
 			"minikube": "none"
 		}
 	},
-
 	"containerEnv": {
 		"SHELL": "/bin/zsh"
 	},
-
 	"extensions": [
 		"alefragnani.bookmarks",
 		"christian-kohler.path-intellisense",
@@ -42,8 +39,10 @@
 		"yzhang.markdown-all-in-one",
 		"github.copilot"
 	],
-
 	"postCreateCommand": "notify-dev-entrypoint.sh",
-	
-	"remoteUser": "vscode"
+	"remoteUser": "vscode",
+	"mounts": [
+		"source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
+		"source=${env:HOME}${env:USERPROFILE}/.kube,target=/home/vscode/.kube,type=bind"
+	]
 }
