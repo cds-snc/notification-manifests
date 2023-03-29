@@ -117,7 +117,9 @@ spec:
             - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
               value: '$(CRM_GITHUB_PERSONAL_ACCESS_TOKEN)'
             - name: CRM_ORG_LIST_URL
-              value: '$(CRM_ORG_LIST_URL)'                            
+              value: '$(CRM_ORG_LIST_URL)'   
+            - name: FF_SALESFORCE_CONTACT
+              value: '$(FF_SALESFORCE_CONTACT)'                            
           resources:
             requests:
               cpu: "500m"
