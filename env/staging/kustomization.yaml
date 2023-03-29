@@ -461,3 +461,10 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.CRM_ORG_LIST_URL
+- name: FF_SALESFORCE_CONTACT
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.FF_SALESFORCE_CONTACT
