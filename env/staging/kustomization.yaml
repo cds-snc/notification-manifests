@@ -230,13 +230,6 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.HASURA_ACCESS_KEY
-- name: HASURA_JWT_KEY
-  objref:
-    kind: ConfigMap
-    name: application-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.HASURA_JWT_KEY
 - name: HC_EN_SERVICE_ID
   objref:
     kind: ConfigMap
