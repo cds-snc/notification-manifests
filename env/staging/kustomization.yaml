@@ -468,3 +468,59 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FF_SALESFORCE_CONTACT
+- name: SALESFORCE_USERNAME
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SALESFORCE_USERNAME
+- name: SALESFORCE_PASSWORD
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SALESFORCE_PASSWORD
+- name: SALESFORCE_SECURITY_TOKEN
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SALESFORCE_SECURITY_TOKEN
+- name: SALESFORCE_DOMAIN
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SALESFORCE_DOMAIN
+- name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SALESFORCE_ENGAGEMENT_PRODUCT_ID
+- name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SALESFORCE_ENGAGEMENT_RECORD_TYPE
+- name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+- name: SALESFORCE_GENERIC_ACCOUNT_ID
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SALESFORCE_GENERIC_ACCOUNT_ID

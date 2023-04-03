@@ -57,6 +57,8 @@ spec:
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
             - name: DOCUMENTATION_DOMAIN
               value: 'documentation.$(BASE_DOMAIN)'
+            - name: FF_SALESFORCE_CONTACT
+              value: '$(FF_SALESFORCE_CONTACT)'
             - name: FF_SPIKE_SMS_DAILY_LIMIT
               value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
             - name: FF_SMS_PARTS_UI
@@ -77,6 +79,22 @@ spec:
               value: '$(REDIS_PUBLISH_URL)'
             - name: REDIS_ENABLED
               value: '1'
+            - name: SALESFORCE_DOMAIN
+              value: '$(SALESFORCE_DOMAIN)'
+            - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+              value: '$(SALESFORCE_ENGAGEMENT_PRODUCT_ID)'
+            - name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+              value: '$(SALESFORCE_ENGAGEMENT_RECORD_TYPE)'
+            - name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+              value: '$(SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID)'
+            - name: SALESFORCE_GENERIC_ACCOUNT_ID
+              value: '$(SALESFORCE_GENERIC_ACCOUNT_ID)'
+            - name: SALESFORCE_PASSWORD
+              value: '$(SALESFORCE_PASSWORD)'
+            - name: SALESFORCE_SECURITY_TOKEN
+              value: '$(SALESFORCE_SECURITY_TOKEN)'
+            - name: SALESFORCE_USERNAME
+              value: '$(SALESFORCE_USERNAME)'
             - name: SECRET_KEY
               value: '$(SECRET_KEY)'
             - name: SENDGRID_API_KEY
@@ -150,6 +168,8 @@ spec:
               value: '$(DANGEROUS_SALT)'
             - name: DOCUMENT_DOWNLOAD_API_HOST
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
+            - name: FF_SALESFORCE_CONTACT
+              value: '$(FF_SALESFORCE_CONTACT)'
             - name: FF_SPIKE_SMS_DAILY_LIMIT
               value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
             - name: FIDO2_DOMAIN
@@ -176,6 +196,22 @@ spec:
               value: '$(REDIS_PUBLISH_URL)'
             - name: REDIS_ENABLED
               value: '1'
+            - name: SALESFORCE_DOMAIN
+              value: '$(SALESFORCE_DOMAIN)'
+            - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+              value: '$(SALESFORCE_ENGAGEMENT_PRODUCT_ID)'
+            - name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+              value: '$(SALESFORCE_ENGAGEMENT_RECORD_TYPE)'
+            - name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+              value: '$(SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID)'
+            - name: SALESFORCE_GENERIC_ACCOUNT_ID
+              value: '$(SALESFORCE_GENERIC_ACCOUNT_ID)'
+            - name: SALESFORCE_PASSWORD
+              value: '$(SALESFORCE_PASSWORD)'
+            - name: SALESFORCE_SECURITY_TOKEN
+              value: '$(SALESFORCE_SECURITY_TOKEN)'
+            - name: SALESFORCE_USERNAME
+              value: '$(SALESFORCE_USERNAME)'
             - name: SECRET_KEY
               value: '$(SECRET_KEY)'
             - name: SENDGRID_API_KEY
