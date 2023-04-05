@@ -3,7 +3,7 @@ name: "Staging smoke test"
 on:
   push:
     branches:
-      - "releases-*"
+      - "release-*"
 
 defaults:
   run:
