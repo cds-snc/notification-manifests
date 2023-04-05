@@ -8,9 +8,9 @@ resources:
   - documentation-target-group.yaml
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:b8af1e5
+    newName: public.ecr.aws/cds-snc/notify-admin:207305e
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:1cf282d
+    newName: public.ecr.aws/cds-snc/notify-api:a8d00ce
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:cf5f846
   - name: documentation
@@ -224,13 +224,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.HASURA_ACCESS_KEY
-  - name: HASURA_JWT_KEY
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.HASURA_JWT_KEY
   - name: HC_EN_SERVICE_ID
     objref:
       kind: ConfigMap
@@ -467,3 +460,60 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_SALESFORCE_CONTACT
+  - name: SALESFORCE_USERNAME
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SALESFORCE_USERNAME
+  - name: SALESFORCE_PASSWORD
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SALESFORCE_PASSWORD
+  - name: SALESFORCE_SECURITY_TOKEN
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SALESFORCE_SECURITY_TOKEN
+  - name: SALESFORCE_DOMAIN
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SALESFORCE_DOMAIN
+  - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SALESFORCE_ENGAGEMENT_PRODUCT_ID
+  - name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SALESFORCE_ENGAGEMENT_RECORD_TYPE
+  - name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+  - name: SALESFORCE_GENERIC_ACCOUNT_ID
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.SALESFORCE_GENERIC_ACCOUNT_ID
+

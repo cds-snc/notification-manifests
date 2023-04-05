@@ -35,7 +35,5 @@ spec:
               value: $(HASURA_ACCESS_KEY)
             - name: HASURA_GRAPHQL_ENABLE_TELEMETRY
               value: "false"
-            - name: HASURA_GRAPHQL_JWT_SECRET
-              value: '{"type":"HS256", "key": "$(HASURA_JWT_KEY)"}'
             - name: HASURA_GRAPHQL_ENABLED_LOG_TYPES
               value: "startup,http-log,webhook-log,websocket-log,query-log"
