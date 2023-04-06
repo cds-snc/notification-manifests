@@ -2,6 +2,7 @@ bases:
   - ../../base
 resources:
   - cwagent-fluentd-quickstart.yaml
+  - cwagent-configmap.yaml
   - api-target-group.yaml
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
