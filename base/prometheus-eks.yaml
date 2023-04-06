@@ -1,0 +1,209 @@
+---
+# create configmap for prometheus cwagent config
+apiVersion: v1
+data:
+  # cwagent json config
+  cwagentconfig.json: |
+    {
+      "agent": {
+        "region": "ca-central-1",
+        "debug": true
+      },
+      "logs": {
+        "metrics_collected": {
+          "prometheus": {
+            "cluster_name": "notification-canada-ca-scratch-eks-cluster",
+            "log_group_name": "/aws/containerinsights/notification-canada-ca-scratch-eks-cluster/prometheus",
+            "prometheus_config_path": "/etc/prometheusconfig/prometheus.yaml",
+            "emf_processor": {
+              "metric_declaration": [
+                {"source_labels": ["job", "resource"],
+                  "label_matcher": "^kubernetes-apiservers;(services|daemonsets.apps|deployments.apps|configmaps|endpoints|secrets|serviceaccounts|replicasets.apps)",
+                  "dimensions": [["ClusterName","Service","resource"]],
+                  "metric_selectors": [
+                  ".*"
+                  ]
+                },
+                {"source_labels": ["job", "name"],
+                  "label_matcher": "^kubernetes-apiservers;APIServiceRegistrationController$",
+                  "dimensions": [["ClusterName","Service","name"]],
+                  "metric_selectors": [
+                  ".*"
+                  ]
+                },
+                {"source_labels": ["job","code"],
+                  "label_matcher": "^kubernetes-apiservers;2[0-9]{2}$",
+                  "dimensions": [["ClusterName","Service","code"]],
+                  "metric_selectors": [
+                  ".*"
+                  ]
+                },
+                {"source_labels": ["job"],
+                  "label_matcher": "^kubernetes-apiservers",
+                  "dimensions": [["ClusterName","Service"]],
+                  "metric_selectors": [
+                  ".*"
+                  ]
+                },
+                {"source_labels": ["job", "resource"],
+                  "label_matcher": ".*kube-state-metrics.*",
+                  "dimensions": [["ClusterName","namespace", "deployment"]],
+                  "metric_selectors": [
+                  "^kube_deployment_.*"
+                  ]
+                },
+                {"source_labels": ["job", "resource"],
+                  "label_matcher": ".*kube-state-metrics.*",
+                  "dimensions": [["ClusterName","namespace", "pod"]],
+                  "metric_selectors": [
+                  "^kube_pod_.*"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "force_flush_interval": 5
+      }
+    }
+
+kind: ConfigMap
+metadata:
+  name: prometheus-cwagentconfig
+  namespace: amazon-cloudwatch
+
+---
+# create configmap for prometheus scrape config
+apiVersion: v1
+data:
+  # prometheus config
+  prometheus.yaml: |
+    global:
+      scrape_interval: 1m
+      scrape_timeout: 10s
+    scrape_configs:
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - default
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: kubernetes;https
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_namespace
+          target_label: Namespace
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_service_name
+          target_label: Service
+      - job_name: 'kube-state-metrics'
+        static_configs:
+          - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
+
+
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: amazon-cloudwatch
+
+---
+# create cwagent service account and role binding
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cwagent-prometheus
+  namespace: amazon-cloudwatch
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cwagent-prometheus-role
+rules:
+  - apiGroups: [""]
+    resources:
+    - nodes
+    - nodes/proxy
+    - services
+    - endpoints
+    - pods
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+    - extensions
+    resources:
+    - ingresses
+    verbs: ["get", "list", "watch"]
+  - nonResourceURLs: ["/metrics"]
+    verbs: ["get"]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cwagent-prometheus-role-binding
+subjects:
+  - kind: ServiceAccount
+    name: cwagent-prometheus
+    namespace: amazon-cloudwatch
+roleRef:
+  kind: ClusterRole
+  name: cwagent-prometheus-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cwagent-prometheus
+  namespace: amazon-cloudwatch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cwagent-prometheus
+  template:
+    metadata:
+      labels:
+        app: cwagent-prometheus
+    spec:
+      containers:
+        - name: cloudwatch-agent
+          image: public.ecr.aws/cloudwatch-agent/cloudwatch-agent:1.247358.0b252413
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu:  1000m
+              memory: 1000Mi
+            requests:
+              cpu: 200m
+              memory: 200Mi
+          # Please don't change below envs
+          env:
+            - name: CI_VERSION
+              value: "k8s/1.3.13"
+          # Please don't change the mountPath
+          volumeMounts:
+            - name: prometheus-cwagentconfig
+              mountPath: /etc/cwagentconfig
+            - name: prometheus-config
+              mountPath: /etc/prometheusconfig
+
+      volumes:
+        - name: prometheus-cwagentconfig
+          configMap:
+            name: prometheus-cwagentconfig
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: cwagent-prometheus
