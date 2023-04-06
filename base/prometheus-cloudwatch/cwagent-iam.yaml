@@ -18,9 +18,13 @@ rules:
     - extensions
     resources:
     - ingresses
-    verbs: ["get", "list", "watch"]
+    verbs: 
+      - get
+      - list
+      - watch
   - nonResourceURLs: ["/metrics"]
-    verbs: ["get"]
+    verbs:
+      - get
 
 ---
 kind: ClusterRoleBinding
