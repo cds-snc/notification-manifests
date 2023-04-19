@@ -18,6 +18,18 @@ data:
       username: notification-admin-apply
       groups:
         - system:masters
+    - rolearn: arn:aws:iam::239043911459:role/notification-api-apply
+      username: notification-api-apply
+      groups:
+        - system:masters
+    - rolearn: arn:aws:iam::239043911459:role/notification-document-download-api-apply
+      username: notification-document-download-api-apply
+      groups:
+        - system:masters
+    - rolearn: arn:aws:iam::239043911459:role/notification-documentation-apply
+      username: notification-documentation-apply
+      groups:
+        - system:masters
     - rolearn: arn:aws:iam::239043911459:role/notification-manifests-apply
       username: notification-manifests-apply
       groups:
