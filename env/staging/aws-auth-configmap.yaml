@@ -18,3 +18,7 @@ data:
       username: notification-admin-apply
       groups:
         - system:masters
+    - rolearn: arn:aws:iam::239043911459:role/notification-manifests-apply
+      username: notification-manifests-apply
+      groups:
+        - system:masters

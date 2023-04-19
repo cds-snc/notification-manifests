@@ -14,7 +14,7 @@ data:
       - system:masters
       rolearn: arn:aws:iam::296255494825:role/AWSReservedSSO_AWSAdministratorAccess_dcf2167fdeb47617
       username: AWSAdministratorAccess:{{SessionName}}
-    - rolearn: arn:aws:iam::296255494825:role/notification-admin-apply
-      username: notification-admin-apply
+    - rolearn: arn:aws:iam::296255494825:role/notification-manifests-apply
+      username: notification-manifests-apply
       groups:
         - system:masters
