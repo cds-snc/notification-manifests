@@ -1,0 +1,20 @@
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+apiVersion: v1
+data:
+  mapRoles: |
+    - groups:
+      - system:bootstrappers
+      - system:nodes
+      rolearn: arn:aws:iam::296255494825:role/eks-worker-role
+      username: system:node:{{EC2PrivateDNSName}}
+    - groups:
+      - system:masters
+      rolearn: arn:aws:iam::296255494825:role/AWSReservedSSO_AWSAdministratorAccess_dcf2167fdeb47617
+      username: AWSAdministratorAccess:{{SessionName}}
+    - rolearn: arn:aws:iam::296255494825:role/notification-manifests-apply
+      username: notification-manifests-apply
+      groups:
+        - system:masters

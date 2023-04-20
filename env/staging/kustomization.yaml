@@ -9,7 +9,7 @@ resources:
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
   - documentation-target-group.yaml
-
+  - aws-auth-configmap.yaml
 images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:latest
