@@ -182,6 +182,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ENVIRONMENT
+- name: FF_RESIGN_TASKS_ENABLED
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.FF_RESIGN_TASKS_ENABLED
 - name: FF_SPIKE_SMS_DAILY_LIMIT
   objref:
     kind: ConfigMap
@@ -294,6 +301,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.REDIS_PUBLISH_URL
+- name: RESIGN_TASK_FREQUENCY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.RESIGN_TASK_FREQUENCY
 - name: SCAN_FILES_DOCUMENTS_BUCKET
   objref:
     kind: ConfigMap
