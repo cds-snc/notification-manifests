@@ -54,12 +54,12 @@ spec:
               value: '$(DANGEROUS_SALT)'
             - name: DOCUMENT_DOWNLOAD_API_HOST
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
+            - name: FF_RESIGN_TASKS_ENABLED
+              value: '$(FF_RESIGN_TASKS_ENABLED)'
             - name: FF_SPIKE_SMS_DAILY_LIMIT
               value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
             - name: FF_SMS_PARTS_UI
               value: '$(FF_SMS_PARTS_UI)'
-            - name: FF_RESIGN_TASKS_ENABLED
-              value: '$(FF_RESIGN_TASKS_ENABLED)'
             - name: FIDO2_DOMAIN
               value: '$(FIDO2_DOMAIN)'
             - name: HC_EN_SERVICE_ID
