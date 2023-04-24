@@ -58,6 +58,8 @@ spec:
               value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
             - name: FF_SMS_PARTS_UI
               value: '$(FF_SMS_PARTS_UI)'
+            - name: FF_RESIGN_TASKS_ENABLED
+              value: '$(FF_RESIGN_TASKS_ENABLED)'
             - name: FIDO2_DOMAIN
               value: '$(FIDO2_DOMAIN)'
             - name: HC_EN_SERVICE_ID

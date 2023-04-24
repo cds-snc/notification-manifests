@@ -67,6 +67,8 @@ spec:
               value: '$(REDIS_PUBLISH_URL)'
             - name: REDIS_ENABLED
               value: '1'
+            - name: RESIGN_TASK_FREQUENCY
+              value: "$(RESIGN_TASK_FREQUENCY)"
             - name: SECRET_KEY
               value: '$(SECRET_KEY)'
             - name: SENDGRID_API_KEY
