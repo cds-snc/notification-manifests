@@ -10,9 +10,9 @@ resources:
   - aws-auth-configmap.yaml  
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:6213d2b
+    newName: public.ecr.aws/cds-snc/notify-admin:0e9c723
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:dc48064
+    newName: public.ecr.aws/cds-snc/notify-api:d1eb669
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:68566ad
   - name: documentation
