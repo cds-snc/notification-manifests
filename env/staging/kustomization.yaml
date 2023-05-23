@@ -532,6 +532,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FF_BOUNCE_RATE_V1
+- name: FF_BOUNCE_RATE_BACKEND
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.FF_BOUNCE_RATE_BACKEND
 - name: FF_ABTEST_SERVICE_ID
   objref:
     kind: ConfigMap
