@@ -16,14 +16,6 @@ spec:
         app: api
     spec:
       initContainers:
-        - name: init-postgres
-          image: alpine
-          command:
-            [
-              "sh",
-              "-c",
-              "until nslookup $(POSTGRES_HOST); do echo waiting for postgres; sleep 2; done;",
-            ]
         - name: migrate-db
           image: api
           env:
@@ -70,7 +62,7 @@ spec:
             - name: NOTIFY_EMAIL_DOMAIN
               value: '$(BASE_DOMAIN)'
             - name: NOTIFY_ENVIRONMENT
-              value: '$(ENVIRONMENT)'
+              value: 'staging'
             - name: NOTIFICATION_QUEUE_PREFIX
               value: 'eks-notification-canada-ca'
             - name: REDIS_URL

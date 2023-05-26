@@ -1,0 +1,71 @@
+kind: ConfigMap
+metadata:
+  name: prometheus-cwagentconfig
+  namespace: amazon-cloudwatch
+apiVersion: v1
+data:
+  # cwagent json config
+  cwagentconfig.json: |
+    {
+      "agent": {
+        "region": "ca-central-1",
+        "debug": true
+      },
+      "logs": {
+        "metrics_collected": {
+          "prometheus": {
+            "cluster_name": "notification-canada-ca-scratch-eks-cluster",
+            "log_group_name": "/aws/containerinsights/notification-canada-ca-scratch-eks-cluster/prometheus",
+            "prometheus_config_path": "/etc/prometheusconfig/prometheus.yaml",
+            "emf_processor": {
+              "metric_declaration": [
+                {"source_labels": ["job", "resource"],
+                  "label_matcher": "^kubernetes-apiservers;(services|daemonsets.apps|deployments.apps|configmaps|endpoints|secrets|serviceaccounts|replicasets.apps)",
+                  "dimensions": [["ClusterName","Service","resource"]],
+                  "metric_selectors": [
+                  ".*"
+                  ]
+                },
+                {"source_labels": ["job", "name"],
+                  "label_matcher": "^kubernetes-apiservers;APIServiceRegistrationController$",
+                  "dimensions": [["ClusterName","Service","name"]],
+                  "metric_selectors": [
+                  ".*"
+                  ]
+                },
+                {"source_labels": ["job","code"],
+                  "label_matcher": "^kubernetes-apiservers;2[0-9]{2}$",
+                  "dimensions": [["ClusterName","Service","code"]],
+                  "metric_selectors": [
+                  ".*"
+                  ]
+                },
+                {"source_labels": ["job"],
+                  "label_matcher": "^kubernetes-apiservers",
+                  "dimensions": [["ClusterName","Service"]],
+                  "metric_selectors": [
+                  ".*"
+                  ]
+                },
+                {"source_labels": ["job", "resource"],
+                  "label_matcher": ".*kube-state-metrics.*",
+                  "dimensions": [["ClusterName","namespace", "deployment"]],
+                  "metric_selectors": [
+                  "^kube_deployment_.*"
+                  ]
+                },
+                {"source_labels": ["job", "resource"],
+                  "label_matcher": ".*kube-state-metrics.*",
+                  "dimensions": [["ClusterName","namespace", "pod"]],
+                  "metric_selectors": [
+                  "^kube_pod_.*"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "force_flush_interval": 5
+      }
+    }
+
