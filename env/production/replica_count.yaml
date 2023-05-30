@@ -36,7 +36,7 @@ metadata:
   name:  documentation
   namespace: notification-canada-ca
 spec:
-  replicas: 1
+  replicas: 2
 ---
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
@@ -71,5 +71,5 @@ metadata:
   name: document-download-api-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 4
