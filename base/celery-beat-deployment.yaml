@@ -21,6 +21,15 @@ spec:
       labels:
         app: celery-beat
     spec:
+      initContainers:
+        - name: init-postgres
+          image: alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "until nslookup $(POSTGRES_HOST); do echo waiting for postgres; sleep 2; done;",
+            ]
       containers:
         - image: api
           imagePullPolicy: Always
