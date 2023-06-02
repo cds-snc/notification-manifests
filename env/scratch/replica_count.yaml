@@ -38,7 +38,7 @@ metadata:
 spec:
   replicas: 2
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: admin-hpa
@@ -47,7 +47,7 @@ spec:
   minReplicas: 2
   maxReplicas: 2
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: api-hpa
@@ -56,7 +56,7 @@ spec:
   minReplicas: 4
   maxReplicas: 4
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: celery-hpa
@@ -65,7 +65,7 @@ spec:
   minReplicas: 3
   maxReplicas: 10
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: document-download-api-hpa
