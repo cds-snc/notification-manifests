@@ -68,7 +68,7 @@ data:
       "logs":{	
           "metrics_collected":{	
             "kubernetes":{	
-                "cluster_name":"notification-canada-ca-staging-eks-cluster",	
+                "cluster_name":"notification-canada-ca-scratch-eks-cluster",	
                 "metrics_collection_interval":60	
             },	
             "emf": { }	
@@ -119,7 +119,7 @@ spec:
               protocol: TCP
             - containerPort: 25888
               hostPort: 25888
-              protocol: UDP         
+              protocol: UDP   
           resources:
             limits:
               cpu:  200m
@@ -198,7 +198,7 @@ spec:
 # need to replace the placeholders {{cluster_name}} and {{region_name}}
 apiVersion: v1
 data:
-  cluster.name: "notification-canada-ca-staging-eks-cluster"
+  cluster.name: "notification-canada-ca-scratch-eks-cluster"
   logs.region: "ca-central-1"
 kind: ConfigMap
 metadata:
