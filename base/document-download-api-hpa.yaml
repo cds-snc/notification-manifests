@@ -4,6 +4,7 @@ metadata:
   name: document-download-api-hpa
   namespace: notification-canada-ca
 spec:
+  minReplicas: 1
   maxReplicas: 2
   metrics:
   - resource:
@@ -12,7 +13,6 @@ spec:
         averageUtilization: 35
         type: Utilization
     type: Resource
-  minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
