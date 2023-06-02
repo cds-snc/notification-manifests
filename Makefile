@@ -77,7 +77,7 @@ encrypt-staging:
 	zip .env.zip .env &&\
 	aws kms encrypt --key-id a92df413-fc30-4f3e-8047-7433e1a8ad02 --plaintext fileb://.env.zip --output text --query CiphertextBlob --region ca-central-1 | base64 --decode > .env.zip.enc.aws
 
-encrypt-staging:
+encrypt-scratch:
 	cd env/scratch &&\
 	zip .env.zip .env &&\
 	aws kms encrypt --key-id 7d2595b2-65ad-4093-b1df-b820b473d81c --plaintext fileb://.env.zip --output text --query CiphertextBlob --region ca-central-1 | base64 --decode > .env.zip.enc.aws	
