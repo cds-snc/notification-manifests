@@ -8,11 +8,6 @@ decrypt-staging:
 	aws kms decrypt --ciphertext-blob fileb://.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env.zip &&\
 	unzip -o .env.zip
 
-decrypt-scratch:
-	@cd env/scratch &&\
-	aws kms decrypt --ciphertext-blob fileb://.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env.zip &&\
-	unzip -o .env.zip
-
 decrypt-production-orig:
 	@cd env/production &&\
 	aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env
@@ -76,11 +71,6 @@ encrypt-staging:
 	cd env/staging &&\
 	zip .env.zip .env &&\
 	aws kms encrypt --key-id a92df413-fc30-4f3e-8047-7433e1a8ad02 --plaintext fileb://.env.zip --output text --query CiphertextBlob --region ca-central-1 | base64 --decode > .env.zip.enc.aws
-
-encrypt-scratch:
-	cd env/scratch &&\
-	zip .env.zip .env &&\
-	aws kms encrypt --key-id 7d2595b2-65ad-4093-b1df-b820b473d81c --plaintext fileb://.env.zip --output text --query CiphertextBlob --region ca-central-1 | base64 --decode > .env.zip.enc.aws	
 
 production-debug:
 	kubectl kustomize env/production
