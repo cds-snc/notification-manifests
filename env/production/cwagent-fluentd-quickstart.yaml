@@ -61,36 +61,35 @@ data:
   # Configuration is in Json format. No matter what configure change you make,
   # please keep the Json blob valid.
   cwagentconfig.json: |
-    {
-      "agent":{
-          "region":"ca-central-1"
-      },
-      "logs":{
-          "metrics_collected":{
-            "kubernetes":{
-                "cluster_name":"notification-canada-ca-production-eks-cluster",
-                "metrics_collection_interval":60
-            },
-            "emf": { }
-          },
-          "force_flush_interval":5
-      },
-      "metrics":{
-          "namespace": "NotificationCanadaCa",
-          "metrics_collected":{
-            "statsd":{
-                "service_address":":8125",
-                "metrics_collection_interval":15,
-                "metrics_aggregation_interval":60
-            }
-          }
-      }
+    {	
+      "agent":{	
+          "region":"ca-central-1"	
+      },	
+      "logs":{	
+          "metrics_collected":{	
+            "kubernetes":{	
+                "cluster_name":"notification-canada-ca-production-eks-cluster",	
+                "metrics_collection_interval":60	
+            },	
+            "emf": { }	
+          },	
+          "force_flush_interval":5	
+      },	
+      "metrics":{	
+          "namespace": "NotificationCanadaCa",	
+          "metrics_collected":{	
+            "statsd":{	
+                "service_address":":8125",	
+                "metrics_collection_interval":15,	
+                "metrics_aggregation_interval":60	
+            }	
+          }	
+      }	
     }
 kind: ConfigMap
 metadata:
   name: cwagentconfig
   namespace: amazon-cloudwatch
-
 ---
 
 # deploy cwagent as daemonset
@@ -110,7 +109,7 @@ spec:
     spec:
       containers:
         - name: cloudwatch-agent
-          image: amazon/cloudwatch-agent:1.247346.0b249609
+          image: public.ecr.aws/cloudwatch-agent/cloudwatch-agent:1.247359.1b252618
           ports:
             - containerPort: 8125
               hostPort: 8125
@@ -120,7 +119,7 @@ spec:
               protocol: TCP
             - containerPort: 25888
               hostPort: 25888
-              protocol: UDP              
+              protocol: UDP         
           resources:
             limits:
               cpu:  200m
@@ -143,7 +142,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: CI_VERSION
-              value: "k8s/1.2.3"
+              value: "k8s/1.3.15"
           # Please don't change the mountPath
           volumeMounts:
             - name: cwagentconfig
@@ -157,12 +156,17 @@ spec:
             - name: varlibdocker
               mountPath: /var/lib/docker
               readOnly: true
+            - name: containerdsock
+              mountPath: /run/containerd/containerd.sock
+              readOnly: true
             - name: sys
               mountPath: /sys
               readOnly: true
             - name: devdisk
               mountPath: /dev/disk
               readOnly: true
+      nodeSelector:
+        kubernetes.io/os: linux
       volumes:
         - name: cwagentconfig
           configMap:
@@ -176,6 +180,9 @@ spec:
         - name: varlibdocker
           hostPath:
             path: /var/lib/docker
+        - name: containerdsock
+          hostPath:
+            path: /run/containerd/containerd.sock
         - name: sys
           hostPath:
             path: /sys
@@ -188,10 +195,11 @@ spec:
 ---
 
 # create configmap for cluster name and aws region for CloudWatch Logs
+# need to replace the placeholders {{cluster_name}} and {{region_name}}
 apiVersion: v1
 data:
-  cluster.name: notification-canada-ca-production-eks-cluster
-  logs.region: ca-central-1
+  cluster.name: "notification-canada-ca-production-eks-cluster"
+  logs.region: "ca-central-1"
 kind: ConfigMap
 metadata:
   name: cluster-info
@@ -237,6 +245,8 @@ metadata:
   labels:
     k8s-app: fluentd-cloudwatch
 data:
+  kubernetes.conf: |
+    kubernetes.conf
   fluent.conf: |
     @include containers.conf
     @include systemd.conf
@@ -251,13 +261,12 @@ data:
       @id in_tail_container_logs
       @label @containers
       path /var/log/containers/*.log
-      exclude_path ["/var/log/containers/cloudwatch-agent*", "/var/log/containers/fluentd*"]
+      exclude_path ["/var/log/containers/cloudwatch-agent*", "/var/log/containers/fluent*"]
       pos_file /var/log/fluentd-containers.log.pos
       tag *
       read_from_head true
       <parse>
-        @type json
-        time_format %Y-%m-%dT%H:%M:%S.%NZ
+         @type "#{ENV['FLUENT_CONTAINER_TAIL_PARSER_TYPE'] || 'json'}"
       </parse>
     </source>
 
@@ -293,6 +302,7 @@ data:
       <filter **>
         @type kubernetes_metadata
         @id filter_kube_metadata_fluentd
+        watch false
       </filter>
 
       <filter **>
@@ -313,6 +323,7 @@ data:
       <filter **>
         @type kubernetes_metadata
         @id filter_kube_metadata
+        watch false
       </filter>
 
       <filter **>
@@ -342,6 +353,7 @@ data:
       <filter **>
         @type kubernetes_metadata
         @id filter_kube_metadata_cwagent
+        watch false
       </filter>
 
       <filter **>
@@ -446,6 +458,7 @@ data:
       <filter **>
         @type kubernetes_metadata
         @id filter_kube_metadata_systemd
+        watch false
       </filter>
 
       <filter **>
@@ -516,6 +529,7 @@ data:
       <filter **>
         @type kubernetes_metadata
         @id filter_kube_metadata_host
+        watch false
       </filter>
 
       <filter **>
@@ -578,7 +592,7 @@ spec:
           command: ['sh','-c','']
       containers:
         - name: fluentd-cloudwatch
-          image: fluent/fluentd-kubernetes-daemonset:v1.7.3-debian-cloudwatch-1.0
+          image: fluent/fluentd-kubernetes-daemonset:v1.16.1-debian-cloudwatch-1.2
           env:
             - name: REGION
               valueFrom:
@@ -591,7 +605,9 @@ spec:
                   name: cluster-info
                   key: cluster.name
             - name: CI_VERSION
-              value: "k8s/1.2.3"
+              value: "k8s/1.3.15"
+            - name: FLUENT_CONTAINER_TAIL_PARSER_TYPE
+              value: json
           resources:
             limits:
               memory: 400Mi
@@ -603,6 +619,9 @@ spec:
               mountPath: /config-volume
             - name: fluentdconf
               mountPath: /fluentd/etc
+            - name: fluentd-config
+              mountPath: /fluentd/etc/kubernetes.conf
+              subPath: kubernetes.conf
             - name: varlog
               mountPath: /var/log
             - name: varlibdockercontainers
@@ -620,6 +639,12 @@ spec:
             name: fluentd-config
         - name: fluentdconf
           emptyDir: {}
+        - name: fluentd-config
+          configMap:
+            name: fluentd-config
+            items:
+            - key: kubernetes.conf
+              path: kubernetes.conf
         - name: varlog
           hostPath:
             path: /var/log
