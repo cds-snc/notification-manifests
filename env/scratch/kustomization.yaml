@@ -2,7 +2,8 @@ bases:
   - ../../base
 
 resources:
-  - cwagent-fluentd-quickstart.yaml
+  - cwagent.yaml
+  - fluentbit.yaml
   - cwagent-configmap.yaml
   - notification-service-account.yaml
   - api-target-group.yaml
