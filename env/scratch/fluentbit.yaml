@@ -41,7 +41,7 @@ metadata:
   name: fluent-bit-cluster-info
   namespace: amazon-cloudwatch
 data:
-  cluster.name: notification-canada-ca-staging-eks-cluster
+  cluster.name: notification-canada-ca-scratch-eks-cluster
   http.port: "2020"
   http.server: "On"
   logs.region: ca-central-1
@@ -84,7 +84,7 @@ data:
         multiline.parser    docker, cri
         DB                  /var/fluent-bit/state/flb_container.db
         Mem_Buf_Limit       50MB
-        Skip_Long_Lines     On
+        Skip_Long_Lines     Off
         Refresh_Interval    10
         Rotate_Wait         30
         storage.type        filesystem
@@ -126,6 +126,12 @@ data:
         Use_Kubelet         On
         Kubelet_Port        10250
         Buffer_Size         0
+
+    [FILTER]
+        name                  multiline
+        match                 application.*
+        multiline.key_content log
+        multiline.parser      multiline-notify-python
 
     [OUTPUT]
         Name                cloudwatch
@@ -251,6 +257,16 @@ data:
         Regex               (?<log>(?<="log":")\d{4}[\/-]\d{1,2}[\/-]\d{1,2}[ T]\d{2}:\d{2}:\d{2}(?!\.).*?)(?<!\\)".*(?<stream>(?<="stream":").*?)".*(?<time>\d{4}-\d{1,2}-\d{1,2}T\d{2}:\d{2}:\d{2}\.\w*).*(?=})
         Time_Key            time
         Time_Format         %Y-%m-%dT%H:%M:%S.%LZ
+
+    [MULTILINE_PARSER]
+        name          multiline-notify-python
+        type          regex
+        flush_timeout 1000
+        # rules |   state name  | regex pattern         | next state
+        # ------|---------------|-----------------------------------
+        rule      "start_state"   "/^\[.*\].*/"                "cont"
+        rule      "cont"          "/^[^\[].*/"           "cont"
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
