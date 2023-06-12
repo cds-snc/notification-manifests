@@ -260,7 +260,7 @@ spec:
               value: '$(FF_BOUNCE_RATE_BACKEND)'
           resources:
             requests:
-              cpu: "400m"
+              cpu: "200"
               memory: "700Mi"
             limits:
               cpu: "1200m"
