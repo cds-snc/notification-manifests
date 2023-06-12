@@ -128,7 +128,7 @@ spec:
               value: '$(FF_ABTEST_SERVICE_ID)'
           resources:
             requests:
-              cpu: "250"
+              cpu: "250m"
               memory: "700Mi"
             limits:
               cpu: "1200m"
