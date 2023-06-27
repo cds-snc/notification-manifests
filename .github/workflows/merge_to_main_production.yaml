@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
       - name: Set Prod Version
         run: |
@@ -30,7 +30,7 @@ jobs:
           echo "TARGET_VERSION=$TARGET_VERSION" >> $GITHUB_ENV
 
       - name: Checkout target Prod version
-        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           ref: ${{ env.TARGET_VERSION }}
 
