@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/base:0-debian@sha256:668c322e26e7721a39fc099525e0b5c52590b8642a56e3517423578882cbba87
+FROM mcr.microsoft.com/vscode/devcontainers/base:0-debian@sha256:514d9a94b7f68d49bbf22f15dd82cb75cf0467763e96fc12682a07826bd13b04
 
 ARG KUBENS_VERSION
 ARG OCTANT_VERSION
