@@ -34,6 +34,8 @@ spec:
               value: 'False'
             - name: DOCUMENTS_BUCKET
               value: '$(DOCUMENTS_BUCKET)'
+            - name: DEBUG_KEY
+              value: '$(DEBUG_KEY)'
             - name: BACKEND_HOSTNAME
               value: 'api.document.$(BASE_DOMAIN)'
             - name: HTTP_SCHEME
