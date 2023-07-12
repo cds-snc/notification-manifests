@@ -51,6 +51,8 @@ spec:
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
+            - name: DEBUG_KEY
+              value: '$(DEBUG_KEY)'
             - name: DANGEROUS_SALT
               value: '$(DANGEROUS_SALT)'
             - name: DOCUMENT_DOWNLOAD_API_HOST
