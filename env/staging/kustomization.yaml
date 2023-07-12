@@ -568,3 +568,10 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FF_ABTEST_SERVICE_ID
+- name: FF_EMAIL_DAILY_LIMIT
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.EMAIL_DAILY_LIMIT
