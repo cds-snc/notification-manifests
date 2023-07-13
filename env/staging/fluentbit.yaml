@@ -66,10 +66,11 @@ data:
         HTTP_Server               ${HTTP_SERVER}
         HTTP_Listen               0.0.0.0
         HTTP_Port                 ${HTTP_PORT}
+        storage.backlog.mem_limit 5M
+        storage.checksum          off
+        storage.max_chunks_up     16
         storage.path              /var/fluent-bit/state/flb-storage/
         storage.sync              normal
-        storage.checksum          off
-        storage.backlog.mem_limit 5M
 
     @INCLUDE application-log.conf
     @INCLUDE dataplane-log.conf
@@ -83,7 +84,7 @@ data:
         Path                              /var/log/containers/*.log
         multiline.parser                  docker, cri
         DB                                /var/fluent-bit/state/flb_container.db
-        Mem_Buf_Limit                     50MB
+        Mem_Buf_Limit                     128KB
         Skip_Long_Lines                   On
         Refresh_Interval                  10
         Rotate_Wait                       30
@@ -147,7 +148,7 @@ data:
         log_stream_name           $(tag[4])
         auto_create_group         true
         extra_user_agent          container-insights
-        storage.total_limit_size  50M
+        storage.total_limit_size  128K
         log_Level                 info
 
   dataplane-log.conf: |
