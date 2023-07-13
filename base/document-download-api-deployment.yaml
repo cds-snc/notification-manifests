@@ -26,6 +26,8 @@ spec:
           imagePullPolicy: Always
           name: document-download-api
           env:
+            - name: ALLOW_DEBUG_ROUTE
+              value: '$(ALLOW_DEBUG_ROUTE)'
             - name: AUTH_TOKENS
               value: '$(AUTH_TOKENS)'
             - name: AWS_REGION
@@ -34,6 +36,8 @@ spec:
               value: 'False'
             - name: DOCUMENTS_BUCKET
               value: '$(DOCUMENTS_BUCKET)'
+            - name: DEBUG_KEY
+              value: '$(DEBUG_KEY)'
             - name: BACKEND_HOSTNAME
               value: 'api.document.$(BASE_DOMAIN)'
             - name: HTTP_SCHEME
