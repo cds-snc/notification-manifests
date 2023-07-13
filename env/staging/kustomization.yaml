@@ -36,6 +36,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ADMIN_CLIENT_SECRET
+- name: ALLOW_DEBUG_ROUTE
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.ALLOW_DEBUG_ROUTE
 - name: ALLOW_HTML_SERVICE_IDS
   objref:
     kind: ConfigMap
