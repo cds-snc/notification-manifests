@@ -11,11 +11,11 @@ resources:
   - aws-auth-configmap.yaml  
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:1653144
+    newName: public.ecr.aws/cds-snc/notify-admin:f8df207
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:9fcdd9f
+    newName: public.ecr.aws/cds-snc/notify-api:30f8e76
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:e937e8d
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:b797343
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:cf8d032
 configMapGenerator:
@@ -38,6 +38,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.ALLOW_HTML_SERVICE_IDS
+  - name: ALLOW_DEBUG_ROUTE
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.ALLOW_DEBUG_ROUTE
   - name: API_HOST_NAME
     objref:
       kind: ConfigMap
@@ -164,6 +171,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.DOCUMENTS_BUCKET
+  - name: DEBUG_KEY
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.DEBUG_KEY
   - name: DANGEROUS_SALT
     objref:
       kind: ConfigMap
