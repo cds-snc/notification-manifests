@@ -79,19 +79,20 @@ data:
 
   notify-log.conf: |
     [INPUT]
-        Name                tail
-        Tag                 application.*
-        Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/celery*
-        Path                /var/log/containers/*.log
-        multiline.parser    docker, cri
-        DB                  /var/fluent-bit/state/flb_container.db
-        Mem_Buf_Limit       50MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
-        Rotate_Wait         30
-        storage.type        filesystem
-        Read_from_Head      ${READ_FROM_HEAD}
-        Log_Level           info
+        Name                              tail
+        Tag                               application.*
+        Exclude_Path                      /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/celery*
+        Path                              /var/log/containers/*.log
+        multiline.parser                  docker, cri
+        DB                                /var/fluent-bit/state/flb_container.db
+        Mem_Buf_Limit                     50MB
+        Skip_Long_Lines                   On
+        Refresh_Interval                  10
+        Rotate_Wait                       30
+        storage.type                      filesystem
+        Read_from_Head                    ${READ_FROM_HEAD}
+        storage.pause_on_chunks_overlimit Off
+        Log_Level                         info
 
     [INPUT]
         Name                tail
