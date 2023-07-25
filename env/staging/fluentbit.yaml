@@ -71,8 +71,8 @@ data:
         storage.max_chunks_up     128
         storage.path              /var/fluent-bit/state/flb-storage/
         storage.sync              normal
+        storage.metrics           on
 
-    @INCLUDE celery-log.conf
     @INCLUDE notify-log.conf
     @INCLUDE dataplane-log.conf
     @INCLUDE host-log.conf
@@ -81,21 +81,23 @@ data:
     [INPUT]
         Name                              tail
         Tag                               application.*
-        Exclude_Path                      /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/celery*
+        Alias                             notify-apps-tail
+        Exclude_Path                      /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
         Path                              /var/log/containers/*.log
         multiline.parser                  docker, cri
         DB                                /var/fluent-bit/state/flb_container.db
-        Mem_Buf_Limit                     50MB
+        Mem_Buf_Limit                     1MB
         Skip_Long_Lines                   On
         Refresh_Interval                  10
         Rotate_Wait                       30
         storage.type                      filesystem
         Read_from_Head                    ${READ_FROM_HEAD}
         storage.pause_on_chunks_overlimit Off
-        Log_Level                         info
+        Log_Level                         debug
 
     [INPUT]
         Name                tail
+        Alias               fluent-bit-tail
         Tag                 application.*
         Path                /var/log/containers/fluent-bit*
         multiline.parser    docker, cri
@@ -104,10 +106,12 @@ data:
         Skip_Long_Lines     On
         Refresh_Interval    10
         Read_from_Head      ${READ_FROM_HEAD}
-        Log_Level           info
+        Log_Level           debug
+        Skip_Long_Lines     On
 
     [INPUT]
         Name                tail
+        Alias               cwagent-tail
         Tag                 application.*
         Path                /var/log/containers/cloudwatch-agent*
         multiline.parser    docker, cri
@@ -116,10 +120,11 @@ data:
         Skip_Long_Lines     On
         Refresh_Interval    10
         Read_from_Head      ${READ_FROM_HEAD}
-        Log_Level           info
+        Log_Level           debug
 
     [FILTER]
         Name                kubernetes
+        Alias               k8s-filter
         Match               application.*
         Kube_URL            https://kubernetes.default.svc:443
         Kube_Tag_Prefix     application.var.log.containers.
@@ -132,17 +137,26 @@ data:
         Use_Kubelet         On
         Kubelet_Port        10250
         Buffer_Size         0
-        Log_Level           info
+        Log_Level           debug
+
+    [FILTER]
+        name                  multiline
+        Alias                 notify-python-multiline-parser
+        match                 application.*
+        multiline.key_content log
+        multiline.parser      multiline-notify-python
+        Log_Level             debug
 
     [OUTPUT]
         Name                cloudwatch
+        Alias               notify-apps-output
         Match               application.*
         region              ${AWS_REGION}
         log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
         log_stream_name     $(tag[4])
         auto_create_group   true
         extra_user_agent    container-insights
-        Log_Level           info
+        Log_Level           debug
         storage.total_limit_size 5M
 
   celery-log.conf: |
