@@ -60,7 +60,7 @@ data:
     [SERVICE]
         Flush                     5
         Grace                     30
-        Log_Level                 debug
+        Log_Level                 info
         Daemon                    off
         Parsers_File              parsers.conf
         HTTP_Server               ${HTTP_SERVER}
@@ -94,7 +94,7 @@ data:
         storage.type                      filesystem
         Read_from_Head                    ${READ_FROM_HEAD}
         storage.pause_on_chunks_overlimit Off
-        Log_Level                         debug
+        Log_Level                         info
 
     [INPUT]
         Name                tail
@@ -107,7 +107,7 @@ data:
         Skip_Long_Lines     On
         Refresh_Interval    10
         Read_from_Head      ${READ_FROM_HEAD}
-        Log_Level           debug
+        Log_Level           info
 
     [INPUT]
         Name                tail
@@ -120,7 +120,7 @@ data:
         Skip_Long_Lines     On
         Refresh_Interval    10
         Read_from_Head      ${READ_FROM_HEAD}
-        Log_Level           debug
+        Log_Level           info
 
     [FILTER]
         Name                kubernetes
@@ -137,7 +137,7 @@ data:
         Use_Kubelet         On
         Kubelet_Port        10250
         Buffer_Size         0
-        Log_Level           debug
+        Log_Level           info
 
     [OUTPUT]
         Name                cloudwatch
@@ -148,7 +148,7 @@ data:
         log_stream_name     $(tag[4])
         auto_create_group   true
         extra_user_agent    container-insights
-        Log_Level           debug
+        Log_Level           info
         storage.total_limit_size 5M
 
   celery-log.conf: |
