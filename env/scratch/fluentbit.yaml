@@ -9,18 +9,18 @@ kind: ClusterRole
 metadata:
   name: fluent-bit-role
 rules:
-  - nonResourceURLs:
-      - /metrics
-    verbs:
-      - get
-  - apiGroups: [""]
-    resources:
-      - namespaces
-      - pods
-      - pods/logs
-      - nodes
-      - nodes/proxy
-    verbs: ["get", "list", "watch"]
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+- apiGroups: [""]
+  resources:
+  - namespaces
+  - pods
+  - pods/logs
+  - nodes
+  - nodes/proxy
+  verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -31,9 +31,9 @@ roleRef:
   kind: ClusterRole
   name: fluent-bit-role
 subjects:
-  - kind: ServiceAccount
-    name: fluent-bit
-    namespace: amazon-cloudwatch
+- kind: ServiceAccount
+  name: fluent-bit
+  namespace: amazon-cloudwatch
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -66,35 +66,38 @@ data:
         HTTP_Server               ${HTTP_SERVER}
         HTTP_Listen               0.0.0.0
         HTTP_Port                 ${HTTP_PORT}
+        storage.backlog.mem_limit 5M
+        storage.checksum          off
+        storage.max_chunks_up     128
         storage.path              /var/fluent-bit/state/flb-storage/
         storage.sync              normal
-        storage.checksum          off
-        storage.backlog.mem_limit 5M
-        
-    @INCLUDE celery-log.conf
+        storage.metrics           On
+
     @INCLUDE notify-log.conf
     @INCLUDE dataplane-log.conf
     @INCLUDE host-log.conf
 
-
-
   notify-log.conf: |
     [INPUT]
-        Name                tail
-        Tag                 application.*
-        Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/celery*
-        Path                /var/log/containers/*.log
-        multiline.parser    docker, cri
-        DB                  /var/fluent-bit/state/flb_container.db
-        Mem_Buf_Limit       50MB
-        Skip_Long_Lines     Off
-        Refresh_Interval    10
-        Rotate_Wait         30
-        storage.type        filesystem
-        Read_from_Head      ${READ_FROM_HEAD}
+        Name                              tail
+        Alias                             notify-app-logs-tail-input
+        Tag                               application.*
+        Exclude_Path                      /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
+        Path                              /var/log/containers/*.log
+        multiline.parser                  docker, cri
+        DB                                /var/fluent-bit/state/flb_container.db
+        Mem_Buf_Limit                     50MB
+        Skip_Long_Lines                   On
+        Refresh_Interval                  10
+        Rotate_Wait                       30
+        storage.type                      filesystem
+        Read_from_Head                    ${READ_FROM_HEAD}
+        storage.pause_on_chunks_overlimit Off
+        Log_Level                         info
 
     [INPUT]
         Name                tail
+        Alias               fluent-bit-logs-tail-input
         Tag                 application.*
         Path                /var/log/containers/fluent-bit*
         multiline.parser    docker, cri
@@ -103,9 +106,11 @@ data:
         Skip_Long_Lines     On
         Refresh_Interval    10
         Read_from_Head      ${READ_FROM_HEAD}
+        Log_Level           info
 
     [INPUT]
         Name                tail
+        Alias               cloudwatch-agent-logs-tail-input
         Tag                 application.*
         Path                /var/log/containers/cloudwatch-agent*
         multiline.parser    docker, cri
@@ -114,9 +119,11 @@ data:
         Skip_Long_Lines     On
         Refresh_Interval    10
         Read_from_Head      ${READ_FROM_HEAD}
+        Log_Level           info
 
     [FILTER]
         Name                kubernetes
+        Alias               notify-app-logs-k8s-filter
         Match               application.*
         Kube_URL            https://kubernetes.default.svc:443
         Kube_Tag_Prefix     application.var.log.containers.
@@ -129,33 +136,45 @@ data:
         Use_Kubelet         On
         Kubelet_Port        10250
         Buffer_Size         0
+        Log_Level           info
+
+    [FILTER]
+        name                  multiline
+        Alias                 app-logs-mlp
+        match                 application.*
+        multiline.key_content log
+        multiline.parser      multiline-notify-python
 
     [OUTPUT]
         Name                cloudwatch
+        Alias               notify-app-logs-cloudwatch-output
         Match               application.*
         region              ${AWS_REGION}
         log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
         log_stream_name     $(tag[4])
         auto_create_group   true
         extra_user_agent    container-insights
+        Log_Level           info
+        storage.total_limit_size 5M
 
   celery-log.conf: |
     [INPUT]
         Name                tail
+        Alias               notify-celery-logs-tail-input
         Tag                 celery.*
         Path                /var/log/containers/celery*
         multiline.parser    docker, cri
         DB                  /var/fluent-bit/state/celery.db
         Mem_Buf_Limit       50MB
-        Skip_Long_Lines     Off
+        Skip_Long_Lines     On
         Refresh_Interval    10
         Rotate_Wait         30
         storage.type        filesystem
         Read_from_Head      ${READ_FROM_HEAD}
 
-
     [FILTER]
         Name                kubernetes
+        Alias               notify-celery-logs-k8s-filter
         Match               celery.*
         Kube_URL            https://kubernetes.default.svc:443
         Kube_Tag_Prefix     celery.var.log.containers.
@@ -171,12 +190,14 @@ data:
 
     [FILTER]
         name                  multiline
+        Alias                 notify-celery-logs-custom-mlp-filter
         match                 celery.*
         multiline.key_content log
         multiline.parser      multiline-notify-python
 
     [OUTPUT]
         Name                cloudwatch
+        Alias               notify-celery-logs-cloudwatch-output
         Match               celery.*
         region              ${AWS_REGION}
         log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
@@ -187,6 +208,7 @@ data:
   dataplane-log.conf: |
     [INPUT]
         Name                systemd
+        Alias               dataplane-systemd-input
         Tag                 dataplane.systemd.*
         Systemd_Filter      _SYSTEMD_UNIT=docker.service
         Systemd_Filter      _SYSTEMD_UNIT=containerd.service
@@ -197,6 +219,7 @@ data:
 
     [INPUT]
         Name                tail
+        Alias               dataplane-tail-input
         Tag                 dataplane.tail.*
         Path                /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
         multiline.parser    docker, cri
@@ -210,6 +233,7 @@ data:
 
     [FILTER]
         Name                modify
+        Alias               dataplane-modify-filter
         Match               dataplane.systemd.*
         Rename              _HOSTNAME                   hostname
         Rename              _SYSTEMD_UNIT               systemd_unit
@@ -218,11 +242,13 @@ data:
 
     [FILTER]
         Name                aws
+        Alias               dataplane-aws-filter
         Match               dataplane.*
         imds_version        v1
 
     [OUTPUT]
         Name                cloudwatch_logs
+        Alias               dataplane-cloudwatch-output
         Match               dataplane.*
         region              ${AWS_REGION}
         log_group_name      /aws/containerinsights/${CLUSTER_NAME}/dataplane
@@ -233,6 +259,7 @@ data:
   host-log.conf: |
     [INPUT]
         Name                tail
+        Alias               host-dmesg-tail-input
         Tag                 host.dmesg
         Path                /var/log/dmesg
         Key                 message
@@ -244,6 +271,7 @@ data:
 
     [INPUT]
         Name                tail
+        Alias               host-messages-tail-input
         Tag                 host.messages
         Path                /var/log/messages
         Parser              syslog
@@ -255,6 +283,7 @@ data:
 
     [INPUT]
         Name                tail
+        Alias               host-secure-tail-input
         Tag                 host.secure
         Path                /var/log/secure
         Parser              syslog
@@ -266,11 +295,13 @@ data:
 
     [FILTER]
         Name                aws
+        Alias               host-aws-filter
         Match               host.*
         imds_version        v1
 
     [OUTPUT]
         Name                cloudwatch_logs
+        Alias               host-cloudwatch-output
         Match               host.*
         region              ${AWS_REGION}
         log_group_name      /aws/containerinsights/${CLUSTER_NAME}/host
@@ -306,8 +337,10 @@ data:
         flush_timeout 1000
         # rules |   state name  | regex pattern         | next state
         # ------|---------------|-----------------------------------
-        rule      "start_state"   "/^\[.*\].*/"                "cont"
-        rule      "cont"          "/^[^\[].*/"           "cont"
+        rule      "start_state"   "/^\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|^\[.*\]/"           "cont"
+        rule      "cont"          "/^[\s].*|^\b(Traceback|Exception)\b.*/"  "cont"
+        #rule      "start_state"   "/^\[.*\].*/"                "cont"
+        #rule      "cont"          "/^[^\[].*/"           "cont"
 
 ---
 apiVersion: apps/v1
@@ -335,53 +368,53 @@ spec:
         image: public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
         imagePullPolicy: Always
         env:
-            - name: AWS_REGION
-              valueFrom:
-                configMapKeyRef:
-                  name: fluent-bit-cluster-info
-                  key: logs.region
-            - name: CLUSTER_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: fluent-bit-cluster-info
-                  key: cluster.name
-            - name: HTTP_SERVER
-              valueFrom:
-                configMapKeyRef:
-                  name: fluent-bit-cluster-info
-                  key: http.server
-            - name: HTTP_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: fluent-bit-cluster-info
-                  key: http.port
-            - name: READ_FROM_HEAD
-              valueFrom:
-                configMapKeyRef:
-                  name: fluent-bit-cluster-info
-                  key: read.head
-            - name: READ_FROM_TAIL
-              valueFrom:
-                configMapKeyRef:
-                  name: fluent-bit-cluster-info
-                  key: read.tail
-            - name: HOST_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            - name: HOSTNAME
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.name
-            - name: CI_VERSION
-              value: "k8s/1.3.15"
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-cluster-info
+              key: logs.region
+        - name: CLUSTER_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-cluster-info
+              key: cluster.name
+        - name: HTTP_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-cluster-info
+              key: http.server
+        - name: HTTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-cluster-info
+              key: http.port
+        - name: READ_FROM_HEAD
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-cluster-info
+              key: read.head
+        - name: READ_FROM_TAIL
+          valueFrom:
+            configMapKeyRef:
+              name: fluent-bit-cluster-info
+              key: read.tail
+        - name: HOST_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: CI_VERSION
+          value: "k8s/1.3.15"
         resources:
-            limits:
-              memory: 200Mi
-            requests:
-              cpu: 100m
-              memory: 100Mi
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
         volumeMounts:
         # Please don't change below read-only permissions
         - name: fluentbitstate
