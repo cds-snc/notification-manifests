@@ -148,6 +148,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.BULK_SEND_TEST_SERVICE_ID
+- name: CELERY_CONCURRENCY
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.CELERY_CONCURRENCY
 - name: CONTACT_EMAIL
   objref:
     kind: ConfigMap
