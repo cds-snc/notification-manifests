@@ -48,6 +48,8 @@ spec:
               value: '$(BATCH_INSERTION_CHUNK_SIZE)'
             - name: BULK_SEND_TEST_SERVICE_ID
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
+            - name: CELERY_CONCURRENCY
+              value: '$(CELERY_CONCURRENCY)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
