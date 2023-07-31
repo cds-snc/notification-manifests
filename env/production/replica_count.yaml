@@ -64,6 +64,19 @@ metadata:
 spec:
   minReplicas: 3
   maxReplicas: 10
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 50
+        type: Utilization
+    type: Resource
+  - resource:
+      name: memory
+      target:
+        averageUtilization: 75
+        type: Utilization
+    type: Resource    
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
