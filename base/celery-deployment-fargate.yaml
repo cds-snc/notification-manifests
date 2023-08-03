@@ -106,5 +106,5 @@ spec:
       securityContext:
         fsGroup: 65534
       serviceAccountName: notification-service-account
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 60
 status: {}
