@@ -194,3 +194,4 @@ settings:
     # Setting driftEnabled to true enables the drift deprovisioner to watch for drift between currently deployed nodes
     # and the desired state of nodes set in provisioners and node templates
     driftEnabled: false
+provisioners:

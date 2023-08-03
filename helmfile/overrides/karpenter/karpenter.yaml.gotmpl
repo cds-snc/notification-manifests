@@ -1,11 +1,31 @@
 settings:
     aws:
-        defaultInstanceProfile: KarpenterNodeInstanceProfile-notification-canada-ca-scratch-eks-cluster
-        clusterEndpoint: https://5637C8854D9DC4F745B23C23EA493602.sk1.ca-central-1.eks.amazonaws.com
-        clusterName: notification-canada-ca-scratch-eks-cluster
-controller:
-    clusterName: notification-canada-ca-scratch-eks-cluster        
-    clusterEndpoint: https://5637C8854D9DC4F745B23C23EA493602.sk1.ca-central-1.eks.amazonaws.com
+        defaultInstanceProfile: KarpenterNodeInstanceProfile-notification-canada-ca-{{ .Environment.Name }}-eks-cluster
+        clusterEndpoint: {{ requiredEnv "CLUSTER_ENDPOINT" }}
+        clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
 serviceAccount:
     annotations:
-        "eks.amazonaws.com/role-arn": "arn:aws:iam::419291849580:role/karpenter-controller-notification-canada-ca-scratch-eks-cluster"
+        "eks.amazonaws.com/role-arn": "arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/karpenter-controller-notification-canada-ca-{{ .Environment.Name }}-eks-cluster"
+provisioners:
+    apiVersion: karpenter.sh/v1alpha5
+    kind: Provisioner
+    namespace: {{ .Release.Namespace }}
+    metadata:
+        name: default
+    spec:
+        requirements:
+          - key: karpenter.sh/capacity-type
+            operator: In
+            values: ["spot"]
+          - key: node.kubernetes.io/instance-type
+            operator: In
+            values: ["m5.large"]
+        limits:
+            resources:
+            cpu: 1000
+        provider:
+            subnetSelector:
+                karpenter.sh/discovery: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
+            securityGroupSelector:
+                karpenter.sh/discovery: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
+        ttlSecondsAfterEmpty: 30
