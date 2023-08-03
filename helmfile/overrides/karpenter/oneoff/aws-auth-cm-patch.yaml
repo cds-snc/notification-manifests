@@ -1,0 +1,5 @@
+- groups:
+  - system:bootstrappers
+  - system:nodes
+  rolearn: arn:aws:iam::419291849580:role/KarpenterInstanceNodeRole
+  username: system:node:{{EC2PrivateDNSName}}

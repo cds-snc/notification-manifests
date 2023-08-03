@@ -1,0 +1,11 @@
+settings:
+    aws:
+        defaultInstanceProfile: KarpenterNodeInstanceProfile-notification-canada-ca-scratch-eks-cluster
+        clusterEndpoint: https://5637C8854D9DC4F745B23C23EA493602.sk1.ca-central-1.eks.amazonaws.com
+        clusterName: notification-canada-ca-scratch-eks-cluster
+controller:
+    clusterName: notification-canada-ca-scratch-eks-cluster        
+    clusterEndpoint: https://5637C8854D9DC4F745B23C23EA493602.sk1.ca-central-1.eks.amazonaws.com
+serviceAccount:
+    annotations:
+        "eks.amazonaws.com/role-arn": "arn:aws:iam::419291849580:role/karpenter-controller-notification-canada-ca-scratch-eks-cluster"

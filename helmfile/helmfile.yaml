@@ -1,0 +1,11 @@
+releases:
+- name: karpenter
+  namespace: karpenter
+  chart: ./charts/karpenter
+  version: 0.29.2
+  values:
+  - overrides/karpenter/karpenter.yaml.gotmpl
+  labels:
+    category: notify
+    tier: system
+    app: karpenter
