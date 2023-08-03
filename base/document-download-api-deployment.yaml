@@ -21,6 +21,7 @@ spec:
       labels:
         app: document-download-api
     spec:
+      terminationGracePeriodSeconds: 60
       containers:
         - image: document-download-api
           imagePullPolicy: Always
@@ -80,5 +81,4 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
-      terminationGracePeriodSeconds: 30
 status: {}
