@@ -33,7 +33,7 @@ spec:
       - name: celery
         resources:
           requests:
-            cpu: "300m"
+            cpu: "100m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -74,7 +74,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 10
+  maxReplicas: 73
   metrics:
   - resource:
       name: cpu
@@ -82,6 +82,14 @@ spec:
         averageUtilization: 50
         type: Utilization
     type: Resource
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Pods
+        value: 4
+        periodSeconds: 60
+      selectPolicy: Max            
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
