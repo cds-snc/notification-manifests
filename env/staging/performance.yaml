@@ -87,8 +87,8 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
       - type: Pods
-        value: 4
-        periodSeconds: 60
+        value: 12
+        periodSeconds: 45
       selectPolicy: Max            
 ---
 apiVersion: autoscaling/v2
