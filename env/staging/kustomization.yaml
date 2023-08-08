@@ -26,7 +26,7 @@ configMapGenerator:
   env: .env
 
 patches:
- - replica_count.yaml
+ - performance.yaml
 
 vars:
 - name: ADMIN_CLIENT_SECRET
