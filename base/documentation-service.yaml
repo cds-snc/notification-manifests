@@ -5,6 +5,8 @@ metadata:
     name: documentation
   name: documentation
   namespace: notification-canada-ca
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   ports:
