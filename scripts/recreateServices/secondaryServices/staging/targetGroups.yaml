@@ -7,7 +7,7 @@ spec:
   serviceRef:
     name: admin-secondary
     port: 6012
-  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:239043911459:targetgroup/notification-canada-ca-alb-admin/#changeme
+  targetGroupARN: changeme-retrieve-value-from-terraform-outputs
 ---
 apiVersion: elbv2.k8s.aws/v1beta1
 kind: TargetGroupBinding
@@ -18,7 +18,7 @@ spec:
   serviceRef:
     name: api-secondary
     port: 6011
-  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:239043911459:targetgroup/notification-canada-ca-alb-api/#changeme
+  targetGroupARN: changeme-retrieve-value-from-terraform-outputs
 ---
 apiVersion: elbv2.k8s.aws/v1beta1
 kind: TargetGroupBinding
@@ -29,7 +29,7 @@ spec:
   serviceRef:
     name: documentation-secondary
     port: 80
-  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:239043911459:targetgroup/notification-documentation/#changeme
+  targetGroupARN: changeme-retrieve-value-from-terraform-outputs
 ---
 apiVersion: elbv2.k8s.aws/v1beta1
 kind: TargetGroupBinding
@@ -40,6 +40,6 @@ spec:
   serviceRef:
     name: document-download-api-secondary
     port: 7000
-  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:239043911459:targetgroup/notification-document-api/#changeme
+  targetGroupARN: changeme-retrieve-value-from-terraform-outputs
 
 
