@@ -26,5 +26,6 @@
 8. From the scripts/recreateServices directory, run ./recreateServices.sh <env> where <env> is the target environment
 9. Verify that the old services are recreated as internal load balancers
 10. In AWS console, verify the old target groups still have targets
+10. [Revert this PR to target environment](https://github.com/cds-snc/notification-terraform/pull/889)
 11. From the scripts/recreateServices directory, run ./deleteServices.sh <env> where <env> is the target environment 
-12. Revert notification-terraform PR
+10. [Revert this PR to target environment](https://github.com/cds-snc/notification-terraform/pull/887)
