@@ -1,0 +1,43 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: admin-targetgroup-secondary
+  namespace: notification-canada-ca
+spec:
+  serviceRef:
+    name: admin-secondary
+    port: 6012
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:419291849580:targetgroup/admin-secondary/691172d10f3c0cdb
+---
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: api-targetgroup-secondary
+  namespace: notification-canada-ca
+spec:
+  serviceRef:
+    name: api-secondary
+    port: 6011
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:419291849580:targetgroup/k8s-api-secondary/395aceaf447e2195
+---
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: documentation-targetgroup-secondary
+  namespace: notification-canada-ca
+spec:
+  serviceRef:
+    name: documentation-secondary
+    port: 80
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:419291849580:targetgroup/document-secondary/8c99c95c9ac65667
+---
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: dd-api-targetgroup-secondary
+  namespace: notification-canada-ca
+spec:
+  serviceRef:
+    name: document-download-api-secondary
+    port: 7000
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:419291849580:targetgroup/doc-api-secondary/a0148924f7793d82
