@@ -27,6 +27,7 @@ configMapGenerator:
 
 patches:
  - performance.yaml
+ - services.yaml
 
 vars:
 - name: ADMIN_CLIENT_SECRET
