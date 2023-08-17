@@ -18,9 +18,11 @@
 4. From the scripts/recreateServices directory, run ./createSecondaryServices.sh <env> where <env> is the target environment
 5. Verify that the secondary services are created
 6. In the AWS console, verify there are targets in the new target groups
-7. [Merge this PR to target environment] 
+7. [Merge this PR to target environment](https://github.com/cds-snc/notification-terraform/pull/889)
     This PR does the following:
-    - Modifies existing aws_lb_listener_rules to use both the old and new target groups
+    - Modifies existing aws_lb_listener_rules to use only the new target groups
+8. Verify that the services are still working
+9. Merge the manifests PR
 8. From the scripts/recreateServices directory, run ./recreateServices.sh <env> where <env> is the target environment
 9. Verify that the old services are recreated as internal load balancers
 10. In AWS console, verify the old target groups still have targets
