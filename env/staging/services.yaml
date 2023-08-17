@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: admin
+  name: admin
+  namespace: notification-canada-ca
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: api
+  name: api
+  namespace: notification-canada-ca
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: document-download-api
+  name: document-download-api
+  namespace: notification-canada-ca
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: documentation
+  name: documentation
+  namespace: notification-canada-ca
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"      
