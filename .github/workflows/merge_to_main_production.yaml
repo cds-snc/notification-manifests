@@ -106,6 +106,15 @@ jobs:
         env:
           NEW_RELIC_API_KEY: ${{ secrets.PRODUCTION_NEW_RELIC_API_KEY }}
 
+      - name: Report deployment to Sentinel
+        uses: cds-snc/sentinel-forward-data-action@main
+        with:
+          input_data: '{"product": "notify", "sha": "${{ github.sha }}", "version": "${{ env.TARGET_VERSION }}", "repository": "${{ github.repository }}", "environment": "production"}'
+          log_type: CDS_Product_Deployment_Data
+          log_analytics_workspace_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
+          log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
+
+
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
