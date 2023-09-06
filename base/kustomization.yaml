@@ -11,6 +11,7 @@ resources:
   - admin-hpa.yaml
   - celery-beat-deployment.yaml
   - celery-deployment.yaml
+  - celery-sms-send-deployment.yaml
   - celery-service.yaml
   - celery-hpa.yaml
   - celery-sms-deployment.yaml
