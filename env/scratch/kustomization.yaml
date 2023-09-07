@@ -14,6 +14,7 @@ resources:
   - celery-sms-send-deployment.yaml
   - celery-sms-send-service.yaml
   - celery-sms-send-hpa.yaml
+  - celery-deployment.yaml
 images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:latest
