@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cwagent-prometheus
+  namespace: amazon-cloudwatch
+spec:
+  template:
+    spec:
+      containers:
+        - name: cloudwatch-agent
+          image: public.ecr.aws/cloudwatch-agent/cloudwatch-agent:1.300026.3b189
