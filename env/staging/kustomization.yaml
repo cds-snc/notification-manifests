@@ -11,6 +11,9 @@ resources:
   - document-download-api-target-group.yaml
   - documentation-target-group.yaml
   - aws-auth-configmap.yaml
+  - celery-sms-send-deployment.yaml
+  - celery-sms-send-service.yaml
+  - celery-sms-send-hpa.yaml
 images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:latest
@@ -26,9 +29,15 @@ configMapGenerator:
   env: .env
 
 patches:
+<<<<<<< HEAD
  - performance.yaml
  - services.yaml
  - cwagent-patch.yaml
+=======
+  - celery-deployment.yaml
+  - performance.yaml
+  - services.yaml
+>>>>>>> 59d9078a2bed6165b532170550841df00cc777af
 
 vars:
 - name: ADMIN_CLIENT_SECRET
