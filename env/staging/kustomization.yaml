@@ -34,7 +34,6 @@ patches:
   - cwagent-patch.yaml
   - celery-deployment.yaml
 
-
 vars:
 - name: ADMIN_CLIENT_SECRET
   objref:
