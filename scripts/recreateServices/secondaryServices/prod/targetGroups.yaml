@@ -7,7 +7,7 @@ spec:
   serviceRef:
     name: admin-secondary
     port: 6012
-  targetGroupARN: changeme-retrieve-value-from-terraform-outputs
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:296255494825:targetgroup/admin-secondary/dbca992edd53ac7e
 ---
 apiVersion: elbv2.k8s.aws/v1beta1
 kind: TargetGroupBinding
@@ -18,7 +18,7 @@ spec:
   serviceRef:
     name: api-secondary
     port: 6011
-  targetGroupARN: changeme-retrieve-value-from-terraform-outputs
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:296255494825:targetgroup/k8s-api-secondary/a73736be8fb11789
 ---
 apiVersion: elbv2.k8s.aws/v1beta1
 kind: TargetGroupBinding
@@ -29,7 +29,7 @@ spec:
   serviceRef:
     name: documentation-secondary
     port: 80
-  targetGroupARN: changeme-retrieve-value-from-terraform-outputs
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:296255494825:targetgroup/document-secondary/c5846bbc8f3c72c6
 ---
 apiVersion: elbv2.k8s.aws/v1beta1
 kind: TargetGroupBinding
@@ -40,4 +40,4 @@ spec:
   serviceRef:
     name: document-download-api-secondary
     port: 7000
-  targetGroupARN: changeme-retrieve-value-from-terraform-outputs
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:296255494825:targetgroup/doc-api-secondary/c2c171b0612d97c0
