@@ -19,6 +19,8 @@ spec:
       labels:
         app: documentation
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
       containers:
         - name: documentation
           image: documentation

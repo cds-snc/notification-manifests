@@ -22,6 +22,8 @@ spec:
       labels:
         app: celery-sms
     spec:
+      nodeSelector: 
+        karpenter.sh/provisioner-name: default
       initContainers:
         - name: init-postgres
           image: alpine
