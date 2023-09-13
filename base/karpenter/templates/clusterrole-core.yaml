@@ -1,32 +1,13 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: {{ include "karpenter.fullname" . }}-core
-  labels:
-    {{- include "karpenter.labels" . | nindent 4 }}
-  {{- with .Values.additionalAnnotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: {{ include "karpenter.fullname" . }}-core
-subjects:
-  - kind: ServiceAccount
-    name: {{ template "karpenter.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
 ---
+# Source: karpenter/templates/clusterrole-core.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "karpenter.fullname" . }}-core
+  name: karpenter-core
   labels:
-    {{- include "karpenter.labels" . | nindent 4 }}
-  {{- with .Values.additionalAnnotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
 rules:
   # Read
   - apiGroups: ["karpenter.sh"]
@@ -49,8 +30,11 @@ rules:
     verbs: [ "get", "list", "watch" ]
   # Write
   - apiGroups: ["karpenter.sh"]
-    resources: ["provisioners/status", "machines", "machines/status"]
+    resources: ["machines", "machines/status"]
     verbs: ["create", "delete", "update", "patch"]
+  - apiGroups: ["karpenter.sh"]
+    resources: ["provisioners", "provisioners/status"]
+    verbs: ["update", "patch"]
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["create", "patch"]
@@ -64,6 +48,21 @@ rules:
     resources: ["validatingwebhookconfigurations"]
     verbs: ["update"]
     resourceNames: ["validation.webhook.karpenter.sh", "validation.webhook.config.karpenter.sh"]
-  {{- with .Values.additionalClusterRoleRules -}}
-  {{ toYaml . | nindent 2 }}
-  {{- end -}}
+---
+# Source: karpenter/templates/clusterrole-core.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: karpenter-core
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: karpenter-core
+subjects:
+  - kind: ServiceAccount
+    name: karpenter
+    namespace: karpenter

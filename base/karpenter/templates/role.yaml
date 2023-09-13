@@ -1,14 +1,14 @@
+---
+# Source: karpenter/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "karpenter.fullname" . }}
-  namespace: {{ .Release.Namespace }}
+  name: karpenter
+  namespace: karpenter
   labels:
-    {{- include "karpenter.labels" . | nindent 4 }}
-  {{- with .Values.additionalAnnotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
 rules:
   # Read
   - apiGroups: ["coordination.k8s.io"]
@@ -21,7 +21,7 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["update"]
-    resourceNames: ["{{ include "karpenter.fullname" . }}-cert"]
+    resourceNames: ["karpenter-cert"]
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["update", "patch", "delete"]
@@ -46,20 +46,39 @@ rules:
     resources: ["configmaps"]
     verbs: ["create"]
 ---
+# Source: karpenter/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "karpenter.fullname" . }}-dns
+  name: karpenter-dns
   namespace: kube-system
   labels:
-    {{- include "karpenter.labels" . | nindent 4 }}
-  {{- with .Values.additionalAnnotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
 rules:
   # Read
   - apiGroups: [""]
     resources: ["services"]
     resourceNames: ["kube-dns"]
     verbs: ["get"]
+---
+# Source: karpenter/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: karpenter-lease
+  namespace: kube-node-lease
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+rules:
+  # Read
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch"]
+  # Write
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["delete"]

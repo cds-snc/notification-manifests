@@ -1,0 +1,26 @@
+---
+# Source: karpenter/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: karpenter-global-settings
+  namespace: karpenter
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+data:  
+    "aws.assumeRoleARN": ""
+    "aws.assumeRoleDuration": "15m"
+    "aws.clusterCABundle": ""
+    "aws.clusterEndpoint": ""
+    "aws.clusterName": "notification-canada-ca-scratch-eks-cluster"
+    "aws.defaultInstanceProfile": "KarpenterNodeInstanceProfile-notification-canada-ca-scratch-eks-cluster"
+    "aws.enableENILimitedPodDensity": "true"
+    "aws.enablePodENI": "false"
+    "aws.interruptionQueueName": ""
+    "aws.isolatedVPC": "false"
+    "aws.vmMemoryOverheadPercent": "0.075"
+    "batchIdleDuration": "1s"
+    "batchMaxDuration": "10s"
+    "featureGates.driftEnabled": "false"
