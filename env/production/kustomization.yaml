@@ -23,6 +23,7 @@ configMapGenerator:
     env: .env
 patches:
   - performance.yaml
+  - karpenter.yaml
 vars:
   - name: ADMIN_CLIENT_SECRET
     objref:
