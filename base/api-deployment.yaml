@@ -51,6 +51,10 @@ spec:
               value: '$(BATCH_INSERTION_CHUNK_SIZE)'
             - name: BULK_SEND_TEST_SERVICE_ID
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
+            - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+              value: '$(CRM_GITHUB_PERSONAL_ACCESS_TOKEN)'
+            - name: CRM_ORG_LIST_URL
+              value: '$(CRM_ORG_LIST_URL)' 
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DEBUG_KEY
@@ -168,6 +172,10 @@ spec:
               value: '$(AWS_SES_SECRET_KEY)'
             - name: BATCH_INSERTION_CHUNK_SIZE
               value: '$(BATCH_INSERTION_CHUNK_SIZE)'
+            - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+              value: '$(CRM_GITHUB_PERSONAL_ACCESS_TOKEN)'
+            - name: CRM_ORG_LIST_URL
+              value: '$(CRM_ORG_LIST_URL)'            
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
