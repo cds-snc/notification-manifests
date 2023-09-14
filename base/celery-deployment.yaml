@@ -51,7 +51,7 @@ spec:
             - name: CELERY_CONCURRENCY
               value: '$(CELERY_CONCURRENCY)'
             - name: CELERY_DELIVER_SMS_RATE_LIMIT
-              value: '$(CELERY_DELIVER_SMS_RATE_LIMIT)'  
+              value: '$(CELERY_DELIVER_SMS_RATE_LIMIT)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
