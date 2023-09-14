@@ -161,6 +161,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.CELERY_CONCURRENCY
+- name: CELERY_DELIVER_SMS_RATE_LIMIT
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.CELERY_DELIVER_SMS_RATE_LIMIT
 - name: CONTACT_EMAIL
   objref:
     kind: ConfigMap
