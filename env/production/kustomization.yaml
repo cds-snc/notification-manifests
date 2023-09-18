@@ -13,7 +13,7 @@ images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:1ea8f4e
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:9f06fae
+    newName: public.ecr.aws/cds-snc/notify-api:ae35a8b
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:c3f68e5
   - name: documentation
@@ -150,6 +150,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.CELERY_CONCURRENCY
+  - name: CELERY_DELIVER_SMS_RATE_LIMIT
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.CELERY_DELIVER_SMS_RATE_LIMIT      
   - name: CONTACT_EMAIL
     objref:
       kind: ConfigMap
