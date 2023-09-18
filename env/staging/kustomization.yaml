@@ -1,6 +1,7 @@
 bases:
   - ../../base
-
+  - ../../base-karpenter
+  
 resources:
   - fluentbit.yaml
   - cwagent.yaml

@@ -1,5 +1,6 @@
 bases:
   - ../../base
+  - ../../base-karpenter
 
 resources:
   - cwagent.yaml

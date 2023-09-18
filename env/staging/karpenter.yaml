@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: karpenter
     app.kubernetes.io/version: "0.30.0"
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::239043911459:role/karpenter-controller-notification-canada-ca-staging-eks-cluster
+    eks.amazonaws.com/role-arn: arn:aws:iam::239043911459:role/karpenter-controller-eks
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -26,7 +26,7 @@ data:
     "aws.clusterCABundle": ""
     "aws.clusterEndpoint": ""
     "aws.clusterName": "notification-canada-ca-staging-eks-cluster"
-    "aws.defaultInstanceProfile": "KarpenterNodeInstanceProfile-notification-canada-ca-staging-eks-cluster"
+    "aws.defaultInstanceProfile": "KarpenterNodeInstanceProfile-karpenter-controller-eks"
     "aws.enableENILimitedPodDensity": "true"
     "aws.enablePodENI": "false"
     "aws.interruptionQueueName": ""

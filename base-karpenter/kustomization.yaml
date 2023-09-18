@@ -1,0 +1,20 @@
+resources:
+  - karpenter/crds/karpenter.k8s.aws_awsnodetemplates.yaml
+  - karpenter/crds/karpenter.sh_machines.yaml
+  - karpenter/crds/karpenter.sh_provisioners.yaml
+  - karpenter/templates/aggregate-clusterrole.yaml
+  - karpenter/templates/clusterrole-core.yaml 
+  - karpenter/templates/clusterrole.yaml
+  - karpenter/templates/configmap-logging.yaml
+  - karpenter/templates/configmap.yaml
+  - karpenter/templates/deployment.yaml
+  - karpenter/templates/poddisruptionbudget.yaml
+  - karpenter/templates/role.yaml
+  - karpenter/templates/rolebinding.yaml
+  - karpenter/templates/secret-webhook-cert.yaml
+  - karpenter/templates/service.yaml
+  - karpenter/templates/serviceaccount.yaml
+  - karpenter/templates/webhooks-core.yaml
+  - karpenter/templates/webhooks.yaml
+  - karpenter/provisioners/default.yaml
+  
