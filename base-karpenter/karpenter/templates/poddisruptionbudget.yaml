@@ -1,0 +1,17 @@
+---
+# Source: karpenter/templates/poddisruptionbudget.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: karpenter
+  namespace: karpenter
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karpenter
+      app.kubernetes.io/instance: karpenter

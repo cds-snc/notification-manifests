@@ -1,6 +1,7 @@
 bases:
   - ../../base
-
+  - ../../base-karpenter
+  
 resources:
   - fluentbit.yaml
   - cwagent.yaml
@@ -33,6 +34,7 @@ patches:
   - services.yaml
   - cwagent-patch.yaml
   - celery-deployment.yaml
+  - karpenter.yaml  
 
 vars:
 - name: ADMIN_CLIENT_SECRET

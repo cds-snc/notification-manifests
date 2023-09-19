@@ -1,0 +1,57 @@
+---
+# Source: karpenter/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: karpenter
+  namespace: karpenter
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: karpenter
+subjects:
+  - kind: ServiceAccount
+    name: karpenter
+    namespace: karpenter
+---
+# Source: karpenter/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: karpenter-dns
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: karpenter-dns
+subjects:
+  - kind: ServiceAccount
+    name: karpenter
+    namespace: karpenter
+---
+# Source: karpenter/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: karpenter-lease
+  namespace: kube-node-lease
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: karpenter-lease
+subjects:
+  - kind: ServiceAccount
+    name: karpenter
+    namespace: karpenter

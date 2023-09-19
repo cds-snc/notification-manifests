@@ -22,6 +22,8 @@ spec:
       labels:
         app: celery-sms
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
       initContainers:
         - name: init-postgres
           image: alpine

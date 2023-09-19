@@ -20,6 +20,8 @@ spec:
       labels:
         app: admin
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
       initContainers:
         - name: init-postgres
           image: alpine

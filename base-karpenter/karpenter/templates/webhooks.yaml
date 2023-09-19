@@ -1,0 +1,84 @@
+---
+# Source: karpenter/templates/webhooks.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: defaulting.webhook.karpenter.k8s.aws
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+webhooks:
+  - name: defaulting.webhook.karpenter.k8s.aws
+    admissionReviewVersions: ["v1"]
+    clientConfig:
+      service:
+        name: karpenter
+        namespace: karpenter
+        port: 8443
+    failurePolicy: Fail
+    sideEffects: None
+    rules:
+      - apiGroups:
+          - karpenter.k8s.aws
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - awsnodetemplates
+          - awsnodetemplates/status
+        scope: '*'
+      - apiGroups:
+          - karpenter.sh
+        apiVersions:
+          - v1alpha5
+        resources:
+          - provisioners
+          - provisioners/status
+        operations:
+          - CREATE
+          - UPDATE
+---
+# Source: karpenter/templates/webhooks.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: validation.webhook.karpenter.k8s.aws
+  labels:
+    app.kubernetes.io/name: karpenter
+    app.kubernetes.io/instance: karpenter
+    app.kubernetes.io/version: "0.30.0"
+webhooks:
+  - name: validation.webhook.karpenter.k8s.aws
+    admissionReviewVersions: ["v1"]
+    clientConfig:
+      service:
+        name: karpenter
+        namespace: karpenter
+        port: 8443
+    failurePolicy: Fail
+    sideEffects: None
+    rules:
+      - apiGroups:
+          - karpenter.k8s.aws
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - awsnodetemplates
+          - awsnodetemplates/status
+        scope: '*'
+      - apiGroups:
+          - karpenter.sh
+        apiVersions:
+          - v1alpha5
+        resources:
+          - provisioners
+          - provisioners/status
+        operations:
+          - CREATE
+          - UPDATE
