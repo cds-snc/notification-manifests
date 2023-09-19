@@ -2,6 +2,7 @@ resources:
   - karpenter/crds/karpenter.k8s.aws_awsnodetemplates.yaml
   - karpenter/crds/karpenter.sh_machines.yaml
   - karpenter/crds/karpenter.sh_provisioners.yaml
+  - karpenter/templates/namespace.yaml
   - karpenter/templates/aggregate-clusterrole.yaml
   - karpenter/templates/clusterrole-core.yaml 
   - karpenter/templates/clusterrole.yaml
