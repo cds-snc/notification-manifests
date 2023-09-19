@@ -22,8 +22,8 @@ spec:
       labels:
         app: celery-sms
     spec:
-      nodeSelector: 
-        karpenter.sh/provisioner-name: default
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
       initContainers:
         - name: init-postgres
           image: alpine
