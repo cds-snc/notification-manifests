@@ -34,3 +34,4 @@ resources:
   - kube-state-metrics/ksm-deployment.yaml
   - kube-state-metrics/ksm-service-account.yaml
   - kube-state-metrics/ksm-service.yaml
+  
