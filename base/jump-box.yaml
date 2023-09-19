@@ -15,8 +15,6 @@ spec:
       labels:
         app: jump-box
     spec:
-      nodeSelector:
-        karpenter.sh/provisioner-name: default    
       containers:
         - name: jump-box
           image: alpine/socat
