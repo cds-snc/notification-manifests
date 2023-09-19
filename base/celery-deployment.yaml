@@ -23,6 +23,8 @@ spec:
         app: celery
         # profile: fargate
     spec:
+      nodeSelector: 
+        karpenter.sh/provisioner-name: default
       containers:
         - image: api
           imagePullPolicy: Always

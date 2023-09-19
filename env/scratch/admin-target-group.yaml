@@ -7,4 +7,4 @@ spec:
   serviceRef:
     name: admin
     port: 6012
-  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:419291849580:targetgroup/notification-canada-ca-alb-admin/f52a9f5f09553256
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:419291849580:targetgroup/notification-canada-ca-alb-admin/0b3c0a6cb05f4ddb

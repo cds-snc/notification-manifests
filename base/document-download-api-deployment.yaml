@@ -21,6 +21,8 @@ spec:
       labels:
         app: document-download-api
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
       containers:
         - image: document-download-api
           imagePullPolicy: Always

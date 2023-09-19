@@ -21,6 +21,8 @@ spec:
       labels:
         app: celery-sms-send
     spec:
+      nodeSelector: 
+        karpenter.sh/provisioner-name: default    
       containers:
         - image: api
           imagePullPolicy: Always
