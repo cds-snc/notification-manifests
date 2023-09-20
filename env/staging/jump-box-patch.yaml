@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jump-box
+  namespace: notification-canada-ca
+  labels:
+    app: jump-box
+spec:
+  template:
+    spec:
+      nodeSelector: 
+        karpenter.sh/provisioner-name: default    
