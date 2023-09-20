@@ -54,7 +54,7 @@ spec:
       - name: celery-sms-send
         resources:
           requests:
-            cpu: "100m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -124,7 +124,7 @@ spec:
   - resource:
       name: cpu
       target:
-        averageUtilization: 25
+        averageUtilization: 50
         type: Utilization
     type: Resource
   behavior:
