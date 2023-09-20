@@ -35,6 +35,8 @@ patches:
   - cwagent-patch.yaml
   - celery-deployment.yaml
   - karpenter.yaml  
+  - hasura-patch.yaml
+  - jump-box-patch.yaml
 
 vars:
 - name: ADMIN_CLIENT_SECRET
