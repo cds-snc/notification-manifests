@@ -51,7 +51,7 @@ jobs:
 
       - name: Apply changes
         run: |
-          kubectl apply -k env/staging --kubeconfig=/home/runner/.kube/config
+          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
 
       - name: Check for env changes
         working-directory: env/staging
