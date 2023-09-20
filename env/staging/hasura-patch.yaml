@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hasura
+  namespace: notification-canada-ca
+  labels:
+    app: hasura
+spec:
+  template:
+    spec:
+      nodeSelector: 
+        karpenter.sh/provisioner-name: default    
