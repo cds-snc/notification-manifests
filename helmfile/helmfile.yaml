@@ -8,6 +8,8 @@ repositories:
     url: https://grafana.github.io/helm-charts
   - name: aws-ebs-csi-driver
     url: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+  - name: prometheus-community 
+    url: https://prometheus-community.github.io/helm-charts
 
 releases:
 
@@ -31,6 +33,15 @@ releases:
     values:
     - ./overrides/aws-ebs-csi-driver-secrets.yaml.gotmpl
 
+  - name: prometheus
+    namespace: monitoring
+    labels:
+      app: prometheus
+      tier: full
+      category: monitoring
+    chart:  prometheus-community/prometheus
+    version: 25.0.0
+
   - name: grafana
     namespace: monitoring
     labels:
@@ -40,4 +51,5 @@ releases:
     chart: grafana/grafana
     version: 6.59.4
     values:
-    - ./overrides/grafana.yaml.gotmpl
+    - ./overrides/grafana/grafana.yaml.gotmpl
+    - ./overrides/grafana/dashboards.yaml.gotmpl

@@ -8,3 +8,4 @@
 .previous.env.zip.enc.aws
 .previous.env.enc.aws
 *kubeconfig*
+scratchContext.sh
