@@ -16,7 +16,7 @@ spec:
   providerRef:
     name: default
   consolidation: 
-    enabled: true
+    enabled: false
 ---
 apiVersion: karpenter.k8s.aws/v1alpha1
 kind: AWSNodeTemplate
