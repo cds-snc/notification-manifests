@@ -53,8 +53,7 @@ spec:
       cpu: 1000
   providerRef:
     name: default
-  consolidation: 
-    enabled: true
+  ttlSecondsAfterEmpty: 300
 ---
 apiVersion: karpenter.k8s.aws/v1alpha1
 kind: AWSNodeTemplate
