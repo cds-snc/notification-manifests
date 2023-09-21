@@ -14,13 +14,22 @@ releases:
   - name: aws-ebs-csi-driver
     namespace: kube-system
     labels:
-      app: aws-ebs-csi-driver
+      app: ebscsi
       tier: full
       category: system
     chart: aws-ebs-csi-driver/aws-ebs-csi-driver
     values:
     - ./overrides/aws-ebs-csi-driver.yaml.gotmpl
 
+  - name: aws-ebs-csi-driver-secrets
+    namespace: kube-system
+    labels:
+      app: ebscsi
+      tier: secrets
+      category: system
+    chart: ./charts/secrets-injector
+    values:
+    - ./overrides/aws-ebs-csi-driver-secrets.yaml.gotmpl
 
   - name: grafana
     namespace: monitoring

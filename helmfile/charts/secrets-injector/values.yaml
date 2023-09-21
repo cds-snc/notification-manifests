@@ -1,8 +1,1 @@
 secrets:
-  - apiVersion: v1
-    kind: Secret
-    metadata:
-      name: ebs-csi-controller-sa-token
-      annotations:
-        kubernetes.io/service-account.name: ebs-csi-controller-sa
-    type: kubernetes.io/service-account-token
