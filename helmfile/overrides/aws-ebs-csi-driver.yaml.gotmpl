@@ -1,4 +1,5 @@
 controller:
     serviceAccount:
         autoMountServiceAccountToken: true
-        
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::419291849580:role/ebs-csi-controller
