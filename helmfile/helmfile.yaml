@@ -1,0 +1,34 @@
+environments:
+  scratch:
+  staging:
+  production:
+---
+repositories:
+  - name: grafana 
+    url: https://grafana.github.io/helm-charts
+  - name: aws-ebs-csi-driver
+    url: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+
+releases:
+
+  - name: aws-ebs-csi-driver
+    namespace: kube-system
+    labels:
+      app: aws-ebs-csi-driver
+      tier: full
+      category: system
+    chart: aws-ebs-csi-driver/aws-ebs-csi-driver
+    values:
+    - ./overrides/aws-ebs-csi-driver.yaml.gotmpl
+
+
+  - name: grafana
+    namespace: monitoring
+    labels:
+      app: grafana
+      tier: full
+      category: monitoring
+    chart: grafana/grafana
+    version: 6.59.4
+    values:
+    - ./overrides/grafana.yaml.gotmpl
