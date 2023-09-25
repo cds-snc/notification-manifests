@@ -43,7 +43,7 @@ spec:
       - name: celery-sms-send
         resources:
           requests:
-            cpu: "100m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -115,7 +115,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 10
+  maxReplicas: 11
   metrics:
   - resource:
       name: cpu
