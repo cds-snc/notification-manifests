@@ -5,5 +5,7 @@ resources:
   - celery-hpa.yaml
   - celery-sms-deployment.yaml
   - celery-sms-service.yaml
-
+  - celery-sms-send-deployment.yaml
+  - celery-sms-send-hpa.yaml
+  - celery-sms-send-service.yaml
   

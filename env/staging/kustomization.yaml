@@ -20,9 +20,6 @@ resources:
   - document-download-api-target-group.yaml
   - documentation-target-group.yaml
   - aws-auth-configmap.yaml
-  - celery-sms-send-deployment.yaml
-  - celery-sms-send-service.yaml
-  - celery-sms-send-hpa.yaml
 images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:latest
@@ -41,7 +38,6 @@ patches:
   - performance.yaml
   - services.yaml
   - cwagent-patch.yaml
-  - celery-deployment.yaml
   - karpenter.yaml  
   - hasura-patch.yaml
   - jump-box-patch.yaml
