@@ -23,6 +23,8 @@ spec:
         app: celery
         # profile: fargate
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
       containers:
         - image: api
           imagePullPolicy: Always
@@ -50,8 +52,6 @@ spec:
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: CELERY_CONCURRENCY
               value: '$(CELERY_CONCURRENCY)'
-            - name: CELERY_DELIVER_SMS_RATE_LIMIT
-              value: '$(CELERY_DELIVER_SMS_RATE_LIMIT)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
@@ -126,7 +126,7 @@ spec:
                 - -c
                 - /app/scripts/run_celery_exit.sh
           command: ["/bin/sh"]
-          args: ["-c", "sh /app/scripts/run_celery.sh"]
+          args: ["-c", "sh /app/scripts/run_celery_no_sms_sending.sh"]
           resources:
             requests:
               cpu: "100m"
