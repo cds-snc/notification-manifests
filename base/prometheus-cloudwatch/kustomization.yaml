@@ -1,0 +1,7 @@
+resources:
+  - cwagent-deployment.yaml
+  - cwagent-iam.yaml
+  - cwagent-prometheus-configmap.yaml
+  - cwagent-service-account.yaml
+
+  

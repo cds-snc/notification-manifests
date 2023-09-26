@@ -1,0 +1,4 @@
+resources:
+  - jump-box.yaml
+  - hasura-deployment.yaml
+  - hasura-service.yaml
