@@ -1,20 +1,26 @@
 bases:
-  - ../../base
-  - ../../base-karpenter
-
+  - ../../base/karpenter
+  - ../../base/kube-state-metrics
+  #- ../../base/prometheus-cloudwatch
+  - ../../base/utils
+  - ../../base/notify-admin
+  - ../../base/notify-api
+  - ../../base/notify-celery
+  - ../../base/notify-document-download
+  - ../../base/notify-documentation
+  - ../../base/notify-system
+  
 resources:
-  - cwagent.yaml
-  - fluentbit.yaml
-  - cwagent-configmap.yaml
+  #- cwagent.yaml
+  #- fluentbit.yaml
+  #- cwagent-configmap.yaml
   - notification-service-account.yaml
   - api-target-group.yaml
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
   - documentation-target-group.yaml
   - aws-auth-configmap.yaml
-  - celery-sms-send-deployment.yaml
-  - celery-sms-send-service.yaml
-  - celery-sms-send-hpa.yaml
+
 images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:latest
@@ -32,7 +38,7 @@ configMapGenerator:
 patches:
   - performance.yaml
   - services.yaml
-  - cwagent-patch.yaml
+#  - cwagent-patch.yaml
   - celery-deployment.yaml
   - karpenter.yaml
 

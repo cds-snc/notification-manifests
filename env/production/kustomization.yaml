@@ -1,5 +1,14 @@
 bases:
-  - ../../base
+  - ../../base/kube-state-metrics
+  - ../../base/prometheus-cloudwatch
+  - ../../base/utils
+  - ../../base/notify-admin
+  - ../../base/notify-api
+  - ../../base/notify-celery
+  - ../../base/notify-document-download
+  - ../../base/notify-documentation
+  - ../../base/notify-system
+
 resources:
   - cwagent.yaml
   - cwagent-configmap.yaml
