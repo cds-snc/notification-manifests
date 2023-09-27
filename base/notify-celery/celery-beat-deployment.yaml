@@ -21,8 +21,6 @@ spec:
       labels:
         app: celery-beat
     spec:
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
       initContainers:
         - name: init-postgres
           image: alpine

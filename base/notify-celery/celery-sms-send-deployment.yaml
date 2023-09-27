@@ -21,8 +21,6 @@ spec:
       labels:
         app: celery-sms-send
     spec:
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
       containers:
         - image: api
           imagePullPolicy: Always
