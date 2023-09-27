@@ -1,0 +1,55 @@
+applicationName: admin
+labels:
+    group: notification
+    team: notification
+deployment:
+    replicas: 2
+    nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+    ports:
+        - containerPort: 6012    
+    resources:
+        requests:
+            cpu: "250m"
+            memory: "700Mi"
+        limits:
+            cpu: "1200m"
+            memory: "900Mi"
+    readinessProbe:
+        httpGet:
+            path: /_status?simple=true
+            port: 6012
+        initialDelaySeconds: 10
+        periodSeconds: 3
+        timeoutSeconds: 1
+        successThreshold: 3
+        failureThreshold: 10        
+    livenessProbe:
+        httpGet:
+            path: "/_status?simple=true"
+            port: 6012
+        initialDelaySeconds: 30
+        periodSeconds: 3
+        timeoutSeconds: 1
+        successThreshold: 1
+        failureThreshold: 3     
+    initContainers:
+        - name: init-postgres
+          image: alpine
+          command:
+            [
+                "sh",
+                "-c",
+                "until nc -z -w 2 api.$(BASE_DOMAIN) 443; do echo waiting for api; sleep 2; done;",
+            ]     
+    image:
+      repository: admin
+      pullPolicy: Always
+    name: admin                      
+    env:
+      ADMIN_BASE_URL:
+        value: https://{{ requiredEnv "ADMIN_BASE_URL" }}
+      ADMIN_CLIENT_SECRET:
+        value: {{ requiredEnv "ADMIN_CLIENT_SECRET" }}
+      ALLOW_DEBUG_ROUTE:
+        value: {{ requiredEnv "ALLOW_DEBUG_ROUTE" }}
