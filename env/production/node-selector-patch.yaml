@@ -19,7 +19,7 @@ spec:
     spec:
       nodeSelector:
         eks.amazonaws.com/capacityType: ON_DEMAND    
-
+---
 # Celery SMS Send
 apiVersion: apps/v1
 kind: Deployment
