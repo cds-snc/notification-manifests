@@ -41,6 +41,7 @@ patches:
   - karpenter.yaml  
   - hasura-patch.yaml
   - jump-box-patch.yaml
+  - node-selector-patch.yaml
 
 vars:
 - name: ADMIN_CLIENT_SECRET
