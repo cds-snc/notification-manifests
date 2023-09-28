@@ -21,11 +21,11 @@ resources:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:58b2459
+    newName: public.ecr.aws/cds-snc/notify-admin:08f33a0
   - name: api
     newName: public.ecr.aws/cds-snc/notify-api:ec14c43
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:dc578f5
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:bf771aa
   - name: documentation
     newName: public.ecr.aws/cds-snc/notify-documentation:01fbb67
 configMapGenerator:
