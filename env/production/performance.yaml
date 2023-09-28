@@ -108,7 +108,7 @@ metadata:
   name: celery-sms-send-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 3
+  minReplicas: 11
   maxReplicas: 11
   metrics:
   - resource:
