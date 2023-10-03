@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: karpenter
     app.kubernetes.io/version: "0.30.0"
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::239043911459:role/karpenter-controller-eks
+    eks.amazonaws.com/role-arn: arn:aws:iam::296255494825:role/karpenter-controller-eks
 ---
 apiVersion: v1
 kind: ConfigMap
