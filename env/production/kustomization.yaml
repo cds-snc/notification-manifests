@@ -1,4 +1,5 @@
 bases:
+  - ../../base/karpenter
   - ../../base/kube-state-metrics
   - ../../base/prometheus-cloudwatch
   - ../../base/utils
@@ -19,22 +20,24 @@ resources:
   - documentation-target-group.yaml
   - aws-auth-configmap.yaml  
 
-images:
-  - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:58b2459
-  - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:ec14c43
-  - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:dc578f5
-  - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:01fbb67
-configMapGenerator:
-  - name: application-config
-    env: .env
 patches:
   - performance.yaml
   - cwagent-patch.yaml
   - node-selector-patch.yaml
+  - karpenter.yaml 
+
+images:
+  - name: admin
+    newName: public.ecr.aws/cds-snc/notify-admin:2268ce2
+  - name: api
+    newName: public.ecr.aws/cds-snc/notify-api:a0d08e8
+  - name: document-download-api
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:bf771aa
+  - name: documentation
+    newName: public.ecr.aws/cds-snc/notify-documentation:5026567
+configMapGenerator:
+  - name: application-config
+    env: .env
 vars:
   - name: ADMIN_CLIENT_SECRET
     objref:
