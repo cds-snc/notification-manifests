@@ -2,10 +2,6 @@
 
 #### KARPENTER SPOT INSTANCES - EPHEMERAL, STATE NOT REQUIRED
 
-# NONE UNTIL KARPENTER IS IN PROD
-
-### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
-
 # Celery Email
 apiVersion: apps/v1
 kind: Deployment
@@ -18,7 +14,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        karpenter.sh/provisioner-name: default
 ---
 # Celery SMS Send
 apiVersion: apps/v1
@@ -32,7 +28,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        karpenter.sh/provisioner-name: default    
 ---
 # Notification API K8s
 apiVersion: apps/v1
@@ -46,9 +42,10 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        karpenter.sh/provisioner-name: default
 ---
 
+### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
 # Celery Beat
 apiVersion: apps/v1
 kind: Deployment
