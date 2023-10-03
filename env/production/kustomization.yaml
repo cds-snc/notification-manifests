@@ -1,4 +1,5 @@
 bases:
+  - ../../base/karpenter
   - ../../base/kube-state-metrics
   - ../../base/prometheus-cloudwatch
   - ../../base/utils
@@ -19,6 +20,12 @@ resources:
   - documentation-target-group.yaml
   - aws-auth-configmap.yaml  
 
+patches:
+  - performance.yaml
+  - cwagent-patch.yaml
+  - node-selector-patch.yaml
+  - karpenter.yaml 
+
 images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:58b2459
@@ -31,10 +38,6 @@ images:
 configMapGenerator:
   - name: application-config
     env: .env
-patches:
-  - performance.yaml
-  - cwagent-patch.yaml
-  - node-selector-patch.yaml
 vars:
   - name: ADMIN_CLIENT_SECRET
     objref:
