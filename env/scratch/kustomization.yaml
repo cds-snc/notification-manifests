@@ -1,7 +1,8 @@
 bases:
   - ../../base/karpenter
   - ../../base/kube-state-metrics
-  #- ../../base/prometheus-cloudwatch
+  - ../../base/prometheus-cloudwatch
+  - ../../base/k8s-event-logger
   - ../../base/utils
   - ../../base/notify-admin
   - ../../base/notify-api
@@ -11,9 +12,9 @@ bases:
   - ../../base/notify-system
   
 resources:
-  #- cwagent.yaml
-  #- fluentbit.yaml
-  #- cwagent-configmap.yaml
+  - cwagent.yaml
+  - fluentbit.yaml
+  - cwagent-configmap.yaml
   - notification-service-account.yaml
   - api-target-group.yaml
   - admin-target-group.yaml
