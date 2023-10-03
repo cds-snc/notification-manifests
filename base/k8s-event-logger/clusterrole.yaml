@@ -1,0 +1,13 @@
+---
+# Source: k8s-event-logger/templates/clusterrole.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: k8s-event-logger
+  labels:
+    app.kubernetes.io/name: k8s-event-logger
+    app.kubernetes.io/instance: k8s-event-logger
+rules:
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch"]
