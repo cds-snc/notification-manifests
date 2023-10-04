@@ -67,7 +67,7 @@ jobs:
 
       - name: Apply changes
         run: |
-          kubectl apply -k env/production --kubeconfig=/home/runner/.kube/config
+          ./scripts/applyKube.sh env/production --kubeconfig=/home/runner/.kube/config
 
       - name: Check for env changes
         working-directory: env/production
