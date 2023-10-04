@@ -9,7 +9,7 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:a0d08e8
+  API_LAMBDA_IMAGE: api-lambda:3ac3c6a
   KUBECTL_VERSION: 1.23.6
 
 defaults:
