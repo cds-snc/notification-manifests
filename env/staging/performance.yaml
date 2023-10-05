@@ -85,8 +85,8 @@ metadata:
   name: api-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 4
-  maxReplicas: 4
+  minReplicas: 2
+  maxReplicas: 2
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -95,7 +95,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 30
+  maxReplicas: 40
   metrics:
   - resource:
       name: cpu
@@ -118,8 +118,8 @@ metadata:
   name: celery-sms-send-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 3
-  maxReplicas: 11
+  minReplicas: 11
+  maxReplicas: 20
   metrics:
   - resource:
       name: cpu
