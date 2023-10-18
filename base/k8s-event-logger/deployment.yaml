@@ -22,6 +22,7 @@ spec:
         app.kubernetes.io/instance: k8s-event-logger
     spec:
       serviceAccountName: k8s-event-logger
+      priorityClassName: system-node-critical
       containers:
         - name: app
           image: "maxrocketinternet/k8s-event-logger:2.2"
