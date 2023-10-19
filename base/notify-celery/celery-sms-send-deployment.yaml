@@ -137,15 +137,15 @@ spec:
               command:
               - cat
               - /tmp/celery.pid
-            initialDelaySeconds: 5
-            periodSeconds: 5     
+            initialDelaySeconds: 10
+            periodSeconds: 10     
           readinessProbe:
             exec:
               command:
               - cat
               - /tmp/celery.pid
-            initialDelaySeconds: 5
-            periodSeconds: 5                 
+            initialDelaySeconds: 10
+            periodSeconds: 10                
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
