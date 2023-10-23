@@ -132,20 +132,6 @@ spec:
             limits:
               cpu: "550m"
               memory: "1024Mi"
-          livenessProbe:
-            exec:
-              command:
-              - cat
-              - /tmp/celery.pid
-            initialDelaySeconds: 5
-            periodSeconds: 5     
-          readinessProbe:
-            exec:
-              command:
-              - cat
-              - /tmp/celery.pid
-            initialDelaySeconds: 5
-            periodSeconds: 5                 
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
