@@ -48,18 +48,18 @@ spec:
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: CELERY_CONCURRENCY
               value: '$(CELERY_CONCURRENCY)'
-            - name: CELERY_DELIVER_email_RATE_LIMIT
-              value: '$(CELERY_DELIVER_email_RATE_LIMIT)'
+            - name: CELERY_DELIVER_SMS_RATE_LIMIT
+              value: '$(CELERY_DELIVER_SMS_RATE_LIMIT)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
               value: '$(DANGEROUS_SALT)'
             - name: DOCUMENT_DOWNLOAD_API_HOST
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
-            - name: FF_SPIKE_email_DAILY_LIMIT
-              value: '$(FF_SPIKE_email_DAILY_LIMIT)'
-            - name: FF_email_PARTS_UI
-              value: '$(FF_email_PARTS_UI)'
+            - name: FF_SPIKE_SMS_DAILY_LIMIT
+              value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
+            - name: FF_SMS_PARTS_UI
+              value: '$(FF_SMS_PARTS_UI)'
             - name: FF_EMAIL_DAILY_LIMIT
               value: '$(FF_EMAIL_DAILY_LIMIT)'
             - name: FIDO2_DOMAIN
