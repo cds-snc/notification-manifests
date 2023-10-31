@@ -27,6 +27,17 @@ metadata:
   namespace: notification-canada-ca
 spec:
   replicas: 3
+  template:
+    spec:
+      containers:
+      - name: celery
+        resources:
+          requests:
+            cpu: "300m"
+            memory: "500Mi"
+          limits:
+            cpu: "550m"
+            memory: "1024Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -43,7 +54,7 @@ spec:
       - name: celery-sms-send
         resources:
           requests:
-            cpu: "50m"
+            cpu: "100m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -66,7 +77,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 2
-  maxReplicas: 3
+  maxReplicas: 2
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -75,7 +86,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 4
-  maxReplicas: 8
+  maxReplicas: 4
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -84,7 +95,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 40
+  maxReplicas: 10
   metrics:
   - resource:
       name: cpu
@@ -92,15 +103,14 @@ spec:
         averageUtilization: 50
         type: Utilization
     type: Resource
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: document-download-api-hpa
-  namespace: notification-canada-ca
-spec:
-  minReplicas: 2
-  maxReplicas: 4
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Pods
+        value: 4
+        periodSeconds: 60
+      selectPolicy: Max            
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -109,12 +119,12 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 20
+  maxReplicas: 10
   metrics:
   - resource:
       name: cpu
       target:
-        averageUtilization: 25
+        averageUtilization: 50
         type: Utilization
     type: Resource
   behavior:
@@ -125,3 +135,12 @@ spec:
         value: 12
         periodSeconds: 45
       selectPolicy: Max
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: document-download-api-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 2
+  maxReplicas: 4

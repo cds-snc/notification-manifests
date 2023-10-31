@@ -8,6 +8,11 @@ decrypt-staging:
 	aws kms decrypt --ciphertext-blob fileb://.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env.zip &&\
 	unzip -o .env.zip
 
+decrypt-dev:
+	@cd env/dev &&\
+	aws kms decrypt --ciphertext-blob fileb://.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env.zip &&\
+	unzip -o .env.zip
+
 decrypt-scratch:
 	@cd env/scratch &&\
 	aws kms decrypt --ciphertext-blob fileb://.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env.zip &&\
@@ -76,6 +81,11 @@ encrypt-staging:
 	cd env/staging &&\
 	zip .env.zip .env &&\
 	aws kms encrypt --key-id a92df413-fc30-4f3e-8047-7433e1a8ad02 --plaintext fileb://.env.zip --output text --query CiphertextBlob --region ca-central-1 | base64 --decode > .env.zip.enc.aws
+
+encrypt-dev:
+	cd env/dev &&\
+	zip .env.zip .env &&\
+	aws kms encrypt --key-id a48012af-07a2-419d-8200-a1a8a2378ecf --plaintext fileb://.env.zip --output text --query CiphertextBlob --region ca-central-1 | base64 --decode > .env.zip.enc.aws	
 
 encrypt-scratch:
 	cd env/scratch &&\
