@@ -47,7 +47,7 @@ spec:
       values: ["spot"]
     - key: node.kubernetes.io/instance-type
       operator: In
-      values: ["m5.large", "r5.large"]      
+      values: ["r5.xlarge", "r5.large"]      
   limits:
     resources:
       cpu: 1000
