@@ -1,5 +1,0 @@
-resources:
-  - celery-email-send-deployment.yaml
-  - celery-email-send-hpa.yaml
-  - celery-email-send-service.yaml
-  
