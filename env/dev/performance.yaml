@@ -64,27 +64,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-email-send
-  name:  celery-email-send
-  namespace: notification-canada-ca
-spec:
-  replicas: 3
-  template:
-    spec:
-      containers:
-      - name: celery-email-send
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "500Mi"
-          limits:
-            cpu: "550m"
-            memory: "1024Mi"
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
     app: documentation
   name:  documentation
   namespace: notification-canada-ca
@@ -137,30 +116,6 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: celery-sms-send-hpa
-  namespace: notification-canada-ca
-spec:
-  minReplicas: 3
-  maxReplicas: 10
-  metrics:
-  - resource:
-      name: cpu
-      target:
-        averageUtilization: 50
-        type: Utilization
-    type: Resource
-  behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 0
-      policies:
-      - type: Pods
-        value: 12
-        periodSeconds: 45
-      selectPolicy: Max
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: celery-email-send-hpa
   namespace: notification-canada-ca
 spec:
   minReplicas: 3

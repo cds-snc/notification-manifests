@@ -1,5 +1,0 @@
-resources:
-  - celery-sms-send-deployment.yaml
-  - celery-sms-send-hpa.yaml
-  - celery-sms-send-service.yaml
-  
