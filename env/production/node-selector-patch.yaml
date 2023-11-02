@@ -14,7 +14,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        karpenter.sh/provisioner-name: default
 ---
 # Celery SMS Send
 apiVersion: apps/v1
@@ -28,7 +28,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        karpenter.sh/provisioner-name: default    
 ---
 ### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
 
