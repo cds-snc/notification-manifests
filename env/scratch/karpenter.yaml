@@ -65,3 +65,5 @@ spec:
     karpenter.sh/discovery: notification-canada-ca-scratch-eks-cluster
   securityGroupSelector:
     karpenter.sh/discovery: notification-canada-ca-scratch-eks-cluster    
+  metadataOptions:
+    httpTokens: optional
