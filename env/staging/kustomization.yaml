@@ -608,3 +608,10 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FF_EMAIL_DAILY_LIMIT
+- name: SRE_CLIENT_SECRET
+  objref:
+    kind: ConfigMap
+    name: application-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SRE_CLIENT_SECRET
