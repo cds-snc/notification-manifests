@@ -614,5 +614,4 @@ vars:
     name: application-config
     apiVersion: v1
   fieldref:
-    fieldpath: data.FF_EMAIL_DAILY_LIMIT
-
+    fieldpath: data.SRE_CLIENT_SECRET
