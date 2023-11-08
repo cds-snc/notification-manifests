@@ -123,10 +123,10 @@ spec:
               protocol: UDP   
           resources:
             limits:
-              cpu:  200m
+              cpu:  800m
               memory: 1000Mi
             requests:
-              cpu: 200m
+              cpu: 500m
               memory: 200Mi
           # Please don't change below envs
           env:
