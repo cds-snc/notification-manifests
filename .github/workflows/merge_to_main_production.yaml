@@ -9,7 +9,7 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:5fcb7b3
+  API_LAMBDA_IMAGE: api-lambda:e461edc
   KUBECTL_VERSION: 1.23.6
 
 defaults:
@@ -67,7 +67,7 @@ jobs:
 
       - name: Apply changes
         run: |
-          kubectl apply -k env/production --kubeconfig=/home/runner/.kube/config
+          ./scripts/applyKube.sh env/production --kubeconfig=/home/runner/.kube/config
 
       - name: Check for env changes
         working-directory: env/production

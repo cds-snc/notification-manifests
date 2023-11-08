@@ -1,0 +1,10 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: document-download-api-targetgroup
+  namespace: notification-canada-ca
+spec:
+  serviceRef:
+    name: document-download-api
+    port: 7000
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:800095993820:targetgroup/notification-document-api/137ac8a5fbc2fd33

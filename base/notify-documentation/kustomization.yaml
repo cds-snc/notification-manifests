@@ -1,0 +1,3 @@
+resources:
+  - documentation-deployment.yaml
+  - documentation-service.yaml

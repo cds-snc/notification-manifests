@@ -107,6 +107,7 @@ spec:
       labels:
         name: cloudwatch-agent
     spec:
+      priorityClassName: system-node-critical
       containers:
         - name: cloudwatch-agent
           image: public.ecr.aws/cloudwatch-agent/cloudwatch-agent:1.300026.3b189

@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - "release-*"
-
+  schedule:
+    - cron: "0 */3 * * *"
 defaults:
   run:
     shell: bash
@@ -61,3 +62,8 @@ jobs:
           SMOKE_USER_ID: ${{ secrets.SMOKE_USER_ID}}
           SMOKE_POLL_TIMEOUT: ${{ secrets.SMOKE_POLL_TIMEOUT}}
         run: poetry run make smoke-test
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json="{'text':'<!here> Staging smoke tests failed: <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

@@ -1,0 +1,9 @@
+resources:
+  - namespace.yaml
+  - cert-manager.yaml
+  - alb-ingress-controller.yaml
+  - ipv4-deployment.yaml
+  - ipv4-service.yaml
+  - ipv4-deployment-restart.yaml
+  - metrics-server.yaml
+  

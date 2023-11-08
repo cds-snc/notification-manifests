@@ -47,13 +47,13 @@ spec:
       values: ["spot"]
     - key: node.kubernetes.io/instance-type
       operator: In
-      values: ["m5.large", "r5.large"]      
+      values: ["r5.xlarge", "r5.large"]      
   limits:
     resources:
       cpu: 1000
   providerRef:
     name: default
-  consolidation: 
+  consolidation:
     enabled: true
 ---
 apiVersion: karpenter.k8s.aws/v1alpha1
@@ -65,3 +65,5 @@ spec:
     karpenter.sh/discovery: notification-canada-ca-staging-eks-cluster
   securityGroupSelector:
     karpenter.sh/discovery: notification-canada-ca-staging-eks-cluster    
+  metadataOptions:
+    httpTokens: optional

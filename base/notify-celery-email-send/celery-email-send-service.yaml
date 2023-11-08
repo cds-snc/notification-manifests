@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: celery-email-send
+  name: celery-email-send
+  namespace: notification-canada-ca
+spec:
+  type: ClusterIP
+  # Putting a dummy port because we need to specify ports
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: celery-email-send
