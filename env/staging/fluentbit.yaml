@@ -152,7 +152,7 @@ data:
         Path                /var/log/containers/celery*
         multiline.parser    docker, cri
         DB                  /var/fluent-bit/state/celery.db
-        Mem_Buf_Limit       50MB
+        Mem_Buf_Limit       150MB
         Skip_Long_Lines     Off
         Refresh_Interval    10
         Rotate_Wait         30
@@ -182,6 +182,7 @@ data:
         match                 celery.*
         multiline.key_content log
         multiline.parser      multiline-notify-python
+        emitter_mem_buf_limit 150MB
         
 
 
