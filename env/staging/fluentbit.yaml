@@ -352,7 +352,7 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       initContainers:
-      - name: waitForInit
+      - name: wait-for-init
         image: busybox:1.28
         command: ['sh', '-c', 'echo "Waiting for 10 seconds for node to sort itself out" && sleep 10']
       containers:
