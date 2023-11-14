@@ -44,10 +44,10 @@ spec:
   requirements:
     - key: karpenter.sh/capacity-type
       operator: In
-      values: ["on-demand"]
+      values: ["spot"]
     - key: node.kubernetes.io/instance-type
       operator: In
-      values: ["r5.xlarge"]      
+      values: ["r5.xlarge", "r5.large"]      
   limits:
     resources:
       cpu: 1000
