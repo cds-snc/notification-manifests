@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: notification-manifests
+  description: >-
+    Kubernetes manifest files for notification.canada.ca | Configuration
+    Kubernetes pour notification.canada.ca
+  labels:
+    license: MIT
+spec:
+  type: website
+  lifecycle: experimental
+  owner: cds-snc

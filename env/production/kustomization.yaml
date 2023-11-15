@@ -31,13 +31,13 @@ patches:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:44124d2
+    newName: public.ecr.aws/cds-snc/notify-admin:43c6b7a
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:e3ccb0c
+    newName: public.ecr.aws/cds-snc/notify-api:9cf3404
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:5a4dd7c
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:31d6347
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:6ecac4e
+    newName: public.ecr.aws/cds-snc/notify-documentation:afac1df
 configMapGenerator:
   - name: application-config
     env: .env
@@ -594,6 +594,13 @@ vars:
     fieldref:
       fieldpath: data.FF_ABTEST_SERVICE_ID
   - name: FF_EMAIL_DAILY_LIMIT
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_EMAIL_DAILY_LIMIT
+  - name: SRE_CLIENT_SECRET
     objref:
       kind: ConfigMap
       name: application-config

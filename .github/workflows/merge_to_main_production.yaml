@@ -9,7 +9,7 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:e3ccb0c
+  API_LAMBDA_IMAGE: api-lambda:9cf3404
   KUBECTL_VERSION: 1.23.6
 
 defaults:
@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
       - name: Set Prod Version
         run: |
@@ -30,7 +30,7 @@ jobs:
           echo "TARGET_VERSION=$TARGET_VERSION" >> $GITHUB_ENV
 
       - name: Checkout target Prod version
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           ref: ${{ env.TARGET_VERSION }}
 
