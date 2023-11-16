@@ -28,7 +28,21 @@ spec:
   template:
     spec:
       nodeSelector:
-        karpenter.sh/provisioner-name: default    
+        karpenter.sh/provisioner-name: default
+---
+# Celery Email Send
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-email-send
+  name:  celery-email-send
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        karpenter.sh/provisioner-name: default
 ---
 # Notification API K8s
 apiVersion: apps/v1
