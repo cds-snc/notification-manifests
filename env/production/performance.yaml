@@ -104,7 +104,7 @@ metadata:
   name: celery-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 30
+  minReplicas: 3
   maxReplicas: 30
   metrics:
   - resource:
