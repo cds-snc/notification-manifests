@@ -170,8 +170,8 @@ data:
         Merge_Log_Key         log_processed
         K8S-Logging.Parser    On
         K8S-Logging.Exclude   Off
-        Labels              On
-        Annotations         On
+        Labels                On
+        Annotations           On
         Use_Kubelet           On
         Kubelet_Port          10250
         Buffer_Size           0
