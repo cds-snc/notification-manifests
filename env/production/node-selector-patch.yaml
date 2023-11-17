@@ -14,7 +14,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        eks.amazonaws.com/capacityType: ON_DEMAND
 ---
 # Celery SMS Send
 apiVersion: apps/v1
@@ -28,7 +28,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        eks.amazonaws.com/capacityType: ON_DEMAND
 ---
 # Celery Email Send
 apiVersion: apps/v1
@@ -42,7 +42,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        eks.amazonaws.com/capacityType: ON_DEMAND
 ---
 
 ### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
@@ -59,7 +59,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        eks.amazonaws.com/capacityType: ON_DEMAND
 ---
 
 # Celery Beat
@@ -74,7 +74,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        eks.amazonaws.com/capacityType: ON_DEMAND
 ---
 # Celery SMS
 apiVersion: apps/v1
@@ -117,7 +117,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        eks.amazonaws.com/capacityType: ON_DEMAND
 ---
 # Documentation
 apiVersion: apps/v1
@@ -131,4 +131,4 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND   
+        eks.amazonaws.com/capacityType: ON_DEMAND
