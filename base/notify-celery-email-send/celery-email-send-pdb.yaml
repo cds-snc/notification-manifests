@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: celery-email-hpa
+  namespace: notification-canada-ca
+spec:
+  minAvailable: 3
+  selector:
+    matchLabels:
+      app: celery-email-send
