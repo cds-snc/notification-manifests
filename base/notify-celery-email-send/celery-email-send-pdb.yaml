@@ -7,4 +7,4 @@ spec:
   minAvailable: 3
   selector:
     matchLabels:
-      app: celery
+      app: celery-email-send
