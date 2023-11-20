@@ -129,7 +129,6 @@ data:
         Use_Kubelet         On
         Kubelet_Port        10250
         Buffer_Size         0
-        tls.verify          Off
 
     [OUTPUT]
         Name                cloudwatch
@@ -169,8 +168,6 @@ data:
         Use_Kubelet         On
         Kubelet_Port        10250
         Buffer_Size         0
-        tls.verify          Off
-
 
     [FILTER]
         name                  multiline
@@ -333,7 +330,6 @@ spec:
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
-      priorityClassName: system-node-critical       
       containers:
       - name: fluent-bit
         image: public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
