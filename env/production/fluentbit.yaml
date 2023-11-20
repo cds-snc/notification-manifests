@@ -331,7 +331,6 @@ spec:
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
-      priorityClassName: system-node-critical
       priorityClassName: system-node-critical        
       initContainers:
       - name: wait-for-init
