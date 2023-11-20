@@ -21,117 +21,128 @@ spec:
       labels:
         app: celery-sms-send
     spec:
+      initContainers:
+      - name: wait-cwagent-ready
+        env:
+          - name: STATSD_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        image: api
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args: ["-c", "sh /app/scripts/cwcheck.sh"]
       containers:
-        - image: api
-          imagePullPolicy: Always
-          name: celery-sms-send
-          env:
-            - name: ADMIN_BASE_URL
-              value: https://$(BASE_DOMAIN)
-            - name: ADMIN_CLIENT_SECRET
-              value: '$(ADMIN_CLIENT_SECRET)'
-            - name: ALLOW_HTML_SERVICE_IDS
-              value: '$(ALLOW_HTML_SERVICE_IDS)'
-            - name: API_HOST_NAME
-              value: '$(API_HOST_NAME)'
-            - name: ASSET_DOMAIN
-              value: '$(ASSET_DOMAIN)'
-            - name: ASSET_UPLOAD_BUCKET_NAME
-              value: '$(ASSET_UPLOAD_BUCKET_NAME)'
-            - name: AWS_PINPOINT_REGION
-              value: '$(AWS_PINPOINT_REGION)'
-            - name: AWS_REGION
-              value: '$(AWS_REGION)'
-            - name: BATCH_INSERTION_CHUNK_SIZE
-              value: '$(BATCH_INSERTION_CHUNK_SIZE)'
-            - name: BULK_SEND_TEST_SERVICE_ID
-              value: '$(BULK_SEND_TEST_SERVICE_ID)'
-            - name: CELERY_CONCURRENCY
-              value: '$(CELERY_CONCURRENCY)'
-            - name: CELERY_DELIVER_SMS_RATE_LIMIT
-              value: '$(CELERY_DELIVER_SMS_RATE_LIMIT)'
-            - name: CSV_UPLOAD_BUCKET_NAME
-              value: '$(CSV_UPLOAD_BUCKET_NAME)'
-            - name: DANGEROUS_SALT
-              value: '$(DANGEROUS_SALT)'
-            - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
-            - name: FF_SPIKE_SMS_DAILY_LIMIT
-              value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
-            - name: FF_SMS_PARTS_UI
-              value: '$(FF_SMS_PARTS_UI)'
-            - name: FF_EMAIL_DAILY_LIMIT
-              value: '$(FF_EMAIL_DAILY_LIMIT)'
-            - name: FIDO2_DOMAIN
-              value: '$(FIDO2_DOMAIN)'
-            - name: HC_EN_SERVICE_ID
-              value: '$(HC_EN_SERVICE_ID)'
-            - name: HC_FR_SERVICE_ID
-              value: '$(HC_FR_SERVICE_ID)'
-            - name: NOTIFY_EMAIL_DOMAIN
-              value: '$(BASE_DOMAIN)'
-            - name: NOTIFY_ENVIRONMENT
-              value: '$(ENVIRONMENT)'
-            - name: NOTIFICATION_QUEUE_PREFIX
-              value: 'eks-notification-canada-ca'
-            - name: REDIS_URL
-              value: '$(REDIS_URL)'
-            - name: REDIS_PUBLISH_URL
-              value: '$(REDIS_PUBLISH_URL)'
-            - name: REDIS_ENABLED
-              value: '1'
-            - name: SECRET_KEY
-              value: '$(SECRET_KEY)'
-            - name: SENDGRID_API_KEY
-              value: '$(SENDGRID_API_KEY)'
-            - name: SQLALCHEMY_DATABASE_URI
-              value: '$(POSTGRES_SQL)'
-            - name: SQLALCHEMY_DATABASE_READER_URI
-              value: '$(SQLALCHEMY_DATABASE_READER_URI)'
-            - name: STATSD_HOST
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-            - name: TWILIO_ACCOUNT_SID
-              value: '$(TWILIO_ACCOUNT_SID)'
-            - name: TWILIO_AUTH_TOKEN
-              value: '$(TWILIO_AUTH_TOKEN)'
-            - name: TWILIO_FROM_NUMBER
-              value: '$(TWILIO_FROM_NUMBER)'
-            - name: AWS_US_TOLL_FREE_NUMBER
-              value: '$(AWS_US_TOLL_FREE_NUMBER)'
-            - name: SENTRY_URL
-              value: '$(SENTRY_URL)'
-            - name: NEW_RELIC_APP_NAME
-              value: 'notification-celery-$(ENVIRONMENT)'
-            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: 'true'
-            - name: NEW_RELIC_LICENSE_KEY
-              value: '$(NEW_RELIC_LICENSE_KEY)'
-            - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'
-            - name: FF_CLOUDWATCH_METRICS_ENABLED
-              value: 'True'
-            - name: FF_BOUNCE_RATE_V1
-              value: '$(FF_BOUNCE_RATE_V1)'
-            - name: FF_BOUNCE_RATE_BACKEND
-              value: '$(FF_BOUNCE_RATE_BACKEND)'
-          lifecycle:
-            preStop:
-              exec:
-                command:
-                - /bin/bash
-                - -c
-                - /app/scripts/run_celery_exit.sh
-          command: ["/bin/sh"]
-          args: ["-c", "sh /app/scripts/run_celery_send_sms.sh"]
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "500Mi"
-            limits:
-              cpu: "550m"
-              memory: "1024Mi"
+      - image: api
+        imagePullPolicy: Always
+        name: celery-sms-send
+        env:
+          - name: ADMIN_BASE_URL
+            value: https://$(BASE_DOMAIN)
+          - name: ADMIN_CLIENT_SECRET
+            value: '$(ADMIN_CLIENT_SECRET)'
+          - name: ALLOW_HTML_SERVICE_IDS
+            value: '$(ALLOW_HTML_SERVICE_IDS)'
+          - name: API_HOST_NAME
+            value: '$(API_HOST_NAME)'
+          - name: ASSET_DOMAIN
+            value: '$(ASSET_DOMAIN)'
+          - name: ASSET_UPLOAD_BUCKET_NAME
+            value: '$(ASSET_UPLOAD_BUCKET_NAME)'
+          - name: AWS_PINPOINT_REGION
+            value: '$(AWS_PINPOINT_REGION)'
+          - name: AWS_REGION
+            value: '$(AWS_REGION)'
+          - name: BATCH_INSERTION_CHUNK_SIZE
+            value: '$(BATCH_INSERTION_CHUNK_SIZE)'
+          - name: BULK_SEND_TEST_SERVICE_ID
+            value: '$(BULK_SEND_TEST_SERVICE_ID)'
+          - name: CELERY_CONCURRENCY
+            value: '$(CELERY_CONCURRENCY)'
+          - name: CELERY_DELIVER_SMS_RATE_LIMIT
+            value: '$(CELERY_DELIVER_SMS_RATE_LIMIT)'
+          - name: CSV_UPLOAD_BUCKET_NAME
+            value: '$(CSV_UPLOAD_BUCKET_NAME)'
+          - name: DANGEROUS_SALT
+            value: '$(DANGEROUS_SALT)'
+          - name: DOCUMENT_DOWNLOAD_API_HOST
+            value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
+          - name: FF_SPIKE_SMS_DAILY_LIMIT
+            value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
+          - name: FF_SMS_PARTS_UI
+            value: '$(FF_SMS_PARTS_UI)'
+          - name: FF_EMAIL_DAILY_LIMIT
+            value: '$(FF_EMAIL_DAILY_LIMIT)'
+          - name: FIDO2_DOMAIN
+            value: '$(FIDO2_DOMAIN)'
+          - name: HC_EN_SERVICE_ID
+            value: '$(HC_EN_SERVICE_ID)'
+          - name: HC_FR_SERVICE_ID
+            value: '$(HC_FR_SERVICE_ID)'
+          - name: NOTIFY_EMAIL_DOMAIN
+            value: '$(BASE_DOMAIN)'
+          - name: NOTIFY_ENVIRONMENT
+            value: '$(ENVIRONMENT)'
+          - name: NOTIFICATION_QUEUE_PREFIX
+            value: 'eks-notification-canada-ca'
+          - name: REDIS_URL
+            value: '$(REDIS_URL)'
+          - name: REDIS_PUBLISH_URL
+            value: '$(REDIS_PUBLISH_URL)'
+          - name: REDIS_ENABLED
+            value: '1'
+          - name: SECRET_KEY
+            value: '$(SECRET_KEY)'
+          - name: SENDGRID_API_KEY
+            value: '$(SENDGRID_API_KEY)'
+          - name: SQLALCHEMY_DATABASE_URI
+            value: '$(POSTGRES_SQL)'
+          - name: SQLALCHEMY_DATABASE_READER_URI
+            value: '$(SQLALCHEMY_DATABASE_READER_URI)'
+          - name: STATSD_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: TWILIO_ACCOUNT_SID
+            value: '$(TWILIO_ACCOUNT_SID)'
+          - name: TWILIO_AUTH_TOKEN
+            value: '$(TWILIO_AUTH_TOKEN)'
+          - name: TWILIO_FROM_NUMBER
+            value: '$(TWILIO_FROM_NUMBER)'
+          - name: AWS_US_TOLL_FREE_NUMBER
+            value: '$(AWS_US_TOLL_FREE_NUMBER)'
+          - name: SENTRY_URL
+            value: '$(SENTRY_URL)'
+          - name: NEW_RELIC_APP_NAME
+            value: 'notification-celery-$(ENVIRONMENT)'
+          - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+            value: 'true'
+          - name: NEW_RELIC_LICENSE_KEY
+            value: '$(NEW_RELIC_LICENSE_KEY)'
+          - name: NEW_RELIC_MONITOR_MODE
+            value: '$(NEW_RELIC_MONITOR_MODE)'
+          - name: FF_CLOUDWATCH_METRICS_ENABLED
+            value: 'True'
+          - name: FF_BOUNCE_RATE_V1
+            value: '$(FF_BOUNCE_RATE_V1)'
+          - name: FF_BOUNCE_RATE_BACKEND
+            value: '$(FF_BOUNCE_RATE_BACKEND)'
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - /app/scripts/run_celery_exit.sh
+        command: ["/bin/sh"]
+        args: ["-c", "sh /app/scripts/run_celery_send_sms.sh"]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "500Mi"
+          limits:
+            cpu: "550m"
+            memory: "1024Mi"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

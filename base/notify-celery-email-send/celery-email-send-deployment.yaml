@@ -21,6 +21,17 @@ spec:
       labels:
         app: celery-email-send
     spec:
+      initContainers:
+      - name: wait-cwagent-ready
+        env:
+          - name: STATSD_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        image: api
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args: ["-c", "sh /app/scripts/cwcheck.sh"]
       containers:
         - image: api
           imagePullPolicy: Always
