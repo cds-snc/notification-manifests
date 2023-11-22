@@ -163,8 +163,8 @@ metadata:
   name: celery-email-send-hpa
   namespace: notification-canada-ca
 spec:
-  minReplicas: 3
-  maxReplicas: 10
+  minReplicas: 30
+  maxReplicas: 30
   metrics:
   - resource:
       name: cpu

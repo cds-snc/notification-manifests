@@ -21,6 +21,13 @@ spec:
       labels:
         app: celery-email-send
     spec:
+      topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: karpenter.sh/capacity-type
+            whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                app: celery-email-send    
       initContainers:
       - name: wait-cwagent-ready
         env:
