@@ -176,7 +176,7 @@ data:
         Use_Kubelet           On
         Kubelet_Port          10250
         Buffer_Size           0
-        tls.verify          Off
+        tls.verify            Off
 
     [FILTER]
         name                  multiline
