@@ -129,6 +129,7 @@ data:
         Use_Kubelet         On
         Kubelet_Port        10250
         Buffer_Size         0
+        tls.verify          Off
 
     [OUTPUT]
         Name                cloudwatch
@@ -168,6 +169,7 @@ data:
         Use_Kubelet         On
         Kubelet_Port        10250
         Buffer_Size         0
+        tls.verify          Off
 
     [FILTER]
         name                  multiline
