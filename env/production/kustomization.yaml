@@ -31,9 +31,9 @@ patches:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:d77cd05
+    newName: public.ecr.aws/cds-snc/notify-admin:ea1d0d2
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:3bf74e5
+    newName: public.ecr.aws/cds-snc/notify-api:128bc50
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:31d6347
   - name: documentation
