@@ -2,35 +2,6 @@
 
 #### KARPENTER SPOT INSTANCES - EPHEMERAL, STATE NOT REQUIRED
 
-# Celery Email
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: celery
-  name:  celery
-  namespace: notification-canada-ca
-spec:
-  template:
-    spec:
-      nodeSelector:
-        karpenter.sh/provisioner-name: default
----
-# Celery SMS Send
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: celery-sms-send
-  name:  celery-sms-send
-  namespace: notification-canada-ca
-spec:
-  template:
-    spec:
-      nodeSelector:
-        karpenter.sh/provisioner-name: default    
----
-
 # Notification API K8s
 apiVersion: apps/v1
 kind: Deployment
