@@ -164,7 +164,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 10
+  maxReplicas: 30
   metrics:
   - resource:
       name: cpu
@@ -180,12 +180,3 @@ spec:
         value: 12
         periodSeconds: 45
       selectPolicy: Max
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: document-download-api-hpa
-  namespace: notification-canada-ca
-spec:
-  minReplicas: 2
-  maxReplicas: 4

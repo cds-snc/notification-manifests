@@ -2,7 +2,7 @@
 
 #### KARPENTER SPOT INSTANCES - EPHEMERAL, STATE NOT REQUIRED
 
-# Celery Email
+# Celery
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,8 +13,23 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        karpenter.sh/provisioner-name: default
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - ON_DEMAND
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - spot     
 ---
 # Celery SMS Send
 apiVersion: apps/v1
@@ -27,8 +42,23 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        karpenter.sh/provisioner-name: default    
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - ON_DEMAND
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - spot         
 ---
 # Celery Email Send
 apiVersion: apps/v1
@@ -41,8 +71,23 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        karpenter.sh/provisioner-name: default    
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 15
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - ON_DEMAND
+          - weight: 85
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - spot      
 ---
 
 ### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
