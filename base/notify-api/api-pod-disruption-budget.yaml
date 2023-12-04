@@ -1,7 +1,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: api
+  name: api-pdb
   namespace: notification-canada-ca
   labels:
     app: api

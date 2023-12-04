@@ -1,7 +1,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: celery-sms-send-hpa
+  name: celery-sms-send-pdb
   namespace: notification-canada-ca
 spec:
   minAvailable: 2
