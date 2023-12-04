@@ -20,6 +20,7 @@ spec:
       labels:
         app: admin
     spec:
+      priorityClassName: high-priority
       initContainers:
         - name: init-postgres
           image: alpine
