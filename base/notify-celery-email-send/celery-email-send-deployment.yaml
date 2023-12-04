@@ -21,6 +21,7 @@ spec:
       labels:
         app: celery-email-send
     spec:
+      priorityClassName: celery    
       initContainers:
       - name: wait-cwagent-ready
         env:

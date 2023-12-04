@@ -22,6 +22,7 @@ spec:
       labels:
         app: celery-sms
     spec:
+      priorityClassName: high-priority        
       initContainers:
         - name: init-postgres
           image: alpine

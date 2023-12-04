@@ -21,6 +21,7 @@ spec:
       labels:
         app: celery-beat
     spec:
+      priorityClassName: high-priority        
       initContainers:
         - name: init-postgres
           image: alpine

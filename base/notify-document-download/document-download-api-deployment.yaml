@@ -21,6 +21,7 @@ spec:
       labels:
         app: document-download-api
     spec:
+      priorityClassName: high-priority    
       containers:
         - image: document-download-api
           imagePullPolicy: Always
