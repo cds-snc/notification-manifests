@@ -2,3 +2,4 @@ resources:
   - admin-deployment.yaml
   - admin-service.yaml
   - admin-hpa.yaml
+  - admin-pdb.yaml
