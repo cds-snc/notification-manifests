@@ -1,0 +1,5 @@
+resources:
+  - celery-sms-send-deployment.yaml
+  - celery-sms-send-service.yaml
+  - celery-sms-send-pdb.yaml
+  

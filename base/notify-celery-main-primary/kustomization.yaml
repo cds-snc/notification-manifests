@@ -1,0 +1,5 @@
+resources:
+  - celery-deployment.yaml
+  - celery-service.yaml
+  - celery-main-pdb.yaml
+  
