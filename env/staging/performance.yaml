@@ -129,7 +129,7 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
       - type: Pods
-        value: 12
+        value: 6
         periodSeconds: 45
       selectPolicy: Max            
 ---
@@ -153,7 +153,7 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
       - type: Pods
-        value: 12
+        value: 6
         periodSeconds: 45
       selectPolicy: Max            
 ---
@@ -169,7 +169,7 @@ spec:
   - resource:
       name: cpu
       target:
-        averageUtilization: 25
+        averageUtilization: 50
         type: Utilization
     type: Resource
   behavior:
@@ -177,7 +177,7 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
       - type: Pods
-        value: 12
+        value: 6
         periodSeconds: 45
       selectPolicy: Max            
 ---

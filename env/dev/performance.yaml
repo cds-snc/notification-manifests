@@ -153,7 +153,7 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
       - type: Pods
-        value: 12
+        value: 6
         periodSeconds: 45
       selectPolicy: Max
 ---
@@ -177,6 +177,6 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
       - type: Pods
-        value: 12
+        value: 6
         periodSeconds: 45
       selectPolicy: Max
