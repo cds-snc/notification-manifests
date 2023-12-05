@@ -45,7 +45,6 @@ configMapGenerator:
 patches:
   - performance.yaml
   - services.yaml
-  - celery-deployment.yaml
   - karpenter.yaml
   - node-selector-patch.yaml
 
