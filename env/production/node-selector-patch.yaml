@@ -7,8 +7,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-scalable
-  name:  celery-scalable
+    app: celery
+  name:  celery
   namespace: notification-canada-ca
 spec:
   template:
@@ -36,8 +36,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-sms-send-scalable
-  name:  celery-sms-send-scalable
+    app: celery-sms-send
+  name:  celery-sms-send
   namespace: notification-canada-ca
 spec:
   template:
@@ -65,8 +65,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-email-send-scalable
-  name:  celery-email-send-scalable
+    app: celery-email-send
+  name:  celery-email-send
   namespace: notification-canada-ca
 spec:
   template:
