@@ -13,9 +13,23 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        karpenter.sh/capacity-type: spot    
-
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - ON_DEMAND
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - spot     
 ---
 # Celery SMS Send
 apiVersion: apps/v1
@@ -28,9 +42,23 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        karpenter.sh/capacity-type: spot    
-   
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - ON_DEMAND
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - spot         
 ---
 # Celery Email Send
 apiVersion: apps/v1
@@ -43,11 +71,25 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        karpenter.sh/capacity-type: spot    
-
-
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 15
+            preference:
+              matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                - ON_DEMAND
+          - weight: 85
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - spot    
 ---
+
 # Notification API K8s
 apiVersion: apps/v1
 kind: Deployment
@@ -76,7 +118,9 @@ spec:
                 operator: In
                 values:
                 - spot    
+
 ---
+
 ### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
 
 # Celery Beat
@@ -91,7 +135,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        eks.amazonaws.com/capacityType: ON_DEMAND
 ---
 # Celery SMS
 apiVersion: apps/v1
@@ -134,7 +178,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
+        eks.amazonaws.com/capacityType: ON_DEMAND
 ---
 # Documentation
 apiVersion: apps/v1
@@ -148,4 +192,4 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND   
+        eks.amazonaws.com/capacityType: ON_DEMAND
