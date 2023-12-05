@@ -79,52 +79,6 @@ spec:
 ---
 ### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
 
-# Celery
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: celery-primary
-  name:  celery-primary
-  namespace: notification-canada-ca
-spec:
-  template:
-    spec:
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
-
----
-# Celery SMS Send
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: celery-sms-send-primary
-  name:  celery-sms-send-primary
-  namespace: notification-canada-ca
-spec:
-  template:
-    spec:
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
-   
----
-# Celery Email Send
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: celery-email-send-primary
-  name:  celery-email-send-primary
-  namespace: notification-canada-ca
-spec:
-  template:
-    spec:
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND    
-
----
-
 # Celery Beat
 apiVersion: apps/v1
 kind: Deployment
