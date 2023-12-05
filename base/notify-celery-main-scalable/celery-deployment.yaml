@@ -2,15 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-email-send
-  name:  celery-email-send
+    app: celery-scalable
+    # profile: fargate
+  name:  celery-scalable
   namespace: notification-canada-ca
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: celery-email-send
+      app: celery-scalable
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,9 +20,10 @@ spec:
   template:
     metadata:
       labels:
-        app: celery-email-send
-    spec:
-      priorityClassName: celery    
+        app: celery-scalable
+        # profile: fargate
+    spec:  
+      priorityClassName: celery
       initContainers:
       - name: wait-cwagent-ready
         env:
@@ -32,11 +34,11 @@ spec:
         image: api
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh"]
-        args: ["-c", "sh /app/scripts/cwcheck.sh"]
+        args: ["-c", "sh /app/scripts/cwcheck.sh"] 
       containers:
         - image: api
           imagePullPolicy: Always
-          name: celery-email-send
+          name: celery-scalable
           env:
             - name: ADMIN_BASE_URL
               value: https://$(BASE_DOMAIN)
@@ -60,8 +62,6 @@ spec:
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: CELERY_CONCURRENCY
               value: '$(CELERY_CONCURRENCY)'
-            - name: CELERY_DELIVER_SMS_RATE_LIMIT
-              value: '$(CELERY_DELIVER_SMS_RATE_LIMIT)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
@@ -136,7 +136,7 @@ spec:
                 - -c
                 - /app/scripts/run_celery_exit.sh
           command: ["/bin/sh"]
-          args: ["-c", "sh /app/scripts/run_celery_send_email.sh"]
+          args: ["-c", "sh /app/scripts/run_celery_core_tasks.sh"]
           resources:
             requests:
               cpu: "100m"

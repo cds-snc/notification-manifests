@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: celery-email-send-hpa
+  name: celery-email-send-scalable-hpa
   namespace: notification-canada-ca
 spec:
   minReplicas: 1
@@ -9,4 +9,4 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: celery-email-send
+    name: celery-email-send-scalable

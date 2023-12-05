@@ -22,7 +22,19 @@ spec:
       labels:
         app: celery-primary
         # profile: fargate
-    spec:
+    spec:  
+      priorityClassName: high-priority
+      initContainers:
+      - name: wait-cwagent-ready
+        env:
+          - name: STATSD_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        image: api
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args: ["-c", "sh /app/scripts/cwcheck.sh"] 
       containers:
         - image: api
           imagePullPolicy: Always
@@ -124,7 +136,7 @@ spec:
                 - -c
                 - /app/scripts/run_celery_exit.sh
           command: ["/bin/sh"]
-          args: ["-c", "sh /app/scripts/run_celery_no_sms_sending.sh"]
+          args: ["-c", "sh /app/scripts/run_celery_core_tasks.sh"]
           resources:
             requests:
               cpu: "100m"
