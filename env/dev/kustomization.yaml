@@ -6,6 +6,7 @@ bases:
   - ../../base/utils
   - ../../base/notify-admin
   - ../../base/notify-api
+  - ../../base/notify-celery-other  
   - ../../base/notify-celery-main-primary
   - ../../base/notify-celery-sms-send-primary
   - ../../base/notify-celery-email-send-primary
