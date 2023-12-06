@@ -7,87 +7,45 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery
-  name:  celery
+    app: celery-scalable
+  name:  celery-scalable
   namespace: notification-canada-ca
 spec:
   template:
     spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 50
-            preference:
-              matchExpressions:
-              - key: eks.amazonaws.com/capacityType
-                operator: In
-                values:
-                - ON_DEMAND
-          - weight: 50
-            preference:
-              matchExpressions:
-              - key: karpenter.sh/capacity-type
-                operator: In
-                values:
-                - spot     
+      nodeSelector:
+        karpenter.sh/capacity-type: spot    
+
 ---
 # Celery SMS Send
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-sms-send
-  name:  celery-sms-send
+    app: celery-sms-send-scalable
+  name:  celery-sms-send-scalable
   namespace: notification-canada-ca
 spec:
   template:
     spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 50
-            preference:
-              matchExpressions:
-              - key: eks.amazonaws.com/capacityType
-                operator: In
-                values:
-                - ON_DEMAND
-          - weight: 50
-            preference:
-              matchExpressions:
-              - key: karpenter.sh/capacity-type
-                operator: In
-                values:
-                - spot         
+      nodeSelector:
+        karpenter.sh/capacity-type: spot    
+   
 ---
 # Celery Email Send
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-email-send
-  name:  celery-email-send
+    app: celery-email-send-scalable
+  name:  celery-email-send-scalable
   namespace: notification-canada-ca
 spec:
   template:
     spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 15
-            preference:
-              matchExpressions:
-              - key: eks.amazonaws.com/capacityType
-                operator: In
-                values:
-                - ON_DEMAND
-          - weight: 85
-            preference:
-              matchExpressions:
-              - key: karpenter.sh/capacity-type
-                operator: In
-                values:
-                - spot      
+      nodeSelector:
+        karpenter.sh/capacity-type: spot    
+
 
 ---
 # Notification API K8s
@@ -120,6 +78,52 @@ spec:
                 - spot    
 ---
 ### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
+
+# Celery
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-primary
+  name:  celery-primary
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
+
+---
+# Celery SMS Send
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-sms-send-primary
+  name:  celery-sms-send-primary
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
+   
+---
+# Celery Email Send
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-email-send-primary
+  name:  celery-email-send-primary
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
+
+---
 
 # Celery Beat
 apiVersion: apps/v1

@@ -6,9 +6,13 @@ bases:
   - ../../base/utils
   - ../../base/notify-admin
   - ../../base/notify-api
-  - ../../base/notify-celery-main
-  - ../../base/notify-celery-sms-send
-  - ../../base/notify-celery-email-send
+  - ../../base/notify-celery-other  
+  - ../../base/notify-celery-main-primary
+  - ../../base/notify-celery-sms-send-primary
+  - ../../base/notify-celery-email-send-primary
+  - ../../base/notify-celery-main-scalable
+  - ../../base/notify-celery-sms-send-scalable
+  - ../../base/notify-celery-email-send-scalable
   - ../../base/notify-document-download
   - ../../base/notify-documentation
   - ../../base/notify-system
@@ -41,8 +45,6 @@ configMapGenerator:
 patches:
   - performance.yaml
   - services.yaml
-#  - cwagent-patch.yaml
-  - celery-deployment.yaml
   - karpenter.yaml
   - node-selector-patch.yaml
 
