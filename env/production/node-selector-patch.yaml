@@ -59,23 +59,9 @@ metadata:
 spec:
   template:
     spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 90
-            preference:
-              matchExpressions:
-              - key: eks.amazonaws.com/capacityType
-                operator: In
-                values:
-                - ON_DEMAND
-          - weight: 10
-            preference:
-              matchExpressions:
-              - key: karpenter.sh/capacity-type
-                operator: In
-                values:
-                - spot    
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
+
 ---
 ### ON DEMAND (PRIMARY) NODES - ALWAYS AVAILABLE
 
