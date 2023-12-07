@@ -160,6 +160,16 @@ metadata:
 spec:
   replicas: 2
 ---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: document-download-api-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 2
+  maxReplicas: 4
+---
+
 ####################################### POD AUTOSCALING #######################################
 # AUTOSCALING FOR CELERIES
 
@@ -223,7 +233,7 @@ spec:
   - resource:
       name: cpu
       target:
-        averageUtilization: 50
+        averageUtilization: 25
         type: Utilization
     type: Resource
   behavior:
