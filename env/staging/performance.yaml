@@ -102,7 +102,7 @@ spec:
       - name: celery-sms-send-scalable
         resources:
           requests:
-            cpu: "100m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
             cpu: "550m"
