@@ -124,6 +124,17 @@ releases:
     - ./overrides/notify/celery-sms-send.yaml.gotmpl   
     - ./overrides/notify/celery-sms-send-hpa.yaml.gotmpl   
 
+  - name: notify-document-download
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: document-download
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/document-download.yaml.gotmpl   
+
   - name: hasura
     namespace: notify-{{ .Environment.Name }}
     labels:
