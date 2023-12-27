@@ -1,0 +1,119 @@
+      - name: migrate-db
+        image: {{ requiredEnv "API_IMAGE" }}
+        env:
+          - name: ADMIN_BASE_URL
+            value: https://{{ requiredEnv "BASE_URL" }}
+          - name: ADMIN_CLIENT_SECRET
+            value: {{ requiredEnv "ADMIN_CLIENT_SECRET" }}
+          - name: ALLOW_DEBUG_ROUTE
+            {{ if eq .Environment.Name "prod" }}
+            value: "false"
+            {{ else }}
+            value: "true"
+            {{ end }}
+          - name: ASSET_UPLOAD_BUCKET_NAME
+            value: notification-canada-ca-{{ .Environment.Name }}-asset-upload
+          - name: ASSET_DOMAIN
+            value: assets.{{ requiredEnv "BASE_URL" }}
+          - name: AWS_ROUTE53_ZONE
+            value: {{ requiredEnv "AWS_ROUTE53_ZONE" }}
+          - name: AWS_SES_REGION
+            value: {{ requiredEnv "AWS_SES_REGION" }}
+          - name: AWS_SES_SMTP
+            value: {{ requiredEnv "AWS_SES_SMTP" }}
+          - name: AWS_SES_ACCESS_KEY
+            value: {{ requiredEnv "AWS_SES_ACCESS_KEY" }}
+          - name: AWS_SES_SECRET_KEY
+            value: {{ requiredEnv "AWS_SES_SECRET_KEY" }}
+          - name: BATCH_INSERTION_CHUNK_SIZE
+            value: {{ requiredEnv "BATCH_INSERTION_CHUNK_SIZE" | quote }}
+          - name: BULK_SEND_TEST_SERVICE_ID
+            value: {{ requiredEnv "BULK_SEND_TEST_SERVICE_ID" }}
+          - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+            value: {{ requiredEnv "CRM_GITHUB_PERSONAL_ACCESS_TOKEN" }}
+          - name: CRM_ORG_LIST_URL
+            value: {{ requiredEnv "CRM_ORG_LIST_URL" }}
+          - name: CSV_UPLOAD_BUCKET_NAME
+            value: notification-canada-ca-{{ .Environment.Name }}-csv-upload
+          - name: DEBUG_KEY
+            value: {{ requiredEnv "DEBUG_KEY" }}
+          - name: DANGEROUS_SALT
+            value: {{ requiredEnv "DANGEROUS_SALT" }}
+          - name: DOCUMENT_DOWNLOAD_API_HOST
+            value: http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000
+          - name: DOCUMENTATION_DOMAIN
+            value: documentation.{{ requiredEnv "BASE_URL" }}
+          - name: FF_SALESFORCE_CONTACT
+            value: {{ requiredEnv "FF_SALESFORCE_CONTACT" | quote }}
+          - name: FF_SPIKE_SMS_DAILY_LIMIT
+            value: {{ requiredEnv "FF_SPIKE_SMS_DAILY_LIMIT" | quote }}
+          - name: FF_SMS_PARTS_UI
+            value: {{ requiredEnv "FF_SMS_PARTS_UI" | quote }}
+          - name: FF_EMAIL_DAILY_LIMIT
+            value: {{ requiredEnv "FF_EMAIL_DAILY_LIMIT" | quote }}
+          - name: FIDO2_DOMAIN
+            value: {{ requiredEnv "BASE_URL" }}
+          - name: FLASK_APP
+            value: application.py
+          - name: NOTIFY_EMAIL_DOMAIN
+            value: {{ requiredEnv "BASE_URL" }}
+          - name: NOTIFY_ENVIRONMENT
+            value: {{ requiredEnv "NOTIFY_ENVIRONMENT" }}
+          - name: NOTIFICATION_QUEUE_PREFIX
+            value: eks-notification-canada-ca
+          - name: REDIS_URL
+            value: "redis://{{ requiredEnv "REDIS_URL" }}:6379"
+          - name: REDIS_PUBLISH_URL
+            value: {{ requiredEnv "REDIS_PUBLISH_URL" }}
+          - name: REDIS_ENABLED
+            value: "1"
+          - name: SALESFORCE_DOMAIN
+            value: {{ requiredEnv "SALESFORCE_DOMAIN" }}
+          - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+            value: {{ requiredEnv "SALESFORCE_ENGAGEMENT_PRODUCT_ID" }}
+          - name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+            value: {{ requiredEnv "SALESFORCE_ENGAGEMENT_RECORD_TYPE" }}
+          - name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+            value: {{ requiredEnv "SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID" }}
+          - name: SALESFORCE_GENERIC_ACCOUNT_ID
+            value: {{ requiredEnv "SALESFORCE_GENERIC_ACCOUNT_ID" }}
+          - name: SALESFORCE_PASSWORD
+            value: {{ requiredEnv "SALESFORCE_PASSWORD" }}
+          - name: SALESFORCE_SECURITY_TOKEN
+            value: {{ requiredEnv "SALESFORCE_SECURITY_TOKEN" }}
+          - name: SALESFORCE_USERNAME
+            value: {{ requiredEnv "SALESFORCE_USERNAME" }}
+          - name: SECRET_KEY
+            value: {{ requiredEnv "SECRET_KEY" }}
+          - name: SENDGRID_API_KEY
+            value: {{ requiredEnv "SENDGRID_API_KEY" }}
+          - name: SQLALCHEMY_DATABASE_URI
+            value: {{ requiredEnv "SQLALCHEMY_DATABASE_WRITER_URI" }}
+          - name: STATSD_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: TWILIO_ACCOUNT_SID
+            value: {{ requiredEnv "TWILIO_ACCOUNT_SID" }}
+          - name: TWILIO_AUTH_TOKEN
+            value: {{ requiredEnv "TWILIO_AUTH_TOKEN" }}
+          - name: TWILIO_FROM_NUMBER
+            value: {{ requiredEnv "TWILIO_FROM_NUMBER"  | quote }}
+          - name: AWS_US_TOLL_FREE_NUMBER
+            value: {{ requiredEnv "AWS_US_TOLL_FREE_NUMBER" | quote }}
+          - name: NEW_RELIC_MONITOR_MODE
+            value: {{ requiredEnv "NEW_RELIC_MONITOR_MODE"  | quote }}
+          - name: ZENDESK_SELL_API_URL
+            value: {{ requiredEnv "ZENDESK_SELL_API_URL" }}
+          - name: ZENDESK_SELL_API_KEY
+            value: {{ requiredEnv "ZENDESK_SELL_API_KEY" }}
+          - name: ZENDESK_API_URL
+            value: {{ requiredEnv "ZENDESK_API_URL" }}
+          - name: ZENDESK_API_KEY
+            value: {{ requiredEnv "ZENDESK_API_KEY" }}
+        command:
+          [
+            "sh",
+            "-c",
+            "flask db upgrade",
+          ]

@@ -1,0 +1,19 @@
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 10
+    metrics:
+    - resource:
+        name: cpu
+        target:
+          averageUtilization: 50
+          type: Utilization
+      type: Resource
+    behavior:
+      scaleUp:
+        stabilizationWindowSeconds: 0
+        policies:
+        - type: Pods
+          value: 6
+          periodSeconds: 45
+        selectPolicy: Max

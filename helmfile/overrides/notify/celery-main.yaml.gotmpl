@@ -1,0 +1,163 @@
+applicationName: {{ .Release.Name }}
+labels:
+    group: notification
+    team: notification
+service:
+  enabled: true
+deployment:
+  {{ if eq .Release.Name "notify-celery-main-primary" }}
+  replicas: 3
+  {{ else }}
+  replicas: 1
+  {{ end }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  priorityClassName: high-priority        
+  initContainers:
+    - name: wait-cwagent-ready
+      env:
+        - name: STATSD_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+      image: {{ requiredEnv "API_IMAGE" }}
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/sh"]
+      args: ["-c", "sh /app/scripts/cwcheck.sh"]
+
+    - name: init-postgres
+      image: alpine
+      command:
+        [
+          "sh",
+          "-c",
+          "until nslookup {{ requiredEnv "POSTGRES_HOST" }}; do echo waiting for postgres; sleep 2; done;",
+        ]
+
+  image:
+    repository: {{ requiredEnv "API_IMAGE" }}
+  imagePullPolicy: Always
+  name: {{ .Release.Name }}
+  containerSecurityContext:
+    readOnlyRootFilesystem: false
+    runAsNonRoot: false     
+  env:
+    - name: ADMIN_BASE_URL
+      value: https://{{ requiredEnv "BASE_URL" }}
+    - name: ADMIN_CLIENT_SECRET
+      value: {{ requiredEnv "ADMIN_CLIENT_SECRET" }}
+    - name: ALLOW_HTML_SERVICE_IDS
+      value: {{ requiredEnv "ALLOW_HTML_SERVICE_IDS" }}
+    - name: API_HOST_NAME
+      value: https://api.{{ requiredEnv "BASE_URL" }}     
+    - name: ASSET_DOMAIN
+      value: assets.{{ requiredEnv "BASE_URL" }} 
+    - name: ASSET_UPLOAD_BUCKET_NAME
+      value: notification-canada-ca-{{ .Environment.Name }}-asset-upload      
+    - name: AWS_REGION
+      value: {{ requiredEnv "AWS_REGION" }}
+    - name: AWS_PINPOINT_REGION
+      value: {{ requiredEnv "AWS_PINPOINT_REGION" }}
+    - name: BATCH_INSERTION_CHUNK_SIZE
+      value: {{ requiredEnv "BATCH_INSERTION_CHUNK_SIZE" | quote }}
+    - name: BULK_SEND_TEST_SERVICE_ID
+      value: {{ requiredEnv "BULK_SEND_TEST_SERVICE_ID" }}
+    - name: CELERY_CONCURRENCY
+      value: "4"       
+    - name: CELERY_DELIVER_SMS_RATE_LIMIT
+      value: "1/s"            
+    - name: CSV_UPLOAD_BUCKET_NAME
+      value: notification-canada-ca-{{ .Environment.Name }}-csv-upload      
+    - name: DANGEROUS_SALT
+      value: {{ requiredEnv "DANGEROUS_SALT" }}
+    - name: DOCUMENT_DOWNLOAD_API_HOST
+      value: http://document-download-api.{{ .Environment.Name }}.svc.cluster.local:7000
+    - name: FF_SPIKE_SMS_DAILY_LIMIT
+      value: {{ requiredEnv "FF_SPIKE_SMS_DAILY_LIMIT" | quote }}
+    - name: FF_SMS_PARTS_UI
+      value: {{ requiredEnv "FF_SMS_PARTS_UI" | quote }}
+    - name: FF_EMAIL_DAILY_LIMIT
+      value: {{ requiredEnv "FF_EMAIL_DAILY_LIMIT" | quote }}
+    - name: FIDO2_DOMAIN
+      value: {{ requiredEnv "BASE_URL" }}
+    - name: HC_EN_SERVICE_ID
+      value: {{ requiredEnv "HC_EN_SERVICE_ID" }}
+    - name: HC_FR_SERVICE_ID
+      value: {{ requiredEnv "HC_FR_SERVICE_ID" }}      
+    - name: NOTIFY_EMAIL_DOMAIN
+      value: {{ requiredEnv "BASE_URL" }}
+    - name: NOTIFY_ENVIRONMENT
+      value: {{ requiredEnv "NOTIFY_ENVIRONMENT" }}
+    - name: NOTIFICATION_QUEUE_PREFIX
+      value: eks-notification-canada-ca
+    - name: REDIS_URL
+      value: {{ requiredEnv "REDIS_URL" }}
+    - name: REDIS_PUBLISH_URL
+      value: {{ requiredEnv "REDIS_PUBLISH_URL" }}
+    - name: REDIS_ENABLED
+      value: "1"
+    - name: SECRET_KEY
+      value: {{ requiredEnv "SECRET_KEY" }}
+    - name: SENDGRID_API_KEY
+      value: {{ requiredEnv "SENDGRID_API_KEY" }}
+    - name: SQLALCHEMY_DATABASE_READER_URI
+      value: {{ requiredEnv "SQLALCHEMY_DATABASE_READER_URI" }}
+    - name: SQLALCHEMY_DATABASE_URI
+      value: {{ requiredEnv "SQLALCHEMY_DATABASE_WRITER_URI" }}
+    - name: SENTRY_URL
+      value: {{ requiredEnv "SENTRY_URL" }}
+    - name: STATSD_HOST
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: TWILIO_ACCOUNT_SID
+      value: {{ requiredEnv "TWILIO_ACCOUNT_SID" }}
+    - name: TWILIO_AUTH_TOKEN
+      value: {{ requiredEnv "TWILIO_AUTH_TOKEN" }}
+    - name: TWILIO_FROM_NUMBER
+      value: {{ requiredEnv "TWILIO_FROM_NUMBER" | quote }}
+    - name: AWS_US_TOLL_FREE_NUMBER
+      value: {{ requiredEnv "AWS_US_TOLL_FREE_NUMBER" | quote }}
+    - name: NEW_RELIC_APP_NAME
+      value: notification-celery-{{ .Release.Name }}-{{ requiredEnv "NOTIFY_ENVIRONMENT" }}
+    - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+      value: "true"
+    - name: NEW_RELIC_LICENSE_KEY
+      value: {{ requiredEnv "NEW_RELIC_LICENSE_KEY" }}
+    - name: NEW_RELIC_MONITOR_MODE
+      value: {{ requiredEnv "NEW_RELIC_MONITOR_MODE" | quote }}
+    - name: FF_CLOUDWATCH_METRICS_ENABLED
+      value: {{ requiredEnv "FF_CLOUDWATCH_METRICS_ENABLED" | quote }}      
+    - name: FF_BOUNCE_RATE_V1
+      value: {{ requiredEnv "FF_BOUNCE_RATE_V1" | quote }}
+    - name: FF_BOUNCE_RATE_BACKEND
+      value: {{ requiredEnv "FF_BOUNCE_RATE_BACKEND" | quote  }}
+  lifecycle:
+    preStop:
+      exec:
+        command:
+        - /bin/bash
+        - -c
+        - /app/scripts/run_celery_exit.sh      
+  command: ["/bin/sh"]
+  args: ["-c", "sh /app/scripts/run_celery_core_tasks.sh"]
+  pdb:
+    enabled: true
+    minAvailable: 2
+  resources: 
+    requests:
+      cpu: "100m"
+      memory: "500Mi"
+    limits:
+      cpu: "550m"
+      memory: "1024Mi"
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  terminationGracePeriodSeconds: 30

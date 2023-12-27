@@ -1,0 +1,135 @@
+environments:
+  scratch:
+  dev:
+  staging:
+  production:
+---
+repositories:
+  - name: stakater
+    url: https://stakater.github.io/stakater-charts
+  - name: hasura
+    url: https://hasura.github.io/helm-charts
+
+releases:
+
+  - name: notify-admin
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: admin
+      tier: frontend
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/admin.yaml.gotmpl
+
+  - name: notify-api
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: api
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/api.yaml.gotmpl
+
+  - name: notify-celery-beat
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: celery-beat
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/celery-beat.yaml.gotmpl    
+
+  - name: notify-celery-sms
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: celery-sms
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/celery-sms.yaml.gotmpl    
+
+  - name: notify-celery-main-primary
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: celery-main-primary
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/celery-main.yaml.gotmpl   
+
+  - name: notify-celery-main-scalable
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: celery-main-scalable
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/celery-main.yaml.gotmpl   
+    - ./overrides/notify/celery-main-hpa.yaml.gotmpl   
+
+  - name: notify-celery-email-send-primary
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: celery-email-send-primary
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/celery-email-send.yaml.gotmpl   
+
+  - name: notify-celery-email-send-scalable
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: celery-email-send-scalable
+      tier: middle
+      category: notify
+    chart: /Users/benlarabie/projects/application/application
+    values:
+    - ./overrides/notify/celery-email-send.yaml.gotmpl   
+    - ./overrides/notify/celery-email-send-hpa.yaml.gotmpl       
+
+  - name: notify-celery-sms-send-primary
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: celery-sms-send-primary
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/celery-sms-send.yaml.gotmpl   
+
+  - name: notify-celery-sms-send-scalable
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: celery-sms-send-scalable
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/celery-sms-send.yaml.gotmpl   
+    - ./overrides/notify/celery-sms-send-hpa.yaml.gotmpl   
+
+  - name: hasura
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: hasura
+      tier: frontend
+      category: utils
+    chart: hasura/graphql-engine
+    values:
+    - ./overrides/utils/hasura.yaml.gotmpl

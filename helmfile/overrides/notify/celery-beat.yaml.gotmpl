@@ -1,0 +1,107 @@
+applicationName: celery-beat
+labels:
+    group: notification
+    team: notification
+service:
+  enabled: false
+deployment:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: celery-beat
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  priorityClassName: high-priority        
+  initContainers:
+    - name: init-postgres
+      image: alpine
+      command:
+        [
+          "sh",
+          "-c",
+          "until nslookup {{ requiredEnv "POSTGRES_HOST" }}; do echo waiting for postgres; sleep 2; done;",
+        ]
+
+  image:
+    repository: {{ requiredEnv "API_IMAGE" }}
+  imagePullPolicy: Always
+  name: celery-beat
+  containerSecurityContext:
+    readOnlyRootFilesystem: false
+    runAsNonRoot: false     
+  env:
+    - name: ADMIN_BASE_URL
+      value: https://{{ requiredEnv "BASE_URL" }}
+    - name: ADMIN_CLIENT_SECRET
+      value: {{ requiredEnv "ADMIN_CLIENT_SECRET" }}
+    - name: ALLOW_HTML_SERVICE_IDS
+      value: {{ requiredEnv "ALLOW_HTML_SERVICE_IDS" }}
+    - name: AWS_REGION
+      value: {{ requiredEnv "AWS_REGION" }}
+    - name: BULK_SEND_TEST_SERVICE_ID
+      value: {{ requiredEnv "BULK_SEND_TEST_SERVICE_ID" }}
+    - name: DANGEROUS_SALT
+      value: {{ requiredEnv "DANGEROUS_SALT" }}
+    - name: DOCUMENT_DOWNLOAD_API_HOST
+      value: http://document-download-api.{{ .Environment.Name }}.svc.cluster.local:7000
+    - name: FF_SPIKE_SMS_DAILY_LIMIT
+      value: {{ requiredEnv "FF_SPIKE_SMS_DAILY_LIMIT" | quote }}
+    - name: FF_SMS_PARTS_UI
+      value: {{ requiredEnv "FF_SMS_PARTS_UI" | quote }}
+    - name: FF_EMAIL_DAILY_LIMIT
+      value: {{ requiredEnv "FF_EMAIL_DAILY_LIMIT" | quote }}
+    - name: FIDO2_DOMAIN
+      value: {{ requiredEnv "BASE_URL" }}
+    - name: NOTIFY_EMAIL_DOMAIN
+      value: {{ requiredEnv "BASE_URL" }}
+    - name: NOTIFY_ENVIRONMENT
+      value: {{ requiredEnv "NOTIFY_ENVIRONMENT" }}
+    - name: NOTIFICATION_QUEUE_PREFIX
+      value: eks-notification-canada-ca
+    - name: REDIS_URL
+      value: {{ requiredEnv "REDIS_URL" }}
+    - name: REDIS_PUBLISH_URL
+      value: {{ requiredEnv "REDIS_PUBLISH_URL" }}
+    - name: REDIS_ENABLED
+      value: "1"
+    - name: SECRET_KEY
+      value: {{ requiredEnv "SECRET_KEY" }}
+    - name: SENDGRID_API_KEY
+      value: {{ requiredEnv "SENDGRID_API_KEY" }}
+    - name: SQLALCHEMY_DATABASE_URI
+      value: {{ requiredEnv "SQLALCHEMY_DATABASE_WRITER_URI" }}
+    - name: STATSD_HOST
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: TWILIO_ACCOUNT_SID
+      value: {{ requiredEnv "TWILIO_ACCOUNT_SID" }}
+    - name: TWILIO_AUTH_TOKEN
+      value: {{ requiredEnv "TWILIO_AUTH_TOKEN" }}
+    - name: TWILIO_FROM_NUMBER
+      value: {{ requiredEnv "TWILIO_FROM_NUMBER" | quote }}
+    - name: AWS_US_TOLL_FREE_NUMBER
+      value: {{ requiredEnv "AWS_US_TOLL_FREE_NUMBER" | quote }}
+    - name: NEW_RELIC_APP_NAME
+      value: notification-celery-beat-{{ requiredEnv "NOTIFY_ENVIRONMENT" }}
+    - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+      value: "true"
+    - name: NEW_RELIC_LICENSE_KEY
+      value: {{ requiredEnv "NEW_RELIC_LICENSE_KEY" }}
+    - name: NEW_RELIC_MONITOR_MODE
+      value: {{ requiredEnv "NEW_RELIC_MONITOR_MODE" | quote }}
+    - name: FF_BOUNCE_RATE_V1
+      value: {{ requiredEnv "FF_BOUNCE_RATE_V1" | quote }}
+    - name: FF_BOUNCE_RATE_BACKEND
+      value: {{ requiredEnv "FF_BOUNCE_RATE_BACKEND" | quote  }}
+  command: ["/bin/sh"]
+  args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
+  resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  terminationGracePeriodSeconds: 30

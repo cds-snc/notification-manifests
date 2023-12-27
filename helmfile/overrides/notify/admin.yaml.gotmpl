@@ -1,0 +1,163 @@
+applicationName: admin
+labels:
+    group: notification
+    team: notification
+service:
+  annotations: 
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"    
+  type: LoadBalancer    
+deployment:
+    replicas: 2
+    nodeSelector:
+      karpenter.sh/capacity-type: spot   
+    ports:
+        - containerPort: 6012    
+    resources:
+        requests:
+            cpu: "250m"
+            memory: "700Mi"
+        limits:
+            cpu: "1200m"
+            memory: "900Mi"
+    readinessProbe:
+        httpGet:
+            path: /_status?simple=true
+            port: 6012
+        initialDelaySeconds: 10
+        periodSeconds: 3
+        timeoutSeconds: 1
+        successThreshold: 3
+        failureThreshold: 10        
+    livenessProbe:
+        httpGet:
+            path: "/_status?simple=true"
+            port: 6012
+        initialDelaySeconds: 30
+        periodSeconds: 3
+        timeoutSeconds: 1
+        successThreshold: 1
+        failureThreshold: 3     
+    initContainers:
+        - name: init-postgres
+          image: alpine
+          env:
+            - name: BASE_URL
+              value: {{ requiredEnv "BASE_URL" }}          
+          command:
+            [
+                "sh",
+                "-c",
+                "until nc -z -w 2 api.$(BASE_URL) 443; do echo waiting for api; sleep 2; done;",
+            ]     
+    image:
+      repository: public.ecr.aws/cds-snc/notify-admin:latest
+      pullPolicy: Always
+    name: admin          
+    containerSecurityContext:
+      readOnlyRootFilesystem: false
+      runAsNonRoot: false                 
+    env:
+      - name: ADMIN_BASE_URL
+        value: https://{{ requiredEnv "BASE_URL" }}
+      - name: ADMIN_CLIENT_SECRET
+        value: {{ requiredEnv "ADMIN_CLIENT_SECRET" }}
+      - name: ALLOW_DEBUG_ROUTE
+        {{ if eq .Environment.Name "prod" }}
+        value: "false"
+        {{ else }}
+        value: "true"
+        {{ end }}
+      - name: ALLOW_HTML_SERVICE_IDS
+        value: {{ requiredEnv "ALLOW_HTML_SERVICE_IDS" }}
+      - name: API_HOST_NAME
+        value: {{ requiredEnv "API_HOST_NAME" }}
+      - name: ASSET_UPLOAD_BUCKET_NAME
+        value: notification-canada-ca-{{ .Environment.Name }}-asset-upload
+      - name: ASSET_DOMAIN
+        value: assets.{{ requiredEnv "BASE_URL" }}
+      - name: AWS_REGION
+        value: {{ requiredEnv "AWS_REGION" }}
+      - name: BULK_SEND_AWS_BUCKET
+        value: notification-canada-ca-{{ .Environment.Name }}-bulk-send
+      - name: BULK_SEND_TEST_SERVICE_ID
+        value: ea608120-148a-4eba-a64c-4d9a8010e7b0
+      - name: CONTACT_EMAIL
+        value: notification-ops@cds-snc.ca
+      - name: CSV_UPLOAD_BUCKET_NAME
+        value: notification-canada-ca-{{ .Environment.Name }}-csv-upload
+      - name: DEBUG_KEY
+        value: {{ requiredEnv "DEBUG_KEY" }}
+      - name: DANGEROUS_SALT
+        value: {{ requiredEnv "DANGEROUS_SALT" }}
+      - name: DOCUMENTATION_DOMAIN
+        value: documentation.{{ requiredEnv "BASE_URL" }}
+      - name: HC_EN_SERVICE_ID
+        value: {{ requiredEnv "HC_EN_SERVICE_ID" }}
+      - name: HC_FR_SERVICE_ID
+        value: {{ requiredEnv "HC_FR_SERVICE_ID" }}
+      - name: FF_SPIKE_SMS_DAILY_LIMIT
+        value: {{ requiredEnv "FF_SPIKE_SMS_DAILY_LIMIT" | quote }}
+      - name: FF_SMS_PARTS_UI
+        value: {{ requiredEnv "FF_SMS_PARTS_UI" | quote }}
+      - name: FLASK_APP
+        value: 'application.py'
+      - name: NOTIFY_ENVIRONMENT
+        value: {{ requiredEnv "NOTIFY_ENVIRONMENT" }}
+      - name: MIXPANEL_PROJECT_TOKEN
+        value: {{ requiredEnv "MIXPANEL_PROJECT_TOKEN" }}
+      - name: SENDING_DOMAIN
+        value: {{ requiredEnv "BASE_URL" }}
+      - name: SENSITIVE_SERVICES
+        value: {{ requiredEnv "SENSITIVE_SERVICES" }}
+      - name: SQLALCHEMY_DATABASE_URI
+        value: {{ requiredEnv "SQLALCHEMY_DATABASE_WRITER_URI" }}
+      - name: STATSD_HOST
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+      - name: REDIS_URL
+        value: {{ requiredEnv "REDIS_URL" }}
+      - name: REDIS_PUBLISH_URL
+        value: {{ requiredEnv "REDIS_PUBLISH_URL" }}
+      - name: REDIS_ENABLED
+        value: "1"
+      - name: SECRET_KEY
+        value: {{ requiredEnv "SECRET_KEY" }}
+      - name: SENTRY_URL
+        value: {{ requiredEnv "SENTRY_URL" }}
+      - name: SHOW_STYLEGUIDE
+        value: "true"
+      - name: NEW_RELIC_APP_NAME
+        value: notification-admin-{{ .Environment.Name }}
+      - name: NEW_RELIC_CONFIG_FILE
+        value: "/app/newrelic.ini"
+      - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+        value: "true"
+      - name: NEW_RELIC_LICENSE_KEY
+        value: {{ requiredEnv "NEW_RELIC_LICENSE_KEY" }}
+      - name: NEW_RELIC_MONITOR_MODE
+        value: {{ requiredEnv "NEW_RELIC_MONITOR_MODE" | quote }}
+      - name: IP_GEOLOCATE_SERVICE
+        value: http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080
+      - name: GC_ARTICLES_API
+        value: {{ requiredEnv "GC_ARTICLES_API" }}
+      - name: GC_ARTICLES_API_AUTH_USERNAME
+        value: {{ requiredEnv "GC_ARTICLES_API_AUTH_USERNAME" }}
+      - name: GC_ARTICLES_API_AUTH_PASSWORD
+        value: {{ requiredEnv "GC_ARTICLES_API_AUTH_PASSWORD" }}
+      - name: WAF_SECRET
+        value: {{ requiredEnv "WAF_SECRET" }}
+      - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+        value: {{ requiredEnv "CRM_GITHUB_PERSONAL_ACCESS_TOKEN" }}
+      - name: CRM_ORG_LIST_URL
+        value: {{ requiredEnv "CRM_ORG_LIST_URL" }}   
+      - name: FF_SALESFORCE_CONTACT
+        value: {{ requiredEnv "FF_SALESFORCE_CONTACT" | quote}}                            
+      - name: FF_BOUNCE_RATE_V1
+        value: {{ requiredEnv "FF_BOUNCE_RATE_V1" | quote}}
+      - name: FF_BOUNCE_RATE_V15
+        value: {{ requiredEnv "FF_BOUNCE_RATE_V15" | quote }}
+      - name: FF_ABTEST_SERVICE_ID
+        value: {{ requiredEnv "FF_ABTEST_SERVICE_ID" | quote }}
+      - name: FF_EMAIL_DAILY_LIMIT
+        value: {{ requiredEnv "FF_EMAIL_DAILY_LIMIT" | quote }}
