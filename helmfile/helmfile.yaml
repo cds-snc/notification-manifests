@@ -4,11 +4,25 @@ environments:
   staging:
   production:
 ---
+
+helmDefaults:
+  timeout: 600
+  
 repositories:
   - name: stakater
     url: https://stakater.github.io/stakater-charts
   - name: hasura
     url: https://hasura.github.io/helm-charts
+  - name: eks
+    url: https://aws.github.io/eks-charts
+  - name: karpenter
+    url: https://charts.karpenter.sh/
+  - name: jetstack
+    url: https://charts.jetstack.io
+  - name: metrics-server
+    url: https://kubernetes-sigs.github.io/metrics-server/
+  - name: deliveryhero
+    url: https://charts.deliveryhero.io/
 
 releases:
 
@@ -134,6 +148,134 @@ releases:
     version: 2.2.5
     values:
     - ./overrides/notify/document-download.yaml.gotmpl   
+
+  - name: notify-documentation
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: documentation
+      tier: frontend
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/documentation.yaml.gotmpl   
+
+  - name: ipv4-geolocate
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: ipv4-geolocate
+      tier: middle
+      category: notify
+    chart: stakater/application
+    version: 2.2.5
+    values:
+    - ./overrides/notify/ipv4-geolocate.yaml.gotmpl   
+
+  - name: priority-classes
+    labels:
+      app: priority-classes
+      tier: middle
+      category: system
+    chart: deliveryhero/priority-class
+    values:
+    - ./overrides/system/priority-classes.yaml.gotmpl
+
+  - name: karpenter
+    namespace: karpenter
+    wait: true
+    labels:
+      app: karpenter
+      tier: middle
+      category: system
+    chart: karpenter/karpenter
+    version: 0.16.3
+    values:
+    - ./overrides/system/karpenter.yaml.gotmpl
+    hooks:
+      - events:
+        - cleanup
+        showlogs: true
+        command: kubectl
+        args:
+        - apply
+        - -f
+        - "./overrides/system/karpenter-provisioner.yaml"    
+
+  - name: cloudwatch-agent
+    namespace: amazon-cloudwatch
+    labels:
+      app: cloudwatch-agent
+      tier: middle
+      category: system
+    chart: eks/aws-cloudwatch-metrics
+    values:
+    - ./overrides/system/cloudwatch-agent.yaml.gotmpl
+
+  - name: fluentbit
+    namespace: amazon-cloudwatch
+    labels:
+      app: fluentbit
+      tier: middle
+      category: system
+    chart: eks/aws-for-fluent-bit
+    values:
+    - ./overrides/system/fluentbit.yaml.gotmpl
+
+
+  - name: metrics-server
+    namespace: kube-system
+    labels:
+      app: metrics-server
+      tier: middle
+      category: system
+    chart: metrics-server/metrics-server
+
+  - name: k8s-event-logger
+    namespace: amazon-cloudwatch
+    labels:
+      app: k8s-event-logger
+      tier: middle
+      category: system
+    chart: deliveryhero/k8s-event-logger
+
+  - name: cert-manager
+    namespace: cert-manager
+    labels:
+      app: cert-manager
+      tier: middle
+      category: system
+    chart: jetstack/cert-manager
+    values:
+    - ./overrides/system/cert-manager.yaml.gotmpl
+    hooks:
+      - events:
+        - prepare
+        showlogs: true
+        command: kubectl
+        args:
+        - apply
+        - -f
+        - "https://github.com/cert-manager/cert-manager/releases/download/v1.12.7/cert-manager.crds.yaml"
+
+
+  - name: aws-load-balancer-controller
+    namespace: kube-system
+    labels:
+      app: aws-alb-controller
+      tier: middle
+      category: system
+    chart: eks/aws-load-balancer-controller
+    values:
+    - ./overrides/system/aws-alb-controller.yaml.gotmpl
+    hooks:
+    - events:
+      - prepare
+      showlogs: true
+      command: kubectl
+      args:
+      - apply
+      - -k
+      - https://github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master
 
   - name: hasura
     namespace: notify-{{ .Environment.Name }}

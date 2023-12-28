@@ -1,0 +1,70 @@
+applicationName: {{ .Release.Name }}
+labels:
+    group: notification
+    team: notification
+service:
+  annotations: 
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"    
+  type: LoadBalancer
+deployment:
+  name: ipv4
+  containerSecurityContext:
+    readOnlyRootFilesystem: false
+    runAsNonRoot: false        
+  image:
+    repository: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice:latest
+    imagePullPolicy: Always  
+  
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "100Mi"
+  ports:
+    - containerPort: 8080
+  readinessProbe:
+    httpGet:
+      path: /8.8.8.8
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 3
+    timeoutSeconds: 1
+    successThreshold: 3
+    failureThreshold: 10
+  livenessProbe:
+    httpGet:
+      path: /8.8.8.8
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 3
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  env:
+  - name: PORT
+    value: "8080"
+cronJob:
+  enabled: true
+  jobs:
+    ipv4-deployment-restart:
+      concurrencyPolicy: Forbid
+      schedule: "0 16 * * 1-4"
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      serviceAccountName: ipv4-deployment-restart
+      restartPolicy: Never
+      image: 
+        repository: bitnami/kubectl
+      command: ["kubectl"]
+      args: ["rollout","restart", "deployment/{{ .Release.Name }}"]
+
+rbac:
+  serviceAccount:
+    enabled: true
+    name: ipv4-deployment-restart
+  roles:
+    - name: ipv4-deployment-restart
+      rules:
+      - apiGroups: ["apps", "extensions"]
+        resources: ["deployments"]
+        resourceNames: ["ipv4"]
+        verbs: ["get", "patch"]

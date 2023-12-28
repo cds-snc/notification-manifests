@@ -1,0 +1,57 @@
+applicationName: {{ .Release.Name }}
+labels:
+    group: notification
+    team: notification
+service:
+  annotations: 
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"    
+  type: LoadBalancer
+deployment:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: document-download-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  image:
+    repository: {{ requiredEnv "DOCUMENTATION_IMAGE" }}
+    imagePullPolicy: Always  
+  name: documentation
+  containerSecurityContext:
+    readOnlyRootFilesystem: false
+    runAsNonRoot: false      
+  ports:
+    - containerPort: 80
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "50Mi"
+    limits:
+      cpu: "100m"
+      memory: "100Mi"
+  readinessProbe:
+    httpGet:
+      path: /index.html
+      port: 80
+    initialDelaySeconds: 10
+    periodSeconds: 3
+    timeoutSeconds: 1
+    successThreshold: 3
+    failureThreshold: 10
+  livenessProbe:
+    httpGet:
+      path: /index.html
+      port: 80
+    initialDelaySeconds: 30
+    periodSeconds: 3
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  terminationGracePeriodSeconds: 60
