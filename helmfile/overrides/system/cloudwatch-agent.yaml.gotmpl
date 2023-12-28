@@ -1,1 +1,7 @@
+image:
+  tag: 1.300026.3b189
 clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
+statsd:
+  enabled: true
+  port: 25888
+  protocol: TCP

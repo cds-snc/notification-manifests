@@ -4,9 +4,6 @@ environments:
   staging:
   production:
 ---
-
-helmDefaults:
-  timeout: 600
   
 repositories:
   - name: stakater
@@ -23,6 +20,8 @@ repositories:
     url: https://kubernetes-sigs.github.io/metrics-server/
   - name: deliveryhero
     url: https://charts.deliveryhero.io/
+  - name: snowplow-devops
+    url: https://snowplow-devops.github.io/helm-charts
 
 releases:
 
@@ -36,6 +35,16 @@ releases:
     version: 2.2.5
     values:
     - ./overrides/notify/admin.yaml.gotmpl
+
+  - name: notify-admin-tgb
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: admin
+      tier: frontend
+      category: notify
+    chart: snowplow-devops/aws-target-group-binding
+    values:
+    - ./overrides/notify/admin-tgb.yaml.gotmpl
 
   - name: notify-api
     namespace: notify-{{ .Environment.Name }}

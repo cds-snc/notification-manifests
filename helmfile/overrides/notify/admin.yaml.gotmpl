@@ -6,6 +6,11 @@ service:
   annotations: 
     service.beta.kubernetes.io/aws-load-balancer-internal: "true"    
   type: LoadBalancer    
+  ports:
+    - port: 8080
+      name: http
+      protocol: TCP
+      targetPort: 6012
 deployment:
     replicas: 2
     nodeSelector:

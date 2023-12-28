@@ -1,0 +1,5 @@
+cloudWatchLogs:
+  enabled: true
+  region: ca-central-1
+  logGroupName: /aws/containerinsights/notification-canada-ca-dev-eks-cluster/application
+  logStreamTemplate: $kubernetes['pod_name']
