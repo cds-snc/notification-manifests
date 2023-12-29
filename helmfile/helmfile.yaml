@@ -20,6 +20,8 @@ repositories:
     url: https://charts.deliveryhero.io/
   - name: snowplow-devops
     url: https://snowplow-devops.github.io/helm-charts
+  - name: prometheus
+    url: https://prometheus-community.github.io/helm-charts
 
 releases:
 
@@ -202,7 +204,7 @@ releases:
       app: fluentbit
       tier: middle
       category: system
-    chart: eks/aws-for-fluent-bit
+    chart: ./charts/aws-for-fluent-bit
     values:
     - ./overrides/system/fluentbit.yaml.gotmpl
 
@@ -214,6 +216,16 @@ releases:
       tier: middle
       category: system
     chart: metrics-server/metrics-server
+
+  - name: prometheus
+    namespace: amazon-cloudwatch
+    labels:
+      app: prometheus
+      tier: full
+      category: system
+    chart: prometheus/prometheus
+    values:
+    - ./overrides/system/prometheus.yaml.gotmpl
 
   - name: k8s-event-logger
     namespace: amazon-cloudwatch

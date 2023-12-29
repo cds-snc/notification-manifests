@@ -3,3 +3,9 @@ cloudWatchLogs:
   region: ca-central-1
   logGroupName: /aws/containerinsights/notification-canada-ca-dev-eks-cluster/application
   logStreamTemplate: $kubernetes['pod_name']
+clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
+env:
+  - name: HOST_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
