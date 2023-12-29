@@ -12,7 +12,7 @@ service:
     protocol: TCP
     targetPort: 6011 
 deployment:
-    replicas: 2
+    replicas: 1
     nodeSelector:
         karpenter.sh/capacity-type: spot   
     ports:
@@ -193,5 +193,9 @@ deployment:
         value: {{ requiredEnv "FF_BOUNCE_RATE_V1" | quote }}
       - name: FF_BOUNCE_RATE_BACKEND
         value: {{ requiredEnv "FF_BOUNCE_RATE_BACKEND" | quote }}
-
+aws:
+  tgb:
+    enabled: true
+    servicePort: 8080
+    targetGroupARN: {{ requiredEnv "API_TARGET_GROUP_ARN" }}
 

@@ -1,0 +1,15 @@
+{{- if and (.Values.aws.tgb)  (.Values.aws.tgb.enabled) }}
+---
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  labels:
+    {{- include "application.labels" . | nindent 4 }}
+  name: {{ template "application.name" . }}
+  namespace: {{ include "application.namespace" . }}
+spec:
+  serviceRef:
+    name: {{ template "application.name" . }}
+    port: {{ .Values.aws.tgb.servicePort }}
+  targetGroupARN: {{ .Values.aws.tgb.targetGroupARN }}
+{{- end }}

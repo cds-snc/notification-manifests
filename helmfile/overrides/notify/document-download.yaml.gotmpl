@@ -6,6 +6,11 @@ service:
   annotations: 
     service.beta.kubernetes.io/aws-load-balancer-internal: "true"    
   type: LoadBalancer
+  ports:
+  - port: 8080
+    name: http
+    protocol: TCP
+    targetPort: 7000 
 deployment:
   replicas: 1
   selector:
@@ -80,3 +85,8 @@ deployment:
   schedulerName: default-scheduler
   securityContext: {}
   terminationGracePeriodSeconds: 60
+aws:
+  tgb:
+    enabled: true
+    servicePort: 8080
+    targetGroupARN: {{ requiredEnv "DOCUMENT_TARGET_GROUP_ARN" }}

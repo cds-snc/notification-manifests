@@ -6,8 +6,6 @@ environments:
 ---
   
 repositories:
-  - name: stakater
-    url: https://stakater.github.io/stakater-charts
   - name: hasura
     url: https://hasura.github.io/helm-charts
   - name: eks
@@ -31,20 +29,9 @@ releases:
       app: admin
       tier: frontend
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/admin.yaml.gotmpl
-
-  - name: notify-admin-tgb
-    namespace: notify-{{ .Environment.Name }}
-    labels:
-      app: admin
-      tier: frontend
-      category: notify
-    chart: snowplow-devops/aws-target-group-binding
-    values:
-    - ./overrides/notify/admin-tgb.yaml.gotmpl
 
   - name: notify-api
     namespace: notify-{{ .Environment.Name }}
@@ -52,8 +39,7 @@ releases:
       app: api
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/api.yaml.gotmpl
 
@@ -63,8 +49,7 @@ releases:
       app: celery-beat
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/celery-beat.yaml.gotmpl    
 
@@ -74,8 +59,7 @@ releases:
       app: celery-sms
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/celery-sms.yaml.gotmpl    
 
@@ -85,8 +69,7 @@ releases:
       app: celery-main-primary
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/celery-main.yaml.gotmpl   
 
@@ -96,8 +79,7 @@ releases:
       app: celery-main-scalable
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/celery-main.yaml.gotmpl   
     - ./overrides/notify/celery-main-hpa.yaml.gotmpl   
@@ -108,8 +90,7 @@ releases:
       app: celery-email-send-primary
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/celery-email-send.yaml.gotmpl   
 
@@ -119,7 +100,7 @@ releases:
       app: celery-email-send-scalable
       tier: middle
       category: notify
-    chart: /Users/benlarabie/projects/application/application
+    chart: ./charts/application
     values:
     - ./overrides/notify/celery-email-send.yaml.gotmpl   
     - ./overrides/notify/celery-email-send-hpa.yaml.gotmpl       
@@ -130,8 +111,7 @@ releases:
       app: celery-sms-send-primary
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/celery-sms-send.yaml.gotmpl   
 
@@ -141,8 +121,7 @@ releases:
       app: celery-sms-send-scalable
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/celery-sms-send.yaml.gotmpl   
     - ./overrides/notify/celery-sms-send-hpa.yaml.gotmpl   
@@ -153,8 +132,7 @@ releases:
       app: document-download
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/document-download.yaml.gotmpl   
 
@@ -164,8 +142,7 @@ releases:
       app: documentation
       tier: frontend
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/documentation.yaml.gotmpl   
 
@@ -175,8 +152,7 @@ releases:
       app: ipv4-geolocate
       tier: middle
       category: notify
-    chart: stakater/application
-    version: 2.2.5
+    chart: ./charts/application
     values:
     - ./overrides/notify/ipv4-geolocate.yaml.gotmpl   
 

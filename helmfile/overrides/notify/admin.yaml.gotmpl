@@ -12,7 +12,7 @@ service:
       protocol: TCP
       targetPort: 6012
 deployment:
-    replicas: 2
+    replicas: 1
     nodeSelector:
       karpenter.sh/capacity-type: spot   
     ports:
@@ -52,7 +52,7 @@ deployment:
             [
                 "sh",
                 "-c",
-                "until nc -z -w 2 api.$(BASE_URL) 443; do echo waiting for api; sleep 2; done;",
+                "until nc -z -w 2 api-k8s.$(BASE_URL) 443; do echo waiting for api; sleep 2; done;",
             ]     
     image:
       repository: public.ecr.aws/cds-snc/notify-admin:latest
@@ -75,7 +75,7 @@ deployment:
       - name: ALLOW_HTML_SERVICE_IDS
         value: {{ requiredEnv "ALLOW_HTML_SERVICE_IDS" }}
       - name: API_HOST_NAME
-        value: {{ requiredEnv "API_HOST_NAME" }}
+        value: https://{{ requiredEnv "API_HOST_NAME" }}
       - name: ASSET_UPLOAD_BUCKET_NAME
         value: notification-canada-ca-{{ .Environment.Name }}-asset-upload
       - name: ASSET_DOMAIN
@@ -143,7 +143,7 @@ deployment:
       - name: NEW_RELIC_MONITOR_MODE
         value: {{ requiredEnv "NEW_RELIC_MONITOR_MODE" | quote }}
       - name: IP_GEOLOCATE_SERVICE
-        value: http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080
+        value: http://ipv4-geolocate.{{ .Release.Namespace }}.svc.cluster.local:8080
       - name: GC_ARTICLES_API
         value: {{ requiredEnv "GC_ARTICLES_API" }}
       - name: GC_ARTICLES_API_AUTH_USERNAME
@@ -166,3 +166,8 @@ deployment:
         value: {{ requiredEnv "FF_ABTEST_SERVICE_ID" | quote }}
       - name: FF_EMAIL_DAILY_LIMIT
         value: {{ requiredEnv "FF_EMAIL_DAILY_LIMIT" | quote }}
+aws:
+  tgb:
+    enabled: true
+    servicePort: 8080
+    targetGroupARN: {{ requiredEnv "ADMIN_TARGET_GROUP_ARN" }}
