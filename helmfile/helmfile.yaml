@@ -192,7 +192,7 @@ releases:
       app: cloudwatch-agent
       tier: middle
       category: system
-    chart: eks/aws-cloudwatch-metrics
+    chart: ./charts/aws-cloudwatch-metrics
     values:
     - ./overrides/system/cloudwatch-agent.yaml.gotmpl
 

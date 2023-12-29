@@ -20,7 +20,17 @@ deployment:
     type: RollingUpdate
   priorityClassName: high-priority        
   initContainers:
-
+    - name: wait-cwagent-ready
+      env:
+        - name: STATSD_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+      image: {{ requiredEnv "API_IMAGE" }}
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/sh"]
+      args: ["-c", "sh /app/scripts/cwcheck.sh"]
+      
     - name: init-postgres
       image: alpine
       command:

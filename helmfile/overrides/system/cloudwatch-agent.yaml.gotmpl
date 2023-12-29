@@ -3,5 +3,6 @@ image:
 clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
 statsd:
   enabled: true
-  port: 25888
+  port: 8125
   protocol: TCP
+hostNetwork: true
