@@ -6,9 +6,13 @@ bases:
   - ../../base/utils
   - ../../base/notify-admin
   - ../../base/notify-api
-  - ../../base/notify-celery-main
-  - ../../base/notify-celery-sms-send
-  - ../../base/notify-celery-email-send
+  - ../../base/notify-celery-other
+  - ../../base/notify-celery-main-primary
+  - ../../base/notify-celery-sms-send-primary
+  - ../../base/notify-celery-email-send-primary
+  - ../../base/notify-celery-main-scalable
+  - ../../base/notify-celery-sms-send-scalable
+  - ../../base/notify-celery-email-send-scalable
   - ../../base/notify-document-download
   - ../../base/notify-documentation
   - ../../base/notify-system
@@ -31,9 +35,9 @@ patches:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:7e6e7a1
+    newName: public.ecr.aws/cds-snc/notify-admin:aad5dcc
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:1088489
+    newName: public.ecr.aws/cds-snc/notify-api:7dc06d5
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:fc68352
   - name: documentation

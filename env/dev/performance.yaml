@@ -33,7 +33,7 @@ spec:
       - name: celery-primary
         resources:
           requests:
-            cpu: "300m"
+            cpu: "150m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -54,7 +54,7 @@ spec:
       - name: celery-sms-send-primary
         resources:
           requests:
-            cpu: "100m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -96,7 +96,7 @@ spec:
       - name: celery-scalable
         resources:
           requests:
-            cpu: "300m"
+            cpu: "150m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -117,7 +117,7 @@ spec:
       - name: celery-sms-send-scalable
         resources:
           requests:
-            cpu: "100m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
             cpu: "550m"
