@@ -1,32 +1,32 @@
 bases:
-  - ../../base/karpenter
-  - ../../base/kube-state-metrics
-  - ../../base/prometheus-cloudwatch
-  - ../../base/k8s-event-logger
-  - ../../base/utils
-  - ../../base/notify-admin
-  - ../../base/notify-api
-  - ../../base/notify-celery-other  
-  - ../../base/notify-celery-main-primary
-  - ../../base/notify-celery-sms-send-primary
-  - ../../base/notify-celery-email-send-primary
-  - ../../base/notify-celery-main-scalable
-  - ../../base/notify-celery-sms-send-scalable
-  - ../../base/notify-celery-email-send-scalable
-  - ../../base/notify-document-download
-  - ../../base/notify-documentation
-  - ../../base/notify-system
+  #- ../../base/karpenter
+  #- ../../base/kube-state-metrics
+  #- ../../base/prometheus-cloudwatch
+  #- ../../base/k8s-event-logger
+  #- ../../base/utils
+  #- ../../base/notify-admin
+  #- ../../base/notify-api
+  #- ../../base/notify-celery-other  
+  #- ../../base/notify-celery-main-primary
+  #- ../../base/notify-celery-sms-send-primary
+  #- ../../base/notify-celery-email-send-primary
+  #- ../../base/notify-celery-main-scalable
+  #- ../../base/notify-celery-sms-send-scalable
+  #- ../../base/notify-celery-email-send-scalable
+  #- ../../base/notify-document-download
+  #- ../../base/notify-documentation
+  #- ../../base/notify-system
   
 resources:
   - cwagent.yaml
-  - fluentbit.yaml
+  #- fluentbit.yaml
   - cwagent-configmap.yaml
-  - notification-service-account.yaml
-  - api-target-group.yaml
-  - admin-target-group.yaml
-  - document-download-api-target-group.yaml
-  - documentation-target-group.yaml
-  - aws-auth-configmap.yaml
+  #- notification-service-account.yaml
+  #- api-target-group.yaml
+  #- admin-target-group.yaml
+  #- document-download-api-target-group.yaml
+  #- documentation-target-group.yaml
+  #- aws-auth-configmap.yaml
 
 images:
   - name: admin
@@ -43,10 +43,10 @@ configMapGenerator:
   env: .env
 
 patches:
-  - performance.yaml
-  - services.yaml
-  - karpenter.yaml
-  - node-selector-patch.yaml
+  #- performance.yaml
+  #- services.yaml
+  #- karpenter.yaml
+  #- node-selector-patch.yaml
 
 vars:
 - name: ADMIN_CLIENT_SECRET
