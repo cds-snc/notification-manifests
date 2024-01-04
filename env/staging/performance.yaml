@@ -16,11 +16,11 @@ spec:
       - name: celery-primary
         resources:
           requests:
-            cpu: "150m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
-            cpu: "550m"
-            memory: "1024Mi"
+            cpu: "200m"
+            memory: "600Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,7 +41,7 @@ spec:
             memory: "500Mi"
           limits:
             cpu: "550m"
-            memory: "1024Mi"
+            memory: "600Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -58,11 +58,11 @@ spec:
       - name: celery-email-send-primary
         resources:
           requests:
-            cpu: "100m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
-            cpu: "550m"
-            memory: "1024Mi"
+            cpu: "100m"
+            memory: "600Mi"
 ---
 # SCALABLE CELERIES
 
@@ -81,11 +81,11 @@ spec:
       - name: celery-scalable
         resources:
           requests:
-            cpu: "150m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
-            cpu: "550m"
-            memory: "1024Mi"
+            cpu: "200m"
+            memory: "600Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -106,7 +106,7 @@ spec:
             memory: "500Mi"
           limits:
             cpu: "550m"
-            memory: "1024Mi"
+            memory: "600Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -123,11 +123,11 @@ spec:
       - name: celery-email-send-scalable
         resources:
           requests:
-            cpu: "100m"
+            cpu: "50m"
             memory: "500Mi"
           limits:
-            cpu: "550m"
-            memory: "1024Mi"
+            cpu: "100m"
+            memory: "600Mi"
 ---
 # OTHER APPS
 apiVersion: apps/v1
@@ -138,7 +138,16 @@ metadata:
   name:  api
   namespace: notification-canada-ca
 spec:
-  replicas: 4
+  replicas: 2
+  containers:
+  - name: api
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "700Mi"
+      limits:
+        cpu: "150m"
+        memory: "750Mi"  
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -149,6 +158,15 @@ metadata:
   namespace: notification-canada-ca
 spec:
   replicas: 2
+  containers:
+  - name: admin
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "400Mi"
+      limits:
+        cpu: "200m"
+        memory: "500Mi"    
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -159,7 +177,36 @@ metadata:
   namespace: notification-canada-ca
 spec:
   replicas: 2
+  containers:
+  - name: celery-email-send-scalable
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
+      limits:
+        cpu: "100m"
+        memory: "250Mi"  
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: document-download-api
+  name:  document-download-api
+  namespace: notification-canada-ca
+spec:
+  replicas: 2
+  containers:
+  - name: document-download-api
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "75Mi"
+      limits:
+        cpu: "100m"
+        memory: "150Mi"     
+---
+
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
