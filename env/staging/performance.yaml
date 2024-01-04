@@ -139,6 +139,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   replicas: 2
+<<<<<<< HEAD
   template:
     spec:
       containers:
@@ -150,6 +151,17 @@ spec:
           limits:
             cpu: "150m"
             memory: "750Mi"  
+=======
+  containers:
+  - name: api
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "700Mi"
+      limits:
+        cpu: "150m"
+        memory: "750Mi"  
+>>>>>>> origin/main
 ---
 apiVersion: apps/v1
 kind: Deployment
