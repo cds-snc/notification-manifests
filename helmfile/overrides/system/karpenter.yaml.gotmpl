@@ -1,7 +1,7 @@
 clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
-clusterEndpoint: https://961D0B7D48CC10A601A4B2CABBB0622D.gr7.ca-central-1.eks.amazonaws.com
+clusterEndpoint: {{ requiredEnv "EKS_CLUSTER_ENDPOINT" }}
 aws:
   defaultInstanceProfile: KarpenterNodeInstanceProfile-karpenter-controller-eks
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::800095993820:role/karpenter-controller-eks
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/karpenter-controller-eks

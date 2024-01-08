@@ -193,7 +193,7 @@ releases:
     labels:
       app: cloudwatch-agent
       tier: middle
-      category: system
+      category: monitoring
     chart: ./charts/aws-cloudwatch-metrics
     values:
     - ./overrides/system/cloudwatch-agent.yaml.gotmpl
@@ -203,7 +203,7 @@ releases:
     labels:
       app: fluentbit
       tier: middle
-      category: system
+      category: monitoring
     chart: ./charts/aws-for-fluent-bit
     values:
     - ./overrides/system/fluentbit.yaml.gotmpl
@@ -214,7 +214,7 @@ releases:
     labels:
       app: metrics-server
       tier: middle
-      category: system
+      category: monitoring
     chart: metrics-server/metrics-server
 
   - name: prometheus
@@ -222,7 +222,7 @@ releases:
     labels:
       app: prometheus
       tier: full
-      category: system
+      category: monitoring
     chart: prometheus/prometheus
     values:
     - ./overrides/system/prometheus.yaml.gotmpl
@@ -232,7 +232,7 @@ releases:
     labels:
       app: k8s-event-logger
       tier: middle
-      category: system
+      category: monitoring
     chart: deliveryhero/k8s-event-logger
 
   - name: cert-manager
