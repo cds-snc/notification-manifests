@@ -20,6 +20,7 @@ deployment:
     type: RollingUpdate
   priorityClassName: high-priority        
   initContainers:
+    {{ if not (eq .Environment.Name "dev") }}
     - name: wait-cwagent-ready
       env:
         - name: STATSD_HOST
@@ -30,7 +31,7 @@ deployment:
       imagePullPolicy: IfNotPresent
       command: ["/bin/sh"]
       args: ["-c", "sh /app/scripts/cwcheck.sh"]
-
+      {{ end }}
     - name: init-postgres
       image: alpine
       command:
