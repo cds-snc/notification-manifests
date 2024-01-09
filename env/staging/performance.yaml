@@ -16,7 +16,7 @@ spec:
       - name: celery-primary
         resources:
           requests:
-            cpu: "150m"
+            cpu: "100m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -81,7 +81,7 @@ spec:
       - name: celery-scalable
         resources:
           requests:
-            cpu: "150m"
+            cpu: "100m"
             memory: "500Mi"
           limits:
             cpu: "550m"
