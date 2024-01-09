@@ -22,6 +22,8 @@ repositories:
     url: https://snowplow-devops.github.io/helm-charts
   - name: prometheus
     url: https://prometheus-community.github.io/helm-charts
+  - name: runix
+    url: https://helm.runix.net
 
 releases:
 
@@ -57,6 +59,7 @@ releases:
 
   - name: notify-celery-sms
     namespace: notify-{{ .Environment.Name }}
+    installed: true
     labels:
       app: celery-sms
       tier: middle
@@ -67,6 +70,7 @@ releases:
 
   - name: notify-celery-main-primary
     namespace: notify-{{ .Environment.Name }}
+    installed: true
     labels:
       app: celery-main-primary
       tier: middle
@@ -77,6 +81,7 @@ releases:
 
   - name: notify-celery-main-scalable
     namespace: notify-{{ .Environment.Name }}
+    installed: false
     labels:
       app: celery-main-scalable
       tier: middle
@@ -88,6 +93,7 @@ releases:
 
   - name: notify-celery-email-send-primary
     namespace: notify-{{ .Environment.Name }}
+    installed: true
     labels:
       app: celery-email-send-primary
       tier: middle
@@ -98,6 +104,7 @@ releases:
 
   - name: notify-celery-email-send-scalable
     namespace: notify-{{ .Environment.Name }}
+    installed: false
     labels:
       app: celery-email-send-scalable
       tier: middle
@@ -109,6 +116,7 @@ releases:
 
   - name: notify-celery-sms-send-primary
     namespace: notify-{{ .Environment.Name }}
+    installed: true
     labels:
       app: celery-sms-send-primary
       tier: middle
@@ -119,6 +127,7 @@ releases:
 
   - name: notify-celery-sms-send-scalable
     namespace: notify-{{ .Environment.Name }}
+    installed: false
     labels:
       app: celery-sms-send-scalable
       tier: middle
@@ -208,6 +217,15 @@ releases:
     values:
     - ./overrides/system/fluentbit.yaml.gotmpl
 
+  - name: pgadmin
+    namespace: pgadmin
+    labels:
+      app: pgadmin
+      tier: full
+      category: monitoring
+    chart: runix/pgadmin4
+    values:
+    - ./overrides/utils/pgadmin.yaml.gotmpl
 
   - name: metrics-server
     namespace: kube-system

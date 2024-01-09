@@ -6,9 +6,9 @@ service:
   enabled: true
 deployment:
   {{ if eq .Release.Name "notify-celery-email-send-primary" }}
-  replicas: 3
-  {{ else }}
   replicas: 1
+  {{ else }}
+  replicas: 0
   {{ end }}
   selector:
     matchLabels:
@@ -56,7 +56,11 @@ deployment:
     - name: ALLOW_HTML_SERVICE_IDS
       value: {{ requiredEnv "ALLOW_HTML_SERVICE_IDS" }}
     - name: API_HOST_NAME
+      {{ if (eq .Environment.Name "dev") }}
+      value: https://api-k8s.{{ requiredEnv "BASE_URL" }}     
+      {{ else }}
       value: https://api.{{ requiredEnv "BASE_URL" }}     
+      {{ end }}
     - name: ASSET_DOMAIN
       value: assets.{{ requiredEnv "BASE_URL" }} 
     - name: ASSET_UPLOAD_BUCKET_NAME
