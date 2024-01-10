@@ -24,6 +24,10 @@ repositories:
     url: https://prometheus-community.github.io/helm-charts
   - name: runix
     url: https://helm.runix.net
+  - name: graylog
+    url: https://charts.kong-z.com
+  - name: fluent
+    url: https://fluent.github.io/helm-charts
 
 releases:
 
@@ -208,12 +212,12 @@ releases:
     - ./overrides/system/cloudwatch-agent.yaml.gotmpl
 
   - name: fluentbit
-    namespace: amazon-cloudwatch
+    namespace: fluentbit
     labels:
       app: fluentbit
       tier: middle
       category: monitoring
-    chart: ./charts/aws-for-fluent-bit
+    chart: fluent/fluent-bit
     values:
     - ./overrides/system/fluentbit.yaml.gotmpl
 
@@ -226,6 +230,16 @@ releases:
     chart: runix/pgadmin4
     values:
     - ./overrides/utils/pgadmin.yaml.gotmpl
+
+  - name: graylog
+    namespace: graylog
+    labels:
+      app: graylog
+      tier: full
+      category: monitoring
+    chart: graylog/graylog
+    values:
+    - ./overrides/utils/graylog.yaml.gotmpl    
 
   - name: metrics-server
     namespace: kube-system

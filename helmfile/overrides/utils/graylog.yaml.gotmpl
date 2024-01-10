@@ -1,0 +1,38 @@
+graylog:
+  image:
+    tag: 5.2.3
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    port: 80
+    master:
+      enabled: false
+      type: ClusterIP
+  rootUsername: notify-admin
+  rootPassword: {{ requiredEnv "GRAYLOG_PASSWORD" }}
+  persistence:
+    enabled: false
+  input:
+    tcp:
+      service:
+        type: ClusterIP
+        externalTrafficPolicy: Local
+      ports:
+        - name: gelf1
+          port: 12222
+        - name: gelf2
+          port: 12223
+    udp:
+      service:
+        type: ClusterIP
+      ports:
+        - name: syslog
+          port: 5410    
+mongodb:
+  persistence:
+    enabled: false
+opensearch:
+  persistence:
+    enabled: false
+

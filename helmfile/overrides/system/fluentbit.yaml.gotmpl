@@ -1,11 +1,32 @@
-cloudWatchLogs:
-  enabled: true
-  region: ca-central-1
-  logGroupName: /aws/containerinsights/notification-canada-ca-dev-eks-cluster/application
-  logStreamTemplate: $kubernetes['pod_name']
-clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
-env:
-  - name: HOST_NAME
-    valueFrom:
-      fieldRef:
-        fieldPath: spec.nodeName
+config:
+  
+  inputs: |
+    [INPUT]
+        Name tail
+        Tag kube.*
+        Path /var/log/containers/*.log
+        Parser multiline.parser docker, cri
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines Off
+
+  
+  filters: |
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+        K8S-Logging.Exclude On
+
+  
+  outputs: |
+    [OUTPUT]
+        Name gelf
+        Match kube.*
+        Host graylog-tcp.graylog.svc.cluster.local
+        Port  12222
+        Mode tcp
+        Gelf_Short_Message_Key log
+        Gelf_Host_Key stream
+
