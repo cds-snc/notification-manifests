@@ -7,4 +7,4 @@ spec:
   serviceRef:
     name: document-download-api
     port: 7000
-  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:800095993820:targetgroup/notification-document-api/137ac8a5fbc2fd33
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:800095993820:targetgroup/notification-alb-document/daabd5bcba5f3735
