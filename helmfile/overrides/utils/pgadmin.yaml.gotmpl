@@ -1,2 +1,10 @@
 persistentVolume:
   enabled: false
+service:
+  type: LoadBalancer
+  annotations: 
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+env:
+  email: admin@notification.canada.ca    
+  #TODO: This is piggybacking off of admin stuff, should be its own password
+  password: {{ requiredEnv "ADMIN_CLIENT_SECRET" }}
