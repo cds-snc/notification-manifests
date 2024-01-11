@@ -74,6 +74,20 @@ jobs:
           alias-name: latest
           function-name: api-lambda
 
+      - name: Force heartbeat lambda to redeploy on environment changes
+        if: env.ENV_DIFF != '0'
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: heartbeat
+
+      - name: Force system_status to redeploy on environment changes
+        if: env.ENV_DIFF != '0'
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: system_status
+
       - name: Bump version and push tag
         id: bump_and_push_tag
         uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # v4.6
