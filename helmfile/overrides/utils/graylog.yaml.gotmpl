@@ -13,7 +13,7 @@ graylog:
   rootUsername: notify-admin
   rootPassword: {{ requiredEnv "GRAYLOG_PASSWORD" }}
   persistence:
-    enabled: false
+    enabled: true
   input:
     tcp:
       service:
@@ -32,8 +32,8 @@ graylog:
           port: 5410    
 mongodb:
   persistence:
-    enabled: false
+    enabled: true
 opensearch:
   persistence:
-    enabled: false
+    enabled: true
 
