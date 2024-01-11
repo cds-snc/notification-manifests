@@ -18,6 +18,14 @@ config:
         Keep_Log Off
         K8S-Logging.Parser On
         K8S-Logging.Exclude On
+        Annotations On
+        Labels On
+
+    [FILTER]
+        Name nest
+        Match *
+        Operation lift
+        Nested_under kubernetes
 
   
   outputs: |
@@ -28,5 +36,5 @@ config:
         Port  12222
         Mode tcp
         Gelf_Short_Message_Key log
-        Gelf_Host_Key stream
+        Gelf_Host_Key container_name
 
