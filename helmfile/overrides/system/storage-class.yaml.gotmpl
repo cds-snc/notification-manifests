@@ -1,0 +1,9 @@
+nameOverride: cds-notify
+parameters:
+  "fsType": "ext4"
+  "type": "gp2"
+
+provisioner: "kubernetes.io/aws-ebs"
+
+annotations:
+  com.cds.notify: "defaultValue"

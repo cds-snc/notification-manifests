@@ -11,9 +11,10 @@ graylog:
       enabled: false
       type: ClusterIP
   rootUsername: notify-admin
-  rootPassword: {{ requiredEnv "GRAYLOG_PASSWORD" }}
+  rootPassword: {{ requiredEnv "GRAYLOG_ROOT_PASSWORD" }}
   persistence:
     enabled: true
+    storageClass: cds-notify
   input:
     tcp:
       service:
@@ -33,7 +34,9 @@ graylog:
 mongodb:
   persistence:
     enabled: true
+    storageClass: cds-notify
 opensearch:
   persistence:
     enabled: true
+    storageClass: cds-notify
 

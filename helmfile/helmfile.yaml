@@ -28,6 +28,8 @@ repositories:
     url: https://charts.kong-z.com
   - name: fluent
     url: https://fluent.github.io/helm-charts
+  - name: k8s-as-helm
+    url: https://ameijer.github.io/k8s-as-helm/
 
 releases:
 
@@ -179,6 +181,15 @@ releases:
     chart: deliveryhero/priority-class
     values:
     - ./overrides/system/priority-classes.yaml.gotmpl
+
+  - name: storage-class
+    labels:
+      app: storageclass
+      tier: middle
+      category: system
+    chart: k8s-as-helm/storageclass
+    values:
+    - ./overrides/system/storage-class.yaml.gotmpl    
 
   - name: karpenter
     namespace: karpenter
