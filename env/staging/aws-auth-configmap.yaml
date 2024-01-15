@@ -34,3 +34,7 @@ data:
       username: notification-manifests-apply
       groups:
         - system:masters
+    - rolearn: arn:aws:iam::239043911459:role/ipv4-geolocate-webservice-apply
+      username: ipv4-geolocate-webservice-apply
+      groups:
+        - system:masters
