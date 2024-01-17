@@ -42,7 +42,7 @@ configMapGenerator:
 - name: application-config
   env: .env
 
-patches:
+patchesStrategicMerge:
   - performance.yaml
   - services.yaml
   - karpenter.yaml
