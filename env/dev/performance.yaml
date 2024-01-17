@@ -2,26 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: api
-  name:  api
-  namespace: notification-canada-ca
-spec:
-  replicas: 4
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: admin
-  name:  admin
-  namespace: notification-canada-ca
-spec:
-  replicas: 2
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
     app: celery-primary
   name:  celery-primary
   namespace: notification-canada-ca
@@ -33,7 +13,7 @@ spec:
       - name: celery-primary
         resources:
           requests:
-            cpu: "150m"
+            cpu: "100m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -81,6 +61,8 @@ spec:
             cpu: "550m"
             memory: "1024Mi"
 ---
+# SCALABLE CELERIES
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -96,7 +78,7 @@ spec:
       - name: celery-scalable
         resources:
           requests:
-            cpu: "150m"
+            cpu: "100m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -142,17 +124,8 @@ spec:
             memory: "500Mi"
           limits:
             cpu: "550m"
-            memory: "1024Mi"
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: documentation
-  name:  documentation
-  namespace: notification-canada-ca
-spec:
-  replicas: 2
+            memory: "1024Mi"     
+  
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
