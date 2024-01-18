@@ -10,8 +10,8 @@ on:
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
   API_LAMBDA_IMAGE: api-lambda:92febf2
-  HEARTBEAT_LAMBDA_IMAGE: heartbeat:fb6dcdfda3c8e21ef997e75d1cb872bb08916cf3
-  SYSTEM_STATUS_LAMBDA_IMAGE: system_status:fb6dcdfda3c8e21ef997e75d1cb872bb08916cf3
+  HEARTBEAT_IMAGE: heartbeat:fb6dcdfda3c8e21ef997e75d1cb872bb08916cf3
+  SYSTEM_STATUS_IMAGE: system_status:fb6dcdfda3c8e21ef997e75d1cb872bb08916cf3
   KUBECTL_VERSION: 1.23.6
 
 defaults:
@@ -97,14 +97,14 @@ jobs:
         with:
           alias-name: latest
           function-name: heartbeat
-          image-uri: $PRIVATE_ECR/$HEARTBEAT_LAMBDA_IMAGE
+          image-uri: $PRIVATE_ECR/$HEARTBEAT_IMAGE
 
       - name: Deploy System Status lambda
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: system_status
-          image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_LAMBDA_IMAGE
+          image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
 
       - name: Add deployment to New Relic
         run: |
