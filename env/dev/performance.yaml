@@ -1,3 +1,6 @@
+####################################### RESOURCE REQUESTS #######################################
+# PRIMARY CELERIES
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,7 +16,7 @@ spec:
       - name: celery-primary
         resources:
           requests:
-            cpu: "100m"
+            cpu: "150m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -78,7 +81,7 @@ spec:
       - name: celery-scalable
         resources:
           requests:
-            cpu: "100m"
+            cpu: "150m"
             memory: "500Mi"
           limits:
             cpu: "550m"
@@ -124,27 +127,52 @@ spec:
             memory: "500Mi"
           limits:
             cpu: "550m"
-            memory: "1024Mi"     
-  
+            memory: "1024Mi"
+---
+# OTHER APPS
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api
+  name:  api
+  namespace: notification-canada-ca
+spec:
+  replicas: 4
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: admin
+  name:  admin
+  namespace: notification-canada-ca
+spec:
+  replicas: 2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: documentation
+  name:  documentation
+  namespace: notification-canada-ca
+spec:
+  replicas: 2
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: admin-hpa
+  name: document-download-api-hpa
   namespace: notification-canada-ca
 spec:
   minReplicas: 2
-  maxReplicas: 2
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: api-hpa
-  namespace: notification-canada-ca
-spec:
-  minReplicas: 4
   maxReplicas: 4
 ---
+
+####################################### POD AUTOSCALING #######################################
+# AUTOSCALING FOR CELERIES
+
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -152,12 +180,12 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 10
+  maxReplicas: 30
   metrics:
   - resource:
       name: cpu
       target:
-        averageUtilization: 50
+        averageUtilization: 25
         type: Utilization
     type: Resource
   behavior:
@@ -165,8 +193,8 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
       - type: Pods
-        value: 4
-        periodSeconds: 60
+        value: 6
+        periodSeconds: 45
       selectPolicy: Max            
 ---
 apiVersion: autoscaling/v2
@@ -176,12 +204,12 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 10
+  maxReplicas: 20
   metrics:
   - resource:
       name: cpu
       target:
-        averageUtilization: 50
+        averageUtilization: 25
         type: Utilization
     type: Resource
   behavior:
@@ -205,7 +233,7 @@ spec:
   - resource:
       name: cpu
       target:
-        averageUtilization: 50
+        averageUtilization: 25
         type: Utilization
     type: Resource
   behavior:
@@ -216,3 +244,23 @@ spec:
         value: 6
         periodSeconds: 45
       selectPolicy: Max
+
+---
+# OTHER APPS
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: admin-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 2
+  maxReplicas: 3
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 4
+  maxReplicas: 8
