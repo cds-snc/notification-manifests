@@ -2,7 +2,7 @@ bases:
   - ../../base/karpenter
   - ../../base/kube-state-metrics
   #- ../../base/prometheus-cloudwatch
-  - ../../base/k8s-event-logger
+  #- ../../base/k8s-event-logger
   - ../../base/utils
   - ../../base/notify-admin
   - ../../base/notify-api
@@ -18,9 +18,9 @@ bases:
   - ../../base/notify-system
   
 resources:
-  - cwagent.yaml
-  - fluentbit.yaml
-  - cwagent-configmap.yaml
+  #- cwagent.yaml
+  #- fluentbit.yaml
+  #- cwagent-configmap.yaml
   - notification-service-account.yaml
   - api-target-group.yaml
   - admin-target-group.yaml
@@ -47,6 +47,7 @@ patchesStrategicMerge:
   - services.yaml
   - karpenter.yaml
   - node-selector-patch.yaml
+  - remove-celery-init-patch.yaml
 
 vars:
 - name: ADMIN_CLIENT_SECRET
