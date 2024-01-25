@@ -1,0 +1,30 @@
+controller:
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  wildcardTLS:
+    secret: nginx/nginx
+  defaultTLS:
+    secret: nginx/nginx
+  serviceAccount:
+    annotations:
+      {{ if eq .Environment.Name "dev"}} 
+      eks.amazonaws.com/role-arn: arn:aws:iam::800095993820:role/secrets-csi-role
+      {{ else if eq .Environment.Name "staging" }}
+      eks.amazonaws.com/role-arn: arn:aws:iam::800095993820:role/secrets-csi-role
+      {{ else if eq .Environment.Name "production" }}
+      eks.amazonaws.com/role-arn: arn:aws:iam::239043911459:role/secrets-csi-role
+      {{ end }}
+  volumes:
+    - name: secrets-store-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "ingress-secrets-csi-secret-provider-class"
+  volumeMounts:
+          - name: secrets-store-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true          
+prometheus:
+  create: false
