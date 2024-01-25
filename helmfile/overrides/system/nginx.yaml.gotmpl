@@ -11,9 +11,9 @@ controller:
       {{ if eq .Environment.Name "dev"}} 
       eks.amazonaws.com/role-arn: arn:aws:iam::800095993820:role/secrets-csi-role
       {{ else if eq .Environment.Name "staging" }}
-      eks.amazonaws.com/role-arn: arn:aws:iam::800095993820:role/secrets-csi-role
-      {{ else if eq .Environment.Name "production" }}
       eks.amazonaws.com/role-arn: arn:aws:iam::239043911459:role/secrets-csi-role
+      {{ else if eq .Environment.Name "production" }}
+      eks.amazonaws.com/role-arn: arn:aws:iam::296255494825:role/secrets-csi-role
       {{ end }}
   volumes:
     - name: secrets-store-inline

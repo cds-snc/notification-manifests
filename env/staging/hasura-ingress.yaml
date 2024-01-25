@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hasura
+  namespace: notification-canada-ca
+  annotations:
+    kubernetes.io/ingress.class: "nginx"    
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - hasura.dev.notification.internal
+  rules:
+  - host: hasura.dev.notification.internal
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hasura
+            port:
+              number: 8080  
