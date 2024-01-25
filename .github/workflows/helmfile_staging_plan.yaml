@@ -1,4 +1,4 @@
-name: Testing manifest
+name: Helmfile Diff
 
 on: 
   - pull_request
