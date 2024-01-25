@@ -9,9 +9,9 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - hasura.dev.notification.internal
+    - hasura.staging.notification.internal
   rules:
-  - host: hasura.dev.notification.internal
+  - host: hasura.staging.notification.internal
     http:
       paths:
       - path: /
