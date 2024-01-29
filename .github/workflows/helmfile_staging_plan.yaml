@@ -17,6 +17,7 @@ jobs:
           git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
+        id: awsconfig
         with:
           aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
@@ -38,4 +39,4 @@ jobs:
         uses: mshick/add-pr-comment@v2
         with:
           message: | 
-            ${{ steps.helmfile_diff.outputs.exit-code }}
+            ${{ steps.awsconfig.outputs.aws-account-id }}
