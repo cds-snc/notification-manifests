@@ -37,4 +37,5 @@ jobs:
       - name: Helmfile Diff Comment
         uses: mshick/add-pr-comment@v2
         with:
-          message: ${{ steps.helmfile_diff.outputs.helmfile-stdout }}
+          message: | 
+            ${{ steps.helmfile_diff.outputs.helmfile-stdout }}
