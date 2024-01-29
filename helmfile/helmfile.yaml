@@ -28,6 +28,7 @@ releases:
 
   - name: ingress-secrets
     namespace: nginx
+    disableValidationOnInstall: true
     labels:
       app: nginx
       tier: secrets

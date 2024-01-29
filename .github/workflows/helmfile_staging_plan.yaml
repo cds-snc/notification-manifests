@@ -32,4 +32,4 @@ jobs:
       - name: Run helmfile
         uses: helmfile/helmfile-action@v1.0.0
         with:
-          helmfile-args: diff --environment staging --disable-validation
+          helmfile-args: diff --environment staging
