@@ -29,7 +29,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster        
       - name: Run helmfile
-        uses: helmfile/helmfile-action@v1.0.0
         working-directory: helmfile
+        uses: helmfile/helmfile-action@v1.0.0
         with:
           helmfile-args: diff --environment staging
