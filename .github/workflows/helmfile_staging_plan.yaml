@@ -39,4 +39,4 @@ jobs:
         uses: mshick/add-pr-comment@v2
         with:
           message: | 
-            ${{ steps.awsconfig.outputs.aws-account-id }}
+            ${{ steps.helmfile_diff.outputs.helmfile-stdout }}
