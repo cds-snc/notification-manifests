@@ -38,4 +38,4 @@ jobs:
         uses: mshick/add-pr-comment@v2
         with:
           message: | 
-            testing
+            ${{ steps.helmfile_diff.outputs.* }}
