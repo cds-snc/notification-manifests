@@ -1,7 +1,8 @@
 controller:
   service:
+    type: ClusterIP
     annotations:
-      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+      #service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   wildcardTLS:
     secret: nginx/nginx
   defaultTLS:

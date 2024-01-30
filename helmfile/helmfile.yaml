@@ -12,6 +12,8 @@ repositories:
   url: https://aws.github.io/secrets-store-csi-driver-provider-aws
 - name: adfinis 
   url: https://charts.adfinis.com
+- name: snowplow-devops 
+  url: https://snowplow-devops.github.io/helm-charts
 
 releases:
 
@@ -35,7 +37,18 @@ releases:
       category: system
     chart: adfinis/csi-secret-provider-class
     values:
-    - ./overrides/system/nginx-secrets.yaml.gotmpl    
+    - ./overrides/system/nginx-secrets.yaml.gotmpl 
+
+  - name: ingress-target-group-binding
+    namespace: nginx
+    labels:
+      app: nginx
+      tier: targetgroup
+      category: system
+    chart: snowplow-devops/aws-target-group-binding
+    version: 0.1.0
+    values:
+    - ./overrides/system/nginx-tgb.yaml.gotmpl
 
   - name: secrets-store-csi-driver
     namespace: kube-system
@@ -59,4 +72,3 @@ releases:
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
     
-   

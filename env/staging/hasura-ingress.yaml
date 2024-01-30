@@ -7,9 +7,6 @@ metadata:
     kubernetes.io/ingress.class: "nginx"    
 spec:
   ingressClassName: nginx
-  tls:
-  - hosts:
-    - hasura.staging.notification.internal
   rules:
   - host: hasura.staging.notification.internal
     http:
