@@ -2,7 +2,7 @@ bases:
   - ../../base/karpenter
   - ../../base/kube-state-metrics
   - ../../base/prometheus-cloudwatch
-  - ../../base/k8s-event-logger    
+  - ../../base/k8s-event-logger
   - ../../base/utils
   - ../../base/notify-admin
   - ../../base/notify-api
@@ -25,13 +25,13 @@ resources:
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
   - documentation-target-group.yaml
-  - aws-auth-configmap.yaml  
+  - aws-auth-configmap.yaml
 
 patches:
   - performance.yaml
   - cwagent-patch.yaml
   - node-selector-patch.yaml
-  - karpenter.yaml 
+  - karpenter.yaml
 
 images:
   - name: admin
@@ -178,7 +178,7 @@ vars:
       name: application-config
       apiVersion: v1
     fieldref:
-      fieldpath: data.CELERY_DELIVER_SMS_RATE_LIMIT      
+      fieldpath: data.CELERY_DELIVER_SMS_RATE_LIMIT
   - name: CONTACT_EMAIL
     objref:
       kind: ConfigMap
@@ -597,13 +597,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_ABTEST_SERVICE_ID
-  - name: FF_EMAIL_DAILY_LIMIT
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_EMAIL_DAILY_LIMIT
   - name: SRE_CLIENT_SECRET
     objref:
       kind: ConfigMap
