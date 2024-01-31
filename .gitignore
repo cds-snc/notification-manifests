@@ -1,10 +1,13 @@
 .DS_Store
-.env
-.env.zip
-.env.json
+.env*
 .current.env.json
 .previous.env
 .previous.env.zip
 .previous.env.zip.enc.aws
 .previous.env.enc.aws
 *kubeconfig*
+
+# These files should be in, as these are compressed and encrypted.
+!env/dev/.env.zip.enc.aws
+!env/production/.env.zip.enc.aws
+!env/staging/.env.zip.enc.aws
