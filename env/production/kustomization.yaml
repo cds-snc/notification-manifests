@@ -37,7 +37,7 @@ images:
   - name: admin
     newName: public.ecr.aws/cds-snc/notify-admin:5ac485c
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:3d27ba5
+    newName: public.ecr.aws/cds-snc/notify-api:4008f12
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:6eb2c1e
   - name: documentation
