@@ -54,7 +54,7 @@ spec:
             - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
               value: '$(CRM_GITHUB_PERSONAL_ACCESS_TOKEN)'
             - name: CRM_ORG_LIST_URL
-              value: '$(CRM_ORG_LIST_URL)' 
+              value: '$(CRM_ORG_LIST_URL)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DEBUG_KEY
@@ -71,8 +71,6 @@ spec:
               value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
             - name: FF_SMS_PARTS_UI
               value: '$(FF_SMS_PARTS_UI)'
-            - name: FF_EMAIL_DAILY_LIMIT
-              value: '$(FF_EMAIL_DAILY_LIMIT)'
             - name: FIDO2_DOMAIN
               value: '$(FIDO2_DOMAIN)'
             - name: FLASK_APP
@@ -175,7 +173,7 @@ spec:
             - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
               value: '$(CRM_GITHUB_PERSONAL_ACCESS_TOKEN)'
             - name: CRM_ORG_LIST_URL
-              value: '$(CRM_ORG_LIST_URL)'            
+              value: '$(CRM_ORG_LIST_URL)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
             - name: DANGEROUS_SALT
@@ -186,8 +184,6 @@ spec:
               value: '$(FF_SALESFORCE_CONTACT)'
             - name: FF_SPIKE_SMS_DAILY_LIMIT
               value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
-            - name: FF_EMAIL_DAILY_LIMIT
-              value: '$(FF_EMAIL_DAILY_LIMIT)'
             - name: FIDO2_DOMAIN
               value: '$(FIDO2_DOMAIN)'
             - name: FRESH_DESK_API_URL
