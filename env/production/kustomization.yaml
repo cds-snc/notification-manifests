@@ -27,7 +27,7 @@ resources:
   - documentation-target-group.yaml
   - aws-auth-configmap.yaml  
 
-patches:
+patchesStrategicMerge:
   - performance.yaml
   - cwagent-patch.yaml
   - node-selector-patch.yaml
