@@ -32,7 +32,7 @@ jobs:
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster        
       - name: Load EnvVars
         run: |
-            echo "{NGINX_TARGET_GROUP_ARN}={arn:aws:elasticloadbalancing:ca-central-1:239043911459:targetgroup/notification-internal-nginx-http/24a931a1d3499ca8}" >> "$GITHUB_ENV"
+            echo "NGINX_TARGET_GROUP_ARN=arn:aws:elasticloadbalancing:ca-central-1:239043911459:targetgroup/notification-internal-nginx-http/24a931a1d3499ca8" >> "$GITHUB_ENV"
       - name: Run helmfile
         id: helmfile_diff
         uses: helmfile/helmfile-action@v1.0.0
