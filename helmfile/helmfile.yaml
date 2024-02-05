@@ -5,6 +5,10 @@ environments:
   production:
 ---
 
+helmDefaults:
+  {{ if eq .Environment.Name "dev"}} 
+  kubeContext: dev
+  {{ end }}
 repositories:
 - name: secrets-store-csi-driver
   url: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
