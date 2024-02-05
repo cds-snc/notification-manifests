@@ -1,7 +1,9 @@
-name: Staging - Helmfile Diff
+name: Staging - Helmfile Apply 
 
-on: 
-  - pull_request
+on:
+  push:
+    branches:
+      - main
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -37,9 +39,4 @@ jobs:
         id: helmfile_diff
         uses: helmfile/helmfile-action@v1.0.0
         with:
-          helmfile-args: diff --environment staging
-      - name: Helmfile Diff Comment
-        uses: mshick/add-pr-comment@v2
-        with:
-          message: | 
-            Placeholder for helm diff once the output from GA works.
+          helmfile-args: apply --environment staging
