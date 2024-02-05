@@ -22,7 +22,7 @@ spec:
       labels:
         app: celery-sms
     spec:
-      priorityClassName: high-priority        
+      priorityClassName: high-priority
       initContainers:
         - name: init-postgres
           image: alpine
@@ -63,8 +63,6 @@ spec:
               value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
             - name: FF_SMS_PARTS_UI
               value: '$(FF_SMS_PARTS_UI)'
-            - name: FF_EMAIL_DAILY_LIMIT
-              value: '$(FF_EMAIL_DAILY_LIMIT)'
             - name: FIDO2_DOMAIN
               value: '$(FIDO2_DOMAIN)'
             - name: HC_EN_SERVICE_ID
