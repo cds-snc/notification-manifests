@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "NGINX_TARGET_GROUP_ARN=arn:aws:elasticloadbalancing:ca-central-1:***:targetgroup/notification-internal-nginx-http/24a931a1d3499ca8" >> "$GITHUB_ENV"
+echo "NGINX_TARGET_GROUP_ARN=$(aws secretsmanager get-secret-value --secret-id NGINX_TARGET_GROUP_ARN --query SecretString --output text)" >> "$GITHUB_ENV"
