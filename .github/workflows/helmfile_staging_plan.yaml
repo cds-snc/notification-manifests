@@ -32,7 +32,7 @@ jobs:
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster        
       - name: Load EnvVars
         run: |
-            ./helmfile/stagingContext.sh
+            ./helmfile/getContext.sh true
       - name: Run helmfile
         id: helmfile_diff
         uses: helmfile/helmfile-action@v1.0.0
