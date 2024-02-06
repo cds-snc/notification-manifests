@@ -36,7 +36,7 @@ jobs:
         run: |
             ./helmfile/getContext.sh true
       - name: Run helmfile
-        id: helmfile_diff
+        id: helmfile_apply
         uses: helmfile/helmfile-action@v1.0.0
         with:
           helmfile-args: apply --environment staging
