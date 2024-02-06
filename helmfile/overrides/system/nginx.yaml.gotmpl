@@ -1,12 +1,10 @@
 controller:
   service:
     type: ClusterIP
-    annotations:
-      #service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   wildcardTLS:
-    secret: nginx/nginx
+    secret: {{.Release.Namespace}}/nginx
   defaultTLS:
-    secret: nginx/nginx
+    secret: {{.Release.Namespace}}/nginx
   serviceAccount:
     annotations:
       {{ if eq .Environment.Name "dev"}} 
@@ -22,10 +20,32 @@ controller:
         driver: secrets-store.csi.k8s.io
         readOnly: true
         volumeAttributes:
-          secretProviderClass: "ingress-secrets-csi-secret-provider-class"
+          secretProviderClass: "nginx"
   volumeMounts:
           - name: secrets-store-inline
             mountPath: "/mnt/secrets-store"
             readOnly: true          
 prometheus:
   create: false
+secretProviderClass:
+  enabled: true
+  provider: aws
+  parameters:
+    objects: |
+      - objectName: INTERNAL_DNS_KEY_BASE64
+        objectType: "secretsmanager"
+      - objectName: INTERNAL_DNS_CERT_BASE64
+        objectType: "secretsmanager"
+
+  secretObjects:
+    - data:
+      - key: tls.key
+        objectName: INTERNAL_DNS_KEY_BASE64
+      - key: tls.crt
+        objectName: INTERNAL_DNS_CERT_BASE64
+      secretName: nginx
+      type: kubernetes.io/tls
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{ requiredEnv "NGINX_TARGET_GROUP_ARN" }}

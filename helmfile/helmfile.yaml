@@ -14,10 +14,6 @@ repositories:
   url: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
 - name: aws-secrets-manager 
   url: https://aws.github.io/secrets-store-csi-driver-provider-aws
-- name: adfinis 
-  url: https://charts.adfinis.com
-- name: snowplow-devops 
-  url: https://snowplow-devops.github.io/helm-charts
 
 releases:
 
@@ -27,32 +23,9 @@ releases:
       app: nginx
       tier: main
       category: system
-    chart: oci://ghcr.io/nginxinc/charts/nginx-ingress
-    version: 1.1.2
+    chart: charts/nginx-ingress
     values:
     - ./overrides/system/nginx.yaml.gotmpl
-
-  - name: ingress-secrets
-    namespace: nginx
-    disableValidationOnInstall: true
-    labels:
-      app: nginx
-      tier: secrets
-      category: system
-    chart: adfinis/csi-secret-provider-class
-    values:
-    - ./overrides/system/nginx-secrets.yaml.gotmpl 
-
-  - name: ingress-target-group-binding
-    namespace: nginx
-    labels:
-      app: nginx
-      tier: targetgroup
-      category: system
-    chart: snowplow-devops/aws-target-group-binding
-    version: 0.1.0
-    values:
-    - ./overrides/system/nginx-tgb.yaml.gotmpl
 
   - name: secrets-store-csi-driver
     namespace: kube-system
