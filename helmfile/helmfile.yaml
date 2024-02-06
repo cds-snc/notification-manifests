@@ -19,6 +19,7 @@ releases:
 
   - name: ingress
     namespace: nginx
+    disableValidationOnInstall: true
     labels:
       app: nginx
       tier: main
