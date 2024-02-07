@@ -19,6 +19,16 @@ The following utilities are part of this project:
 
 ## Usage
 
+### Notify Specific
+
+Before running helmfile locally, you must first populate the required environment variables by running the getContext.sh
+
+1. Ensure you are logged into the appropriate AWS Account
+2. Populate environment variables using 
+  ```bash
+  source getContext.sh
+  ```
+
 ### Sub-Commands
 
 Helmfile has many commands available. Please see the [helmfile documentation](https://helmfile.readthedocs.io/en/latest/) for a full list. In this document we will cover the three main commands used day-to-day.
