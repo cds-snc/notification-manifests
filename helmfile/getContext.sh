@@ -27,4 +27,5 @@ getValue()
     fi
 }
 
+getValue "AWS_ACCOUNT_ID"
 getValue "NGINX_TARGET_GROUP_ARN"
