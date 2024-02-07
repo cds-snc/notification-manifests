@@ -53,12 +53,7 @@ jobs:
 
       - name: Apply changes
         run: |
-          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
-
-      - name: Run helmfile
-        uses: helmfile/helmfile-action@v1.0.0
-        with:
-          helmfile-args: apply --environment staging          
+          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config      
 
       - name: Check for env changes
         working-directory: env/staging
