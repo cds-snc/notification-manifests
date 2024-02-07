@@ -11,8 +11,6 @@ on:
 
 env:
   KUBECTL_VERSION: 1.23.6
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile  
 
 defaults:
   run:
