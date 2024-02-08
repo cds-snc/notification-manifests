@@ -11,7 +11,7 @@ env:
   STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
 
 jobs:
-  helmfile-diff:
+  helmfile-apply:
     runs-on: ubuntu-latest
     steps:
 
