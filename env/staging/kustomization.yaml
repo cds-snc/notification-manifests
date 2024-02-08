@@ -27,6 +27,7 @@ resources:
   - document-download-api-target-group.yaml
   - documentation-target-group.yaml
   - aws-auth-configmap.yaml
+  - hasura-ingress.yaml  
 
 patches:
   - performance.yaml
