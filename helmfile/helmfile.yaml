@@ -13,6 +13,8 @@ repositories:
   url: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
 - name: aws-secrets-manager 
   url: https://aws.github.io/secrets-store-csi-driver-provider-aws
+- name: stakater 
+  url: https://stakater.github.io/stakater-charts
 
 releases:
 
@@ -49,3 +51,13 @@ releases:
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
     
+  - name: blazer
+    namespace: tools
+    labels:
+      app: blazer
+      tier: front
+      category: tools
+    chart: stakater/application
+    version: 2.3.2
+    values:
+    - ./overrides/tools/blazer.yaml.gotmpl

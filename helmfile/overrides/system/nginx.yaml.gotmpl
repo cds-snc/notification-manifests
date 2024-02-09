@@ -9,7 +9,7 @@ controller:
     secret: {{.Release.Namespace}}/nginx
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-nginx
   volumes:
     - name: secrets-store-inline
       csi:
