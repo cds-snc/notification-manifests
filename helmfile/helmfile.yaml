@@ -1,0 +1,51 @@
+environments:
+  scratch:
+  dev:
+  staging:
+  production:
+---
+
+helmDefaults:
+  kubeContext: {{ .Environment.Name }}
+
+repositories:
+- name: secrets-store-csi-driver
+  url: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+- name: aws-secrets-manager 
+  url: https://aws.github.io/secrets-store-csi-driver-provider-aws
+
+releases:
+
+  - name: ingress
+    namespace: nginx
+    disableValidationOnInstall: true
+    labels:
+      app: nginx
+      tier: main
+      category: system
+    chart: charts/nginx-ingress
+    values:
+    - ./overrides/system/nginx.yaml.gotmpl
+
+  - name: secrets-store-csi-driver
+    namespace: kube-system
+    labels:
+      app: secrets-csi
+      tier: full
+      category: system
+    chart: secrets-store-csi-driver/secrets-store-csi-driver
+    version: 1.4.1
+    values:
+    - ./overrides/system/secrets-csi.yaml.gotmpl
+
+  - name: aws-secrets-provider
+    namespace: kube-system
+    labels:
+      app: aws-secrets
+      tier: full
+      category: system
+    chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
+    version: 0.3.5
+    values:
+    - ./overrides/system/aws-secrets.yaml.gotmpl
+    

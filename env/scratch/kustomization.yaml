@@ -12,7 +12,7 @@ bases:
   - ../../base/notify-document-download
   - ../../base/notify-documentation
   - ../../base/notify-system
-  
+
 resources:
   - cwagent.yaml
   - fluentbit.yaml
@@ -600,13 +600,6 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FF_ABTEST_SERVICE_ID
-- name: FF_EMAIL_DAILY_LIMIT
-  objref:
-    kind: ConfigMap
-    name: application-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.FF_EMAIL_DAILY_LIMIT
 - name: SRE_CLIENT_SECRET
   objref:
     kind: ConfigMap

@@ -1,0 +1,14 @@
+{{- if .Values.targetGroupBinding.enabled }}
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: {{ include "nginx-ingress.controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nginx-ingress.labels" . | nindent 4 }}
+spec:
+  serviceRef:
+    name: {{ include "nginx-ingress.controller.service.name" . }}
+    port: {{ .Values.controller.service.httpPort.port }}
+  targetGroupARN: {{ .Values.targetGroupBinding.targetGroupARN }}
+{{- end }}
