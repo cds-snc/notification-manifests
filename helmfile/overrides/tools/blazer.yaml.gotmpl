@@ -5,7 +5,7 @@ ingress:
   ingressClassName: nginx
   servicePort: http
   hosts:
-  - host: blazer.{{ .Environment.Name }}.notification.internal
+  - host: blazer.{{ requiredEnv "INTERNAL_DNS_FQDN" }}
     paths: 
     - path: /
       pathType: Prefix
@@ -22,6 +22,11 @@ deployment:
             secretKeyRef:
               name: blazer
               key: DATABASE_URL
+        - name: BLAZER_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: blazer
+              key: BLAZER_DATABASE_URL              
       volumes:
         - name: secrets-store-inline
           csi:
