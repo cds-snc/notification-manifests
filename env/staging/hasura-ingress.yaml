@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: hasura.staging.notification.internal
+  - host: hasura.staging.notification.internal.com
     http:
       paths:
       - path: /

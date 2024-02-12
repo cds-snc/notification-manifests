@@ -29,3 +29,4 @@ getValue()
 
 getValue "AWS_ACCOUNT_ID"
 getValue "NGINX_TARGET_GROUP_ARN"
+getValue "INTERNAL_DNS_FQDN"
