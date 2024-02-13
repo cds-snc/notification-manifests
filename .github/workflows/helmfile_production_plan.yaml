@@ -1,7 +1,11 @@
 name: Production - Helmfile Diff
 
-on: 
-  - pull_request
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "VERSION"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
