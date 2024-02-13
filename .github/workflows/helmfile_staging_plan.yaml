@@ -43,7 +43,8 @@ jobs:
       - name: Helmfile Diff
         id: helmfile_diff
         run: |
-          helmfile --environment staging diff >> $GITHUB_OUTPUT        
+          echo "Testing 1234" >> $GITHUB_OUTPUT
+          
       - name: Helmfile Diff Comment
         uses: mshick/add-pr-comment@v2
         with:
