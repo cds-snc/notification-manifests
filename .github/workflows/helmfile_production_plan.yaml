@@ -39,11 +39,17 @@ jobs:
       - name: Load EnvVars
         run: |
             ./helmfile/getContext.sh true
-      - name: Run helmfile
-        id: helmfile_diff
-        uses: helmfile/helmfile-action@v1.0.0
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
         with:
-          helmfile-args: diff --environment production
+          install-kubectl: no
+          install-helm: yes
+      - name: Helmfile Diff
+        id: helmfile_diff
+        run: |
+          echo 'var<<EOF' >> $GITHUB_OUTPUT
+          helmfile --environment staging diff >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
       - name: Helmfile Diff Comment
         uses: mshick/add-pr-comment@v2
         with:

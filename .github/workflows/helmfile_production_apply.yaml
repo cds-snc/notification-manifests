@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - "VERSION"
-      
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}
 
 jobs:
-  helmfile-diff:
+  helmfile-apply:
     runs-on: ubuntu-latest
     steps:
 
@@ -40,12 +40,7 @@ jobs:
         run: |
             ./helmfile/getContext.sh true
       - name: Run helmfile
-        id: helmfile_diff
+        id: helmfile_apply
         uses: helmfile/helmfile-action@v1.0.0
         with:
           helmfile-args: apply --environment production
-      - name: Helmfile Diff Comment
-        uses: mshick/add-pr-comment@v2
-        with:
-          message: | 
-            Placeholder for helm diff once the output from GA works.
