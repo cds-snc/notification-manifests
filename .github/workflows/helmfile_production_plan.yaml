@@ -1,4 +1,4 @@
-name: Staging - Helmfile Diff
+name: Production - Helmfile Diff
 
 on: 
   - pull_request
@@ -6,7 +6,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
-  STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
+  PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}
 
 jobs:
   helmfile-diff:
@@ -20,8 +20,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
         id: awsconfig
         with:
-          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
@@ -30,8 +30,8 @@ jobs:
           fetch-depth: 0
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
-          kubectl config rename-context arn:aws:eks:ca-central-1:$STAGING_AWS_ACCOUNT:cluster/notification-canada-ca-staging-eks-cluster staging
+          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster   
+          kubectl config rename-context arn:aws:eks:ca-central-1:$PRODUCTION_AWS_ACCOUNT:cluster/notification-canada-ca-production-eks-cluster production
       - name: Load EnvVars
         run: |
             ./helmfile/getContext.sh true
@@ -39,9 +39,9 @@ jobs:
         id: helmfile_diff
         uses: helmfile/helmfile-action@v1.0.0
         with:
-          helmfile-args: diff --environment staging >> $GITHUB_OUTPUT
+          helmfile-args: diff --environment production
       - name: Helmfile Diff Comment
         uses: mshick/add-pr-comment@v2
         with:
           message: | 
-            ${{ steps.helmfile_diff.outputs.helmfile-stdout }}
+            Placeholder for helm diff once the output from GA works.
