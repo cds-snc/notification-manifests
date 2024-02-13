@@ -44,7 +44,7 @@ jobs:
         id: helmfile_diff
         run: |
           echo 'var<<EOF' >> $GITHUB_OUTPUT
-          echo "<multi-line-output>" >> $GITHUB_OUTPUT
+          helmfile --environment staging diff >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
           
       - name: Helmfile Diff Comment
