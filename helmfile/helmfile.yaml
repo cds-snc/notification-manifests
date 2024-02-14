@@ -61,3 +61,17 @@ releases:
     version: 2.3.2
     values:
     - ./overrides/tools/blazer.yaml.gotmpl
+
+  - name: github-arc
+    namespace: github
+    labels:
+      app: arc
+      tier: full
+      category: system
+    chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
+    version: 0.8.2
+    values:
+    - ./overrides/system/github-arc.yaml.gotmpl    
+
+
+    
