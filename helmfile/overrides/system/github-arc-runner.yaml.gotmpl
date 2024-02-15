@@ -9,4 +9,8 @@ template:
     - name: runner
       command: 
         - /home/runner/run.sh
+      ## TODO: remove this if statement if we proceed with releasing to staging
+      {{ if eq .Environment.Name "dev" }}
       image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:bootstrap
+      {{ end }}
+  
