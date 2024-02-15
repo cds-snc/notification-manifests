@@ -3,3 +3,10 @@ githubConfigUrl: https://github.com/cds-snc/notification-manifests
 controllerServiceAccount:
    namespace: github-arc-controller
    name: github-arc-gha-rs-controller
+template:
+  spec:
+    containers:
+    - name: runner
+      command: 
+        - /home/runner/run.sh
+      image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:bootstrap
