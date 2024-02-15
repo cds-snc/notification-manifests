@@ -80,7 +80,8 @@ releases:
       app: arc
       tier: scaleset
       category: system
-    chart: charts/gha-runner-scale-set
+    chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+    version: 0.8.2
     values:
     - ./overrides/system/github-arc-runner.yaml.gotmpl
 
