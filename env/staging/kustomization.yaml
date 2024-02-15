@@ -35,7 +35,6 @@ patches:
   - cwagent-patch.yaml
   - karpenter.yaml
   - hasura-patch.yaml
-  - jump-box-patch.yaml
   - node-selector-patch.yaml
 
 images:
