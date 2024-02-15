@@ -46,4 +46,6 @@ jobs:
         uses: mshick/add-pr-comment@v2
         with:
           message: | 
-            "```shell ${{join(steps.helmfile_diff.outputs.*, '\n')}} ```"
+            ```shell 
+            ${{join(steps.helmfile_diff.outputs.*, '\n')}}
+            ```
