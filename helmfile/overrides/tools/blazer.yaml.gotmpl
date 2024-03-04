@@ -53,11 +53,6 @@ deployment:
       {{ else }}
       value: {{ .Environment.Name }}.notification.cdssandbox.xyz      
       {{ end }}
-    BLAZER_SLACK_WEBHOOK_URL:
-      valueFrom:
-        secretKeyRef:
-          name: blazer
-          key: BLAZER_SLACK_WEBHOOK_URL
     BLAZER_DATABASE_URL:
       valueFrom:
         secretKeyRef:
@@ -113,8 +108,6 @@ secretProviderClass:
   name: blazer-secrets
   provider: aws
   objects: |
-    - objectName: BLAZER_SLACK_WEBHOOK_URL
-      objectType: "ssmparameter"
     - objectName: sqlalchemy_database_reader_uri
       objectType: "ssmparameter"
     - objectName: BLAZER_DATABASE_URL
@@ -126,8 +119,6 @@ secretProviderClass:
 
   secretObjects:
     - data:
-      - key: BLAZER_SLACK_WEBHOOK_URL
-        objectName: BLAZER_SLACK_WEBHOOK_URL
       - key: BLAZER_DATABASE_URL
         objectName: sqlalchemy_database_reader_uri
       - key: DATABASE_URL
