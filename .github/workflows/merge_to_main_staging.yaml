@@ -18,7 +18,7 @@ defaults:
 
 jobs:
   kubectl-apply:
-    runs-on: github-arc-ss-dev
+    runs-on: github-arc-ss-manifests-dev
 
     steps:
       - name: Checkout
