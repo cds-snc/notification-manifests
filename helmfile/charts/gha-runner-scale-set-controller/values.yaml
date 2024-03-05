@@ -119,3 +119,9 @@ flags:
   ##   This can lead to a longer time to apply the change but it will ensure
   ##   that you don't have any overprovisioning of runners.
   updateStrategy: "immediate"
+
+secretProviderClass:
+  name: github-arc
+  enabled: false
+  secretObjects: []
+  parameters: {}
