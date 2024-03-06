@@ -46,7 +46,7 @@ jobs:
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
       - name: Update images in staging
         run: |
-          DOCKER_SHA=${{ github.event.inputs.docker_sha }}"
+          DOCKER_SHA=${{ github.event.inputs.docker_sha }}
           echo $DOCKER_SHA 
           #kubectl set image deployment.apps/api api=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
           #kubectl set image deployment.apps/celery-beat celery-beat=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
