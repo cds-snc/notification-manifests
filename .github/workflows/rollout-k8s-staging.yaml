@@ -2,13 +2,13 @@ name: Staging - Kubernetes Rollout
 on:
   workflow_dispatch:
     inputs:
-      GITHUB_SHA:
+      docker_sha:
         description: 'The SHA from the source docker build job'
         required: true
   repository_dispatch:
     types: webhook
     inputs:
-      GITHUB_SHA:
+      docker_sha:
         description: 'The SHA from the source docker build job'
         required: true
 
@@ -46,7 +46,8 @@ jobs:
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
       - name: Update images in staging
         run: |
-          echo "$DOCKER_SLUG:${GITHUB_SHA::7}"
+          DOCKER_SHA=${{ github.event.inputs.docker_sha }}"
+          echo $DOCKER_SHA 
           #kubectl set image deployment.apps/api api=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
           #kubectl set image deployment.apps/celery-beat celery-beat=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
           #kubectl set image deployment.apps/celery-sms celery-sms=$DOCKER_SLUG:${GITHUB_SHA::7} -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
@@ -59,12 +60,12 @@ jobs:
 
       - name: Restart deployments in staging
         run: |
-          kubectl rollout restart deployment/api -n notification-canada-ca
-          kubectl rollout restart deployment/celery-beat -n notification-canada-ca
-          kubectl rollout restart deployment/celery-sms -n notification-canada-ca
-          kubectl rollout restart deployment/celery-primary -n notification-canada-ca
-          kubectl rollout restart deployment/celery-scalable -n notification-canada-ca
-          kubectl rollout restart deployment/celery-sms-send-primary -n notification-canada-ca
-          kubectl rollout restart deployment/celery-sms-send-scalable -n notification-canada-ca
-          kubectl rollout restart deployment/celery-email-send-primary -n notification-canada-ca
-          kubectl rollout restart deployment/celery-email-send-scalable -n notification-canada-ca          
+          #kubectl rollout restart deployment/api -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-beat -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-sms -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-primary -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-scalable -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-sms-send-primary -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-sms-send-scalable -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-email-send-primary -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-email-send-scalable -n notification-canada-ca          
