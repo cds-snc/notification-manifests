@@ -1,5 +1,8 @@
 name: Staging - Kubernetes Rollout
-on: [repository_dispatch]
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: webhook
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
