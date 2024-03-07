@@ -49,7 +49,7 @@ jobs:
           
       - name: Update images in staging
         run: |
-          DOCKER_TAG=${{ github.event.inputs.docker_sha }}"
+          DOCKER_TAG=${{ github.event.inputs.docker_sha }}
           echo $DOCKER_TAG
           kubectl set image deployment.apps/api api=$DOCKER_SLUG:$DOCKER_TAG -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
           kubectl set image deployment.apps/celery-beat celery-beat=$DOCKER_SLUG:$DOCKER_TAG -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
