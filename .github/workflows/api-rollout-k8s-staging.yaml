@@ -1,4 +1,4 @@
-name: Staging - Kubernetes Rollout
+name: Staging - API & Celery Kubernetes Rollout
 on:
   workflow_dispatch:
     inputs:
@@ -16,7 +16,6 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
-  DOCKER_ORG: public.ecr.aws/v6b8u5o6
   DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-api
 
 jobs:
@@ -31,19 +30,23 @@ jobs:
           aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
+
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
+
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@v2.0.0
         with:
           install-kubectl: yes
           install-helm: yes
+
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
+          
       - name: Update images in staging
         run: |
           DOCKER_SHA=${{ github.event.inputs.docker_sha }}
