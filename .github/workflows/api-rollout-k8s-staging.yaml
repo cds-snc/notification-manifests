@@ -61,12 +61,12 @@ jobs:
 
       - name: Restart deployments in staging
         run: |
-          kubectl rollout restart deployment/api -n notification-canada-ca
-          kubectl rollout restart deployment/celery-beat -n notification-canada-ca
-          kubectl rollout restart deployment/celery-sms -n notification-canada-ca
-          kubectl rollout restart deployment/celery-primary -n notification-canada-ca
-          kubectl rollout restart deployment/celery-scalable -n notification-canada-ca
-          kubectl rollout restart deployment/celery-sms-send-primary -n notification-canada-ca
-          kubectl rollout restart deployment/celery-sms-send-scalable -n notification-canada-ca
-          kubectl rollout restart deployment/celery-email-send-primary -n notification-canada-ca
-          kubectl rollout restart deployment/celery-email-send-scalable -n notification-canada-ca          
+          #kubectl rollout restart deployment/api -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-beat -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-sms -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-primary -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-scalable -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-sms-send-primary -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-sms-send-scalable -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-email-send-primary -n notification-canada-ca
+          #kubectl rollout restart deployment/celery-email-send-scalable -n notification-canada-ca          
