@@ -37,6 +37,7 @@ jobs:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
 
+        # I'm cheating and using this action to install kubectl
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@v2.0.0
         with:
