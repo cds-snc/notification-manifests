@@ -73,7 +73,7 @@ releases:
     values:
     - ./overrides/system/github-arc.yaml.gotmpl    
 
-  - name: github-arc-ss-manifests-{{ .Environment.Name }}
+  - name: github-arc-ss-{{ .Environment.Name }}
     namespace: github-arc-controller
     disableValidationOnInstall: true    
     labels:
@@ -83,19 +83,5 @@ releases:
     chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
     version: 0.8.2
     values:
-    - ./overrides/system/github-arc-scaleset-manifests.yaml.gotmpl
+    - ./overrides/system/github-arc-scaleset.yaml.gotmpl
 
-  - name: github-arc-ss-api-{{ .Environment.Name }}
-    namespace: github-arc-controller
-    disableValidationOnInstall: true    
-    labels:
-      app: arc
-      tier: scaleset
-      category: system
-    chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
-    version: 0.8.2
-    values:
-    - ./overrides/system/github-arc-scaleset-api.yaml.gotmpl
-
-
-    

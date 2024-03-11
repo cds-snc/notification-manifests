@@ -12,7 +12,7 @@ env:
 
 jobs:
   helmfile-apply:
-    runs-on: github-arc-ss-manifests-dev
+    runs-on: ubuntu-latest
     steps:
 
       - name: Inject token authentication
