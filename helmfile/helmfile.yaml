@@ -61,3 +61,27 @@ releases:
     version: 2.3.2
     values:
     - ./overrides/tools/blazer.yaml.gotmpl
+
+  - name: github-arc
+    namespace: github-arc-controller
+    labels:
+      app: arc
+      tier: operator
+      category: system
+    chart: charts/gha-runner-scale-set-controller
+    version: 0.8.2
+    values:
+    - ./overrides/system/github-arc.yaml.gotmpl    
+
+  - name: github-arc-ss-{{ .Environment.Name }}
+    namespace: github-arc-controller
+    disableValidationOnInstall: true    
+    labels:
+      app: arc
+      tier: scaleset
+      category: system
+    chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+    version: 0.8.2
+    values:
+    - ./overrides/system/github-arc-scaleset.yaml.gotmpl
+

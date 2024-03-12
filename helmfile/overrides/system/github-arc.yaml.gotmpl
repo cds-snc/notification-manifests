@@ -1,0 +1,32 @@
+githubConfigSecret: github-arc
+githubConfigUrl: https://github.com/cds-snc/notification-manifests
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-github
+secretProviderClass:
+  enabled: true
+  provider: aws
+  parameters:
+    objects: |
+      - objectName: GITHUB_ARC_PAT
+        objectType: "secretsmanager"
+  secretObjects:
+    - data:
+      - key: github_token
+        objectName: GITHUB_ARC_PAT
+      secretName: github-arc
+      type: Opaque
+volumes:
+  - name: secrets-store-inline
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: "github-arc"
+volumeMounts:
+        - name: secrets-store-inline
+          mountPath: "/mnt/secrets-store"
+          readOnly: true              
+controllerServiceAccount:
+   namespace: github-arc-controller
+   name: github-arc-gha-rs-controller
