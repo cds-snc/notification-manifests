@@ -37,6 +37,7 @@ jobs:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
 
+        # I'm cheating and using this action to install kubectl
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@v2.0.0
         with:
@@ -76,5 +77,5 @@ jobs:
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
-          json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/actions/runs/${GITHUB_RUN_ID}|notification-manifests> !'}"
+          json="{'text':'<!here> Staging - API Kubernetes Rollout is failing in <https://github.com/cds-snc/notification-manifests/actions/runs/${GITHUB_RUN_ID}|notification-manifests> !'}"
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
