@@ -36,12 +36,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      - name: Install kubectl
-        run: |
-          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          mv kubectl /usr/local/bin/
-          kubectl version --client
+      # I'm cheating and using this action to install kubectl
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
 
       - name: Decrypt staging env
         run: |
