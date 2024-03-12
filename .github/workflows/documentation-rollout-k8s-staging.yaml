@@ -20,7 +20,7 @@ env:
 
 jobs:
   rollout:
-    runs-on: github-arc-ss-manifests-dev
+    runs-on: github-arc-ss-staging
     name: Rollout on EKS
     steps:
       - name: Configure AWS credentials
