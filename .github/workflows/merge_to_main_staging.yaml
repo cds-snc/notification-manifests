@@ -1,13 +1,15 @@
 name: "Merge to main (Staging)"
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "base/**"
-      - ".github/workflows/merge_to_main_staging.yaml"
-      - "env/staging/**"
+  pull_request:
+
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - "base/**"
+#      - ".github/workflows/merge_to_main_staging.yaml"
+#      - "env/staging/**"
 
 env:
   KUBECTL_VERSION: 1.23.6
@@ -18,7 +20,7 @@ defaults:
 
 jobs:
   kubectl-apply:
-    runs-on: github-arc-ss-staging
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -34,12 +36,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      # I'm cheating and using this action to install kubectl
-      - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@v2.0.0
-        with:
-          install-kubectl: yes
-          install-helm: yes      
+      - name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          mv kubectl /usr/local/bin/
+          kubectl version --client
 
       - name: Decrypt staging env
         run: |
@@ -51,7 +53,8 @@ jobs:
 
       - name: Apply changes
         run: |
-          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
+            kubectl get nodes
+#          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
 
       - name: Check for env changes
         working-directory: env/staging
@@ -88,12 +91,12 @@ jobs:
           alias-name: latest
           function-name: system_status
 
-      - name: Bump version and push tag
-        id: bump_and_push_tag
-        uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # v4.6
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: main
+      #- name: Bump version and push tag
+      #  id: bump_and_push_tag
+      #  uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # v4.6
+      #  with:
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      #    release_branches: main
 
       - name: Report deployment to Sentinel
         uses: cds-snc/sentinel-forward-data-action@main
