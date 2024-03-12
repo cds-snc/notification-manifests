@@ -15,3 +15,4 @@ template:
       {{ if not (eq .Environment.Name "production") }}
       image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:bootstrap
       {{ end }}
+      imagePullPolicy: Always
