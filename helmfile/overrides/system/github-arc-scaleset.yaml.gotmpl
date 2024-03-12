@@ -3,6 +3,8 @@ githubConfigUrl: https://github.com/cds-snc/notification-manifests
 controllerServiceAccount:
    namespace: github-arc-controller
    name: github-arc-gha-rs-controller
+containerMode:
+  type: dind
 template:
   spec:
     containers:
@@ -13,4 +15,3 @@ template:
       {{ if not (eq .Environment.Name "production") }}
       image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:bootstrap
       {{ end }}
-  
