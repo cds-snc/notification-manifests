@@ -1,15 +1,14 @@
 name: "Merge to main (Staging)"
 
 on:
-  pull_request:
-
-#  push:
-#    branches:
-#      - main
-#    paths:
-#      - "base/**"
-#      - ".github/workflows/merge_to_main_staging.yaml"
-#      - "env/staging/**"
+  
+  push:
+    branches:
+      - main
+    paths:
+      - "base/**"
+      - ".github/workflows/merge_to_main_staging.yaml"
+      - "env/staging/**"
 
 env:
   KUBECTL_VERSION: 1.23.6
@@ -20,7 +19,7 @@ defaults:
 
 jobs:
   kubectl-apply:
-    runs-on: github-arc-ss-dev
+    runs-on: github-arc-ss-staging
 
     steps:
       - name: Checkout
@@ -53,8 +52,7 @@ jobs:
 
       - name: Apply changes
         run: |
-            kubectl get nodes
-#          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
+          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
 
       - name: Check for env changes
         working-directory: env/staging
@@ -91,12 +89,12 @@ jobs:
           alias-name: latest
           function-name: system_status
 
-      #- name: Bump version and push tag
-      #  id: bump_and_push_tag
-      #  uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # v4.6
-      #  with:
-      #    github_token: ${{ secrets.GITHUB_TOKEN }}
-      #    release_branches: main
+      - name: Bump version and push tag
+        id: bump_and_push_tag
+        uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # v4.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
 
       - name: Report deployment to Sentinel
         uses: cds-snc/sentinel-forward-data-action@main
@@ -106,8 +104,8 @@ jobs:
           log_analytics_workspace_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
           log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
 
-#      - name: Notify Slack channel if this job failed
-#        if: ${{ failure() }}
-#        run: |
-#          json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
-#          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json="{'text':'<!here> Manifests Merge To Staging CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
