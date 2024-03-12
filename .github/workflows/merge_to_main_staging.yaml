@@ -1,17 +1,17 @@
-name: "Merge to main (Staging)"
+name: "Merge to main (Production)"
 
 on:
-  pull_request:
-
-#  push:
-#    branches:
-#      - main
-#    paths:
-#      - "base/**"
-#      - ".github/workflows/merge_to_main_staging.yaml"
-#      - "env/staging/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "VERSION"
 
 env:
+  PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+  API_LAMBDA_IMAGE: api-lambda:00c44e3
+  HEARTBEAT_IMAGE: heartbeat:5c8da95
+  SYSTEM_STATUS_IMAGE: system_status:5c8da95
   KUBECTL_VERSION: 1.23.6
 
 defaults:
@@ -25,39 +25,54 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Set Prod Version
+        run: |
+          TARGET_VERSION=`cat VERSION`
+          echo "TARGET_VERSION=$TARGET_VERSION" >> $GITHUB_ENV
+
+      - name: Checkout target Prod version
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
-          # Fetches entire history, so we can analyze commits since last tag
-          fetch-depth: 0
+          ref: ${{ env.TARGET_VERSION }}
+
+      - name: Inject token authentication
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
         with:
-          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      - name: Install kubectl
-        run: |
-          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          mv kubectl /usr/local/bin/
-          kubectl version --client
+      # I'm cheating and using this action to install kubectl
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
 
-      - name: Decrypt staging env
+      - name: Run manifest build
         run: |
-          make decrypt-staging
+          cp env.example env/production/.env
+          make production-debug > /dev/null 2>&1
+
+      - name: Decrypt production env
+        run: |
+          make decrypt-production
 
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster
+          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster
 
       - name: Apply changes
         run: |
-            kubectl get nodes
-#          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
+          ./scripts/applyKube.sh env/production --kubeconfig=/home/runner/.kube/config
 
       - name: Check for env changes
-        working-directory: env/staging
+        working-directory: env/production
         run: |
           aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .previous.env
           DIFF="$(set +o pipefail && diff -B .env .previous.env | wc -l)"
@@ -66,48 +81,58 @@ jobs:
 
       - name: Update parameter store environment variable
         if: env.ENV_DIFF != '0' # Only update secrets when changes detected
-        working-directory: env/staging
+        working-directory: env/production
         run: |
           aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value file://.env --tier "Intelligent-Tiering" --overwrite
 
-      - name: Force api-lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
+      - name: Deploy lambda
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: api-lambda
+          image-uri: $PRIVATE_ECR/$API_LAMBDA_IMAGE
 
-      - name: Force heartbeat lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
+      - name: Deploy Heartbeat lambda
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: heartbeat
+          image-uri: $PRIVATE_ECR/$HEARTBEAT_IMAGE
 
-      - name: Force system_status to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
+      - name: Deploy System Status lambda
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: system_status
+          image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
 
-      #- name: Bump version and push tag
-      #  id: bump_and_push_tag
-      #  uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # v4.6
-      #  with:
-      #    github_token: ${{ secrets.GITHUB_TOKEN }}
-      #    release_branches: main
+      - name: Add deployment to New Relic
+        run: |
+          for application_id in 283469061 283468826 283468685; do
+            curl -X POST "https://api.newrelic.com/v2/applications/$application_id/deployments.json" \
+             -H "X-Api-Key:$NEW_RELIC_API_KEY" -i \
+             -H 'Content-Type: application/json' \
+             -d \
+            '{
+              "deployment": {
+                "revision": "'$GITHUB_SHA'"
+              }
+            }'
+          done
+        env:
+          NEW_RELIC_API_KEY: ${{ secrets.PRODUCTION_NEW_RELIC_API_KEY }}
 
       - name: Report deployment to Sentinel
         uses: cds-snc/sentinel-forward-data-action@main
         with:
-          input_data: '{"product": "notify", "sha": "${{ github.sha }}", "version": "${{ steps.bump_and_push_tag.outputs.new_tag }}" "repository": "${{ github.repository }}", "environment": "staging"}'
+          input_data: '{"product": "notify", "sha": "${{ github.sha }}", "version": "${{ env.TARGET_VERSION }}", "repository": "${{ github.repository }}", "environment": "production"}'
           log_type: CDS_Product_Deployment_Data
           log_analytics_workspace_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
           log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
 
-#      - name: Notify Slack channel if this job failed
-#        if: ${{ failure() }}
-#        run: |
-#          json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
-#          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
