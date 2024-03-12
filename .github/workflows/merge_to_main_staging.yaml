@@ -20,7 +20,7 @@ defaults:
 
 jobs:
   kubectl-apply:
-    runs-on: github-arc-ss-staging
+    runs-on: github-arc-ss-dev
 
     steps:
       - name: Checkout
