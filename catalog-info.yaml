@@ -16,7 +16,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: cds-gc-notify
+  name: gc-notification
   title: GC Notify | GC Notification
   description: >-
     GC Notify System
