@@ -1,11 +1,40 @@
-  #- ../../base/prometheus-cloudwatch
-  #- ../../base/k8s-event-logger
-
-  #- cwagent.yaml
-  #- fluentbit.yaml
-  #- cwagent-configmap.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+resources:
+- notification-service-account.yaml
+- api-target-group.yaml
+- admin-target-group.yaml
+- document-download-api-target-group.yaml
+- documentation-target-group.yaml
+- aws-auth-configmap.yaml
+- hasura-ingress.yaml
+- ../../base/karpenter
+- ../../base/kube-state-metrics
+- ../../base/utils
+- ../../base/notify-admin
+- ../../base/notify-api
+- ../../base/notify-celery-other
+- ../../base/notify-celery-main-primary
+- ../../base/notify-celery-sms-send-primary
+- ../../base/notify-celery-email-send-primary
+- ../../base/notify-celery-main-scalable
+- ../../base/notify-celery-sms-send-scalable
+- ../../base/notify-celery-email-send-scalable
+- ../../base/notify-document-download
+- ../../base/notify-documentation
+- ../../base/notify-system
+
+images:
+- name: admin
+  newName: public.ecr.aws/cds-snc/notify-admin:latest
+- name: api
+  newName: public.ecr.aws/cds-snc/notify-api:latest
+- name: document-download-api
+  newName: public.ecr.aws/cds-snc/notify-document-download-api:latest
+- name: documentation
+  newName: public.ecr.aws/cds-snc/notify-documentation:latest
+
 patches:
 - path: performance/admin-hpa-patch.yaml
 - path: performance/api-hpa-patch.yaml
@@ -47,40 +76,6 @@ patches:
 - path: celery-init-delete/celery-scalable-init-delete-patch.yaml
 - path: celery-init-delete/celery-sms-send-primary-init-delete-patch.yaml
 - path: celery-init-delete/celery-sms-send-scalable-init-delete-patch.yaml
-
-resources:
-- notification-service-account.yaml
-- api-target-group.yaml
-- admin-target-group.yaml
-- document-download-api-target-group.yaml
-- documentation-target-group.yaml
-- aws-auth-configmap.yaml
-- hasura-ingress.yaml
-- ../../base/karpenter
-- ../../base/kube-state-metrics
-- ../../base/utils
-- ../../base/notify-admin
-- ../../base/notify-api
-- ../../base/notify-celery-other
-- ../../base/notify-celery-main-primary
-- ../../base/notify-celery-sms-send-primary
-- ../../base/notify-celery-email-send-primary
-- ../../base/notify-celery-main-scalable
-- ../../base/notify-celery-sms-send-scalable
-- ../../base/notify-celery-email-send-scalable
-- ../../base/notify-document-download
-- ../../base/notify-documentation
-- ../../base/notify-system
-
-images:
-- name: admin
-  newName: public.ecr.aws/cds-snc/notify-admin:latest
-- name: api
-  newName: public.ecr.aws/cds-snc/notify-api:latest
-- name: document-download-api
-  newName: public.ecr.aws/cds-snc/notify-document-download-api:latest
-- name: documentation
-  newName: public.ecr.aws/cds-snc/notify-documentation:latest
 
 configMapGenerator:
 - envs:
