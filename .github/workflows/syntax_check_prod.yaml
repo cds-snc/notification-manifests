@@ -1,0 +1,30 @@
+name: Testing Prod Manifest
+
+on: 
+  - pull_request
+
+jobs:
+  testing_manifest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          mv kubectl /usr/local/bin/
+          kubectl version --client
+
+      - name: Add fake .env
+        run: |
+          cp env.example env/production/.env
+
+      - name: Test production manifest build
+        uses: ./.github/actions/test-manifest
+        if: always()
+        with:
+          build-target: production-debug          
+  

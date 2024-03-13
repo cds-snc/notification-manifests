@@ -1,4 +1,4 @@
-name: Testing manifest
+name: Testing Staging Manifest
 
 on: 
   - pull_request
@@ -21,7 +21,6 @@ jobs:
       - name: Add fake .env
         run: |
           cp env.example env/staging/.env
-          cp env.example env/production/.env
 
       - name: Test staging manifest build
         uses: ./.github/actions/test-manifest
@@ -29,10 +28,3 @@ jobs:
         with:
           build-target: staging-debug
           echo-manifest: true
-
-      - name: Test production manifest build
-        uses: ./.github/actions/test-manifest
-        if: always()
-        with:
-          build-target: production-debug          
-  
