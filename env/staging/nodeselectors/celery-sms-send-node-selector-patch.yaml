@@ -1,0 +1,13 @@
+# Celery SMS Send
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-sms-send-primary
+  name:  celery-sms-send-primary
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    

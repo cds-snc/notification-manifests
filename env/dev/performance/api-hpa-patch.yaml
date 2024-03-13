@@ -1,0 +1,8 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 4
+  maxReplicas: 4

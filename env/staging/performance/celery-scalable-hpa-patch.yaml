@@ -1,0 +1,23 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: celery-scalable-hpa
+  namespace: notification-canada-ca
+spec:
+  minReplicas: 3
+  maxReplicas: 30
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 25
+        type: Utilization
+    type: Resource
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Pods
+        value: 6
+        periodSeconds: 45
+      selectPolicy: Max          
