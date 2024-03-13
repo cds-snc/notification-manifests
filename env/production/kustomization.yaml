@@ -42,8 +42,8 @@ patches:
 - path: performance/celery-sms-send-primary-deployment-patch.yaml
 - path: performance/celery-sms-send-scalable-deployment-patch.yaml
 - path: performance/celery-sms-send-scalable-hpa-patch.yaml
-- path: performance/document-download-api-deployment-patch.yaml
-- path: performance/documentation-hpa-patch.yaml
+- path: performance/document-download-api-hpa-patch.yaml
+- path: performance/documentation-deployment-patch.yaml
 
 - path: cwagent/cwagent-deployment-patch.yaml
 
