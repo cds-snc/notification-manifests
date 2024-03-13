@@ -52,6 +52,7 @@ patches:
 - path: services/api-service-patch.yaml
 - path: services/document-download-api-service-patch.yaml
 - path: services/documentation-service-patch.yaml
+
 - path: karpenter/aws-node-template-patch.yaml
 - path: karpenter/configmap-patch.yaml
 - path: karpenter/provisioner-patch.yaml
