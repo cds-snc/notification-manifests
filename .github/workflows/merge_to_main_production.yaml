@@ -12,7 +12,6 @@ env:
   API_LAMBDA_IMAGE: api-lambda:00c44e3
   HEARTBEAT_IMAGE: heartbeat:5c8da95
   SYSTEM_STATUS_IMAGE: system_status:5c8da95
-  KUBECTL_VERSION: 1.23.6
 
 defaults:
   run:
@@ -46,13 +45,13 @@ jobs:
           aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
-
-      - name: Install kubectl
-        run: |
-          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          mv kubectl /usr/local/bin/
-          kubectl version --client
+          
+      # I'm cheating and using this action to install kubectl
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
 
       - name: Run manifest build
         run: |
