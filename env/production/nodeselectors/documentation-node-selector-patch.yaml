@@ -1,0 +1,13 @@
+# Documentation
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: documentation
+  namespace: notification-canada-ca
+  labels:
+    app: documentation
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND   
