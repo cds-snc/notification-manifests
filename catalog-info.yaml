@@ -9,7 +9,7 @@ metadata:
     license: MIT
 spec:
   type: website
-  lifecycle: experimental
+  lifecycle: production
   owner: group:cds-snc/notify-dev
   system: gc-notification
 ---
