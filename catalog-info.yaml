@@ -10,4 +10,15 @@ metadata:
 spec:
   type: website
   lifecycle: experimental
-  owner: cds-snc
+  owner: group:cds-snc/notify-dev
+  system: gc-notification
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: cds-gc-notify
+  title: GC Notify | GC Notification
+  description: >-
+    GC Notify System
+spec:
+  owner: group:cds-snc/notify-dev
