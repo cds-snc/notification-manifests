@@ -1,3 +1,6 @@
+# Metadata for the backstage catalog accessible at this link:
+# https://backstage.cdssandbox.xyz/
+---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
@@ -5,6 +8,8 @@ metadata:
   description: >-
     Kubernetes manifest files for notification.canada.ca | Configuration
     Kubernetes pour notification.canada.ca
+  annotations:
+    github.com/project-slug: cds-snc/notification-manifests
   labels:
     license: MIT
 spec:
@@ -12,13 +17,3 @@ spec:
   lifecycle: production
   owner: group:cds-snc/notify-dev
   system: gc-notification
----
-apiVersion: backstage.io/v1alpha1
-kind: System
-metadata:
-  name: gc-notification
-  title: GC Notify | GC Notification
-  description: >-
-    GC Notify System
-spec:
-  owner: group:cds-snc/notify-dev
