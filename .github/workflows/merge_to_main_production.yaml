@@ -12,6 +12,7 @@ env:
   API_LAMBDA_IMAGE: api-lambda:00c44e3
   HEARTBEAT_IMAGE: heartbeat:5c8da95
   SYSTEM_STATUS_IMAGE: system_status:5c8da95
+  KUBECTL_VERSION: 1.23.6
 
 defaults:
   run:
