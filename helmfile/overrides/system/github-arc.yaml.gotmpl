@@ -8,12 +8,20 @@ secretProviderClass:
   provider: aws
   parameters:
     objects: |
-      - objectName: GITHUB_ARC_PAT
+      - objectName: PR_BOT_APP_ID
         objectType: "secretsmanager"
+      - objectName: PR_BOT_INSTALLATION_ID
+        objectType: "secretsmanager"        
+      - objectName: PR_BOT_PRIVATE_KEY
+        objectType: "secretsmanager"          
   secretObjects:
     - data:
-      - key: github_token
-        objectName: GITHUB_ARC_PAT
+      - key: github_app_id
+        objectName: PR_BOT_APP_ID
+      - key: github_app_installation_id
+        objectName: PR_BOT_INSTALLATION_ID
+      - key: github_app_private_key
+        objectName: PR_BOT_PRIVATE_KEY                
       secretName: github-arc
       type: Opaque
 volumes:
