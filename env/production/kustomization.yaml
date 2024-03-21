@@ -597,6 +597,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_ABTEST_SERVICE_ID
+  - name: FF_NEW_BRANDING
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_NEW_BRANDING
   - name: SRE_CLIENT_SECRET
     objref:
       kind: ConfigMap
