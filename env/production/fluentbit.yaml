@@ -331,6 +331,7 @@ spec:
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
+      priorityClassName: "system-cluster-critical"
       initContainers:
       - name: wait-for-init
         image: busybox:1.28
