@@ -17,6 +17,12 @@ livenessProbe:
   successThreshold: 1
   failureThreshold: 3
 
+serviceAccount:
+  create: true
+  serviceAccountName: notify-admin
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-notify-admin
+
 initContainers:
   - name: init-postgres
     image: alpine
@@ -24,11 +30,21 @@ initContainers:
       [
         "sh",
         "-c",
+
+        {{ if eq .Environment.Name "dev" }}
+          "until nc -z -w 2 api-k8s.{{ .Environment.Name }}.notification.cdssandbox.xyz 443; do echo waiting for api; sleep 2; done;",
+        {{ else }}
+          {{ if eq .Environment.Name "production" }}
+          "until nc -z -w 2 api.notification.canada.ca 443; do echo waiting for api; sleep 2; done;",
+          {{ else }}
+          "until nc -z -w 2 api..{{ .Environment.Name }}.notification.cdssandbox.xyz 443; do echo waiting for api; sleep 2; done;",
+          {{ end }}  
+        {{ end }}
         "until nc -z -w 2 api.$(BASE_DOMAIN) 443; do echo waiting for api; sleep 2; done;",
       ]
 
 targetGroupBinding:
-  enabled: true
+  enabled: false
   targetGroupARN: {{ requiredEnv "ADMIN_TARGET_GROUP_ARN" }}
 
 env:
@@ -45,9 +61,9 @@ env:
         key: ADMIN_CLIENT_SECRET
   - name: ALLOW_DEBUG_ROUTE
     {{ if eq .Environment.Name "production" }}
-    value: false
+    value: "false"
     {{ else }}
-    value: true
+    value: "true"
     {{ end }}
   - name: ALLOW_HTML_SERVICE_IDS
     valueFrom:
@@ -111,9 +127,9 @@ env:
         name: notify-admin
         key: HC_FR_SERVICE_ID
   - name: FF_SPIKE_SMS_DAILY_LIMIT
-    value: true
+    value: "true"
   - name: FF_SMS_PARTS_UI
-    value: false
+    value: "false"
   - name: FLASK_APP
     value: application.py
   - name: NOTIFY_ENVIRONMENT
@@ -166,20 +182,20 @@ env:
           name: notify-admin
           key: SENTRY_URL
   - name: SHOW_STYLEGUIDE
-    value: true
+    value: "true"
   - name: NEW_RELIC_APP_NAME
     value: notification-admin-{{ .Environment.Name }}
   - name: NEW_RELIC_CONFIG_FILE
     value: '/app/newrelic.ini'
   - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-    value: true
+    value: "true"
   - name: NEW_RELIC_LICENSE_KEY
     valueFrom:
         secretKeyRef:
           name: notify-admin
           key: NEW_RELIC_LICENSE_KEY
   - name: NEW_RELIC_MONITOR_MODE
-    value: true
+    value: "true"
   - name: IP_GEOLOCATE_SERVICE
     value: http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080
   - name: GC_ARTICLES_API
@@ -207,18 +223,18 @@ env:
   - name: CRM_ORG_LIST_URL
     value: https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json
   - name: FF_SALESFORCE_CONTACT
-    value: true
+    value: "true"
   - name: FF_BOUNCE_RATE_V1
-    value: true
+    value: "true"
   - name: FF_BOUNCE_RATE_V15
-    value: true
+    value: "true"
   - name: FF_ABTEST_SERVICE_ID
     valueFrom:
         secretKeyRef:
           name: notify-admin
           key: FF_ABTEST_SERVICE_ID
   - name: FF_NEW_BRANDING
-    value: true
+    value: "true"
 
 secretProviderClass:
   enabled: true
