@@ -1,0 +1,19 @@
+{{ if .Values.service.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "notify.fullname" . }}
+  labels:
+    {{- include "notify.labels" . | nindent 4 }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "notify.selectorLabels" . | nindent 4 }}
+{{- end }}

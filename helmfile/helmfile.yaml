@@ -18,6 +18,17 @@ repositories:
 
 releases:
 
+  - name: notify-admin
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: notify
+      tier: fronteend
+      category: deliverable
+    chart: charts/notify
+    values:
+    - ./overrides/notify/notify-admin.yaml.gotmpl
+
+
   - name: ingress
     namespace: nginx
     disableValidationOnInstall: true
