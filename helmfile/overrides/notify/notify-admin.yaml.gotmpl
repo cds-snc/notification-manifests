@@ -276,7 +276,9 @@ secretProviderClass:
       - objectName: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
         objectType: "secretsmanager"
       - objectName: FF_ABTEST_SERVICE_ID
-        objectType: "secretsmanager"              
+        objectType: "secretsmanager"          
+      - objectName: SQLALCHEMY_DATABASE_URI
+        objectType: "secretsmanager"                
         
   secretObjects:
     - data:
@@ -316,6 +318,8 @@ secretProviderClass:
         objectName: GC_ARTICLES_API_AUTH_PASSWORD
       - key: FF_ABTEST_SERVICE_ID
         objectName: FF_ABTEST_SERVICE_ID        
+      - key: SQLALCHEMY_DATABASE_URI
+        objectName: SQLALCHEMY_DATABASE_URI           
 
       secretName: notify-admin
       type: generic
