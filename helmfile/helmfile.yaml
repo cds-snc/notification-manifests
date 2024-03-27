@@ -47,7 +47,7 @@ releases:
       tier: full
       category: system
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 0.3.5
+    version: 0.3.7
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
     
@@ -58,7 +58,7 @@ releases:
       tier: front
       category: tools
     chart: stakater/application
-    version: 2.3.2
+    version: 2.3.4
     values:
     - ./overrides/tools/blazer.yaml.gotmpl
 
