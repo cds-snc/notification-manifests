@@ -41,6 +41,6 @@ jobs:
             ./helmfile/getContext.sh true
       - name: Run helmfile
         id: helmfile_apply
-        uses: helmfile/helmfile-action@v1.0.0
+        uses: helmfile/helmfile-action@6d0992b7f15a9776a3d9d26c621ac3a0e32d77d5 # v1.8.0
         with:
           helmfile-args: apply --environment production

@@ -13,7 +13,7 @@ jobs:
 
       # I'm cheating and using this action to install kubectl
       - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@v2.0.0
+        uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
         with:
           install-kubectl: yes
           install-helm: yes

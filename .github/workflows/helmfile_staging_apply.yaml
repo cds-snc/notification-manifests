@@ -31,7 +31,7 @@ jobs:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
       - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@v2.0.0
+        uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
         with:
           install-kubectl: yes
           install-helm: yes          
@@ -44,6 +44,6 @@ jobs:
             ./helmfile/getContext.sh true
       - name: Run helmfile
         id: helmfile_apply
-        uses: helmfile/helmfile-action@v1.0.0
+        uses: helmfile/helmfile-action@6d0992b7f15a9776a3d9d26c621ac3a0e32d77d5 # v1.8.0
         with:
           helmfile-args: apply --environment staging
