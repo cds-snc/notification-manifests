@@ -12,7 +12,7 @@ env:
 
 jobs:
   helmfile-apply:
-    runs-on: ubuntu-latest
+    runs-on: github-arc-ss-staging
     steps:
 
       - name: Inject token authentication
@@ -30,6 +30,11 @@ jobs:
         with:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes          
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster     
