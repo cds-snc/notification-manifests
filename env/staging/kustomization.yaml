@@ -75,7 +75,6 @@ patches:
 - path: nodeselectors/document-download-api-node-selector-patch.yaml
 - path: nodeselectors/documentation-node-selector-patch.yaml
 - path: nodeselectors/hasura-node-selector-patch.yaml
-- path: nodeselectors/jump-box-node-selector-patch.yaml
 
 images:
 - name: admin
