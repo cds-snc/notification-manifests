@@ -32,7 +32,6 @@ resources:
 - ../../base/notify-system
 
 patches:
-
 - path: performance/admin-hpa-patch.yaml
 - path: performance/admin-deployment-patch.yaml
 - path: performance/api-hpa-patch.yaml
