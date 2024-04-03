@@ -1,11 +1,10 @@
-name: "Merge to main (Production)"
+name: "INTERNAL - Merge to main (Production)"
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "VERSION"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [webhook]
+
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/notify
@@ -20,7 +19,7 @@ defaults:
 
 jobs:
   kubectl-apply:
-    runs-on: ubuntu-latest
+    runs-on: github-arc-ss-production
 
     steps:
       - name: Checkout
