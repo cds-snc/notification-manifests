@@ -48,6 +48,7 @@ jobs:
 
       - name: Install kubectl
         run: |
+          KUBECTL_VERSION=${{ env.KUBECTL_VERSION }}
           curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
           chmod +x kubectl
           mv kubectl /usr/local/bin/
