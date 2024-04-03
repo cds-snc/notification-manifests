@@ -11,8 +11,5 @@ template:
     - name: runner
       command: 
         - /home/runner/run.sh
-      ## TODO: remove this if statement when launching to production
-      {{ if not (eq .Environment.Name "production") }}
       image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:bootstrap
-      {{ end }}
       imagePullPolicy: Always
