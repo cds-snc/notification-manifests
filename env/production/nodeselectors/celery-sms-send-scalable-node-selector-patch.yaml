@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-sms-send-scalable
+  name:  celery-sms-send-scalable
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        karpenter.sh/capacity-type: spot    
