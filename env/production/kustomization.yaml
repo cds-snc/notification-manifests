@@ -28,10 +28,41 @@ resources:
   - aws-auth-configmap.yaml
 
 patches:
-  - performance.yaml
-  - cwagent-patch.yaml
-  - node-selector-patch.yaml
-  - karpenter.yaml
+  - path: cwagent/cwagent-deployment-patch.yaml
+
+  - path: performance/admin-deployment-patch.yaml
+  - path: performance/admin-hpa-patch.yaml
+  - path: performance/api-deployment-patch.yaml
+  - path: performance/api-hpa-patch.yaml
+  - path: performance/celery-email-send-primary-deployment-patch.yaml
+  - path: performance/celery-email-send-scalable-deployment-patch.yaml
+  - path: performance/celery-email-send-scalable-hpa-patch.yaml
+  - path: performance/celery-primary-deployment-patch.yaml
+  - path: performance/celery-scalable-deployment-patch.yaml
+  - path: performance/celery-scalable-hpa-patch.yaml
+  - path: performance/celery-sms-send-primary-deployment-patch.yaml
+  - path: performance/celery-sms-send-scalable-deployment-patch.yaml
+  - path: performance/celery-sms-send-scalable-hpa-patch.yaml
+  - path: performance/document-download-hpa-patch.yaml
+  - path: performance/documentation-deployment-patch.yaml
+
+  - path: nodeselectors/admin-node-selector-patch.yaml
+  - path: nodeselectors/api-node-selector-patch.yaml
+  - path: nodeselectors/celery-beat-node-selector-patch.yaml
+  - path: nodeselectors/celery-email-send-primary-node-selector-patch.yaml
+  - path: nodeselectors/celery-email-send-scalable-node-selector-patch.yaml
+  - path: nodeselectors/celery-primary-node-selector-patch.yaml
+  - path: nodeselectors/celery-scalable-node-selector-patch.yaml
+  - path: nodeselectors/celery-sms-node-selector-patch.yaml
+  - path: nodeselectors/celery-sms-send-primary-node-selector-patch.yaml
+  - path: nodeselectors/celery-sms-send-scalable-node-selector-patch.yaml
+  - path: nodeselectors/document-download-api-node-selector-patch.yaml
+  - path: nodeselectors/documentation-node-selector-patch.yaml
+  
+  - path: karpenter/aws-node-template-patch.yaml
+  - path: karpenter/configmap-patch.yaml
+  - path: karpenter/provisioner-patch.yaml
+  - path: karpenter/service-account-patch.yaml
 
 images:
   - name: admin
