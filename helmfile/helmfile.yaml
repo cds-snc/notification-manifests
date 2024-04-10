@@ -18,15 +18,25 @@ repositories:
 
 releases:
 
+  - name: notify-api
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: notify-api
+      tier: backend
+      category: deliverable
+    chart: charts/notify
+    values:
+    - ./overrides/notify/api.yaml.gotmpl
+
   - name: notify-admin
     namespace: notify-{{ .Environment.Name }}
     labels:
-      app: notify
+      app: notify-admin
       tier: fronteend
       category: deliverable
     chart: charts/notify
     values:
-    - ./overrides/notify/notify-admin.yaml.gotmpl
+    - ./overrides/notify/admin.yaml.gotmpl
 
 
   - name: ingress
