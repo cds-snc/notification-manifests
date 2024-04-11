@@ -34,7 +34,7 @@ releases:
       app: notify-admin
       tier: fronteend
       category: deliverable
-    chart: charts/notify
+    chart: charts/notify-admin
     values:
     - ./overrides/notify/admin.yaml.gotmpl
 
