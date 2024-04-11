@@ -17,6 +17,7 @@ livenessProbe:
   successThreshold: 1
   failureThreshold: 3
 
+#Variables
 baseURL: {{ .Values.baseDomain }}
 {{ if eq .Environment.Name "dev" }}
 apiHostName: https://api-k8s.notification.canada.ca
@@ -27,6 +28,7 @@ apiHostName: https://notification.canada.ca
 apiHostName: https://{{ .Environment.Name }}.notification.cdssandbox.xyz
 {{ end }}  
 {{ end }}
+docDownloadApiHost: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
 
 serviceAccount:
   create: true

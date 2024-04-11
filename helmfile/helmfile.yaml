@@ -34,10 +34,9 @@ releases:
       app: notify-admin
       tier: fronteend
       category: deliverable
-    chart: charts/notify
+    chart: charts/notify-admin
     values:
     - ./overrides/notify/admin.yaml.gotmpl
-
 
   - name: ingress
     namespace: nginx
@@ -105,4 +104,3 @@ releases:
     version: 0.8.2
     values:
     - ./overrides/system/github-arc-scaleset.yaml.gotmpl
-

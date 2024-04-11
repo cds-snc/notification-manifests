@@ -6,6 +6,8 @@ replicaCount: 2
 
 baseDomain: notification.canada.ca
 env: production
+postgresHost: something
+docDownloadApiHost:  'http://document-download-api.main.svc.cluster.local:7000'
 
 image:
   repository: public.ecr.aws/cds-snc/notify-admin
