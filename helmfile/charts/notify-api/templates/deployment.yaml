@@ -527,10 +527,24 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          livenessProbe:
-            {{ toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
-            {{ toYaml .Values.readinessProbe | nindent 12 }}
+            httpGet:
+              path: /_status?simple=true
+              port: 6011
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: "/_status?simple=true"
+              port: 6011
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{ if .Values.secretProviderClass.enabled}}    
