@@ -2,6 +2,21 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+awsAccountId: 123456789
+apiURL: "https://api.notification.canada.ca"
+baseDomain: "notification.canada.ca"
+allowDebugRoute: "false"
+assetUploadBucketName: "notification-canada-ca-dev-assets"
+awsRegion: "ca-central-1"
+env: "production"
+ipGeolocateService:  http://ipv4.notification-canada-ca.svc.cluster.local:8080
+crmOrgListURL: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
+
+
+serviceAccount:
+  create: true
+  name: notify-admin
+
 replicaCount: 2
 
 image:
@@ -31,16 +46,6 @@ livenessProbe:
   httpGet:
     path: "/_status?simple=true"
     port: 6012
-
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
 
 podAnnotations: {}
 
@@ -108,7 +113,7 @@ tolerations: []
 affinity: {}
 
 secretProviderClass:
-  enabled: false
+  enabled: true
   provider: aws
   parameters:
     objects: |

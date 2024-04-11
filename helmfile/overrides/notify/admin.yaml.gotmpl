@@ -1,106 +1,36 @@
+# APPLICATION CONFIG
+env: {{ .Environment.Name }}
+awsRegion: {{requiredEnv "AWS_REGION"}}
+awsAccountId: {{ requiredEnv "AWS_ACCOUNT_ID" }}
+baseDomain: {{ requiredEnv "BASE_DOMAIN"}}
+assetUploadBucketName: "notification-canada-{{ .Environment.Name }}-assets"
+ipGeolocateService: http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080
+
+# ENVIRONMENT SPECIFIC 
+# DEV
 {{ if eq .Environment.Name "dev" }}
 apiURL: api-k8s.{{ .Environment.Name }}.notification.cdssandbox.xyz
-{{ else }}
+allowDebugRoute: "true"
+{{ end }}
+
+# STAGING
+{{ if eq .Environment.Name "staging" }}
+apiURL: api.{{ .Environment.Name }}.notification.cdssandbox.xyz
+allowDebugRoute: "true"
+{{ end }}
+
+# PRODUCTION
 {{ if eq .Environment.Name "production" }}
 apiURL: api.notification.canada.ca
-{{ else }}
-apiURL: api.{{ .Environment.Name }}.notification.cdssandbox.xyz
-{{ end }}  
+allowDebugRoute: "false"
 {{ end }}
+
+# KUBERNETES CONFIG
 
 targetGroupBinding:
   enabled: false
   targetGroupARN: {{ requiredEnv "ADMIN_TARGET_GROUP_ARN" }}
 
-          {{ if not (eq .Environment.Name "production") }}
-          - name: DEBUG_KEY
-            value: '$(DEBUG_KEY)'
-          {{ end }}
-
-secretProviderClass:
-  enabled: true
-  provider: aws
-  parameters:
-    objects: |
-      - objectName: ADMIN_CLIENT_SECRET
-        objectType: "secretsmanager"
-      - objectName: ALLOW_HTML_SERVICE_IDS
-        objectType: "secretsmanager"
-      - objectName: BULK_SEND_TEST_SERVICE_ID
-        objectType: "secretsmanager"
-      - objectName: DANGEROUS_SALT
-        objectType: "secretsmanager"
-      - objectName: HC_EN_SERVICE_ID
-        objectType: "secretsmanager"
-      - objectName: HC_FR_SERVICE_ID
-        objectType: "secretsmanager"
-      - objectName: MIXPANEL_PROJECT_TOKEN
-        objectType: "secretsmanager"
-      - objectName: SENSITIVE_SERVICES
-        objectType: "secretsmanager"        
-      - objectName: REDIS_URL
-        objectType: "secretsmanager"
-      - objectName: REDIS_PUBLISH_URL
-        objectType: "secretsmanager"
-      - objectName: SECRET_KEY
-        objectType: "secretsmanager"
-      - objectName: SENTRY_URL
-        objectType: "secretsmanager"
-      - objectName: NEW_RELIC_LICENSE_KEY
-        objectType: "secretsmanager"
-      - objectName: GC_ARTICLES_API_AUTH_USERNAME
-        objectType: "secretsmanager"
-      - objectName: GC_ARTICLES_API_AUTH_PASSWORD
-        objectType: "secretsmanager"
-      - objectName: WAF_SECRET
-        objectType: "secretsmanager"      
-      - objectName: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-        objectType: "secretsmanager"
-      - objectName: FF_ABTEST_SERVICE_ID
-        objectType: "secretsmanager"          
-      - objectName: SQLALCHEMY_DATABASE_URI
-        objectType: "secretsmanager"                
-        
-  secretObjects:
-    - data:
-      - key: ADMIN_CLIENT_SECRET
-        objectName: ADMIN_CLIENT_SECRET
-      - key: ALLOW_HTML_SERVICE_IDS
-        objectName: ALLOW_HTML_SERVICE_IDS
-      - key: BULK_SEND_TEST_SERVICE_ID
-        objectName: BULK_SEND_TEST_SERVICE_ID
-      - key: DANGEROUS_SALT
-        objectName: DANGEROUS_SALT
-      - key: HC_EN_SERVICE_ID
-        objectName: HC_EN_SERVICE_ID
-      - key: HC_FR_SERVICE_ID
-        objectName: HC_FR_SERVICE_ID
-      - key: MIXPANEL_PROJECT_TOKEN
-        objectName: MIXPANEL_PROJECT_TOKEN
-      - key: SENSITIVE_SERVICES
-        objectName: SENSITIVE_SERVICES
-      - key: REDIS_URL
-        objectName: REDIS_URL
-      - key: REDIS_PUBLISH_URL
-        objectName: REDIS_PUBLISH_URL
-      - key: SECRET_KEY
-        objectName: SECRET_KEY
-      - key: SENTRY_URL
-        objectName: SENTRY_URL
-      - key: NEW_RELIC_LICENSE_KEY
-        objectName: NEW_RELIC_LICENSE_KEY
-      - key: GC_ARTICLES_API_AUTH_USERNAME
-        objectName: GC_ARTICLES_API_AUTH_USERNAME
-      - key: GC_ARTICLES_API_AUTH_PASSWORD
-        objectName: GC_ARTICLES_API_AUTH_PASSWORD
-      - key: WAF_SECRET
-        objectName: WAF_SECRET
-      - key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-        objectName: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-      - key: FF_ABTEST_SERVICE_ID
-        objectName: FF_ABTEST_SERVICE_ID        
-      - key: SQLALCHEMY_DATABASE_URI
-        objectName: SQLALCHEMY_DATABASE_URI           
-
-      secretName: notify-admin
-      type: generic
+serviceAccount:
+  annotations: 
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-notify-admin
