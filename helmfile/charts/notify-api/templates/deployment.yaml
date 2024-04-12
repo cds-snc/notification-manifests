@@ -516,8 +516,7 @@ spec:
               value: "false"
             - name: FF_BOUNCE_RATE_BACKEND
               value: "false"
-                {{- toYaml .Values.env | nindent 12 }}
-              {{ if .Values.secretProviderClass.enabled}}    
+          {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"
