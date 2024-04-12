@@ -1,7 +1,7 @@
 
 
 #  APPLICATION CONFIG
-baseURL: {{ .Values.baseDomain }}
+baseURL: {{ requiredEnv "BASE_DOMAIN" }}
 docDownloadApiHost: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
 
 # ENVIRONMENT SPECIFIC 

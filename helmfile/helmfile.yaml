@@ -24,7 +24,7 @@ releases:
       app: notify-api
       tier: backend
       category: deliverable
-    chart: charts/notify
+    chart: charts/notify-api
     values:
     - ./overrides/notify/api.yaml.gotmpl
 
