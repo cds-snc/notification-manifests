@@ -1,4 +1,4 @@
-name: "Merge to main (Production)"
+name: "INTERNAL - Merge to main (Production)"
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
   API_LAMBDA_IMAGE: api-lambda:384e2f6
   HEARTBEAT_IMAGE: heartbeat:5c8da95
   SYSTEM_STATUS_IMAGE: system_status:5c8da95
-  KUBECTL_VERSION: 1.23.6
+  
 
 defaults:
   run:
@@ -20,7 +20,7 @@ defaults:
 
 jobs:
   kubectl-apply:
-    runs-on: ubuntu-latest
+    runs-on: github-arc-ss-production
 
     steps:
       - name: Checkout
@@ -47,13 +47,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      - name: Install kubectl
-        run: |
-          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          mv kubectl /usr/local/bin/
-          kubectl version --client
-
+      # We are using this to install kubectl in this case
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
+          
       - name: Run manifest build
         run: |
           cp env.example env/production/.env
