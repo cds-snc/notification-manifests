@@ -3,9 +3,6 @@ name: Testing Prod Manifest
 on: 
   - pull_request
 
-env:
-  KUBECTL_VERSION: 1.23.6
-
 jobs:
   testing_manifest:
     runs-on: ubuntu-latest
@@ -14,12 +11,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
-      - name: Install kubectl
-        run: |
-          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          mv kubectl /usr/local/bin/
-          kubectl version --client
+      # We are using this to install kubectl in this case
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
 
       - name: Add fake .env
         run: |
