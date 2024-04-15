@@ -45,12 +45,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      - name: Install kubectl
-        run: |
-          curl -LO https://dl.k8s.io/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          mv kubectl /usr/local/bin/
-          kubectl version --client
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
 
       - name: Run manifest build
         run: |
@@ -67,7 +66,8 @@ jobs:
 
       - name: Apply changes
         run: |
-          ./scripts/applyKube.sh env/production --kubeconfig=/home/runner/.kube/config
+          kubectl get nodes
+          # ./scripts/applyKube.sh env/production --kubeconfig=/home/runner/.kube/config
 
       - name: Check for env changes
         working-directory: env/production
@@ -77,11 +77,11 @@ jobs:
           echo "::add-mask::$DIFF"
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
 
-      - name: Update parameter store environment variable
-        if: env.ENV_DIFF != '0' # Only update secrets when changes detected
-        working-directory: env/production
-        run: |
-          aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value file://.env --tier "Intelligent-Tiering" --overwrite
+      # - name: Update parameter store environment variable
+      #   if: env.ENV_DIFF != '0' # Only update secrets when changes detected
+      #   working-directory: env/production
+      #   run: |
+      #     aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value file://.env --tier "Intelligent-Tiering" --overwrite
 
       - name: Deploy lambda
         uses: ./.github/actions/update-lambda-function
@@ -129,8 +129,8 @@ jobs:
           log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
 
 
-      - name: Notify Slack channel if this job failed
-        if: ${{ failure() }}
-        run: |
-          json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
-          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+      # - name: Notify Slack channel if this job failed
+      #   if: ${{ failure() }}
+      #   run: |
+      #     json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
+      #     curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
