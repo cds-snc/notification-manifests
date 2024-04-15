@@ -14,7 +14,7 @@ env:
 
 jobs:
   helmfile-diff:
-    runs-on: ubuntu-latest
+    runs-on: github-arc-ss-production
     steps:
 
       - name: Inject token authentication
