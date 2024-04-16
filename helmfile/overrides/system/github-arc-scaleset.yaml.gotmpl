@@ -12,5 +12,5 @@ template:
     - name: runner
       command: 
         - /home/runner/run.sh
-      image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:bootstrap
+      image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:{{ env "ARC_DOCKER_TAG" | default "latest" }}
       imagePullPolicy: Always

@@ -1,0 +1,75 @@
+name: Staging - Helmfile Apply ${{ github.event.inputs.app }} - ${{ github.event.inputs.tag }}
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'Application to rollout'
+        required: true
+      selector:
+        description: 'Selector for helmfile'
+        required: true
+      tag:
+        description: 'Tag to rollout'
+        default: 'latest'
+        required: false
+  repository_dispatch:
+    types: [webhook]
+    inputs:
+      app:
+        description: 'Application to rollout'
+        required: true
+      tag:
+        description: 'Tag to rollout'
+        default: 'latest'
+        required: false
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
+  STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
+  DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-admin
+
+jobs:
+  rollout:
+    runs-on: github-arc-ss-staging
+    name: Rollout on EKS
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
+        id: awsconfig
+        with:
+          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          # Fetches entire history, so we can analyze commits since last tag
+          fetch-depth: 0
+
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
+
+      - name: Load EnvVars
+        run: |
+            ./helmfile/getContext.sh -g
+
+      - name: Run helmfile
+        id: helmfile_apply
+        uses: helmfile/helmfile-action@v1.0.0
+        with:
+          helmfile-args: apply --environment staging -l ${{ github.event.inputs.app }}
+
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json="{'text':'<!here> Staging - Admin Kubernetes Rollout is failing in <https://github.com/cds-snc/notification-manifests/actions/runs/${GITHUB_RUN_ID}|notification-manifests> !'}"
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

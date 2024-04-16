@@ -1,17 +1,35 @@
 #!/bin/bash
 ###################################################################################################
 # This script is used to load the necessary environment variables to run helmfile                 #
-# The single argument passed is to identify that this is being run from github as an action.      #
-# The argument can be literally anything, as the script just checks that it exists                #
-#                                                                                                 #
+# Pass the argument -g to signify that this is being run as a github action                       #
+# Pass the argument -i to load the image versions from the text file (for production)             #
 # If running locally, no arguments are required. Simply run:                                      #
 #                                                                                                 #
 # source ./getContext.sh                                                                          #
 #                                                                                                 #
 ###################################################################################################
 
+while getopts 'gih' opt; do
+  case "$opt" in
+    g)
+      echo "Starting from Github Action"
+      GITHUB=true
+      ;;
 
-GITHUB=$1
+    i)
+      echo "Loading Image Versions"
+      LOAD_IMAGE_VERSIONS=true
+      ;;
+ 
+    ?|h)
+      echo "Usage: $(basename $0) [-g] [-i]"
+      exit 1
+      ;;
+  esac
+done
+shift "$(($OPTIND -1))"
+
+
 getValue()
 {
     VALUE=$1
@@ -27,7 +45,17 @@ getValue()
     fi
 }
 
+loadImageVersions()
+{
+  export ARC_DOCKER_TAG=$(cat image_versions.json | jq -r .github_arc)
+}
+
 getValue "AWS_ACCOUNT_ID"
 getValue "NGINX_TARGET_GROUP_ARN"
 getValue "INTERNAL_DNS_FQDN"
 getValue "GITHUB_ARC_RUNNER_REPOSITORY_URL"
+
+if [ -z $GITHUB ];
+then
+    loadImageVersions
+fi
