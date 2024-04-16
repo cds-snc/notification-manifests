@@ -38,7 +38,7 @@ jobs:
           kubectl config rename-context arn:aws:eks:ca-central-1:$PRODUCTION_AWS_ACCOUNT:cluster/notification-canada-ca-production-eks-cluster production
       - name: Load EnvVars
         run: |
-            ./helmfile/getContext.sh true
+            ./helmfile/getContext.sh -g
       - name: Run helmfile
         id: helmfile_apply
         uses: helmfile/helmfile-action@v1.0.0
