@@ -5,5 +5,5 @@ resources:
   - ipv4-deployment.yaml
   - ipv4-service.yaml
   - metrics-server.yaml
-  - priority-classes.yaml
+  
   

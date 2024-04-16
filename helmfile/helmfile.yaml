@@ -16,8 +16,22 @@ repositories:
   url: https://aws.github.io/secrets-store-csi-driver-provider-aws
 - name: stakater 
   url: https://stakater.github.io/stakater-charts
+- name: deliveryhero
+  url: https://charts.deliveryhero.io/
 
 releases:
+
+  - name: priority-classes
+    namespace: kube-system
+    labels:
+      app: priority-classes
+      tier: main
+      category: system
+      step: 0
+    chart: deliveryhero/priority-class
+    version: 0.1.1
+    values:
+    - ./overrides/system/priority-classes.yaml.gotmpl
 
   - name: ingress
     namespace: nginx
