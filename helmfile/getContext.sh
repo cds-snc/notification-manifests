@@ -2,7 +2,7 @@
 ###################################################################################################
 # This script is used to load the necessary environment variables to run helmfile                 #
 # Pass the argument -g to signify that this is being run as a github action                       #
-# Pass teh argument -i to load the image versions from the text file (for production)             #
+# Pass the argument -i to load the image versions from the text file (for production)             #
 # If running locally, no arguments are required. Simply run:                                      #
 #                                                                                                 #
 # source ./getContext.sh                                                                          #
