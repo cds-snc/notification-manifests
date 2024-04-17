@@ -1,0 +1,13 @@
+# Celery
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-scalable
+  name:  celery-scalable
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        karpenter.sh/capacity-type: spot    
