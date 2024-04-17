@@ -32,6 +32,11 @@ jobs:
         with:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster   
@@ -39,11 +44,6 @@ jobs:
       - name: Load EnvVars
         run: |
             ./helmfile/getContext.sh -g
-      - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@v2.0.0
-        with:
-          install-kubectl: no
-          install-helm: yes
       - name: Helmfile Diff
         id: helmfile_diff
         run: |
