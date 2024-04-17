@@ -1,6 +1,7 @@
 name: Production - Helmfile Apply
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
