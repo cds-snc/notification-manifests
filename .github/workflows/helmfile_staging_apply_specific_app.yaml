@@ -1,4 +1,5 @@
-name: Staging - Helmfile Apply ${{ github.event.inputs.app }} - ${{ github.event.inputs.tag }}
+name: Staging - Helmfile Apply Individual
+run-name: Staging - Helmfile Apply Individual ${{ github.event.inputs.app }} - ${{ github.event.inputs.tag }}
 on:
   workflow_dispatch:
     inputs:
