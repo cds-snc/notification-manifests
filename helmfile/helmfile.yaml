@@ -33,19 +33,6 @@ releases:
     values:
     - ./overrides/system/priority-classes.yaml.gotmpl
 
-  - name: ingress
-    namespace: nginx
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: nginx
-      tier: main
-      category: system
-      step: 5
-    chart: charts/nginx-ingress
-    values:
-    - ./overrides/system/nginx.yaml.gotmpl
-
   - name: secrets-store-csi-driver
     namespace: kube-system
     labels:
@@ -70,18 +57,6 @@ releases:
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
     
-  - name: blazer
-    namespace: tools
-    labels:
-      app: blazer
-      tier: front
-      category: tools
-      step: 3
-    chart: stakater/application
-    version: 2.3.2
-    values:
-    - ./overrides/tools/blazer.yaml.gotmpl
-
   - name: github-arc
     namespace: github-arc-controller
     labels:
@@ -101,9 +76,33 @@ releases:
       app: arc
       tier: scaleset
       category: system
-      step: 4
+      step: 2
     chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
     version: 0.8.2
     values:
     - ./overrides/system/github-arc-scaleset.yaml.gotmpl
 
+  - name: blazer
+    namespace: tools
+    labels:
+      app: blazer
+      tier: front
+      category: tools
+      step: 3
+    chart: stakater/application
+    version: 2.3.2
+    values:
+    - ./overrides/tools/blazer.yaml.gotmpl
+
+  - name: ingress
+    namespace: nginx
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: nginx
+      tier: main
+      category: system
+      step: 4
+    chart: charts/nginx-ingress
+    values:
+    - ./overrides/system/nginx.yaml.gotmpl
