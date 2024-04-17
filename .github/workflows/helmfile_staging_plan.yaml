@@ -1,7 +1,8 @@
 name: Staging - Helmfile Diff
 
 on: 
-  - pull_request
+  workflow_dispatch:
+  pull_request:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
