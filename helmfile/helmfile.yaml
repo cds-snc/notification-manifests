@@ -70,7 +70,18 @@ releases:
     version: 0.3.5
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
-    
+
+  - name: kube-state-metrics
+    namespace: kube-system
+    labels:
+      app: kube-system
+      tier: full
+      category: system
+    chart: prometheus-community/kube-state-metrics
+    version: 5.18.1
+    values:
+    - ./overrides/system/kube-state-metrics.yaml.gotmpl
+
   - name: blazer
     namespace: tools
     labels:
