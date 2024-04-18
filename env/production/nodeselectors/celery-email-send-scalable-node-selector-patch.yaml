@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-email-send-scalable
+  name:  celery-email-send-scalable
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        karpenter.sh/capacity-type: spot    

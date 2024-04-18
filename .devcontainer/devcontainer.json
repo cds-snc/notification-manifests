@@ -37,7 +37,8 @@
 		"usernamehw.errorlens",
 		"visualstudioexptteam.vscodeintellicode",
 		"yzhang.markdown-all-in-one",
-		"github.copilot"
+		"github.copilot",
+		"karyan40024.gotmpl-syntax-highlighter"
 	],
 	"postCreateCommand": "notify-dev-entrypoint.sh",
 	"remoteUser": "vscode",

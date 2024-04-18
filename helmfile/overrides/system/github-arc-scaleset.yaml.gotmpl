@@ -1,5 +1,6 @@
 githubConfigSecret: github-arc
 githubConfigUrl: https://github.com/cds-snc/notification-manifests
+maxRunners: 20
 controllerServiceAccount:
    namespace: github-arc-controller
    name: github-arc-gha-rs-controller
@@ -11,5 +12,10 @@ template:
     - name: runner
       command: 
         - /home/runner/run.sh
-      image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:bootstrap
+      {{ if eq .Environment.Name "production" }}
+      image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:{{ env "ARC_DOCKER_TAG" | default "latest" }}
+      {{ else }}
+      image: {{ requiredEnv "GITHUB_ARC_RUNNER_REPOSITORY_URL" }}:{{ env "DOCKER_TAG" | default "latest" }}
+      {{ end }}
+
       imagePullPolicy: Always
