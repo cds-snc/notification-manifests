@@ -1,10 +1,13 @@
+{{ if .Values.pdb.enabled -}}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: documentation-pdb
-  namespace: notification-canada-ca
+  name: {{ include "notify-documentation.fullname" . }}
+  labels:
+    {{- include "notify-documentation.labels" . | nindent 4 }}
 spec:
-  minAvailable: 1
+  minAvailable: {{ .Values.pdb.minAvailable }}
   selector:
     matchLabels:
-      app: documentation
+      {{- include "notify-documentation.selectorLabels" . | nindent 4 }}
+{{- end }}      
