@@ -1,4 +1,5 @@
 environments:
+  pond:
   scratch:
   dev:
   staging:
@@ -17,6 +18,16 @@ repositories:
   url: https://stakater.github.io/stakater-charts
 
 releases:
+
+  - name: notify-documentation
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: notify-documentation
+      tier: frontend
+      category: documentation
+    chart: charts/notify-documentation
+    values:
+    - ./overrides/notify/documentation.yaml.gotmpl
 
   - name: notify-api
     namespace: notify-{{ .Environment.Name }}
