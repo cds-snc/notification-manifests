@@ -58,7 +58,7 @@ spec:
             - name: NEW_RELIC_MONITOR_MODE
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: NOTIFY_ENVIRONMENT
-              value: '$(ENVIRONMENT)'
+              value: 'dev'
           resources:
             requests:
               cpu: "100m"

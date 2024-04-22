@@ -148,7 +148,7 @@ spec:
             httpGet:
               path: /_status?simple=true
               port: 6012
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 3
@@ -157,7 +157,7 @@ spec:
             httpGet:
               path: "/_status?simple=true"
               port: 6012
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 1
