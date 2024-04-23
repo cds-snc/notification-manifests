@@ -1,0 +1,31 @@
+#  APPLICATION CONFIG
+baseURL: {{ requiredEnv "BASE_DOMAIN" }}
+docDownloadApiHost: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-notify-api
+
+# ENVIRONMENT SPECIFIC 
+# DEV
+{{ if eq .Environment.Name "dev" }}
+apiHostName: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
+image: 
+  tag:  {{ env "DOCKER_TAG" | default "latest" }}
+# STAGING
+{{ else if eq .Environment.Name "staging" }}
+apiHostName: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
+image: 
+  tag:  {{ env "DOCKER_TAG" | default "latest" }}
+# PRODUCTION
+{{ else if eq .Environment.Name "production" }}
+apiHostName: https://api.{{ requiredEnv "BASE_DOMAIN" }}
+image: 
+  tag:  {{ env "API_DOCKER_TAG" | default "latest" }}
+{{ else }}
+# OTHER
+apiHostName: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
+image: 
+  tag:  {{ env "DOCKER_TAG" | default "latest" }}
+{{ end }}
+

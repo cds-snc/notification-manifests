@@ -1,0 +1,569 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "notify.fullname" . }}
+  labels:
+    {{- include "notify.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  priorityClassName: {{ .Values.priorityClassName }}
+  strategy:
+    {{ toYaml .Values.updateStrategy | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "notify.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "notify.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "notify.serviceAccountName" . }}
+      dnsPolciy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-postgres
+          image: alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "until nslookup {{ .Values.postgresHost }}; do echo waiting for postgres; sleep 2; done;",
+            ]
+        - name: migrate-db
+          image: api
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true   
+          env:
+            - name: ADMIN_BASE_URL
+              value: https://{{ .Values.BaseDomain }}
+            - name: ADMIN_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ADMIN_CLIENT_SECRET
+            - name: ALLOW_DEBUG_ROUTE
+              {{ if eq .Values.env "production" }}
+              value: "false"
+              {{ else }}
+              value: "true"
+              {{ end }}       
+            - name: ASSET_UPLOAD_BUCKET_NAME
+              value: notification-canada-ca-{{.Values.env}}-asset-upload
+            - name: ASSET_DOMAIN
+              {{ if eq .Values.env "production" }}
+              value: https:/assets.notification.canada.ca
+              {{ else }}
+              value: https://assets.{{ .Values.env }}.notification.cdssandbox.xyz
+              {{ end }}  
+            - name: AWS_ROUTE53_ZONE
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_ROUTE53_ZONE
+            - name: AWS_SES_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_SES_REGION
+            - name: AWS_SES_SMTP
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_SES_SMTP
+            - name: AWS_SES_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_SES_ACCESS_KEY
+            - name: AWS_SES_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_SES_SECRET_KEY
+            - name: BATCH_INSERTION_CHUNK_SIZE
+              value: '10'
+            - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+            - name: CRM_ORG_LIST_URL
+              value: https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json
+            - name: CSV_UPLOAD_BUCKET_NAME
+              value: notification-canada-ca-{{.Values.env}}-csv-upload
+            {{ if not (eq .Values.env "production") }}
+            - name: DEBUG_KEY
+              valueFrom:
+                secretKeyRef:
+                name: notify-api
+                  key: DEBUG_KEY
+            {{ end }}
+            - name: DANGEROUS_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: DANGEROUS_SALT
+            - name: DOCUMENT_DOWNLOAD_API_HOST
+              value: {{ .Values.docDownloadApiHost }}
+            - name: DOCUMENTATION_DOMAIN
+              value: 'documentation.{{ .Values.baseDomain }}'
+            - name: FF_SALESFORCE_CONTACT
+              value: "true"
+            - name: FF_SPIKE_SMS_DAILY_LIMIT
+              value: "true"
+            - name: FF_SMS_PARTS_UI
+              value: "false"
+            - name: FIDO2_DOMAIN
+              value: {{ .Values.baseDomain }}
+            - name: FLASK_APP
+              value: application.py
+            - name: NOTIFY_EMAIL_DOMAIN
+              value: {{ .Values.baseDomain }}
+            - name: NOTIFY_ENVIRONMENT
+              value: {{.Values.env}}
+            - name: NOTIFICATION_QUEUE_PREFIX
+              value: "eks-notification-canada-ca"
+            - name: REDIS_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: REDIS_URL
+            - name: REDIS_PUBLISH_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: REDIS_PUBLISH_URL
+            - name: REDIS_ENABLED
+              value: "1"
+            - name: SALESFORCE_DOMAIN
+              value: "login"
+            - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+            - name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+            - name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+            - name: SALESFORCE_GENERIC_ACCOUNT_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_GENERIC_ACCOUNT_ID                      
+            - name: SALESFORCE_PASSWORD
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_PASSWORD   
+            - name: SALESFORCE_SECURITY_TOKEN
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_SECURITY_TOKEN   
+            - name: SALESFORCE_USERNAME
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_USERNAME                 
+            - name: SECRET_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SECRET_KEY
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SENDGRID_API_KEY
+            - name: SQLALCHEMY_DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: SQLALCHEMY_DATABASE_URI
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: TWILIO_ACCOUNT_SID
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: TWILIO_ACCOUNT_SID
+            - name: TWILIO_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: TWILIO_AUTH_TOKEN
+            - name: TWILIO_FROM_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: TWILIO_FROM_NUMBER
+            - name: AWS_US_TOLL_FREE_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_US_TOLL_FREE_NUMBER
+            - name: NEW_RELIC_MONITOR_MODE
+              value: "true"
+            - name: ZENDESK_SELL_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ZENDESK_SELL_API_URL
+            - name: ZENDESK_SELL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ZENDESK_SELL_API_KEY
+            - name: ZENDESK_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ZENDESK_API_URL
+            - name: ZENDESK_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ZENDESK_API_KEY
+
+          command:
+            [
+              "sh",
+              "-c",
+              "flask db upgrade",
+            ]
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ADMIN_BASE_URL
+              value: {{ .Values.baseDomain }}
+            - name: ADMIN_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ADMIN_CLIENT_SECRET
+            - name: ALLOW_HTML_SERVICE_IDS
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ALLOW_HTML_SERVICE_IDS        
+            - name: API_HOST_NAME
+              value: {{ .Values.apiHostName }}
+            - name: ASSET_UPLOAD_BUCKET_NAME
+              value: notification-canada-ca-{{.Values.env}}-asset-upload
+            - name: ASSET_DOMAIN
+              {{ if eq .Values.env "production" }}
+              value: https:/assets.notification.canada.ca
+              {{ else }}
+              value: https://assets.{{ .Values.env }}.notification.cdssandbox.xyz
+              {{ end }}  
+            - name: AWS_PINPOINT_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_PINPOINT_REGION
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_REGION
+            - name: AWS_ROUTE53_ZONE
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_ROUTE53_ZONE
+            - name: AWS_SES_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_SES_REGION
+            - name: AWS_SES_SMTP
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_SES_SMTP
+            - name: AWS_SES_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_SES_ACCESS_KEY
+            - name: AWS_SES_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_SES_SECRET_KEY
+            - name: BATCH_INSERTION_CHUNK_SIZE
+              value: '10'
+            - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+            - name: CRM_ORG_LIST_URL
+              value: https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json
+            - name: CSV_UPLOAD_BUCKET_NAME
+              value: notification-canada-ca-{{.Values.env}}-csv-upload
+            - name: DANGEROUS_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: DANGEROUS_SALT
+            - name: DOCUMENT_DOWNLOAD_API_HOST
+              value: 'http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000'
+            - name: FF_SALESFORCE_CONTACT
+              value: "true"
+            - name: FF_SPIKE_SMS_DAILY_LIMIT
+              value: "true"
+            - name: FIDO2_DOMAIN
+              value: {{ .Values.baseDomain }}
+            - name: NOTIFY_EMAIL_DOMAIN
+              value: {{ .Values.baseDomain }}
+            - name: FRESH_DESK_API_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: FRESH_DESK_API_URL
+            - name: FRESH_DESK_API_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: FRESH_DESK_API_KEY
+            - name: FRESH_DESK_PRODUCT_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: FRESH_DESK_PRODUCT_ID
+            - name: HC_EN_SERVICE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: HC_EN_SERVICE_ID
+            - name: HC_FR_SERVICE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: HC_FR_SERVICE_ID
+            - name: NOTIFY_ENVIRONMENT
+              value: {{ .Values.env }}
+            - name: NOTIFICATION_QUEUE_PREFIX
+              value: "eks-notification-canada-ca"
+            - name: REDIS_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: REDIS_URL
+            - name: REDIS_PUBLISH_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: REDIS_PUBLISH_URL
+            - name: REDIS_ENABLED
+              value: "1"
+            - name: SALESFORCE_DOMAIN
+              value: "login"
+            - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_ENGAGEMENT_PRODUCT_ID
+            - name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_ENGAGEMENT_RECORD_TYPE
+            - name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+            - name: SALESFORCE_GENERIC_ACCOUNT_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_GENERIC_ACCOUNT_ID                      
+            - name: SALESFORCE_PASSWORD
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_PASSWORD   
+            - name: SALESFORCE_SECURITY_TOKEN
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_SECURITY_TOKEN   
+            - name: SALESFORCE_USERNAME
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SALESFORCE_USERNAME                 
+            - name: SECRET_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SECRET_KEY
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SENDGRID_API_KEY
+            - name: SQLALCHEMY_DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: SQLALCHEMY_DATABASE_URI
+            - name: SQLALCHEMY_DATABASE_READER_URI
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: SQLALCHEMY_DATABASE_READER_URI
+            - name: SQLALCHEMY_POOL_SIZE
+              value: "256"
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: SRE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: SRE_CLIENT_SECRET
+            - name: TWILIO_ACCOUNT_SID
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: TWILIO_ACCOUNT_SID
+            - name: TWILIO_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: TWILIO_AUTH_TOKEN
+            - name: TWILIO_FROM_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: TWILIO_FROM_NUMBER
+            - name: AWS_US_TOLL_FREE_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: AWS_US_TOLL_FREE_NUMBER
+            - name: SENTRY_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-api
+                    key: SENTRY_URL
+            - name: NEW_RELIC_APP_NAME
+              value: notification-api-{{ .Values.env }}
+            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+              value: "true"
+            - name: NEW_RELIC_LICENSE_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: NEW_RELIC_LICENSE_KEY
+            - name: NEW_RELIC_MONITOR_MODE
+              value: "true"
+            - name: ZENDESK_SELL_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ZENDESK_SELL_API_URL
+            - name: ZENDESK_SELL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ZENDESK_SELL_API_KEY
+            - name: ZENDESK_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ZENDESK_API_URL
+            - name: ZENDESK_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: ZENDESK_API_KEY
+            - name: FF_CLOUDWATCH_METRICS_ENABLED
+              value: "true"
+            - name: FF_BOUNCE_RATE_V1
+              value: "false"
+            - name: FF_BOUNCE_RATE_BACKEND
+              value: "false"
+          {{ if .Values.secretProviderClass.enabled}}    
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true          
+          {{ end }}   
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /_status?simple=true
+              port: 6011
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: "/_status?simple=true"
+              port: 6011
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{ if .Values.secretProviderClass.enabled}}    
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "notify.fullname" . }}
+      {{ end }}                   
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

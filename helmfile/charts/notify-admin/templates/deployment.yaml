@@ -1,0 +1,264 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "notify.fullname" . }}
+  labels:
+    {{- include "notify.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  priorityClassName: {{ .Values.priorityClassName }}
+  strategy:
+    {{ toYaml .Values.updateStrategy | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "notify.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "notify.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "notify.serviceAccountName" . }}
+      dnsPolciy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-postgres
+          image: alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "until nc -z -w 2 {{ .Values.apiURL }} 443; do echo waiting for api; sleep 2; done"
+            ]
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ADMIN_BASE_URL
+              value: https://{{ .Values.baseDomain}}
+            - name: ADMIN_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: ADMIN_CLIENT_SECRET
+            - name: ALLOW_DEBUG_ROUTE
+              value: {{ .Values.allowDebugRoute | quote }}
+            - name: ALLOW_HTML_SERVICE_IDS
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: ALLOW_HTML_SERVICE_IDS
+            - name: API_HOST_NAME
+              value: https://{{ .Values.apiURL }}
+            - name: ASSET_UPLOAD_BUCKET_NAME
+              value: .Values.assetUploadBucketName
+            - name: ASSET_DOMAIN
+              value: https://assets.{{ .Values.baseDomain }}
+            - name: AWS_REGION
+              value: {{ .Values.awsRegion }}
+            - name: BULK_SEND_AWS_BUCKET
+              value: notification-canada-ca-{{ .Values.env }}-bulk-send
+            - name: BULK_SEND_TEST_SERVICE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: BULK_SEND_TEST_SERVICE_ID
+            - name: CONTACT_EMAIL
+              value: "notification-ops@cds-snc.ca"
+            - name: CSV_UPLOAD_BUCKET_NAME
+              value: notification-canada-ca-{{ .Values.env }}-csv-upload
+            - name: DANGEROUS_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: DANGEROUS_SALT
+            - name: DOCUMENTATION_DOMAIN
+              value: https://documentation.{{ .Values.baseDomain }}
+            - name: HC_EN_SERVICE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: HC_EN_SERVICE_ID
+            - name: HC_FR_SERVICE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: HC_FR_SERVICE_ID
+            - name: FF_SPIKE_SMS_DAILY_LIMIT
+              value: "true"
+            - name: FF_SMS_PARTS_UI
+              value: "false"
+            - name: FLASK_APP
+              value: application.py
+            - name: NOTIFY_ENVIRONMENT
+              value: {{ .Values.env}}
+            - name: MIXPANEL_PROJECT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: MIXPANEL_PROJECT_TOKEN
+            - name: SENDING_DOMAIN
+              value: https://{{ .Values.baseDomain }}
+            - name: SENSITIVE_SERVICES
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: SENSITIVE_SERVICES
+            - name: SQLALCHEMY_DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: SQLALCHEMY_DATABASE_URI
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: REDIS_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: REDIS_URL
+            - name: REDIS_PUBLISH_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: REDIS_PUBLISH_URL
+            - name: REDIS_ENABLED
+              value: "1"
+            - name: SECRET_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: SECRET_KEY
+            - name: SENTRY_URL
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: SENTRY_URL
+            - name: SHOW_STYLEGUIDE
+              value: "true"
+            - name: NEW_RELIC_APP_NAME
+              value: notification-admin-{{ .Values.env }}
+            - name: NEW_RELIC_CONFIG_FILE
+              value: '/app/newrelic.ini'
+            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+              value: "true"
+            - name: NEW_RELIC_LICENSE_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: NEW_RELIC_LICENSE_KEY
+            - name: NEW_RELIC_MONITOR_MODE
+              value: "true"
+            - name: IP_GEOLOCATE_SERVICE
+              value: {{ .Values.ipGeolocateService }}
+            - name: GC_ARTICLES_API
+              value: articles.alpha.canada.ca/notification-gc-notify
+            - name: GC_ARTICLES_API_AUTH_USERNAME
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: GC_ARTICLES_API_AUTH_USERNAME
+            - name: GC_ARTICLES_API_AUTH_PASSWORD
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: GC_ARTICLES_API_AUTH_PASSWORD
+            - name: WAF_SECRET
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: WAF_SECRET
+            - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+            - name: CRM_ORG_LIST_URL
+              value: {{ .Values.crmOrgListURL }}
+            - name: FF_SALESFORCE_CONTACT
+              value: "true"
+            - name: FF_BOUNCE_RATE_V1
+              value: "true"
+            - name: FF_BOUNCE_RATE_V15
+              value: "true"
+            - name: FF_ABTEST_SERVICE_ID
+              valueFrom:
+                  secretKeyRef:
+                    name: notify-admin
+                    key: FF_ABTEST_SERVICE_ID
+            - name: FF_NEW_BRANDING
+              value: "true"
+            {{ if .Values.allowDebugRoute }}
+            - name: DEBUG_KEY
+              valueFrom:
+                 secretKeyRef:
+                    name: notify-admin
+                    key: DEBUG_KEY
+            {{ end }}
+          {{ if .Values.secretProviderClass.enabled}}    
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true          
+          {{ end }}   
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /_status?simple=true
+              port: 6012
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 3
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: "/_status?simple=true"
+              port: 6012
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{ if .Values.secretProviderClass.enabled}}    
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "notify.fullname" . }}
+      {{ end }}                   
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

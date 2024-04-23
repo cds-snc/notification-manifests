@@ -35,27 +35,43 @@ getValue()
     VALUE=$1
     if [ -z $GITHUB ];
     then
+      echo "Fetching Secret $VALUE"
       export $VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text)      
     else
       echo "$VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text)" >> "$GITHUB_ENV"
-    fi
-    if [ $? != 0 ]; then
-        echo -e "ERROR: Get Secret Failed. Halting."
-        exit 1
     fi
 }
 
 loadImageVersions()
 {
-  export ARC_DOCKER_TAG=$(cat image_versions.json | jq -r .github_arc)
+  export ADMIN_DOCKER_TAG=$(cat image_versions.json | jq -r .admin)
+  export API_DOCKER_TAG=$(cat image_versions.json | jq -r .api)
+  export ARC_RUNER_DOCKER_TAG=$(cat image_versions.json | jq -r .github_arc_runner)
+  export BLAZER_DOCKER_TAG=$(cat image_versions.json | jq -r .blazer)
+  export CERT_MANAGER_DOCKER_TAG=$(cat image_versions.json | jq -r .cert_manager)
+  export CLOUDWATCH_AGENT_DOCKER_TAG=$(cat image_versions.json | jq -r .cloudwatch_agent)
+  export DOCUMENT_DOWNLOAD_DOCKER_TAG=$(cat image_versions.json | jq -r .document_download)
+  export DOCUMENTATION_DOCKER_TAG=$(cat image_versions.json | jq -r .documentation)
+  export FLUENTBIT_DOCKER_TAG=$(cat image_versions.json | jq -r .fluentbit)
+  export GITHUB_ARC_CONTROLLER_DOCKER_TAG=$(cat image_versions.json | jq -r .github_arc_controller)
+  export HASURA_DOCKER_TAG=$(cat image_versions.json | jq -r .hasura)
+  export IPV4_DOCKER_TAG=$(cat image_versions.json | jq -r .ipv4)
+  export K8S_EVENT_LOGGER_DOCKER_TAG=$(cat image_versions.json | jq -r .k8s_event_logger)
+  export KARPENTER_DOCKER_TAG=$(cat image_versions.json | jq -r .karpenter)
+  export NGINX_DOCKER_TAG=$(cat image_versions.json | jq -r .nginx)
+  
 }
 
 getValue "AWS_ACCOUNT_ID"
 getValue "NGINX_TARGET_GROUP_ARN"
 getValue "INTERNAL_DNS_FQDN"
 getValue "GITHUB_ARC_RUNNER_REPOSITORY_URL"
+getValue "ADMIN_TARGET_GROUP_ARN"
+getValue "AWS_REGION"
+getValue "BASE_DOMAIN"
 
-if [ -z $GITHUB ];
+if [ "$LOAD_IMAGE_VERSIONS" = true ];
 then
     loadImageVersions
 fi
+
