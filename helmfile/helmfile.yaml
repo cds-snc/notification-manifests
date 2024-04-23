@@ -18,7 +18,7 @@ repositories:
   url: https://stakater.github.io/stakater-charts
 
 releases:
-{{ if .Environment.Name == "dev" }}
+{{ if eq .Environment.Name "dev" }}
   - name: notify-documentation
     namespace: notify-{{ .Environment.Name }}
     labels:
