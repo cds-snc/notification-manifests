@@ -18,7 +18,7 @@ repositories:
   url: https://stakater.github.io/stakater-charts
 
 releases:
-
+{{ if .Environment.Name == "dev" }}
   - name: notify-documentation
     namespace: notify-{{ .Environment.Name }}
     labels:
@@ -48,6 +48,8 @@ releases:
     chart: charts/notify-admin
     values:
     - ./overrides/notify/admin.yaml.gotmpl
+
+{{ end }}
 
   - name: ingress
     namespace: nginx
