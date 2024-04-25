@@ -1,0 +1,13 @@
+# Notify Admin
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cert-manager-webhook
+  name:  cert-manager-webhook
+  namespace: cert-manager
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND

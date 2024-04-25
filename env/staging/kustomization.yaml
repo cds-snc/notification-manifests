@@ -47,7 +47,9 @@ patches:
 - path: performance/celery-sms-send-scalable-hpa-patch.yaml
 - path: performance/document-download-api-hpa-patch.yaml
 - path: performance/documentation-deployment-patch.yaml
-
+- path: nodeselectors/cert-manager.yaml
+- path: nodeselectors/cert-manager-cainjector.yaml
+- path: nodeselectors/cert-manager-webhook.yaml
 
 - path: services/admin-service-patch.yaml
 - path: services/api-service-patch.yaml
