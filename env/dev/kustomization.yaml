@@ -70,6 +70,9 @@ patches:
 - path: nodeselectors/celery-sms-send-scalable-node-selector-patch.yaml
 - path: nodeselectors/document-download-api-node-selector-patch.yaml
 - path: nodeselectors/documentation-node-selector-patch.yaml
+- path: nodeselectors/cert-manager.yaml
+- path: nodeselectors/cert-manager-cainjector.yaml
+- path: nodeselectors/cert-manager-webhook.yaml
 
 - path: celery-init-delete/celery-email-send-primary-init-delete-patch.yaml
 - path: celery-init-delete/celery-email-send-scalable-init-delete-patch.yaml
