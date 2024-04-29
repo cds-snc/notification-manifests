@@ -1,0 +1,26 @@
+settings:
+  clusterName: notification-canada-ca-dev-eks-cluster
+nodePool:
+  name: notify-karpenter
+  annotations: {}
+  zones: "['ca-central-1a', 'ca-central-1b', 'ca-central-1c', 'ca-central-1d']"
+  instanceCategories: "['m', 'r']"
+  instanceFamily: "['m5', 'r5']"
+  instanceCPU: "['2', '4']"
+  capacityTypes: ["spot"]
+  disruption:
+    consolidationPolicy: WhenEmpty
+    consolidateAfter: 30s
+    expireAfter: 720h
+    budgets:
+      - nodes: 10%
+  limits:
+    cpu: "1000"
+    memory: "1000Gi"
+  weight: 10
+nodeClass:
+  name: notify-karpenter
+  roleName: eks-worker-role
+  amiFamily: AL2
+  amiSelectorTerms:
+    - id: "ami-02aa678d778b79aea"

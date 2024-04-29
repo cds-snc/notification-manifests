@@ -49,6 +49,36 @@ releases:
     values:
     - ./overrides/notify/admin.yaml.gotmpl
 
+  - name: karpenter-crd
+    namespace: karpenter
+    labels:
+      app: karpenter
+      tier: crd
+      category: system
+    chart: oci://public.ecr.aws/karpenter/karpenter-crd
+    version: 0.36.1
+
+  - name: karpenter
+    namespace: karpenter
+    labels:
+      app: karpenter
+      tier: main
+      category: system
+    chart: oci://public.ecr.aws/karpenter/karpenter
+    version: 0.36.1
+    values:
+    - ./overrides/system/karpenter.yaml.gotmpl
+
+  - name: karpenter-nodepool
+    namespace: karpenter
+    labels:
+      app: karpenter
+      tier: nodepool
+      category: system
+    chart: charts/karpenter-nodepool
+    values:
+    - ./overrides/system/karpenter.yaml.gotmpl
+
 {{ end }}
 
   - name: ingress
