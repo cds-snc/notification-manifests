@@ -66,13 +66,13 @@ patches:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:41bb3c3
+    newName: public.ecr.aws/cds-snc/notify-admin:1eec27f
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:6b24be4
+    newName: public.ecr.aws/cds-snc/notify-api:5b29366
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:7232606
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:fbfa994
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:910f947
+    newName: public.ecr.aws/cds-snc/notify-documentation:1bcacd9
 configMapGenerator:
   - name: application-config
     env: .env
