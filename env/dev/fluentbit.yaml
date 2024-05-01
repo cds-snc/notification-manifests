@@ -219,7 +219,7 @@ data:
     [FILTER]
         Name                aws
         Match               dataplane.*
-        imds_version        v1
+        imds_version        v2
 
     [OUTPUT]
         Name                cloudwatch_logs
@@ -267,7 +267,7 @@ data:
     [FILTER]
         Name                aws
         Match               host.*
-        imds_version        v1
+        imds_version        v2
 
     [OUTPUT]
         Name                cloudwatch_logs
