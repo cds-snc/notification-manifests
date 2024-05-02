@@ -41,9 +41,11 @@ jobs:
       - name: Helmfile Diff
         id: helmfile_diff
         run: |
+          pushd helmfile
           echo 'var<<EOF' >> $GITHUB_OUTPUT
           helmfile --environment staging diff >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
+          popd
       - name: Helmfile Diff Comment
         uses: mshick/add-pr-comment@v2
         with:
