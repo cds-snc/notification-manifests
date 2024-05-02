@@ -46,9 +46,9 @@ jobs:
       - name: Load EnvVars
         run: |
             ./helmfile/getContext.sh -g
-      - name: Run helmfile
+      - name: Helmfile apply
         id: helmfile_apply
-        uses: helmfile/helmfile-action@v1.0.0
-        with:
-          helmfile-args: apply --environment production
-          helmfile-workdirectory: ${{ github.workspace }}/helmfile
+        run: |
+          pushd helmfile
+          helmfile --environment staging apply
+          popd
