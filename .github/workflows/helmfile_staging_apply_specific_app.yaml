@@ -57,6 +57,7 @@ jobs:
         with:
           install-kubectl: yes
           install-helm: yes
+          helmfile-version: "v0.151.0"
 
       - name: Configure kubeconfig
         run: |
@@ -70,7 +71,9 @@ jobs:
       - name: Run helmfile
         id: helmfile_apply
         run: |
+          pushd helmfile
           helmfile --environment staging -l ${{ github.event.inputs.selector }} apply
+          popd
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
