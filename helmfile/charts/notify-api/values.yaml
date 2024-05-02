@@ -8,6 +8,7 @@ baseDomain: notification.canada.ca
 env: production
 postgresHost: something
 docDownloadApiHost:  'http://document-download-api.main.svc.cluster.local:7000'
+apiHostName: 'overrideme.com'
 
 image:
   repository: public.ecr.aws/cds-snc/notify-admin
@@ -125,3 +126,4 @@ secretProviderClass:
         objectName: INTERNAL_DNS_CERT_BASE64
       secretName: nginx
       type: kubernetes.io/tls
+
