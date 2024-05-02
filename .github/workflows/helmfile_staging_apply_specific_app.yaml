@@ -71,9 +71,9 @@ jobs:
       - name: Run helmfile
         id: helmfile_apply
         run: |
-        pushd helmfile
-        helmfile --environment staging -l ${{ github.event.inputs.selector }} apply
-        popd
+          pushd helmfile
+          helmfile --environment staging -l ${{ github.event.inputs.selector }} apply
+          popd
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
