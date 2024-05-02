@@ -38,6 +38,7 @@ jobs:
         with:
           install-kubectl: yes
           install-helm: yes       
+          helmfile-version: "v0.151.0"
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster   
@@ -50,3 +51,4 @@ jobs:
         uses: helmfile/helmfile-action@v1.0.0
         with:
           helmfile-args: apply --environment production
+          helmfile-workdirectory: ${{ github.workspace }}/helmfile
