@@ -642,3 +642,17 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.SRE_CLIENT_SECRET
+  - name: AWS_PINPOINT_SC_POOL_ID
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.AWS_PINPOINT_SC_POOL_ID
+  - name: AWS_PINPOINT_SC_TEMPLATE_IDS
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.AWS_PINPOINT_SC_TEMPLATE_IDS
