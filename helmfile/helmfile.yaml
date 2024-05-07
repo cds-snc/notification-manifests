@@ -17,7 +17,7 @@ repositories:
 - name: stakater 
   url: https://stakater.github.io/stakater-charts
 - name: deliveryhero
-  url: https://charts.deliveryhero.io/
+  url: https://charts.deliveryhero.io
 
 releases:
 {{ if eq .Environment.Name "dev" }}
@@ -83,7 +83,7 @@ releases:
 
 {{ end }}
 
-    - name: priority-classes
+  - name: priority-classes
     namespace: kube-system
     labels:
       app: priority-classes
@@ -138,7 +138,7 @@ releases:
       app: arc
       tier: scaleset
       category: system
-      step: 2
+      step: 4
     chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
     version: 0.8.2
     values:
