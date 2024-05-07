@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-email-send-primary
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: wait-cwagent-ready
+          $patch: delete
