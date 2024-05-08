@@ -51,12 +51,16 @@ releases:
     values:
     - ./overrides/notify/admin.yaml.gotmpl
 
+{{ end }}
+
+{{if or (eq .Environment.Name "dev") (eq .Environment.Name "sandbox") }}
   - name: karpenter-crd
     namespace: karpenter
     labels:
       app: karpenter
       tier: crd
       category: system
+      step: 0
     chart: oci://public.ecr.aws/karpenter/karpenter-crd
     version: 0.36.1
 
@@ -66,6 +70,7 @@ releases:
       app: karpenter
       tier: main
       category: system
+      step: 1
     chart: oci://public.ecr.aws/karpenter/karpenter
     version: 0.36.1
     values:
@@ -77,6 +82,7 @@ releases:
       app: karpenter
       tier: nodepool
       category: system
+      step: 2
     chart: charts/karpenter-nodepool
     values:
     - ./overrides/system/karpenter.yaml.gotmpl
@@ -118,7 +124,7 @@ releases:
     version: 0.3.5
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
-    
+
   - name: github-arc
     namespace: github-arc-controller
     labels:
