@@ -1,0 +1,13 @@
+# Celery Beat
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-beat
+  name:  celery-beat
+  namespace: notification-canada-ca
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
