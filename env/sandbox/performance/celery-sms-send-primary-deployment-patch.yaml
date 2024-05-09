@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: celery-sms-send-primary
+  name:  celery-sms-send-primary
+  namespace: notification-canada-ca
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: celery-sms-send-primary
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "500Mi"
+          limits:
+            cpu: "550m"
+            memory: "1024Mi"      

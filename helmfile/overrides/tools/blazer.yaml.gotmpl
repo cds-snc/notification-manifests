@@ -42,7 +42,7 @@ deployment:
   image: 
     repository: {{ requiredEnv "AWS_ACCOUNT_ID" }}.dkr.ecr.ca-central-1.amazonaws.com/database-tools/blazer
     #repository: ankane/blazer
-    tag: latest
+    tag: bootstrap
   replicas: 1
   env:
     LOG_LEVEL:

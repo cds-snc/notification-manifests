@@ -1,4 +1,5 @@
 environments:
+  sandbox:
   scratch:
   dev:
   staging:
@@ -15,8 +16,20 @@ repositories:
   url: https://aws.github.io/secrets-store-csi-driver-provider-aws
 - name: stakater 
   url: https://stakater.github.io/stakater-charts
+- name: deliveryhero
+  url: https://charts.deliveryhero.io
 
 releases:
+{{ if eq .Environment.Name "dev" }}
+  - name: notify-documentation
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: notify-documentation
+      tier: frontend
+      category: documentation
+    chart: charts/notify-documentation
+    values:
+    - ./overrides/notify/documentation.yaml.gotmpl
 
   - name: notify-api
     namespace: notify-{{ .Environment.Name }}
@@ -38,16 +51,55 @@ releases:
     values:
     - ./overrides/notify/admin.yaml.gotmpl
 
-  - name: ingress
-    namespace: nginx
-    disableValidationOnInstall: true
+{{ end }}
+
+{{if or (eq .Environment.Name "dev") (eq .Environment.Name "sandbox") }}
+  - name: karpenter-crd
+    namespace: karpenter
     labels:
-      app: nginx
+      app: karpenter
+      tier: crd
+      category: system
+      step: 0
+    chart: oci://public.ecr.aws/karpenter/karpenter-crd
+    version: 0.36.1
+
+  - name: karpenter
+    namespace: karpenter
+    labels:
+      app: karpenter
       tier: main
       category: system
-    chart: charts/nginx-ingress
+      step: 1
+    chart: oci://public.ecr.aws/karpenter/karpenter
+    version: 0.36.1
     values:
-    - ./overrides/system/nginx.yaml.gotmpl
+    - ./overrides/system/karpenter.yaml.gotmpl
+
+  - name: karpenter-nodepool
+    namespace: karpenter
+    labels:
+      app: karpenter
+      tier: nodepool
+      category: system
+      step: 2
+    chart: charts/karpenter-nodepool
+    values:
+    - ./overrides/system/karpenter.yaml.gotmpl
+
+{{ end }}
+
+  - name: priority-classes
+    namespace: kube-system
+    labels:
+      app: priority-classes
+      tier: main
+      category: system
+      step: 0
+    chart: deliveryhero/priority-class
+    version: 0.1.1
+    values:
+    - ./overrides/system/priority-classes.yaml.gotmpl
 
   - name: secrets-store-csi-driver
     namespace: kube-system
@@ -55,6 +107,7 @@ releases:
       app: secrets-csi
       tier: full
       category: system
+      step: 1
     chart: secrets-store-csi-driver/secrets-store-csi-driver
     version: 1.4.1
     values:
@@ -66,6 +119,7 @@ releases:
       app: aws-secrets
       tier: full
       category: system
+      step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
     version: 0.3.5
     values:
@@ -82,23 +136,13 @@ releases:
     values:
     - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
-  - name: blazer
-    namespace: tools
-    labels:
-      app: blazer
-      tier: front
-      category: tools
-    chart: stakater/application
-    version: 2.3.2
-    values:
-    - ./overrides/tools/blazer.yaml.gotmpl
-
   - name: github-arc
     namespace: github-arc-controller
     labels:
       app: arc
       tier: operator
       category: system
+      step: 2
     chart: charts/gha-runner-scale-set-controller
     version: 0.8.2
     values:
@@ -111,7 +155,33 @@ releases:
       app: arc
       tier: scaleset
       category: system
+      step: 4
     chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
     version: 0.8.2
     values:
     - ./overrides/system/github-arc-scaleset.yaml.gotmpl
+
+  - name: blazer
+    namespace: tools
+    labels:
+      app: blazer
+      tier: front
+      category: tools
+      step: 3
+    chart: stakater/application
+    version: 2.3.2
+    values:
+    - ./overrides/tools/blazer.yaml.gotmpl
+
+  - name: ingress
+    namespace: nginx
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: nginx
+      tier: main
+      category: system
+      step: 4
+    chart: charts/nginx-ingress
+    values:
+    - ./overrides/system/nginx.yaml.gotmpl

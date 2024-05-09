@@ -659,3 +659,17 @@ vars:
     apiVersion: v1
     kind: ConfigMap
     name: application-config
+- fieldref:
+    fieldPath: data.AWS_PINPOINT_SC_POOL_ID
+  name: AWS_PINPOINT_SC_POOL_ID
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: application-config
+- fieldref:
+    fieldPath: data.AWS_PINPOINT_SC_TEMPLATE_IDS
+  name: AWS_PINPOINT_SC_TEMPLATE_IDS
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: application-config

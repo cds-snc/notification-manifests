@@ -9,7 +9,7 @@ resources:
 - documentation-target-group.yaml
 - aws-auth-configmap.yaml
 - hasura-ingress.yaml
-- ../../base/karpenter
+- fluentbit.yaml
 - ../../base/kube-state-metrics
 - ../../base/utils
 - ../../base/notify-admin
@@ -52,11 +52,6 @@ patches:
 - path: services/api-service-patch.yaml
 - path: services/document-download-api-service-patch.yaml
 - path: services/documentation-service-patch.yaml
-
-- path: karpenter/aws-node-template-patch.yaml
-- path: karpenter/configmap-patch.yaml
-- path: karpenter/provisioner-patch.yaml
-- path: karpenter/service-account-patch.yaml
 
 - path: nodeselectors/admin-node-selector-patch.yaml
 - path: nodeselectors/celery-api-node-selector-patch.yaml
@@ -648,6 +643,20 @@ vars:
 - fieldref:
     fieldPath: data.SRE_CLIENT_SECRET
   name: SRE_CLIENT_SECRET
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: application-config
+- fieldref:
+    fieldPath: data.AWS_PINPOINT_SC_POOL_ID
+  name: AWS_PINPOINT_SC_POOL_ID
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: application-config
+- fieldref:
+    fieldPath: data.AWS_PINPOINT_SC_TEMPLATE_IDS
+  name: AWS_PINPOINT_SC_TEMPLATE_IDS
   objref:
     apiVersion: v1
     kind: ConfigMap
