@@ -53,7 +53,7 @@ releases:
 
 {{ end }}
 
-{{if or (eq .Environment.Name "dev") (eq .Environment.Name "sandbox") }}
+{{if or (eq .Environment.Name "dev") (eq .Environment.Name "sandbox") (eq .Environment.Name "staging") }}
   - name: karpenter-crd
     namespace: karpenter
     labels:
