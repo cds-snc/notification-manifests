@@ -13,7 +13,7 @@ resources:
 - documentation-target-group.yaml
 - aws-auth-configmap.yaml
 - hasura-ingress.yaml
-- ../../base/karpenter
+
 - ../../base/kube-state-metrics
 - ../../base/prometheus-cloudwatch
 - ../../base/k8s-event-logger
@@ -55,11 +55,6 @@ patches:
 - path: services/documentation-service-patch.yaml
 
 - path: cwagent/cwagent-deployment-patch.yaml
-
-- path: karpenter/aws-node-template-patch.yaml
-- path: karpenter/configmap-patch.yaml
-- path: karpenter/provisioner-patch.yaml
-- path: karpenter/service-account-patch.yaml
 
 - path: nodeselectors/admin-node-selector-patch.yaml
 - path: nodeselectors/api-node-selector-patch.yaml
