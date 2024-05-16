@@ -8,6 +8,7 @@
 *kubeconfig*
 
 # These files should be in, as these are compressed and encrypted.
+!env/sandbox/.env.zip.enc.aws
 !env/dev/.env.zip.enc.aws
 !env/production/.env.zip.enc.aws
 !env/staging/.env.zip.enc.aws
