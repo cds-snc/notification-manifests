@@ -130,8 +130,6 @@ spec:
             value: '$(AWS_PINPOINT_SC_POOL_ID)'
           - name: AWS_PINPOINT_SC_TEMPLATE_IDS
             value: '$(AWS_PINPOINT_SC_TEMPLATE_IDS)'
-          - name: AWS_PINPOINT_DEFAULT_POOL_ID
-            value: '$(AWS_PINPOINT_DEFAULT_POOL_ID)'
         lifecycle:
           preStop:
             exec:
