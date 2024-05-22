@@ -2,6 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+- fluentbit.yaml
+- cwagent.yaml
+- cwagent-configmap.yaml
 - notification-service-account.yaml
 - api-target-group.yaml
 - admin-target-group.yaml
@@ -9,8 +12,8 @@ resources:
 - documentation-target-group.yaml
 - aws-auth-configmap.yaml
 - hasura-ingress.yaml
-- fluentbit.yaml
 - ../../base/kube-state-metrics
+- ../../base/prometheus-cloudwatch
 - ../../base/utils
 - ../../base/notify-admin
 - ../../base/notify-api
@@ -52,6 +55,8 @@ patches:
 - path: services/api-service-patch.yaml
 - path: services/document-download-api-service-patch.yaml
 - path: services/documentation-service-patch.yaml
+
+- path: cwagent/cwagent-deployment-patch.yaml
 
 - path: nodeselectors/admin-node-selector-patch.yaml
 - path: nodeselectors/celery-api-node-selector-patch.yaml
