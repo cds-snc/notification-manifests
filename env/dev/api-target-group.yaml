@@ -7,4 +7,4 @@ spec:
   serviceRef:
     name: api
     port: 6011
-  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:800095993820:targetgroup/notification-canada-ca-alb-api/c2731a822cc3fadc
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:800095993820:targetgroup/notification-canada-ca-alb-api/801411bd13fe891c

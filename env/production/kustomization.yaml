@@ -1,5 +1,4 @@
 bases:
-  - ../../base/karpenter
   - ../../base/kube-state-metrics
   - ../../base/prometheus-cloudwatch
   - ../../base/k8s-event-logger
@@ -58,21 +57,16 @@ patches:
   - path: nodeselectors/celery-sms-send-scalable-node-selector-patch.yaml
   - path: nodeselectors/document-download-api-node-selector-patch.yaml
   - path: nodeselectors/documentation-node-selector-patch.yaml
-  
-  - path: karpenter/aws-node-template-patch.yaml
-  - path: karpenter/configmap-patch.yaml
-  - path: karpenter/provisioner-patch.yaml
-  - path: karpenter/service-account-patch.yaml
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:25b8340
+    newName: public.ecr.aws/cds-snc/notify-admin:9cb9c04
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:6770073
+    newName: public.ecr.aws/cds-snc/notify-api:43d07f0
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:fbfa994
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:979c0c2
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:1bcacd9
+    newName: public.ecr.aws/cds-snc/notify-documentation:7561c37
 configMapGenerator:
   - name: application-config
     env: .env
