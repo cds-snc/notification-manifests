@@ -70,6 +70,7 @@ getValue "ADMIN_TARGET_GROUP_ARN"
 getValue "AWS_REGION"
 getValue "BASE_DOMAIN"
 getValue "GITHUB_ARC_RUNNER_REPOSITORY_URL"
+getValue "EKS_KARPENTER_AMI_ID"
 
 if [ "$LOAD_IMAGE_VERSIONS" = true ];
 then
