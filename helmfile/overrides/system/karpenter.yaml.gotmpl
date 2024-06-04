@@ -7,4 +7,4 @@ settings:
 
 nodeClass:
   amiSelectorTerms:
-    - id: "ami-02aa678d778b79aea"
+    - id: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
