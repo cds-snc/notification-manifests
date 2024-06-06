@@ -13,10 +13,10 @@ on:
         required: true
 
 env:
+  DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-ipv4-geolocate-webservice
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
-  DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-ipv4-geolocate-webservice
 
 jobs:
   rollout:
@@ -47,7 +47,7 @@ jobs:
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
-          
+
       - name: Update images in staging
         run: |
           DOCKER_TAG=${{ github.event.inputs.docker_sha }}
