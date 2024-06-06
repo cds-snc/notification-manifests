@@ -2,15 +2,12 @@ name: Staging - IPv4 Geolocate Webservice Kubernetes Rollout
 on:
   workflow_dispatch:
     inputs:
-      docker_sha:
-        description: 'The SHA from the source docker build job'
+      release_tag:
+        description: 'The release tag from the source docker build job'
         required: true
   repository_dispatch:
     types: [webhook]
     inputs:
-      docker_sha:
-        description: 'The SHA from the source docker build job'
-        required: true
       release_tag:
         description: 'The release tag from the source docker build job'
         required: true
