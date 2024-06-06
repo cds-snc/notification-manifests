@@ -11,6 +11,9 @@ on:
       docker_sha:
         description: 'The SHA from the source docker build job'
         required: true
+      release_tag:
+        description: 'The release tag from the source docker build job'
+        required: true
 
 env:
   DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-ipv4-geolocate-webservice
