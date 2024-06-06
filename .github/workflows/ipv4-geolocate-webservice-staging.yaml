@@ -52,7 +52,7 @@ jobs:
         run: |
           DOCKER_TAG=${{ github.event.inputs.docker_sha }}
           echo $DOCKER_TAG
-          kubectl set image deployment.apps/ipv4 api=$DOCKER_SLUG:$DOCKER_TAG -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
+          kubectl set image deployment.apps/ipv4 ipv4=$DOCKER_SLUG:$DOCKER_TAG -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
 
       - name: Restart deployments in staging
         run: |
