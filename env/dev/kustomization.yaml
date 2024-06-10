@@ -646,6 +646,13 @@ vars:
     kind: ConfigMap
     name: application-config
 - fieldref:
+    fieldPath: data.FF_TOU
+  name: FF_TOU
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: application-config
+- fieldref:
     fieldPath: data.SRE_CLIENT_SECRET
   name: SRE_CLIENT_SECRET
   objref:
