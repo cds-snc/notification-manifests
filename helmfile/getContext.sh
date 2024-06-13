@@ -36,9 +36,9 @@ getValue()
     if [ -z $GITHUB ];
     then
       echo "Fetching Secret $VALUE"
-      export $VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text)      
+      export $VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region ca-central-1)      
     else
-      echo "$VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text)" >> "$GITHUB_ENV"
+      echo "$VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region ca-central-1)" >> "$GITHUB_ENV"
     fi
 }
 
@@ -76,4 +76,3 @@ if [ "$LOAD_IMAGE_VERSIONS" = true ];
 then
     loadImageVersions
 fi
-
