@@ -60,13 +60,13 @@ patches:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:9cb9c04
+    newName: public.ecr.aws/cds-snc/notify-admin:e20a226
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:43d07f0
+    newName: public.ecr.aws/cds-snc/notify-api:4ad86fd
   - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:979c0c2
+    newName: public.ecr.aws/cds-snc/notify-document-download-api:b00e613
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:7561c37
+    newName: public.ecr.aws/cds-snc/notify-documentation:63a4967
 configMapGenerator:
   - name: application-config
     env: .env
@@ -622,6 +622,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_ABTEST_SERVICE_ID
+  - name: FF_TOU
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_TOU
   - name: FF_NEW_BRANDING
     objref:
       kind: ConfigMap
@@ -650,3 +657,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.AWS_PINPOINT_SC_TEMPLATE_IDS
+  - name: AWS_PINPOINT_DEFAULT_POOL_ID
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.AWS_PINPOINT_DEFAULT_POOL_ID
