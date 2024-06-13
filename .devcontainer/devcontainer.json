@@ -4,9 +4,8 @@
 		"dockerfile": "Dockerfile",
 		"context": "..",
 		"args": {
-			"KUBENS_VERSION": "0.9.4",
-			"OCTANT_VERSION": "0.25.1"
-		},
+			"KUBENS_VERSION": "0.9.4"
+		}
 	},
 	"features": {
 		"kubectl-helm-minikube": {
@@ -21,10 +20,12 @@
 	"extensions": [
 		"alefragnani.bookmarks",
 		"christian-kohler.path-intellisense",
-		"coenraads.bracket-pair-colorizer-2",
 		"donjayamanne.githistory",
 		"eamodio.gitlens",
-		"github.vscode-pull-request-github",
+		"GitHub.vscode-pull-request-github",
+		"GitHub.copilot",
+		"GitHub.copilot-chat",
+		"karyan40024.gotmpl-syntax-highlighter",
 		"louiswt.regexp-preview",
 		"mhutchie.git-graph",
 		"ms-azuretools.vscode-docker",
@@ -33,17 +34,15 @@
 		"pmbenjamin.vscode-snyk",
 		"redhat.vscode-yaml",
 		"richie5um2.vscode-sort-json",
-		"tabnine.tabnine-vscode",
 		"usernamehw.errorlens",
 		"visualstudioexptteam.vscodeintellicode",
-		"yzhang.markdown-all-in-one",
-		"github.copilot",
-		"karyan40024.gotmpl-syntax-highlighter"
+		"wenfangdu.jump",
+		"yzhang.markdown-all-in-one"
 	],
 	"postCreateCommand": "notify-dev-entrypoint.sh",
 	"remoteUser": "vscode",
 	"mounts": [
-		"source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
-		"source=${env:HOME}${env:USERPROFILE}/.kube,target=/home/vscode/.kube,type=bind"
+		"source=${env:HOME}/.aws,target=/home/vscode/.aws,type=bind",
+		"source=${env:HOME}/.kube,target=/home/vscode/.kube,type=bind"
 	]
 }
