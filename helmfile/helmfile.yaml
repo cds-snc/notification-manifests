@@ -18,6 +18,8 @@ repositories:
   url: https://stakater.github.io/stakater-charts
 - name: deliveryhero
   url: https://charts.deliveryhero.io
+- name: prometheus-community
+  url: https://prometheus-community.github.io/helm-charts
 
 releases:
 {{ if eq .Environment.Name "dev" }}
@@ -125,7 +127,7 @@ releases:
   - name: kube-state-metrics
     namespace: kube-system
     labels:
-      app: kube-system
+      app: kube-state-metrics
       tier: full
       category: system
     chart: prometheus-community/kube-state-metrics
