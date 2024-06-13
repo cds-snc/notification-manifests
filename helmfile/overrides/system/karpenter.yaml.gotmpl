@@ -8,3 +8,7 @@ settings:
 nodeClass:
   amiSelectorTerms:
     - id: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
+
+nodePool:
+  instanceCPU: "['2', '4', '8']"
+  capacityTypes: ["spot"]

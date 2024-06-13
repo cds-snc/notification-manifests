@@ -4,6 +4,7 @@ environments:
   dev:
   staging:
   production:
+  ben:
 ---
 
 helmDefaults:
@@ -18,6 +19,8 @@ repositories:
   url: https://stakater.github.io/stakater-charts
 - name: deliveryhero
   url: https://charts.deliveryhero.io
+- name: ollama-helm 
+  url: https://otwld.github.io/ollama-helm/
 
 releases:
 {{ if eq .Environment.Name "dev" }}
@@ -50,6 +53,17 @@ releases:
     chart: charts/notify-admin
     values:
     - ./overrides/notify/admin.yaml.gotmpl
+
+  - name: ollama-jumana
+    namespace: ollama
+    labels:
+      app: ollama
+      tier: full
+      category: coolstuff
+      jumana: iscool
+    chart: ollama-helm/ollama
+    values:
+      - ./overrides/system/ollama.yaml.gotmpl
 
 {{ end }}
 
