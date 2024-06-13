@@ -23,6 +23,7 @@ echo -e "alias sso-prod='aws sso login --profile notify-prod'" >> ~/.zshrc
 echo -e "complete -C /usr/local/bin/aws_completer aws" >> ~/.zshrc
 
 # Kubectl aliases and command autocomplete
+echo -e "alias dev='export AWS_PROFILE=notify-dev && kubectl config use-context notify-dev'" >> ~/.zshrc
 echo -e "alias staging='export AWS_PROFILE=notify-staging && kubectl config use-context notify-staging'" >> ~/.zshrc
 echo -e "alias prod='export AWS_PROFILE=notify-prod && kubectl config use-context notify-prod'" >> ~/.zshrc
 echo -e "alias k='kubectl'" >> ~/.zshrc
