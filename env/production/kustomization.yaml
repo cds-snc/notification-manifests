@@ -1,5 +1,4 @@
 bases:
-  - ../../base/kube-state-metrics
   - ../../base/prometheus-cloudwatch
   - ../../base/k8s-event-logger
   - ../../base/utils

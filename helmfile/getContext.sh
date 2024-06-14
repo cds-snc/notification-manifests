@@ -31,7 +31,6 @@ shift "$(($OPTIND -1))"
 
 AWS_REGION="${AWS_REGION:=ca-central-1}"
 
-
 getValue()
 {
     VALUE=$1

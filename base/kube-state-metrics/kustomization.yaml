@@ -1,6 +1,0 @@
-resources:
-  - ksm-iam.yaml
-  - ksm-deployment.yaml
-  - ksm-service-account.yaml
-  - ksm-service.yaml
-  
