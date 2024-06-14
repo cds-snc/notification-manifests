@@ -32,9 +32,6 @@ function GetValue {
     )
     if (!$GITHUB) {
         Write-Host "Fetching Secret $VALUE"
-        #$env:$VALUE = aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region $env:AWS_REGION
-        #Set-Variable -Name $VALUE -Value (aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region $env:AWS_REGION) -Scope Environment
-
         $secretValue = aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region $env:AWS_REGION
         [Environment]::SetEnvironmentVariable($VALUE, $secretValue, "Process")
     } else {
