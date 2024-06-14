@@ -29,6 +29,8 @@ while getopts 'gih' opt; do
 done
 shift "$(($OPTIND -1))"
 
+AWS_REGION="${AWS_REGION:=ca-central-1}"
+
 
 getValue()
 {
@@ -36,9 +38,9 @@ getValue()
     if [ -z $GITHUB ];
     then
       echo "Fetching Secret $VALUE"
-      export $VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region ca-central-1)      
+      export $VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region $AWS_REGION)      
     else
-      echo "$VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region ca-central-1)" >> "$GITHUB_ENV"
+      echo "$VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region $AWS_REGION)" >> "$GITHUB_ENV"
     fi
 }
 
