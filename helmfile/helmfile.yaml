@@ -62,6 +62,7 @@ releases:
       category: coolstuff
       jumana: iscool
     chart: ollama-helm/ollama
+    version: 0.35.0
     values:
       - ./overrides/system/ollama.yaml.gotmpl
 
