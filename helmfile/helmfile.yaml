@@ -18,6 +18,8 @@ repositories:
   url: https://stakater.github.io/stakater-charts
 - name: deliveryhero
   url: https://charts.deliveryhero.io
+- name: prometheus-community
+  url: https://prometheus-community.github.io/helm-charts
 
 releases:
 {{ if eq .Environment.Name "dev" }}
@@ -121,6 +123,17 @@ releases:
     version: 0.3.5
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
+
+  - name: kube-state-metrics
+    namespace: kube-system
+    labels:
+      app: kube-state-metrics
+      tier: full
+      category: system
+    chart: prometheus-community/kube-state-metrics
+    version: 5.18.1
+    values:
+    - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
   - name: github-arc
     namespace: github-arc-controller

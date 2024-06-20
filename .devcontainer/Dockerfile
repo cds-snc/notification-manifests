@@ -1,7 +1,6 @@
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-debian@sha256:514d9a94b7f68d49bbf22f15dd82cb75cf0467763e96fc12682a07826bd13b04
 
 ARG KUBENS_VERSION
-ARG OCTANT_VERSION
 
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils 2>&1 \
@@ -36,12 +35,6 @@ RUN git clone -b v${KUBENS_VERSION} --single-branch https://github.com/ahmetb/ku
     && ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx \
     && ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 
-# Install Octant
-RUN curl -Lo octant.tar.gz https://github.com/vmware-tanzu/octant/releases/download/v${OCTANT_VERSION}/octant_${OCTANT_VERSION}_Linux-64bit.tar.gz \
-    && tar -xvf octant.tar.gz \
-    && mv octant_${OCTANT_VERSION}_Linux-64bit/octant /usr/local/bin/ \
-    && rm -rf octant_${OCTANT_VERSION}_Linux-64bit
-
 # Install AWS cli
 RUN curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
     && unzip awscliv2.zip \
@@ -50,5 +43,23 @@ RUN curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv
         awscliv2.zip \
         aws \
         /usr/local/aws-cli/v2/*/dist/awscli/examples
-    
+
 COPY .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
+
+# Install Helm
+RUN curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+RUN sudo apt-get install apt-transport-https --yes
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+RUN sudo apt-get update
+RUN sudo apt-get install helm
+
+# Install Helmfile
+RUN curl -LO https://github.com/helmfile/helmfile/releases/download/v0.151.0/helmfile_0.151.0_linux_amd64.tar.gz
+RUN tar -zxvf helmfile_0.151.0_linux_amd64.tar.gz
+RUN sudo chmod +x helmfile
+RUN sudo mv helmfile /usr/local/bin/helmfile
+
+# Install Helm plugins such as helm-diff, helm-secrets, helm-git
+RUN helm plugin add https://github.com/databus23/helm-diff
+RUN helm plugin install https://github.com/jkroepke/helm-secrets
+RUN helm plugin install https://github.com/aslafy-z/helm-git

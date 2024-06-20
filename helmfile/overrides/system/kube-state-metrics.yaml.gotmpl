@@ -1,0 +1,14 @@
+priorityClassName: system-node-critical
+
+replicaCount: 1
+
+customLabels:
+  app.kubernetes.io/component: exporter
+  app.kubernetes.io/name: kube-state-metrics
+  app.kubernetes.io/version: 2.8.2
+
+selfMonitor:
+  enabled: false
+  # telemetryHost: 0.0.0.0
+  # telemetryPort: 8081
+  # telemetryNodePort: 0
