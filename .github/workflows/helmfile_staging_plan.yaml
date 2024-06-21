@@ -8,6 +8,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
+  OVPN_CONFIG_FILE: ${{ secrets.DEV_OVPN_CONFIG_FILE }}
 
 jobs:
   helmfile-diff:
@@ -36,7 +37,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y openvpn openvpn-systemd-resolved      
-          echo ${{ secrets.DEV_OVPN_CONFIG_FILE }} > /var/tmp/ovpn.ovpn
+          echo $OVPN_CONFIG_FILE > /var/tmp/ovpn.ovpn
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@v2"
