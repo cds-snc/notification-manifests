@@ -32,6 +32,11 @@ jobs:
           install-helm: yes
           helmfile-version: "v0.151.0"
 
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved          
+
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@v2"
         with:
