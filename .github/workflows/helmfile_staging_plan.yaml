@@ -40,7 +40,7 @@ jobs:
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@v2"
         with:
-          config_file: .github/config/ghadevvpn.ovpn
+          config_file: ${{ secrets.DEV_OVPN_CONFIG_FILE}}
           client_key: ${{ secrets.DEV_OVPN_CLIENT_KEY }} 
 
       - name: Configure kubeconfig
