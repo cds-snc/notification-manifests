@@ -11,7 +11,7 @@ env:
 
 jobs:
   helmfile-diff:
-    runs-on: github-arc-ss-staging
+    runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
@@ -31,10 +31,17 @@ jobs:
           install-kubectl: yes
           install-helm: yes
           helmfile-version: "v0.151.0"
+
+      - name: Connect to VPN
+        uses: "kota65535/github-openvpn-connect-action@v2"
+        with:
+          config_file: .github/config/ghadevvpn.ovpn
+          client_key: ${{ secrets.DEV_OVPN_CLIENT_KEY }} 
+
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
-          kubectl config rename-context arn:aws:eks:ca-central-1:$STAGING_AWS_ACCOUNT:cluster/notification-canada-ca-staging-eks-cluster staging
+          aws eks update-kubeconfig --name notification-canada-ca-dev-eks-cluster   
+          kubectl config rename-context arn:aws:eks:ca-central-1:800095993820:cluster/notification-canada-ca-dev-eks-cluster dev
       - name: Load EnvVars
         run: |
             ./helmfile/getContext.sh -g
@@ -43,7 +50,7 @@ jobs:
         run: |
           pushd helmfile
           echo 'var<<EOF' >> $GITHUB_OUTPUT
-          helmfile --environment staging diff >> $GITHUB_OUTPUT
+          helmfile --environment dev diff >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
           popd
       - name: Helmfile Diff Comment
