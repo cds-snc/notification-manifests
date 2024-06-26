@@ -38,7 +38,7 @@ jobs:
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@v2"
         with:
-          config_file: .github/config/staging.ovpn
+          config_file: .github/workflows/config/staging.ovpn
           client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}   
       - name: Configure kubeconfig
         run: |
