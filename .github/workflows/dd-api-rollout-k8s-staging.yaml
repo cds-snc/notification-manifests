@@ -20,7 +20,7 @@ env:
 
 jobs:
   rollout:
-    runs-on: github-arc-ss-staging
+    runs-on: ubuntu-latest
     name: Rollout on EKS
     steps:
       - name: Configure AWS credentials
@@ -43,6 +43,17 @@ jobs:
         with:
           install-kubectl: yes
           install-helm: yes
+
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+
+      - name: Connect to VPN
+        uses: "kota65535/github-openvpn-connect-action@v2"
+        with:
+          config_file: .github/workflows/config/staging.ovpn
+          client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}     
 
       - name: Configure kubeconfig
         run: |
