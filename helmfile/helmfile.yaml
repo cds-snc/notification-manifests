@@ -137,7 +137,7 @@ releases:
 
   - name: github-arc
     namespace: github-arc-controller
-    {{ if eq .Environment.Name "staging" }}
+    {{ if not (eq .Environment.Name "production")  }}
     installed: false
     {{ end }}
     labels:
@@ -152,7 +152,7 @@ releases:
 
   - name: github-arc-ss-{{ .Environment.Name }}
     namespace: github-arc-controller
-    {{ if eq .Environment.Name "staging" }}
+    {{ if not (eq .Environment.Name "production")  }}
     installed: false
     {{ end }}
     disableValidationOnInstall: true    
