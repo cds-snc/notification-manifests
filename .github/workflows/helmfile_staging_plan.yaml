@@ -9,6 +9,7 @@ env:
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+  
 
 jobs:
   helmfile-diff:
@@ -31,7 +32,8 @@ jobs:
         with:
           install-kubectl: yes
           install-helm: yes
-          helmfile-version: "v0.151.0"           
+          helmfile-version: "v0.151.0"       
+
       - name: Install OpenVPN
         run: |
           sudo apt update

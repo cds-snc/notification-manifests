@@ -17,10 +17,11 @@ env:
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
   DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-api
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
 jobs:
   rollout:
-    runs-on: github-arc-ss-staging
+    runs-on: ubuntu-latest
     name: Rollout on EKS
     steps:
       - name: Configure AWS credentials
@@ -49,11 +50,21 @@ jobs:
           sudo apt update
           sudo apt install -y openvpn openvpn-systemd-resolved
 
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb
+
+      - name: One Password Fetch
+        run: |
+          op read op://4eyyuwddp6w4vxlabrr2i2duxm/"Staging Github Actions VPN"/notesPlain > /var/tmp/staging.ovpn
+
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@v2"
         with:
-          config_file: .github/workflows/config/staging.ovpn
-          client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}     
+          config_file: /var/tmp/staging.ovpn
+          client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}
+          echo_config: false       
 
       - name: Configure kubeconfig
         run: |
