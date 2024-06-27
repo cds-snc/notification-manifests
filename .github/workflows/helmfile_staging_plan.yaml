@@ -50,7 +50,8 @@ jobs:
         uses: "kota65535/github-openvpn-connect-action@v2"
         with:
           config_file: /var/tmp/staging.ovpn
-          client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}                           
+          client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}
+          echoConfig: false                  
 
       - name: Configure kubeconfig
         run: |
