@@ -12,7 +12,6 @@ resources:
 - documentation-target-group.yaml
 - aws-auth-configmap.yaml
 - ../../base/prometheus-cloudwatch
-- ../../base/utils
 - ../../base/notify-admin
 - ../../base/notify-api
 - ../../base/notify-celery-other

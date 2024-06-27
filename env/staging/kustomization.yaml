@@ -15,7 +15,6 @@ resources:
 
 - ../../base/prometheus-cloudwatch
 - ../../base/k8s-event-logger
-- ../../base/utils
 - ../../base/notify-admin
 - ../../base/notify-api
 - ../../base/notify-celery-other
