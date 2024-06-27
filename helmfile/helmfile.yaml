@@ -137,6 +137,9 @@ releases:
 
   - name: github-arc
     namespace: github-arc-controller
+    {{ if not (eq .Environment.Name "production")  }}
+    installed: false
+    {{ end }}
     labels:
       app: arc
       tier: operator
@@ -149,6 +152,9 @@ releases:
 
   - name: github-arc-ss-{{ .Environment.Name }}
     namespace: github-arc-controller
+    {{ if not (eq .Environment.Name "production")  }}
+    installed: false
+    {{ end }}
     disableValidationOnInstall: true    
     labels:
       app: arc
