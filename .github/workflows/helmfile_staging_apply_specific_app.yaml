@@ -54,7 +54,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@v2.0.0
+        uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
         with:
           install-kubectl: yes
           install-helm: yes
@@ -75,7 +75,7 @@ jobs:
           op read op://4eyyuwddp6w4vxlabrr2i2duxm/"Staging Github Actions VPN"/notesPlain > /var/tmp/staging.ovpn
 
       - name: Connect to VPN
-        uses: "kota65535/github-openvpn-connect-action@v2"
+        uses: "kota65535/github-openvpn-connect-action@a582825650e2e4101d4e32fa210e2a0a87c7b0ef" # v2.1.0
         with:
           config_file: /var/tmp/staging.ovpn
           client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}
