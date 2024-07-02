@@ -63,7 +63,7 @@ releases:
       category: system
       step: 0
     chart: oci://public.ecr.aws/karpenter/karpenter-crd
-    version: 0.36.1
+    version: 0.37.0
 
   - name: karpenter
     namespace: karpenter
@@ -73,7 +73,7 @@ releases:
       category: system
       step: 1
     chart: oci://public.ecr.aws/karpenter/karpenter
-    version: 0.36.1
+    version: 0.37.0
     values:
     - ./overrides/system/karpenter.yaml.gotmpl
 
@@ -131,7 +131,7 @@ releases:
       tier: full
       category: system
     chart: prometheus-community/kube-state-metrics
-    version: 5.18.1
+    version: 5.20.1
     values:
     - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
@@ -156,7 +156,7 @@ releases:
       category: system
       step: 4
     chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
-    version: 0.8.2
+    version: 0.9.3
     values:
     - ./overrides/system/github-arc-scaleset.yaml.gotmpl
 
