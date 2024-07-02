@@ -11,9 +11,7 @@ resources:
 - document-download-api-target-group.yaml
 - documentation-target-group.yaml
 - aws-auth-configmap.yaml
-- hasura-ingress.yaml
 - ../../base/prometheus-cloudwatch
-- ../../base/utils
 - ../../base/notify-admin
 - ../../base/notify-api
 - ../../base/notify-celery-other
@@ -304,13 +302,6 @@ vars:
 - fieldref:
     fieldPath: data.FRESH_DESK_PRODUCT_ID
   name: FRESH_DESK_PRODUCT_ID
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: application-config
-- fieldref:
-    fieldPath: data.HASURA_ACCESS_KEY
-  name: HASURA_ACCESS_KEY
   objref:
     apiVersion: v1
     kind: ConfigMap

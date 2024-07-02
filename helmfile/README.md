@@ -1,6 +1,9 @@
 # Notify Helmfile Usage
+
 ## Pre-Requisites
+
 Install helm and helmfile, and configure your kubernetes contexts using setup.sh
+
 ```bash
 ./setup.sh
 ```
@@ -8,12 +11,14 @@ Install helm and helmfile, and configure your kubernetes contexts using setup.sh
 **Note: setup.sh assumes you have not changed the context names from their original format. If you have done this already, please either modify setup.sh to rename them as appropriate, or remove your contexts and add them back with their default name.**
 
 ## Overview
+
 Helmfile is an abstraction layer on top of helm in much the same way that terragrunt is an abstraction layer on top of terraform. It allows developers to manage multiple applications across multiple environments using a single code source.
 
 Helmfile is currently being used in a pilot test to manage the internal utilities and applications used by Notify Developers. **It is not being used to manage Notify applications directly.**
 
 The following utilities are part of this project:
-- Nginx Ingress Controller - Used to control the ingress and egress of utilities under EKS such as Hasura
+
+- Nginx Ingress Controller - Used to control the ingress and egress of utilities under EKS such as Blazer
 - Kubernetes Secrets CSI Driver - a system component required for AWS Secrets Provider
 - AWS Secrets Provider - a utility that allows Kubernetes to inject values from the AWS Secrets Manager directly into pods
 
@@ -135,5 +140,3 @@ The same philosophy could apply to other scenarios. For example, if there are se
 ```bash 
 helmfile --environment production --selector category=system apply 
 ```
-
-

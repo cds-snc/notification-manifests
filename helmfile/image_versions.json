@@ -9,7 +9,6 @@
   "fluentbit": "stable",
   "github_arc_controller": "0.8.2",
   "github_arc_runner": "2.7.6",
-  "hasura": "v1.3.3",
   "ipv4": "latest",
   "k8s_event_logger": "2.2",
   "karpenter": "v0.30.0@sha256:3d436ece23d17263edbaa2314281f3ac1c2b0d3fb9dfa531cb30509659d8a7c3",
