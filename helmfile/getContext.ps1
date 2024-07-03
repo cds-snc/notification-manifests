@@ -51,7 +51,6 @@ function LoadImageVersions {
     $env:DOCUMENTATION_DOCKER_TAG = $json.documentation
     $env:FLUENTBIT_DOCKER_TAG = $json.fluentbit
     $env:GITHUB_ARC_CONTROLLER_DOCKER_TAG = $json.github_arc_controller
-    $env:HASURA_DOCKER_TAG = $json.hasura
     $env:IPV4_DOCKER_TAG = $json.ipv4
     $env:K8S_EVENT_LOGGER_DOCKER_TAG = $json.k8s_event_logger
     $env:KARPENTER_DOCKER_TAG = $json.karpenter
