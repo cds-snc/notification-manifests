@@ -12,7 +12,6 @@ env:
   API_LAMBDA_IMAGE: api-lambda:beed504
   HEARTBEAT_IMAGE: heartbeat:5c8da95
   SYSTEM_STATUS_IMAGE: system_status:078cf82
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
   
 
 defaults:
