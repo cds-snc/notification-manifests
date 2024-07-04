@@ -12,7 +12,7 @@ env:
   API_LAMBDA_IMAGE: api-lambda:19258cc
   HEARTBEAT_IMAGE: heartbeat:5c8da95
   SYSTEM_STATUS_IMAGE: system_status:078cf82
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.PRODUCTION_OP_SERVICE_ACCOUNT_TOKEN }}
   
 
 defaults:
@@ -21,7 +21,7 @@ defaults:
 
 jobs:
   kubectl-apply:
-    runs-on: github-arc-ss-production
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -47,6 +47,27 @@ jobs:
           aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
+
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb
+
+      - name: One Password Fetch
+        run: |
+          op read op://ppnxsriom3alsxj4ogikyjxlzi/"Production Github Actions VPN"/notesPlain > /var/tmp/production.ovpn
+          
+      - name: Connect to VPN
+        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5"
+        with:
+          config_file: /var/tmp/production.ovpn
+          client_key: ${{ secrets.PRODUCTION_OVPN_CLIENT_KEY }}
+          echo_config: false            
 
       # We are using this to install kubectl in this case
       - name: Setup helmfile
