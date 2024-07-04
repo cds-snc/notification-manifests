@@ -15,7 +15,7 @@ env:
 
 jobs:
   helmfile-diff:
-    runs-on: github-arc-ss-production
+    runs-on: ubuntu-latest
     steps:
 
       - name: Inject token authentication
@@ -33,6 +33,23 @@ jobs:
         with:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb
+      - name: One Password Fetch
+        run: |
+          op read op://ppnxsriom3alsxj4ogikyjxlzi/"Production Github Actions VPN"/notesPlain > /var/tmp/production.ovpn
+      - name: Connect to VPN
+        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5"
+        with:
+          config_file: /var/tmp/production.ovpn
+          client_key: ${{ secrets.PRODUCTION_OVPN_CLIENT_KEY }}
+          echo_config: false                 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@v2.0.0
         with:
