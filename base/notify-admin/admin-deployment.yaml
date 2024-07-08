@@ -137,6 +137,8 @@ spec:
               value: '$(FF_NEW_BRANDING)'
             - name: FF_TOU
               value: '$(FF_TOU)'
+            - name: FF_TEMPLATE_CATEGORY
+              value: '$(FF_TEMPLATE_CATEGORY)'
           resources:
             requests:
               cpu: "250m"
