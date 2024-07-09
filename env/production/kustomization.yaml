@@ -58,9 +58,9 @@ patches:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:d7efd03
+    newName: public.ecr.aws/cds-snc/notify-admin:74bb5a6
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:19258cc
+    newName: public.ecr.aws/cds-snc/notify-api:45442d0
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:cdf8a3e
   - name: documentation
@@ -620,6 +620,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_TOU
+  - name: FF_TEMPLATE_CATEGORY
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_TEMPLATE_CATEGORY
   - name: FF_NEW_BRANDING
     objref:
       kind: ConfigMap
