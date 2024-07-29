@@ -678,3 +678,10 @@ vars:
     apiVersion: v1
     kind: ConfigMap
     name: application-config
+- fieldref:
+    fieldPath: data.AWS_XRAY_DAEMON_ADDRESS
+  name: AWS_XRAY_DAEMON_ADDRESS
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: application-config
