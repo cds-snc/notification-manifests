@@ -131,6 +131,8 @@ spec:
               value: '$(ZENDESK_API_URL)'
             - name: ZENDESK_API_KEY
               value: '$(ZENDESK_API_KEY)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-service.xray.svc.cluster.local:2000'
           command:
             [
               "sh",
@@ -274,6 +276,8 @@ spec:
               value: '$(FF_BOUNCE_RATE_V1)'
             - name: FF_BOUNCE_RATE_BACKEND
               value: '$(FF_BOUNCE_RATE_BACKEND)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-service.xray.svc.cluster.local:2000'
           resources:
             requests:
               cpu: "200m"
