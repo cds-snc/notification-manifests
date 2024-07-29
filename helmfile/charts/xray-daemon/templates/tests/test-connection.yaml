@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "xray-daemon.fullname" . }}-test-connection"
+  labels:
+    {{- include "xray-daemon.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "xray-daemon.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
