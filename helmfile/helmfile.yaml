@@ -190,7 +190,7 @@ releases:
     - ./overrides/system/nginx.yaml.gotmpl
 
   - name: xray-daemon
-    namespace: notify-{{ .Environment.Name }}
+    namespace: xray
     disableValidationOnInstall: true
     disableValidation: true 
     labels:
