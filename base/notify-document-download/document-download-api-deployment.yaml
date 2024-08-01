@@ -59,6 +59,8 @@ spec:
               value: '$(NEW_RELIC_MONITOR_MODE)'
             - name: NOTIFY_ENVIRONMENT
               value: '$(ENVIRONMENT)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
           resources:
             requests:
               cpu: "100m"
