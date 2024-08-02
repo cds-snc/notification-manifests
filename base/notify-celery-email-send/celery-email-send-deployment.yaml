@@ -128,6 +128,8 @@ spec:
               value: '$(FF_BOUNCE_RATE_V1)'
             - name: FF_BOUNCE_RATE_BACKEND
               value: '$(FF_BOUNCE_RATE_BACKEND)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
           lifecycle:
             preStop:
               exec:
