@@ -139,6 +139,8 @@ spec:
               value: '$(FF_TOU)'
             - name: FF_TEMPLATE_CATEGORY
               value: '$(FF_TEMPLATE_CATEGORY)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
           resources:
             requests:
               cpu: "250m"
