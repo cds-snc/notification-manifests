@@ -16908,6 +16908,8 @@ spec:
         app.kubernetes.io/component: "cainjector"
         app.kubernetes.io/version: "v1.5.5"
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
       serviceAccountName: cert-manager-cainjector
       securityContext:
         runAsNonRoot: true
@@ -16958,6 +16960,8 @@ spec:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '9402'
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
       serviceAccountName: cert-manager
       securityContext:
         runAsNonRoot: true
@@ -17008,6 +17012,8 @@ spec:
         app.kubernetes.io/component: "webhook"
         app.kubernetes.io/version: "v1.5.5"
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND    
       serviceAccountName: cert-manager-webhook
       securityContext:
         runAsNonRoot: true
