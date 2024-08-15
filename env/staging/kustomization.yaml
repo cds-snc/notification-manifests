@@ -413,27 +413,6 @@ vars:
     kind: ConfigMap
     name: application-config
 - fieldref:
-    fieldPath: data.TWILIO_ACCOUNT_SID
-  name: TWILIO_ACCOUNT_SID
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: application-config
-- fieldref:
-    fieldPath: data.TWILIO_AUTH_TOKEN
-  name: TWILIO_AUTH_TOKEN
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: application-config
-- fieldref:
-    fieldPath: data.TWILIO_FROM_NUMBER
-  name: TWILIO_FROM_NUMBER
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: application-config
-- fieldref:
     fieldPath: data.SENTRY_URL
   name: SENTRY_URL
   objref:

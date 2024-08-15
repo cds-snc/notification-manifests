@@ -206,21 +206,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: TWILIO_ACCOUNT_SID
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: TWILIO_ACCOUNT_SID
-            - name: TWILIO_AUTH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: TWILIO_AUTH_TOKEN
-            - name: TWILIO_FROM_NUMBER
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: TWILIO_FROM_NUMBER
             - name: AWS_US_TOLL_FREE_NUMBER
               valueFrom:
                 secretKeyRef:
@@ -454,21 +439,6 @@ spec:
                 secretKeyRef:
                   name: notify-api
                   key: SRE_CLIENT_SECRET
-            - name: TWILIO_ACCOUNT_SID
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: TWILIO_ACCOUNT_SID
-            - name: TWILIO_AUTH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: TWILIO_AUTH_TOKEN
-            - name: TWILIO_FROM_NUMBER
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: TWILIO_FROM_NUMBER
             - name: AWS_US_TOLL_FREE_NUMBER
               valueFrom:
                 secretKeyRef:
