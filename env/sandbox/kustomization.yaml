@@ -663,3 +663,10 @@ vars:
     apiVersion: v1
     kind: ConfigMap
     name: application-config
+- fieldref:
+    fieldPath: data.AWS_XRAY_ENABLED
+  name: AWS_XRAY_ENABLED
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: application-config
