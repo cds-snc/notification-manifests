@@ -137,7 +137,7 @@ spec:
           - name: AWS_XRAY_DAEMON_ADDRESS
             value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
           - name: AWS_XRAY_ENABLED
-            value: 'True'
+            value: '$(AWS_XRAY_ENABLED)'
         lifecycle:
           preStop:
             exec:
