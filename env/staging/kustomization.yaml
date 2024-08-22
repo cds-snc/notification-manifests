@@ -679,8 +679,8 @@ vars:
     kind: ConfigMap
     name: application-config
 - fieldref:
-    fieldPath: data.AWS_XRAY_ENABLED
-  name: AWS_XRAY_ENABLED
+    fieldPath: data.AWS_XRAY_SDK_ENABLED
+  name: AWS_XRAY_SDK_ENABLED
   objref:
     apiVersion: v1
     kind: ConfigMap

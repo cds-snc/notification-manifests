@@ -136,8 +136,8 @@ spec:
             value: '$(AWS_PINPOINT_DEFAULT_POOL_ID)'
           - name: AWS_XRAY_DAEMON_ADDRESS
             value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-          - name: AWS_XRAY_ENABLED
-            value: '$(AWS_XRAY_ENABLED)'
+          - name: AWS_XRAY_SDK_ENABLED
+            value: '$(AWS_XRAY_SDK_ENABLED)'
         lifecycle:
           preStop:
             exec:

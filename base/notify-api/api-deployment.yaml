@@ -133,8 +133,8 @@ spec:
               value: '$(ZENDESK_API_KEY)'
             - name: AWS_XRAY_DAEMON_ADDRESS
               value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_ENABLED
-              value: '$(AWS_XRAY_ENABLED)'
+            - name: AWS_XRAY_SDK_ENABLED
+              value: '$(AWS_XRAY_SDK_ENABLED)'
           command:
             [
               "sh",
@@ -280,8 +280,8 @@ spec:
               value: '$(FF_BOUNCE_RATE_BACKEND)'
             - name: AWS_XRAY_DAEMON_ADDRESS
               value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_ENABLED
-              value: '$(AWS_XRAY_ENABLED)'
+            - name: AWS_XRAY_SDK_ENABLED
+              value: '$(AWS_XRAY_SDK_ENABLED)'
           resources:
             requests:
               cpu: "200m"
