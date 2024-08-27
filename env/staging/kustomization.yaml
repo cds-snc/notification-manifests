@@ -679,6 +679,13 @@ vars:
     kind: ConfigMap
     name: application-config
 - fieldref:
+    fieldPath: data.AWS_XRAY_CONTEXT_MISSING
+  name: AWS_XRAY_CONTEXT_MISSING
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: application-config
+- fieldref:
     fieldPath: data.AWS_XRAY_SDK_ENABLED
   name: AWS_XRAY_SDK_ENABLED
   objref:

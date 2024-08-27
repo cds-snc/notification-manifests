@@ -662,6 +662,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.AWS_PINPOINT_DEFAULT_POOL_ID
+  - name: AWS_XRAY_CONTEXT_MISSING
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.AWS_XRAY_CONTEXT_MISSING
   - name: AWS_XRAY_SDK_ENABLED
     objref:
       kind: ConfigMap

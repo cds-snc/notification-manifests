@@ -44,6 +44,12 @@ spec:
               value: '$(ALLOW_HTML_SERVICE_IDS)'
             - name: AWS_REGION
               value: '$(AWS_REGION)'
+            - name: AWS_XRAY_CONTEXT_MISSING
+              value: '$(AWS_XRAY_CONTEXT_MISSING)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
+            - name: AWS_XRAY_SDK_ENABLED
+              value: '$(AWS_XRAY_SDK_ENABLED)'
             - name: BULK_SEND_TEST_SERVICE_ID
               value: '$(BULK_SEND_TEST_SERVICE_ID)'
             - name: DANGEROUS_SALT
@@ -98,10 +104,6 @@ spec:
               value: '$(FF_BOUNCE_RATE_V1)'
             - name: FF_BOUNCE_RATE_BACKEND
               value: '$(FF_BOUNCE_RATE_BACKEND)'
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_SDK_ENABLED
-              value: '$(AWS_XRAY_SDK_ENABLED)'
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
           resources: {}

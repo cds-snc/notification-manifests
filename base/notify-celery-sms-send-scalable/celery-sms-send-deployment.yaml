@@ -54,6 +54,12 @@ spec:
             value: '$(AWS_PINPOINT_REGION)'
           - name: AWS_REGION
             value: '$(AWS_REGION)'
+          - name: AWS_XRAY_CONTEXT_MISSING
+            value: '$(AWS_XRAY_CONTEXT_MISSING)'
+          - name: AWS_XRAY_DAEMON_ADDRESS
+            value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
+          - name: AWS_XRAY_SDK_ENABLED
+            value: '$(AWS_XRAY_SDK_ENABLED)'
           - name: BATCH_INSERTION_CHUNK_SIZE
             value: '$(BATCH_INSERTION_CHUNK_SIZE)'
           - name: BULK_SEND_TEST_SERVICE_ID
@@ -134,10 +140,6 @@ spec:
             value: '$(AWS_PINPOINT_SC_TEMPLATE_IDS)'
           - name: AWS_PINPOINT_DEFAULT_POOL_ID
             value: '$(AWS_PINPOINT_DEFAULT_POOL_ID)'
-          - name: AWS_XRAY_DAEMON_ADDRESS
-            value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-          - name: AWS_XRAY_SDK_ENABLED
-            value: '$(AWS_XRAY_SDK_ENABLED)'
         lifecycle:
           preStop:
             exec:

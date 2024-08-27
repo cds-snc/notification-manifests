@@ -47,6 +47,12 @@ spec:
               value: '$(AWS_SES_ACCESS_KEY)'
             - name: AWS_SES_SECRET_KEY
               value: '$(AWS_SES_SECRET_KEY)'
+            - name: AWS_XRAY_CONTEXT_MISSING
+              value: '$(AWS_XRAY_CONTEXT_MISSING)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
+            - name: AWS_XRAY_SDK_ENABLED
+              value: '$(AWS_XRAY_SDK_ENABLED)'
             - name: BATCH_INSERTION_CHUNK_SIZE
               value: '$(BATCH_INSERTION_CHUNK_SIZE)'
             - name: BULK_SEND_TEST_SERVICE_ID
@@ -131,10 +137,6 @@ spec:
               value: '$(ZENDESK_API_URL)'
             - name: ZENDESK_API_KEY
               value: '$(ZENDESK_API_KEY)'
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_SDK_ENABLED
-              value: '$(AWS_XRAY_SDK_ENABLED)'
           command:
             [
               "sh",
@@ -172,6 +174,12 @@ spec:
               value: '$(AWS_SES_ACCESS_KEY)'
             - name: AWS_SES_SECRET_KEY
               value: '$(AWS_SES_SECRET_KEY)'
+            - name: AWS_XRAY_CONTEXT_MISSING
+              value: '$(AWS_XRAY_CONTEXT_MISSING)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
+            - name: AWS_XRAY_SDK_ENABLED
+              value: '$(AWS_XRAY_SDK_ENABLED)'
             - name: BATCH_INSERTION_CHUNK_SIZE
               value: '$(BATCH_INSERTION_CHUNK_SIZE)'
             - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
@@ -278,10 +286,6 @@ spec:
               value: '$(FF_BOUNCE_RATE_V1)'
             - name: FF_BOUNCE_RATE_BACKEND
               value: '$(FF_BOUNCE_RATE_BACKEND)'
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_SDK_ENABLED
-              value: '$(AWS_XRAY_SDK_ENABLED)'
           resources:
             requests:
               cpu: "200m"
