@@ -396,27 +396,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.SQLALCHEMY_POOL_SIZE
-  - name: TWILIO_ACCOUNT_SID
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.TWILIO_ACCOUNT_SID
-  - name: TWILIO_AUTH_TOKEN
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.TWILIO_AUTH_TOKEN
-  - name: TWILIO_FROM_NUMBER
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.TWILIO_FROM_NUMBER
   - name: SENTRY_URL
     objref:
       kind: ConfigMap
@@ -662,6 +641,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.AWS_PINPOINT_DEFAULT_POOL_ID
+  - name: AWS_XRAY_CONTEXT_MISSING
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.AWS_XRAY_CONTEXT_MISSING
   - name: AWS_XRAY_SDK_ENABLED
     objref:
       kind: ConfigMap
