@@ -143,6 +143,8 @@ spec:
               value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
             - name: AWS_XRAY_SDK_ENABLED
               value: '$(AWS_XRAY_SDK_ENABLED)'
+            - name: POND_TEST
+              value: 'Default Pond Test Value'
           resources:
             requests:
               cpu: "250m"
