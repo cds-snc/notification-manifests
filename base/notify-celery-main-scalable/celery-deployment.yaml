@@ -109,11 +109,11 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: TWILIO_ACCOUNT_SID
-              value: '$(TWILIO_ACCOUNT_SID)'
+              value: '00000000'
             - name: TWILIO_AUTH_TOKEN
-              value: '$(TWILIO_AUTH_TOKEN)'
+              value: 'abcdefgh'
             - name: TWILIO_FROM_NUMBER
-              value: '$(TWILIO_FROM_NUMBER)'
+              value: '1234567890'
             - name: AWS_US_TOLL_FREE_NUMBER
               value: '$(AWS_US_TOLL_FREE_NUMBER)'
             - name: SENTRY_URL
