@@ -137,33 +137,6 @@ releases:
     values:
     - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
-  - name: github-arc
-    namespace: github-arc-controller
-    installed: false
-    labels:
-      app: arc
-      tier: operator
-      category: system
-      step: 2
-    chart: charts/gha-runner-scale-set-controller
-    version: 0.8.2
-    values:
-    - ./overrides/system/github-arc.yaml.gotmpl    
-
-  - name: github-arc-ss-{{ .Environment.Name }}
-    namespace: github-arc-controller
-    installed: false
-    disableValidationOnInstall: true    
-    labels:
-      app: arc
-      tier: scaleset
-      category: system
-      step: 4
-    chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
-    version: 0.8.2
-    values:
-    - ./overrides/system/github-arc-scaleset.yaml.gotmpl
-
   - name: blazer
     namespace: tools
     labels:
