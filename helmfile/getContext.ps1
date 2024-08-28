@@ -43,14 +43,12 @@ function LoadImageVersions {
     $json = Get-Content -Path image_versions.json | ConvertFrom-Json
     $env:ADMIN_DOCKER_TAG = $json.admin
     $env:API_DOCKER_TAG = $json.api
-    $env:ARC_RUNER_DOCKER_TAG = $json.github_arc_runner
     $env:BLAZER_DOCKER_TAG = $json.blazer
     $env:CERT_MANAGER_DOCKER_TAG = $json.cert_manager
     $env:CLOUDWATCH_AGENT_DOCKER_TAG = $json.cloudwatch_agent
     $env:DOCUMENT_DOWNLOAD_DOCKER_TAG = $json.document_download
     $env:DOCUMENTATION_DOCKER_TAG = $json.documentation
     $env:FLUENTBIT_DOCKER_TAG = $json.fluentbit
-    $env:GITHUB_ARC_CONTROLLER_DOCKER_TAG = $json.github_arc_controller
     $env:IPV4_DOCKER_TAG = $json.ipv4
     $env:K8S_EVENT_LOGGER_DOCKER_TAG = $json.k8s_event_logger
     $env:KARPENTER_DOCKER_TAG = $json.karpenter
@@ -60,11 +58,12 @@ function LoadImageVersions {
 GetValue "AWS_ACCOUNT_ID"
 GetValue "NGINX_TARGET_GROUP_ARN"
 GetValue "INTERNAL_DNS_FQDN"
-GetValue "GITHUB_ARC_RUNNER_REPOSITORY_URL"
 GetValue "ADMIN_TARGET_GROUP_ARN"
+GetValue "DOCUMENTATION_TARGET_GROUP_ARN"
+GetValue "DOCUMENT_DOWNLOAD_API_TARGET_GROUP_ARN"
+GetValue "API_TARGET_GROUP_ARN"
 GetValue "AWS_REGION"
 GetValue "BASE_DOMAIN"
-GetValue "GITHUB_ARC_RUNNER_REPOSITORY_URL"
 GetValue "EKS_KARPENTER_AMI_ID"
 
 if ($LOAD_IMAGE_VERSIONS) {
