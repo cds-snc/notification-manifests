@@ -56,6 +56,12 @@ spec:
               value: '$(AWS_PINPOINT_REGION)'
             - name: AWS_REGION
               value: '$(AWS_REGION)'
+            - name: AWS_XRAY_CONTEXT_MISSING
+              value: '$(AWS_XRAY_CONTEXT_MISSING)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
+            - name: AWS_XRAY_SDK_ENABLED
+              value: '$(AWS_XRAY_SDK_ENABLED)'
             - name: BATCH_INSERTION_CHUNK_SIZE
               value: '$(BATCH_INSERTION_CHUNK_SIZE)'
             - name: BULK_SEND_TEST_SERVICE_ID
@@ -102,12 +108,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: TWILIO_ACCOUNT_SID
-              value: '$(TWILIO_ACCOUNT_SID)'
-            - name: TWILIO_AUTH_TOKEN
-              value: '$(TWILIO_AUTH_TOKEN)'
-            - name: TWILIO_FROM_NUMBER
-              value: '$(TWILIO_FROM_NUMBER)'
             - name: AWS_US_TOLL_FREE_NUMBER
               value: '$(AWS_US_TOLL_FREE_NUMBER)'
             - name: SENTRY_URL
@@ -126,10 +126,6 @@ spec:
               value: '$(FF_BOUNCE_RATE_V1)'
             - name: FF_BOUNCE_RATE_BACKEND
               value: '$(FF_BOUNCE_RATE_BACKEND)'
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_SDK_ENABLED
-              value: '$(AWS_XRAY_SDK_ENABLED)'
           lifecycle:
             preStop:
               exec:

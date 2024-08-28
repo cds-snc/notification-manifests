@@ -51,6 +51,12 @@ spec:
               value: '$(ASSET_DOMAIN)'
             - name: AWS_REGION
               value: '$(AWS_REGION)'
+            - name: AWS_XRAY_CONTEXT_MISSING
+              value: '$(AWS_XRAY_CONTEXT_MISSING)'
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
+            - name: AWS_XRAY_SDK_ENABLED
+              value: '$(AWS_XRAY_SDK_ENABLED)'
             - name: BULK_SEND_AWS_BUCKET
               value: '$(BULK_SEND_AWS_BUCKET)'
             - name: BULK_SEND_TEST_SERVICE_ID
@@ -139,10 +145,6 @@ spec:
               value: '$(FF_TOU)'
             - name: FF_TEMPLATE_CATEGORY
               value: '$(FF_TEMPLATE_CATEGORY)'
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_SDK_ENABLED
-              value: '$(AWS_XRAY_SDK_ENABLED)'
           resources:
             requests:
               cpu: "250m"
