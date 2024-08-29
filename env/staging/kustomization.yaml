@@ -662,10 +662,10 @@ vars:
       apiVersion: v1
       kind: ConfigMap
       name: application-config
-- fieldref:
-    fieldPath: data.CACHE_CLEAR_CLIENT_SECRET
-  name: CACHE_CLEAR_CLIENT_SECRET
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: application-config
+  - fieldref:
+      fieldPath: data.CACHE_CLEAR_CLIENT_SECRET
+    name: CACHE_CLEAR_CLIENT_SECRET
+    objref:
+      apiVersion: v1
+      kind: ConfigMap
+      name: application-config
