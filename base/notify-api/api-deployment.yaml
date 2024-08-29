@@ -274,6 +274,8 @@ spec:
               value: '$(FF_BOUNCE_RATE_V1)'
             - name: FF_BOUNCE_RATE_BACKEND
               value: '$(FF_BOUNCE_RATE_BACKEND)'
+            - name: CACHE_CLEAR_CLIENT_SECRET
+              value: '$(CACHE_CLEAR_CLIENT_SECRET)'
           resources:
             requests:
               cpu: "200m"
