@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: admin
-  name:  admin
+  name: admin
   namespace: notification-canada-ca
 spec:
   replicas: 1
@@ -38,113 +38,111 @@ spec:
             - name: ADMIN_BASE_URL
               value: https://$(BASE_DOMAIN)
             - name: ADMIN_CLIENT_SECRET
-              value: '$(ADMIN_CLIENT_SECRET)'
+              value: "$(ADMIN_CLIENT_SECRET)"
             - name: ALLOW_DEBUG_ROUTE
-              value: '$(ALLOW_DEBUG_ROUTE)'
+              value: "$(ALLOW_DEBUG_ROUTE)"
             - name: ALLOW_HTML_SERVICE_IDS
-              value: '$(ALLOW_HTML_SERVICE_IDS)'
+              value: "$(ALLOW_HTML_SERVICE_IDS)"
             - name: API_HOST_NAME
-              value: '$(API_HOST_NAME)'
+              value: "$(API_HOST_NAME)"
             - name: ASSET_UPLOAD_BUCKET_NAME
-              value: '$(ASSET_UPLOAD_BUCKET_NAME)'
+              value: "$(ASSET_UPLOAD_BUCKET_NAME)"
             - name: ASSET_DOMAIN
-              value: '$(ASSET_DOMAIN)'
+              value: "$(ASSET_DOMAIN)"
             - name: AWS_REGION
-              value: '$(AWS_REGION)'
+              value: "$(AWS_REGION)"
             - name: AWS_XRAY_CONTEXT_MISSING
-              value: '$(AWS_XRAY_CONTEXT_MISSING)'
+              value: "$(AWS_XRAY_CONTEXT_MISSING)"
             - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
+              value: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
             - name: AWS_XRAY_SDK_ENABLED
-              value: '$(AWS_XRAY_SDK_ENABLED)'
+              value: "$(AWS_XRAY_SDK_ENABLED)"
             - name: BULK_SEND_AWS_BUCKET
-              value: '$(BULK_SEND_AWS_BUCKET)'
+              value: "$(BULK_SEND_AWS_BUCKET)"
             - name: BULK_SEND_TEST_SERVICE_ID
-              value: '$(BULK_SEND_TEST_SERVICE_ID)'
+              value: "$(BULK_SEND_TEST_SERVICE_ID)"
             - name: CONTACT_EMAIL
-              value: '$(CONTACT_EMAIL)'
+              value: "$(CONTACT_EMAIL)"
             - name: CSV_UPLOAD_BUCKET_NAME
-              value: '$(CSV_UPLOAD_BUCKET_NAME)'
+              value: "$(CSV_UPLOAD_BUCKET_NAME)"
             - name: DEBUG_KEY
-              value: '$(DEBUG_KEY)'
+              value: "$(DEBUG_KEY)"
             - name: DANGEROUS_SALT
-              value: '$(DANGEROUS_SALT)'
+              value: "$(DANGEROUS_SALT)"
             - name: DOCUMENTATION_DOMAIN
-              value: 'documentation.$(BASE_DOMAIN)'
+              value: "documentation.$(BASE_DOMAIN)"
             - name: HC_EN_SERVICE_ID
-              value: '$(HC_EN_SERVICE_ID)'
+              value: "$(HC_EN_SERVICE_ID)"
             - name: HC_FR_SERVICE_ID
-              value: '$(HC_FR_SERVICE_ID)'
+              value: "$(HC_FR_SERVICE_ID)"
             - name: FF_SPIKE_SMS_DAILY_LIMIT
-              value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
+              value: "$(FF_SPIKE_SMS_DAILY_LIMIT)"
             - name: FF_SMS_PARTS_UI
-              value: '$(FF_SMS_PARTS_UI)'
+              value: "$(FF_SMS_PARTS_UI)"
             - name: FLASK_APP
-              value: 'application.py'
+              value: "application.py"
             - name: NOTIFY_ENVIRONMENT
-              value: '$(ENVIRONMENT)'
+              value: "$(ENVIRONMENT)"
             - name: MIXPANEL_PROJECT_TOKEN
-              value: '$(MIXPANEL_PROJECT_TOKEN)'
+              value: "$(MIXPANEL_PROJECT_TOKEN)"
             - name: SENDING_DOMAIN
-              value: '$(BASE_DOMAIN)'
-            - name: SENSITIVE_SERVICES
-              value: '$(SENSITIVE_SERVICES)'
+              value: "$(BASE_DOMAIN)"
             - name: SQLALCHEMY_DATABASE_URI
-              value: '$(POSTGRES_SQL)'
+              value: "$(POSTGRES_SQL)"
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: REDIS_URL
-              value: '$(REDIS_URL)'
+              value: "$(REDIS_URL)"
             - name: REDIS_PUBLISH_URL
-              value: '$(REDIS_PUBLISH_URL)'
+              value: "$(REDIS_PUBLISH_URL)"
             - name: REDIS_ENABLED
               value: "1"
             - name: SECRET_KEY
-              value: '$(SECRET_KEY)'
+              value: "$(SECRET_KEY)"
             - name: SENTRY_URL
-              value: '$(SENTRY_URL)'
+              value: "$(SENTRY_URL)"
             - name: SHOW_STYLEGUIDE
-              value: 'true'
+              value: "true"
             - name: NEW_RELIC_APP_NAME
-              value: 'notification-admin-$(ENVIRONMENT)'
+              value: "notification-admin-$(ENVIRONMENT)"
             - name: NEW_RELIC_CONFIG_FILE
-              value: '/app/newrelic.ini'
+              value: "/app/newrelic.ini"
             - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: 'true'
+              value: "true"
             - name: NEW_RELIC_LICENSE_KEY
-              value: '$(NEW_RELIC_LICENSE_KEY)'
+              value: "$(NEW_RELIC_LICENSE_KEY)"
             - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'
+              value: "$(NEW_RELIC_MONITOR_MODE)"
             - name: IP_GEOLOCATE_SERVICE
-              value: '$(IP_GEOLOCATE_SERVICE)'
+              value: "$(IP_GEOLOCATE_SERVICE)"
             - name: GC_ARTICLES_API
-              value: '$(GC_ARTICLES_API)'
+              value: "$(GC_ARTICLES_API)"
             - name: GC_ARTICLES_API_AUTH_USERNAME
-              value: '$(GC_ARTICLES_API_AUTH_USERNAME)'
+              value: "$(GC_ARTICLES_API_AUTH_USERNAME)"
             - name: GC_ARTICLES_API_AUTH_PASSWORD
-              value: '$(GC_ARTICLES_API_AUTH_PASSWORD)'
+              value: "$(GC_ARTICLES_API_AUTH_PASSWORD)"
             - name: WAF_SECRET
-              value: '$(WAF_SECRET)'
+              value: "$(WAF_SECRET)"
             - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-              value: '$(CRM_GITHUB_PERSONAL_ACCESS_TOKEN)'
+              value: "$(CRM_GITHUB_PERSONAL_ACCESS_TOKEN)"
             - name: CRM_ORG_LIST_URL
-              value: '$(CRM_ORG_LIST_URL)'
+              value: "$(CRM_ORG_LIST_URL)"
             - name: FF_SALESFORCE_CONTACT
-              value: '$(FF_SALESFORCE_CONTACT)'
+              value: "$(FF_SALESFORCE_CONTACT)"
             - name: FF_BOUNCE_RATE_V1
-              value: '$(FF_BOUNCE_RATE_V1)'
+              value: "$(FF_BOUNCE_RATE_V1)"
             - name: FF_BOUNCE_RATE_V15
-              value: '$(FF_BOUNCE_RATE_V15)'
+              value: "$(FF_BOUNCE_RATE_V15)"
             - name: FF_ABTEST_SERVICE_ID
-              value: '$(FF_ABTEST_SERVICE_ID)'
+              value: "$(FF_ABTEST_SERVICE_ID)"
             - name: FF_NEW_BRANDING
-              value: '$(FF_NEW_BRANDING)'
+              value: "$(FF_NEW_BRANDING)"
             - name: FF_TOU
-              value: '$(FF_TOU)'
+              value: "$(FF_TOU)"
             - name: FF_TEMPLATE_CATEGORY
-              value: '$(FF_TEMPLATE_CATEGORY)'
+              value: "$(FF_TEMPLATE_CATEGORY)"
           resources:
             requests:
               cpu: "250m"
