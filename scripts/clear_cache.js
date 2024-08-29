@@ -22,9 +22,10 @@ function createHmacSignature(secret, data) {
 const args = process.argv.slice(2);
 const adminUsername = args[0];
 const adminSecret = args[1];
+const apiEndpoint = args[2];
 
-if (!adminUsername || !adminSecret) {
-    console.error('Usage: node clear_cache.js <USERNAME> <SECRET>');
+if (!adminUsername || !adminSecret || !apiEndpoint) {
+    console.error('Usage: node clear_cache.js <ADMIN_USERNAME> <ADMIN_SECRET> <API_ENDPOINT>');
     process.exit(1);
 }
 
@@ -46,7 +47,6 @@ const signature = createHmacSignature(adminSecret, `${headerEncoded}.${payloadEn
 const jwt = `${headerEncoded}.${payloadEncoded}.${signature}`;
 
 // Use curl to call the API
-const apiEndpoint = 'http://localhost:6011/cache/clear';
 const curlCommand = `curl -s -o /dev/null -w "%{http_code}" -X POST ${apiEndpoint} -H "Authorization: Bearer ${jwt}"`;
 
 exec(curlCommand, (error, stdout, stderr) => {
