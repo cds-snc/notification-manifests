@@ -51,7 +51,7 @@ const curlCommand = `curl -s -o /dev/null -w "%{http_code}" -X POST ${apiEndpoin
 
 exec(curlCommand, (error, stdout, stderr) => {
     if (error) {
-        console.error(`Error calling the cache-clear API: ${error.message}`);
+        console.error(`Error calling the cache-clear API.`);
         return;
     }
     const httpCode = stdout.trim();
