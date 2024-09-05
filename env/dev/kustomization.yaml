@@ -10,7 +10,6 @@ resources:
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
   - documentation-target-group.yaml
-  - aws-auth-configmap.yaml
   - ../../base/prometheus-cloudwatch
   - ../../base/notify-admin
   - ../../base/notify-api
