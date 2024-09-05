@@ -8,3 +8,4 @@ spec:
     name: admin
     port: 6012
   targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:800095993820:targetgroup/notification-canada-ca-alb-admin/e2755abaad576738
+  targetType: instance
