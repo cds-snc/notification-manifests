@@ -8,3 +8,4 @@ spec:
     name: api
     port: 6011
   targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:800095993820:targetgroup/notification-canada-ca-alb-api/f846c4e2dabc1ec8
+  targetType: instance

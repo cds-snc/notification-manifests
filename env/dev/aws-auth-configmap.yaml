@@ -12,7 +12,7 @@ data:
       username: system:node:{{EC2PrivateDNSName}}
     - groups:
       - system:masters
-      rolearn: arn:aws:iam::800095993820:role/AWSReservedSSO_AWSAdministratorAccess_4085b2fdb6f29f43
+      rolearn: arn:aws:iam::800095993820:role/AWSReservedSSO_AWSAdministratorAccess_e6e62a284c3c35fc
       username: AWSAdministratorAccess:{{SessionName}}
     - rolearn: arn:aws:iam::800095993820:role/notification-admin-apply
       username: notification-admin-apply

@@ -8,3 +8,4 @@ spec:
     name: document-download-api
     port: 7000
   targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:800095993820:targetgroup/notification-document-api/cf8b9d4db3bfe004
+  targetType: instance
