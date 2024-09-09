@@ -60,7 +60,7 @@ jobs:
         with:
           config_file: /var/tmp/staging.ovpn
           client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}
-          echo_config: false                
+          echo_config: false
 
       - name: Decrypt staging env
         run: |
@@ -129,3 +129,11 @@ jobs:
         run: |
           json="{'text':'<!here> Manifests Merge To Staging CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+
+  clear-cache:
+    needs: kubectl-apply
+    uses: ./.github/workflows/clear-notify-cache.yaml
+    secrets:
+      CACHE_CLEAR_USER_NAME: ${{ secrets.STAGING_CACHE_CLEAR_USER_NAME }}
+      CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.STAGING_CACHE_CLEAR_CLIENT_SECRET }}
+      API_URL: ${{ secrets.STAGING_API_URL }}
