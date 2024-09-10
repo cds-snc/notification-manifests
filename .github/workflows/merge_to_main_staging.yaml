@@ -133,8 +133,6 @@ jobs:
   clear-cache:
     needs: kubectl-apply
     uses: ./.github/workflows/clear-notify-cache.yaml
-    with:
-      environment: staging
     secrets:
       CACHE_CLEAR_USER_NAME: ${{ secrets.STAGING_CACHE_CLEAR_USER_NAME }}
       CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.STAGING_CACHE_CLEAR_CLIENT_SECRET }}
