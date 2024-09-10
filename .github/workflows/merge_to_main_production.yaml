@@ -158,13 +158,3 @@ jobs:
         run: |
           json="{'text':'<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
-
-  clear-cache:
-    needs: kubectl-apply
-    uses: ./.github/workflows/clear-notify-cache.yaml
-    with:
-      environment: production
-    secrets:
-      CACHE_CLEAR_USER_NAME: ${{ secrets.PRODUCTION_CACHE_CLEAR_USER_NAME }}
-      CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.PRODUCTION_CACHE_CLEAR_CLIENT_SECRET }}
-      API_URL: ${{ secrets.PRODUCTION_API_URL }}
