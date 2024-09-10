@@ -5,13 +5,13 @@ inputs:
     description: The name of the first environment
     required: true
   env1-vars:
-    description: The first environment's varaible names
+    description: The first environment's variable names
     required: true
   env2-name:
     description: The name of the second environment
     required: true
   env2-vars:
-    description: The second envrionment's variable names
+    description: The second environment's variable names
     required: true
 
 runs:
