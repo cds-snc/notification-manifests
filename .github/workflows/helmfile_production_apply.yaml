@@ -12,7 +12,6 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT }}
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.PRODUCTION_OP_SERVICE_ACCOUNT_TOKEN }}  
 
 jobs:
   helmfile-apply:
@@ -22,6 +21,7 @@ jobs:
       - name: Inject token authentication
         run: |
           git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
         id: awsconfig
@@ -29,41 +29,63 @@ jobs:
           aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
+
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
+
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
         with:
           install-kubectl: yes
           install-helm: yes       
           helmfile-version: "v0.151.0"
+
       - name: Install OpenVPN
         run: |
           sudo apt update
           sudo apt install -y openvpn openvpn-systemd-resolved
-      - name: Install 1Pass CLI
+
+      - name: Setup Terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
+        env: # In case you want to override default versions
+            CONFTEST_VERSION: 0.30.0 
+            TERRAFORM_VERSION: 1.6.2
+            TERRAGRUNT_VERSION: 0.44.4
+            TF_SUMMARIZE_VERSION: 0.2.3            
+
+      - name: Retrieve VPN Config
         run: |
-          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
-          sudo dpkg -i 1pass.deb
-      - name: One Password Fetch
-        run: |
-          op read op://ppnxsriom3alsxj4ogikyjxlzi/"Production Github Actions VPN"/notesPlain > /var/tmp/production.ovpn
+          git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
+          cd /var/tmp/notification-terraform/env/production/eks
+          ENDPOINT_ID=$(terragrunt output --raw gha_vpn_id)
+          CERT=$(terragrunt output --raw gha_vpn_certificate)
+          KEY=$(terragrunt output --raw gha_vpn_key)
+          aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id $ENDPOINT_ID --output text > /var/tmp/production.ovpn
+          echo "<cert>
+          $CERT
+          </cert>" >> /var/tmp/production.ovpn
+          echo "<key>
+          $KEY
+          </key>" >> /var/tmp/production.ovpn        
+
       - name: Connect to VPN
-        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5"
+        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
         with:
           config_file: /var/tmp/production.ovpn
-          client_key: ${{ secrets.PRODUCTION_OVPN_CLIENT_KEY }}
-          echo_config: false                      
+          echo_config: false            
+
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster   
           kubectl config rename-context arn:aws:eks:ca-central-1:$PRODUCTION_AWS_ACCOUNT:cluster/notification-canada-ca-production-eks-cluster production
+
       - name: Load EnvVars
         run: |
             ./helmfile/getContext.sh -g
+            
       - name: Helmfile apply
         id: helmfile_apply
         run: |
