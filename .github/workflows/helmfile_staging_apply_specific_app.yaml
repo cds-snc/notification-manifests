@@ -74,18 +74,7 @@ jobs:
 
       - name: Retrieve VPN Config
         run: |
-          git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
-          cd /var/tmp/notification-terraform/env/staging/eks
-          ENDPOINT_ID=$(terragrunt output --raw gha_vpn_id)
-          CERT=$(terragrunt output --raw gha_vpn_certificate)
-          KEY=$(terragrunt output --raw gha_vpn_key)
-          aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id $ENDPOINT_ID --output text > /var/tmp/staging.ovpn
-          echo "<cert>
-          $CERT
-          </cert>" >> /var/tmp/staging.ovpn
-          echo "<key>
-          $KEY
-          </key>" >> /var/tmp/staging.ovpn          
+          scripts/createVPNConfig.sh staging 2> /dev/null     
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
