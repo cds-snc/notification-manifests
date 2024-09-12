@@ -23,13 +23,11 @@ decrypt-scratch:
 	aws kms decrypt --ciphertext-blob fileb://.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env.zip &&\
 	unzip -o .env.zip
 
-decrypt-production-orig:
-	@cd env/production &&\
-	aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env
-
-decrypt-staging-orig:
-	@cd env/staging &&\
-	aws kms decrypt --ciphertext-blob fileb://.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .env
+decrypt-previous-dev:
+	@cd env/dev &&\
+	git cat-file blob origin/main:env/dev/.env.zip.enc.aws > .previous.env.zip.enc.aws &&\
+	aws kms decrypt --ciphertext-blob fileb://.previous.env.zip.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env.zip &&\
+	unzip -o .previous.env.zip && mv .env .previous.env
 
 decrypt-previous-staging:
 	@cd env/staging &&\
@@ -57,24 +55,16 @@ check-production:decrypt-previous-production decrypt-production
 	rm *.bak &&\
 	diff -wB --old-line-format='-%L' --new-line-format='' --unchanged-line-format='' .previous.env .env | wc -l | xargs test 0 -eq
 
+diff-dev: decrypt-previous-dev decrypt-dev
+	@cd env/dev &&\
+	diff .previous.env .env
+
 diff-staging: decrypt-previous-staging decrypt-staging
 	@cd env/staging &&\
 	diff .previous.env .env
 
 diff-production: decrypt-previous-production decrypt-production
 	@cd env/production &&\
-	diff .previous.env .env
-
-diff-production-orig: decrypt-production
-	@cd env/production &&\
-	git cat-file blob origin/main:env/production/.env.enc.aws > .previous.env.enc.aws &&\
-	aws kms decrypt --ciphertext-blob fileb://.previous.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env &&\
-	diff .previous.env .env
-
-diff-staging-orig: decrypt-staging
-	@cd env/staging &&\
-	git cat-file blob origin/main:env/staging/.env.enc.aws > .previous.env.enc.aws &&\
-	aws kms decrypt --ciphertext-blob fileb://.previous.env.enc.aws --output text --query Plaintext --region ca-central-1 | base64 --decode > .previous.env &&\
 	diff .previous.env .env
 
 encrypt-production:
