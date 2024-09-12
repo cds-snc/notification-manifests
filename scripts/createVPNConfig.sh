@@ -5,6 +5,7 @@
 ENVIRONMENT=$1
 git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
 cd /var/tmp/notification-terraform/env/$ENVIRONMENT/eks
+export INFRASTRUCTURE_VERSION=$(cat ../../../.github/workflows/infrastructure_version.txt)
 ENDPOINT_ID=$(terragrunt output --raw gha_vpn_id)
 CERT=$(terragrunt output --raw gha_vpn_certificate)
 KEY=$(terragrunt output --raw gha_vpn_key)
