@@ -32,7 +32,6 @@ env:
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
   DOCKER_TAG: ${{ github.event.inputs.tag }}
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
 
 jobs:
   rollout:
@@ -65,21 +64,34 @@ jobs:
           sudo apt update
           sudo apt install -y openvpn openvpn-systemd-resolved
 
-      - name: Install 1Pass CLI
-        run: |
-          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
-          sudo dpkg -i 1pass.deb
+      - name: Setup Terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
+        env: # In case you want to override default versions
+            CONFTEST_VERSION: 0.30.0 
+            TERRAFORM_VERSION: 1.6.2
+            TERRAGRUNT_VERSION: 0.44.4
+            TF_SUMMARIZE_VERSION: 0.2.3                    
 
-      - name: One Password Fetch
+      - name: Retrieve VPN Config
         run: |
-          op read op://4eyyuwddp6w4vxlabrr2i2duxm/"Staging Github Actions VPN"/notesPlain > /var/tmp/staging.ovpn
+          git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
+          cd /var/tmp/notification-terraform/env/staging/eks
+          ENDPOINT_ID=$(terragrunt output --raw gha_vpn_id)
+          CERT=$(terragrunt output --raw gha_vpn_certificate)
+          KEY=$(terragrunt output --raw gha_vpn_key)
+          aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id $ENDPOINT_ID --output text > /var/tmp/staging.ovpn
+          echo "<cert>
+          $CERT
+          </cert>" >> /var/tmp/staging.ovpn
+          echo "<key>
+          $KEY
+          </key>" >> /var/tmp/staging.ovpn          
 
       - name: Connect to VPN
-        uses: "kota65535/github-openvpn-connect-action@a582825650e2e4101d4e32fa210e2a0a87c7b0ef" # v2.1.0
+        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
         with:
           config_file: /var/tmp/staging.ovpn
-          client_key: ${{ secrets.STAGING_OVPN_CLIENT_KEY }}
-          echo_config: false                
+          echo_config: false                  
 
       - name: Configure kubeconfig
         run: |
