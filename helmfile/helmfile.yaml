@@ -22,6 +22,8 @@ repositories:
   url: https://prometheus-community.github.io/helm-charts
 - name: okgolove
   url: https://okgolove.github.io/helm-charts
+- name: newrelic
+  url: https://helm-charts.newrelic.com
 
 releases:
 {{ if eq .Environment.Name "dev" }}
@@ -175,3 +177,14 @@ releases:
     version: 4.0.8
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
+
+  - name: newrelic
+    namespace: newrelic
+    installed: false
+    labels:
+      app: newrelic
+      tier: main
+      category: monitoring
+    chart: newrelic/nri-bundle
+    values:
+    - ./overrides/system/newrelic.yaml.gotmpl
