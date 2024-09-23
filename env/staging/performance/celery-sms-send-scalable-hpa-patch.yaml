@@ -5,7 +5,7 @@ metadata:
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
-  maxReplicas: 40
+  maxReplicas: 15
   metrics:
   - resource:
       name: cpu
