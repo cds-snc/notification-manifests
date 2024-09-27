@@ -57,3 +57,4 @@ jobs:
         uses: kabute/popeye-github-actions@v9
         env:
           POPEYE_MIN_SCORE: 80
+          KUBECONFIG_DATA: ${{ secrets.STAGING_KUBECONFIG_SECRET }}
