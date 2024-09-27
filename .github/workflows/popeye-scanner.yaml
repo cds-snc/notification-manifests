@@ -54,6 +54,6 @@ jobs:
             ./helmfile/getContext.sh -g
       - name: Popeye Score
         id: popeye-score
-        uses: actions/popeye-github-actions@v9
+        uses: kabute/popeye-github-actions@v9
         env:
           POPEYE_MIN_SCORE: 80
