@@ -49,12 +49,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
           kubectl config rename-context arn:aws:eks:ca-central-1:$STAGING_AWS_ACCOUNT:cluster/notification-canada-ca-staging-eks-cluster staging
-      - name: Load EnvVars
+      - name: Popeye Report
         run: |
-            ./helmfile/getContext.sh -g
-      - name: Popeye Score
-        id: popeye-score
-        uses: kabute/popeye-github-actions@v9
-        env:
-          POPEYE_MIN_SCORE: 80
-          KUBECONFIG_DATA: ${{ secrets.STAGING_KUBECONFIG_SECRET }}
+          brew install derailed/popeye/popeye
+          popeye -n notification-canada-ca
