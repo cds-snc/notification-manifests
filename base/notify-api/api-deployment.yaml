@@ -73,10 +73,6 @@ spec:
               value: 'documentation.$(BASE_DOMAIN)'
             - name: FF_SALESFORCE_CONTACT
               value: '$(FF_SALESFORCE_CONTACT)'
-            - name: FF_SPIKE_SMS_DAILY_LIMIT
-              value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
-            - name: FF_SMS_PARTS_UI
-              value: '$(FF_SMS_PARTS_UI)'
             - name: FIDO2_DOMAIN
               value: '$(FIDO2_DOMAIN)'
             - name: FLASK_APP
@@ -188,10 +184,6 @@ spec:
               value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
             - name: FF_SALESFORCE_CONTACT
               value: '$(FF_SALESFORCE_CONTACT)'
-            - name: FF_SPIKE_SMS_DAILY_LIMIT
-              value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
-            - name: FF_TEMPLATE_CATEGORY
-              value: '$(FF_TEMPLATE_CATEGORY)'
             - name: FIDO2_DOMAIN
               value: '$(FIDO2_DOMAIN)'
             - name: FRESH_DESK_API_URL
@@ -270,10 +262,6 @@ spec:
               value: '$(ZENDESK_API_KEY)'
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: 'True'
-            - name: FF_BOUNCE_RATE_V1
-              value: '$(FF_BOUNCE_RATE_V1)'
-            - name: FF_BOUNCE_RATE_BACKEND
-              value: '$(FF_BOUNCE_RATE_BACKEND)'
             - name: CACHE_CLEAR_CLIENT_SECRET
               value: '$(CACHE_CLEAR_CLIENT_SECRET)'
           resources:

@@ -124,10 +124,6 @@ spec:
               value: 'documentation.{{ .Values.baseDomain }}'
             - name: FF_SALESFORCE_CONTACT
               value: "true"
-            - name: FF_SPIKE_SMS_DAILY_LIMIT
-              value: "true"
-            - name: FF_SMS_PARTS_UI
-              value: "false"
             - name: FIDO2_DOMAIN
               value: {{ .Values.baseDomain }}
             - name: FLASK_APP
@@ -324,8 +320,6 @@ spec:
               value: 'http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000'
             - name: FF_SALESFORCE_CONTACT
               value: "true"
-            - name: FF_SPIKE_SMS_DAILY_LIMIT
-              value: "true"
             - name: FIDO2_DOMAIN
               value: {{ .Values.baseDomain }}
             - name: NOTIFY_EMAIL_DOMAIN
@@ -482,10 +476,6 @@ spec:
                   key: ZENDESK_API_KEY
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: "true"
-            - name: FF_BOUNCE_RATE_V1
-              value: "false"
-            - name: FF_BOUNCE_RATE_BACKEND
-              value: "false"
           {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
             - name: secrets-store-inline
