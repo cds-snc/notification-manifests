@@ -2,7 +2,7 @@
 # This script will create a VPN configuration file for the specified environment
 # Usage: ./createVPNConfig.sh <environment>
 # Example: ./createVPNConfig.sh staging
-ENVIRONMENT=$1
+export ENVIRONMENT=$1
 if [ "$ENVIRONMENT" == "production" ]; then
   VAULT=ppnxsriom3alsxj4ogikyjxlzi
 else
