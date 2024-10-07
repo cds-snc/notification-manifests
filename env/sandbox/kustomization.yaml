@@ -10,7 +10,6 @@ resources:
   - admin-target-group.yaml
   - document-download-api-target-group.yaml
   - documentation-target-group.yaml
-  - aws-auth-configmap.yaml
   - ../../base/prometheus-cloudwatch
   - ../../base/notify-admin
   - ../../base/notify-api
@@ -607,6 +606,20 @@ vars:
       kind: ConfigMap
       name: application-config
   - fieldref:
+      fieldPath: data.FF_TOU
+    name: FF_TOU
+    objref:
+      apiVersion: v1
+      kind: ConfigMap
+      name: application-config
+  - fieldref:
+      fieldPath: data.FF_TEMPLATE_CATEGORY
+    name: FF_TEMPLATE_CATEGORY
+    objref:
+      apiVersion: v1
+      kind: ConfigMap
+      name: application-config
+  - fieldref:
       fieldPath: data.SRE_CLIENT_SECRET
     name: SRE_CLIENT_SECRET
     objref:
@@ -648,10 +661,10 @@ vars:
       apiVersion: v1
       kind: ConfigMap
       name: application-config
-- fieldref:
-    fieldPath: data.CACHE_CLEAR_CLIENT_SECRET
-  name: CACHE_CLEAR_CLIENT_SECRET
-  objref:
-    apiVersion: v1
-    kind: ConfigMap
-    name: application-config
+  - fieldref:
+      fieldPath: data.CACHE_CLEAR_CLIENT_SECRET
+    name: CACHE_CLEAR_CLIENT_SECRET
+    objref:
+      apiVersion: v1
+      kind: ConfigMap
+      name: application-config

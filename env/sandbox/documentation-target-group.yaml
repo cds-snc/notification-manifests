@@ -7,5 +7,5 @@ spec:
   serviceRef:
     name: documentation
     port: 80
-  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:891376947407:targetgroup/notification-documentation/5fe6cd01b2d32903
+  targetGroupARN: arn:aws:elasticloadbalancing:ca-central-1:891376947407:targetgroup/notification-documentation/b63eeaeb79fb945f
   targetType: instance
