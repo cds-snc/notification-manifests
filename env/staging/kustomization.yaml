@@ -264,20 +264,6 @@ vars:
       kind: ConfigMap
       name: application-config
   - fieldref:
-      fieldPath: data.FF_SPIKE_SMS_DAILY_LIMIT
-    name: FF_SPIKE_SMS_DAILY_LIMIT
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
-      fieldPath: data.FF_SMS_PARTS_UI
-    name: FF_SMS_PARTS_UI
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
       fieldPath: data.FIDO2_DOMAIN
     name: FIDO2_DOMAIN
     objref:
@@ -567,55 +553,6 @@ vars:
   - fieldref:
       fieldPath: data.SALESFORCE_GENERIC_ACCOUNT_ID
     name: SALESFORCE_GENERIC_ACCOUNT_ID
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
-      fieldPath: data.FF_BOUNCE_RATE_V1
-    name: FF_BOUNCE_RATE_V1
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
-      fieldPath: data.FF_BOUNCE_RATE_V15
-    name: FF_BOUNCE_RATE_V15
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
-      fieldPath: data.FF_BOUNCE_RATE_BACKEND
-    name: FF_BOUNCE_RATE_BACKEND
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
-      fieldPath: data.FF_ABTEST_SERVICE_ID
-    name: FF_ABTEST_SERVICE_ID
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
-      fieldPath: data.FF_NEW_BRANDING
-    name: FF_NEW_BRANDING
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
-      fieldPath: data.FF_TOU
-    name: FF_TOU
-    objref:
-      apiVersion: v1
-      kind: ConfigMap
-      name: application-config
-  - fieldref:
-      fieldPath: data.FF_TEMPLATE_CATEGORY
-    name: FF_TEMPLATE_CATEGORY
     objref:
       apiVersion: v1
       kind: ConfigMap

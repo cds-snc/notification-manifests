@@ -74,12 +74,6 @@ spec:
             value: '$(DANGEROUS_SALT)'
           - name: DOCUMENT_DOWNLOAD_API_HOST
             value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
-          - name: FF_SPIKE_SMS_DAILY_LIMIT
-            value: '$(FF_SPIKE_SMS_DAILY_LIMIT)'
-          - name: FF_SMS_PARTS_UI
-            value: '$(FF_SMS_PARTS_UI)'
-          - name: FF_TEMPLATE_CATEGORY
-            value: '$(FF_TEMPLATE_CATEGORY)'
           - name: FIDO2_DOMAIN
             value: '$(FIDO2_DOMAIN)'
           - name: HC_EN_SERVICE_ID
@@ -124,10 +118,6 @@ spec:
             value: '$(NEW_RELIC_MONITOR_MODE)'
           - name: FF_CLOUDWATCH_METRICS_ENABLED
             value: 'True'
-          - name: FF_BOUNCE_RATE_V1
-            value: '$(FF_BOUNCE_RATE_V1)'
-          - name: FF_BOUNCE_RATE_BACKEND
-            value: '$(FF_BOUNCE_RATE_BACKEND)'
           - name: AWS_PINPOINT_SC_POOL_ID
             value: '$(AWS_PINPOINT_SC_POOL_ID)'
           - name: AWS_PINPOINT_SC_TEMPLATE_IDS
