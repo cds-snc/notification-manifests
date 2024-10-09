@@ -75,10 +75,6 @@ spec:
               value: "$(HC_EN_SERVICE_ID)"
             - name: HC_FR_SERVICE_ID
               value: "$(HC_FR_SERVICE_ID)"
-            - name: FF_SPIKE_SMS_DAILY_LIMIT
-              value: "$(FF_SPIKE_SMS_DAILY_LIMIT)"
-            - name: FF_SMS_PARTS_UI
-              value: "$(FF_SMS_PARTS_UI)"
             - name: FLASK_APP
               value: "application.py"
             - name: NOTIFY_ENVIRONMENT
@@ -131,18 +127,6 @@ spec:
               value: "$(CRM_ORG_LIST_URL)"
             - name: FF_SALESFORCE_CONTACT
               value: "$(FF_SALESFORCE_CONTACT)"
-            - name: FF_BOUNCE_RATE_V1
-              value: "$(FF_BOUNCE_RATE_V1)"
-            - name: FF_BOUNCE_RATE_V15
-              value: "$(FF_BOUNCE_RATE_V15)"
-            - name: FF_ABTEST_SERVICE_ID
-              value: "$(FF_ABTEST_SERVICE_ID)"
-            - name: FF_NEW_BRANDING
-              value: "$(FF_NEW_BRANDING)"
-            - name: FF_TOU
-              value: "$(FF_TOU)"
-            - name: FF_TEMPLATE_CATEGORY
-              value: "$(FF_TEMPLATE_CATEGORY)"
           resources:
             requests:
               cpu: "250m"
