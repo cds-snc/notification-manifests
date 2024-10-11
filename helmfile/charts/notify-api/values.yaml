@@ -4,13 +4,15 @@
 
 replicaCount: 2
 
-baseDomain: notification.canada.ca
-env: production
-postgresHost: something
-docDownloadApiHost:  'http://document-download-api.main.svc.cluster.local:7000'
+api:
+  env: dev
+  baseDomain: notification.canada.ca
+  docDownloadApiHost: "http://document-download-api.main.svc.cluster.local:7000"
+  hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
+  hc_fr_service_id: changeme
 
 image:
-  repository: public.ecr.aws/cds-snc/notify-admin
+  repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
