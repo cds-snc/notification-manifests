@@ -605,3 +605,10 @@ vars:
       apiVersion: v1
       kind: ConfigMap
       name: application-config
+  - fieldref:
+      fieldPath: data.FF_RTL
+    name: FF_RTL
+    objref:
+      apiVersion: v1
+      kind: ConfigMap
+      name: application-config

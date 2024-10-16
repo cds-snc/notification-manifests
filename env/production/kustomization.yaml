@@ -592,3 +592,10 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.CACHE_CLEAR_CLIENT_SECRET
+  - name: FF_RTL
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_RTL
