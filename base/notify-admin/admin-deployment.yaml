@@ -127,6 +127,8 @@ spec:
               value: "$(CRM_ORG_LIST_URL)"
             - name: FF_SALESFORCE_CONTACT
               value: "$(FF_SALESFORCE_CONTACT)"
+            - name: FF_RTL
+              value: "$(FF_RTL)"
           resources:
             requests:
               cpu: "250m"
