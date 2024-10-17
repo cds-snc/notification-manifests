@@ -65,6 +65,7 @@ GetValue "API_TARGET_GROUP_ARN"
 GetValue "AWS_REGION"
 GetValue "BASE_DOMAIN"
 GetValue "EKS_KARPENTER_AMI_ID"
+GetValue "NEW_RELIC_LICENSE_KEY"
 
 if ($LOAD_IMAGE_VERSIONS) {
     LoadImageVersions
