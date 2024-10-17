@@ -40,35 +40,41 @@ spec:
             [
               "sh",
               "-c",
-              "until nslookup {{ .Values.postgresHost }}; do echo waiting for postgres; sleep 2; done;",
+              "until nslookup $POSTGRES_HOST; do echo waiting for postgres; sleep 2; done;",
             ]
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: POSTGRES_HOST   
         - name: migrate-db
-          image: api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           volumeMounts:
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"
               readOnly: true   
           env:
             - name: ADMIN_BASE_URL
-              value: https://{{ .Values.BaseDomain }}
+              value: https://{{ .Values.api.baseDomain }}
             - name: ADMIN_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: ADMIN_CLIENT_SECRET
             - name: ALLOW_DEBUG_ROUTE
-              {{ if eq .Values.env "production" }}
+              {{ if eq .Values.api.env "production" }}
               value: "false"
               {{ else }}
               value: "true"
               {{ end }}       
             - name: ASSET_UPLOAD_BUCKET_NAME
-              value: notification-canada-ca-{{.Values.env}}-asset-upload
+              value: notification-canada-ca-{{.Values.api.env}}-asset-upload
             - name: ASSET_DOMAIN
-              {{ if eq .Values.env "production" }}
+              {{ if eq .Values.api.env "production" }}
               value: https:/assets.notification.canada.ca
               {{ else }}
-              value: https://assets.{{ .Values.env }}.notification.cdssandbox.xyz
+              value: https://assets.{{ .Values.api.env }}.notification.cdssandbox.xyz
               {{ end }}  
             - name: AWS_ROUTE53_ZONE
               valueFrom:
@@ -105,45 +111,45 @@ spec:
             - name: CRM_ORG_LIST_URL
               value: https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json
             - name: CSV_UPLOAD_BUCKET_NAME
-              value: notification-canada-ca-{{.Values.env}}-csv-upload
-            {{ if not (eq .Values.env "production") }}
+              value: notification-canada-ca-{{.Values.api.env}}-csv-upload
+{{ if not (eq .Values.api.env "production") }}    
             - name: DEBUG_KEY
               valueFrom:
                 secretKeyRef:
-                name: notify-api
+                  name: notify-api
                   key: DEBUG_KEY
-            {{ end }}
+{{ end }}
             - name: DANGEROUS_SALT
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: DANGEROUS_SALT
             - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: {{ .Values.docDownloadApiHost }}
+              value: {{ .Values.api.docDownloadApiHost }}
             - name: DOCUMENTATION_DOMAIN
-              value: 'documentation.{{ .Values.baseDomain }}'
+              value: 'documentation.{{ .Values.api.baseDomain }}'
             - name: FF_SALESFORCE_CONTACT
               value: "true"
             - name: FIDO2_DOMAIN
-              value: {{ .Values.baseDomain }}
+              value: {{ .Values.api.baseDomain }}
             - name: FLASK_APP
               value: application.py
             - name: NOTIFY_EMAIL_DOMAIN
-              value: {{ .Values.baseDomain }}
+              value: {{ .Values.api.baseDomain }}
             - name: NOTIFY_ENVIRONMENT
-              value: {{.Values.env}}
+              value: {{ .Values.api.env }}
             - name: NOTIFICATION_QUEUE_PREFIX
               value: "eks-notification-canada-ca"
             - name: REDIS_URL
               valueFrom:
                   secretKeyRef:
                     name: notify-api
-                    key: REDIS_URL
+                    key: REDIS_URL                 
             - name: REDIS_PUBLISH_URL
               valueFrom:
                   secretKeyRef:
                     name: notify-api
-                    key: REDIS_PUBLISH_URL
+                    key: REDIS_URL
             - name: REDIS_ENABLED
               value: "1"
             - name: SALESFORCE_DOMAIN
@@ -244,7 +250,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ADMIN_BASE_URL
-              value: {{ .Values.baseDomain }}
+              value: {{ .Values.api.baseDomain }}
             - name: ADMIN_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -258,12 +264,12 @@ spec:
             - name: API_HOST_NAME
               value: {{ .Values.apiHostName }}
             - name: ASSET_UPLOAD_BUCKET_NAME
-              value: notification-canada-ca-{{.Values.env}}-asset-upload
+              value: notification-canada-ca-{{.Values.api.env}}-asset-upload
             - name: ASSET_DOMAIN
-              {{ if eq .Values.env "production" }}
+              {{ if eq .Values.api.env "production" }}
               value: https:/assets.notification.canada.ca
               {{ else }}
-              value: https://assets.{{ .Values.env }}.notification.cdssandbox.xyz
+              value: https://assets.{{ .Values.api.env }}.notification.cdssandbox.xyz
               {{ end }}  
             - name: AWS_PINPOINT_REGION
               valueFrom:
@@ -310,7 +316,7 @@ spec:
             - name: CRM_ORG_LIST_URL
               value: https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json
             - name: CSV_UPLOAD_BUCKET_NAME
-              value: notification-canada-ca-{{.Values.env}}-csv-upload
+              value: notification-canada-ca-{{.Values.api.env}}-csv-upload
             - name: DANGEROUS_SALT
               valueFrom:
                 secretKeyRef:
@@ -321,9 +327,9 @@ spec:
             - name: FF_SALESFORCE_CONTACT
               value: "true"
             - name: FIDO2_DOMAIN
-              value: {{ .Values.baseDomain }}
+              value: {{ .Values.api.baseDomain }}
             - name: NOTIFY_EMAIL_DOMAIN
-              value: {{ .Values.baseDomain }}
+              value: {{ .Values.api.baseDomain }}
             - name: FRESH_DESK_API_URL
               valueFrom:
                   secretKeyRef:
@@ -340,17 +346,11 @@ spec:
                     name: notify-api
                     key: FRESH_DESK_PRODUCT_ID
             - name: HC_EN_SERVICE_ID
-              valueFrom:
-                secretKeyRef:
-                  name: notify-admin
-                  key: HC_EN_SERVICE_ID
+              value: {{ .Values.api.hc_en_service_id }}
             - name: HC_FR_SERVICE_ID
-              valueFrom:
-                secretKeyRef:
-                  name: notify-admin
-                  key: HC_FR_SERVICE_ID
+              value: {{ .Values.api.hc_fr_service_id }}
             - name: NOTIFY_ENVIRONMENT
-              value: {{ .Values.env }}
+              value: {{ .Values.api.env }}
             - name: NOTIFICATION_QUEUE_PREFIX
               value: "eks-notification-canada-ca"
             - name: REDIS_URL
@@ -362,7 +362,7 @@ spec:
               valueFrom:
                   secretKeyRef:
                     name: notify-api
-                    key: REDIS_PUBLISH_URL
+                    key: REDIS_URL
             - name: REDIS_ENABLED
               value: "1"
             - name: SALESFORCE_DOMAIN
@@ -444,13 +444,13 @@ spec:
                     name: notify-api
                     key: SENTRY_URL
             - name: NEW_RELIC_APP_NAME
-              value: notification-api-{{ .Values.env }}
+              value: notification-api-{{ .Values.api.env }}
             - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
               value: "true"
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
                   secretKeyRef:
-                    name: notify-admin
+                    name: notify-api
                     key: NEW_RELIC_LICENSE_KEY
             - name: NEW_RELIC_MONITOR_MODE
               value: "true"

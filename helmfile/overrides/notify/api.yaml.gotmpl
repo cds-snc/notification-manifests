@@ -1,10 +1,16 @@
 #  APPLICATION CONFIG
-baseURL: {{ requiredEnv "BASE_DOMAIN" }}
-docDownloadApiHost: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
+api:
+  env: {{ .Environment.Name }}
+  baseDomain: {{ requiredEnv "BASE_DOMAIN" }}
+  docDownloadApiHost: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
 
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-notify-api
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-api
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "API_TARGET_GROUP_ARN"}}
 
 # ENVIRONMENT SPECIFIC 
 # DEV
