@@ -10,6 +10,22 @@ api:
   docDownloadApiHost: "http://document-download-api.main.svc.cluster.local:7000"
   hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
   hc_fr_service_id: changeme
+  asset_upload_bucket_name: notification-canada-ca-{{.Values.api.env}}-asset-upload
+  allow_debug_route: "false"
+  asset_domain: https:/assets.notification.canada.ca
+  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json
+  csv_upload_bucket_name: notification-canada-ca-{{.Values.api.env}}-csv-upload
+  documentation_domain: 'documentation.{{ .Values.api.baseDomain }}'
+  ff_salesforce_contact: "true"
+  flask_app: application.py
+  notification_queue_prefix: eks-notification-canada-ca
+  redis_enabled: "1"
+  salesforce_domain: login
+  new_relic_monitor_mode: "true"
+  api_host_name: https://api.{{ .Values.api.env }}.{{ .Values.api.baseDomain }}
+  batch_insertion_chunk_size: "10"
+
+
 
 image:
   repository: public.ecr.aws/cds-snc/notify-api
