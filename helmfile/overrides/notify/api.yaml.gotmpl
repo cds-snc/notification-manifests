@@ -1,31 +1,44 @@
 #  APPLICATION CONFIG
-baseURL: {{ requiredEnv "BASE_DOMAIN" }}
-docDownloadApiHost: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
-
-serviceAccount:
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-notify-api
+api:
+  env: {{ .Environment.Name }}
+  base_domain: {{ requiredEnv "BASE_DOMAIN" }}
+  document_download_api_host: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
+  {{ if not (eq .Environment.Name "production ") }}
+  asset_domain: https://assets.{{ .Environment.Name }}.notification.cdssandbox.xyz
+  allow_debug_route: true
+  {{ end }}
 
 # ENVIRONMENT SPECIFIC 
 # DEV
 {{ if eq .Environment.Name "dev" }}
-apiHostName: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
+api:
+  api_host_name: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
 image: 
   tag:  {{ env "DOCKER_TAG" | default "latest" }}
 # STAGING
 {{ else if eq .Environment.Name "staging" }}
-apiHostName: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
+api:
+  api_host_name: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
 image: 
   tag:  {{ env "DOCKER_TAG" | default "latest" }}
 # PRODUCTION
 {{ else if eq .Environment.Name "production" }}
-apiHostName: https://api.{{ requiredEnv "BASE_DOMAIN" }}
+api: 
+  api_host_name: https://api.{{ requiredEnv "BASE_DOMAIN" }}
 image: 
   tag:  {{ env "API_DOCKER_TAG" | default "latest" }}
 {{ else }}
 # OTHER
-apiHostName: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
+api:
+  api_host_name: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
 image: 
   tag:  {{ env "DOCKER_TAG" | default "latest" }}
 {{ end }}
 
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-api
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "API_TARGET_GROUP_ARN"}}
