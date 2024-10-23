@@ -6,8 +6,8 @@ replicaCount: 2
 
 api:
   env: dev
-  baseDomain: notification.canada.ca
-  docDownloadApiHost: "http://document-download-api.main.svc.cluster.local:7000"
+  base_domain: notification.canada.ca
+  document_download_api_host: "http://document-download-api.main.svc.cluster.local:7000"
   hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
   hc_fr_service_id: changeme
   asset_upload_bucket_name: notification-canada-ca-{{.Values.api.env}}-asset-upload
@@ -24,6 +24,9 @@ api:
   new_relic_monitor_mode: "true"
   api_host_name: https://api.{{ .Values.api.env }}.{{ .Values.api.baseDomain }}
   batch_insertion_chunk_size: "10"
+  sql_alchemy_pool_size: "256"
+  new_relic_app_name: "notify-api-{{ .Values.api.env }}"
+  new_relic_distributed_tracing_enabled: "true"
 
 
 
