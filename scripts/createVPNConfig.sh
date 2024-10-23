@@ -9,7 +9,7 @@ else
   VAULT=4eyyuwddp6w4vxlabrr2i2duxm
 fi
 git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
-op read op://$VAULT/"TFVars - $ENVIRONMENT"/notesPlain > /var/tmp/notification-terraform/aws/$ENVIRONMENT.tfvars   
+op read op://$VAULT/"TERRAFORM_SECRETS_$ENVIRONMENT"/notesPlain > /var/tmp/notification-terraform/aws/$ENVIRONMENT.tfvars   
 cd /var/tmp/notification-terraform/env/$ENVIRONMENT/eks
 export INFRASTRUCTURE_VERSION=$(cat ../../../.github/workflows/infrastructure_version.txt)
 ENDPOINT_ID=$(terragrunt output --raw gha_vpn_id)
