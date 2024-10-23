@@ -4,30 +4,40 @@
 
 replicaCount: 2
 
+# COMMON and DEFAULT Variables
 api:
-  env: dev
-  base_domain: notification.canada.ca
-  document_download_api_host: "http://document-download-api.main.svc.cluster.local:7000"
-  hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
+  env: default
+  document_download_api_host: http://document-download-api.{{ .Environment.Name }}.svc.cluster.local:7000
+  base_domain: "{{ .Environment.Name }}.notification.cdssandbox.xyz"
+  hc_en_service_id: changeme
   hc_fr_service_id: changeme
-  asset_upload_bucket_name: notification-canada-ca-{{.Values.api.env}}-asset-upload
-  allow_debug_route: "false"
-  asset_domain: https:/assets.notification.canada.ca
-  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json
-  csv_upload_bucket_name: notification-canada-ca-{{.Values.api.env}}-csv-upload
-  documentation_domain: 'documentation.{{ .Values.api.baseDomain }}'
-  ff_salesforce_contact: "true"
+  asset_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-asset-upload
+  allow_debug_route: "true"
+  asset_domain: assets.{{ .Environment.Name }}.notification.cdssandbox.xyz
+  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json
+  csv_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-csv-upload
+  documentation_domain: 'documentation.{{ .Environment.Name }}.notification.cdssandbox.xyz'
+  ff_salesforce_contact: "false"
   flask_app: application.py
   notification_queue_prefix: eks-notification-canada-ca
-  redis_enabled: "1"
-  salesforce_domain: login
-  new_relic_monitor_mode: "true"
-  api_host_name: https://api.{{ .Values.api.env }}.{{ .Values.api.baseDomain }}
+  redis_enabled: "0"
+  salesforce_domain: changeme
+  new_relic_monitor_mode: "false"
+  api_host_name: https://api.{{ .Environment.Name }}.notification.cdssandbox.xyz
   batch_insertion_chunk_size: "10"
   sql_alchemy_pool_size: "256"
-  new_relic_app_name: "notify-api-{{ .Values.api.env }}"
-  new_relic_distributed_tracing_enabled: "true"
-
+  new_relic_app_name: "notify-api-{{ .Environment.Name }}"
+  new_relic_distributed_tracing_enabled: "false"
+  aws_ses_region: us-east-1
+  aws_ses_smtp: email-smtp.us-east-1.amazonaws.com
+  aws_us_toll_free_number: +18005555555
+  zendesk_sell_api_url: https://cds-snc.zendesk.com
+  zendesk_api_url: https://api.getbase.com
+  allow_html_service_ids: 1,2,3
+  aws_pinpoint_region: us-west-2
+  aws_region: ca-central-1
+  fresh_desk_api_url: https://cds-snc.freshdesk.com
+  sentry_url: changeme
 
 
 image:
@@ -44,7 +54,7 @@ updateStrategy:
   type: RollingUpdate
   rollingUpdate:
     maxSurge: 25%
-    maxUnavailable: 25%  
+    maxUnavailable: 25%
 
 priorityClassName: high-priority
 
@@ -58,17 +68,18 @@ livenessProbe:
     path: "/_status?simple=true"
     port: 6012
 
-
 serviceAccount:
   create: true
   serviceAccountName: "notify-api"
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -80,13 +91,14 @@ service:
   enabled: true
   type: LoadBalancer
   port: 6012
-  annotations: 
+  annotations:
     service.beta.kubernetes.io/aws-load-balancer-internal: "true"
 
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -99,7 +111,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: 
+resources:
   requests:
     cpu: "250m"
     memory: "700Mi"
@@ -117,7 +129,7 @@ pdb:
   enabled: true
   minAvailable: 1
 
-nodeSelector:  
+nodeSelector:
   eks.amazonaws.com/capacityType: ON_DEMAND
 
 targetGroupBinding:
@@ -140,9 +152,9 @@ secretProviderClass:
 
   secretObjects:
     - data:
-      - key: tls.key
-        objectName: INTERNAL_DNS_KEY_BASE64
-      - key: tls.crt
-        objectName: INTERNAL_DNS_CERT_BASE64
+        - key: tls.key
+          objectName: INTERNAL_DNS_KEY_BASE64
+        - key: tls.crt
+          objectName: INTERNAL_DNS_CERT_BASE64
       secretName: nginx
       type: kubernetes.io/tls

@@ -1,38 +1,124 @@
 #  APPLICATION CONFIG
-api:
-  env: {{ .Environment.Name }}
-  base_domain: {{ requiredEnv "BASE_DOMAIN" }}
-  document_download_api_host: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
-  {{ if not (eq .Environment.Name "production ") }}
-  asset_domain: https://assets.{{ .Environment.Name }}.notification.cdssandbox.xyz
-  allow_debug_route: true
-  {{ end }}
-
-# ENVIRONMENT SPECIFIC 
+######################################################
 # DEV
+######################################################
 {{ if eq .Environment.Name "dev" }}
-api:
-  api_host_name: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
 image: 
   tag:  {{ env "DOCKER_TAG" | default "latest" }}
+api:
+  env: dev
+  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+  api_host_name: https://api-k8s.dev.notification.cdssandbox.xyz
+  base_domain: dev.notification.cdssandbox.xyz
+  hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
+  hc_fr_service_id: changeme
+  asset_upload_bucket_name: notification-canada-ca-dev-asset-upload
+  allow_debug_route: "true"
+  asset_domain: assets.dev.notification.cdssandbox.xyz
+  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json
+  csv_upload_bucket_name: notification-canada-ca-dev-csv-upload
+  documentation_domain: 'documentation.dev.notification.cdssandbox.xyz'
+  ff_salesforce_contact: "true"
+  flask_app: application.py
+  notification_queue_prefix: eks-notification-canada-ca
+  redis_enabled: "1"
+  salesforce_domain: test
+  new_relic_monitor_mode: "true"
+  batch_insertion_chunk_size: "10"
+  sql_alchemy_pool_size: "256"
+  new_relic_app_name: "notify-api-dev"
+  new_relic_distributed_tracing_enabled: "true"
+  aws_ses_region: us-east-1
+  aws_ses_smtp: email-smtp.ca-central-1.amazonaws.com
+  aws_us_toll_free_number: +18449521252
+  zendesk_sell_api_url: https://cds-snc.zendesk.com
+  zendesk_api_url: https://api.getbase.com
+  allow_html_service_ids: 4de8b784-03a8-4ba8-a440-3bfea1b04fe6,ea608120-148a-4eba-a64c-4d9a8010e7b0
+  aws_pinpoint_region: us-west-2
+  aws_region: ca-central-1
+  fresh_desk_api_url: https://cds-snc.freshdesk.com
+  sentry_url: https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933
+
+######################################################
 # STAGING
+######################################################
 {{ else if eq .Environment.Name "staging" }}
-api:
-  api_host_name: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
 image: 
   tag:  {{ env "DOCKER_TAG" | default "latest" }}
+api:
+  env: staging
+  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+  api_host_name: https://api.staging.notification.cdssandbox.xyz
+  base_domain: staging.notification.cdssandbox.xyz
+  hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
+  hc_fr_service_id: changeme
+  asset_upload_bucket_name: notification-canada-ca-staging-asset-upload
+  allow_debug_route: "true"
+  asset_domain: assets.staging.notification.cdssandbox.xyz
+  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json
+  csv_upload_bucket_name: notification-canada-ca-staging-csv-upload
+  documentation_domain: 'documentation.staging.notification.cdssandbox.xyz'
+  ff_salesforce_contact: "true"
+  flask_app: application.py
+  notification_queue_prefix: eks-notification-canada-ca
+  redis_enabled: "1"
+  salesforce_domain: test
+  new_relic_monitor_mode: "true"
+  batch_insertion_chunk_size: "10"
+  sql_alchemy_pool_size: "256"
+  new_relic_app_name: "notify-api-staging"
+  new_relic_distributed_tracing_enabled: "true"
+  aws_ses_region: us-east-1
+  aws_ses_smtp: email-smtp.us-east-1.amazonaws.com
+  aws_us_toll_free_number: +18449521252
+  zendesk_sell_api_url: https://cds-snc.zendesk.com
+  zendesk_api_url: https://api.getbase.com
+  allow_html_service_ids: 4de8b784-03a8-4ba8-a440-3bfea1b04fe6,ea608120-148a-4eba-a64c-4d9a8010e7b0
+  aws_pinpoint_region: us-west-2
+  aws_region: ca-central-1
+  fresh_desk_api_url: https://cds-snc.freshdesk.com
+  sentry_url: https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933
+
+######################################################
 # PRODUCTION
+######################################################
 {{ else if eq .Environment.Name "production" }}
-api: 
-  api_host_name: https://api.{{ requiredEnv "BASE_DOMAIN" }}
 image: 
   tag:  {{ env "API_DOCKER_TAG" | default "latest" }}
-{{ else }}
-# OTHER
-api:
-  api_host_name: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
-image: 
-  tag:  {{ env "DOCKER_TAG" | default "latest" }}
+api: 
+  env: production
+  document_download_api_host: "http://document-download-api.main.svc.cluster.local:7000"
+  api_host_name: https://api.notification.canada.ca
+  base_domain: notification.canada.ca
+  hc_en_service_id: 9d7eb35c-e15f-46d0-b7a4-6859b843fedb
+  hc_fr_service_id: 3e2589c4-a0d7-4592-9eb9-c178cddf2b1f
+  asset_upload_bucket_name: notification-canada-ca-production-asset-upload
+  allow_debug_route: "false"
+  asset_domain: https://assets.notification.canada.ca
+  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json
+  csv_upload_bucket_name: notification-canada-ca-production-csv-upload
+  documentation_domain: 'documentation.notification.canada.ca'
+  ff_salesforce_contact: "true"
+  flask_app: application.py
+  notification_queue_prefix: eks-notification-canada-ca
+  redis_enabled: "1"
+  salesforce_domain: login
+  new_relic_monitor_mode: "true"
+  batch_insertion_chunk_size: "10"
+  sql_alchemy_pool_size: "256"
+  new_relic_app_name: "notify-api-production"
+  new_relic_distributed_tracing_enabled: "true"
+  aws_ses_region: us-east-1
+  aws_ses_smtp: email-smtp.us-east-1.amazonaws.com
+  aws_us_toll_free_number: +18449261787
+  zendesk_sell_api_url: https://cds-snc.zendesk.com
+  zendesk_api_url: https://api.getbase.com
+  allow_html_service_ids: 98277a4a-63e4-47c3-8194-dffe8ed51c08,c500520b-977f-49df-8695-84e1c50a90da
+  aws_pinpoint_region: us-west-2
+  aws_region: ca-central-1
+  fresh_desk_api_url: https://cds-snc.freshdesk.com
+  sentry_url: changeme
+
 {{ end }}
 
 serviceAccount:
