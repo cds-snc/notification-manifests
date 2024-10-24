@@ -7,13 +7,8 @@ replicaCount: 2
 # COMMON and DEFAULT Variables
 api:
   env: default
-<<<<<<< HEAD
   document_download_api_host: http://document-download-api.{{ .Release.Name }}.svc.cluster.local:7000
   base_domain: "{{ .Environment.Name }}.notification.cdssandbox.xyz"
-=======
-  document_download_api_host: http://document-download-api.{{ .Values.api.env }}.svc.cluster.local:7000
-  base_domain: notification.canada.ca
->>>>>>> 7ed556ad38c02ba607b5cad54ae1fcc7a4804dc2
   hc_en_service_id: changeme
   hc_fr_service_id: changeme
   asset_upload_bucket_name: notification-canada-ca-{{ .Values.api.env }}-asset-upload
