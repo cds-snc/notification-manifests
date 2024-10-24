@@ -4,7 +4,7 @@
 
 replicaCount: 2
 
-# COMMON and DEFAULT Variables
+# DEFAULTS
 api:
   crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json
   allow_debug_route: "true"
