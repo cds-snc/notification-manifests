@@ -1,12 +1,15 @@
-# COMMON APPLICATION CONFIG
-api: 
+######################################################
+# COMMON
+######################################################
+api:
   env: {{ .Environment.Name }}
-  base_domain: {{ requiredEnv "BASE_DOMAIN "}}
-  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
   asset_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-asset-upload
-  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json
   csv_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-csv-upload
   new_relic_app_name: "notify-api-{{ .Environment.Name }}"
+  base_domain: {{ requiredEnv "BASE_DOMAIN" }}
+  asset_domain: https://assets.{{ requiredEnv "BASE_DOMAIN" }}
+  documentation_domain: 'documentation.{{ requiredEnv "BASE_DOMAIN" }}'
+  api_host_name: https://api.{{ requiredEnv "BASE_DOMAIN" }}
 
 ######################################################
 # DEV
@@ -15,12 +18,11 @@ api:
 image: 
   tag:  {{ env "DOCKER_TAG" | default "latest" }}
 api:
-  api_host_name: https://api-k8s.dev.notification.cdssandbox.xyz
+  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+  api_host_name: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
   hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
   hc_fr_service_id: changeme
   allow_debug_route: "true"
-  asset_domain: assets.dev.notification.cdssandbox.xyz
-  documentation_domain: 'documentation.dev.notification.cdssandbox.xyz'
   allow_html_service_ids: 4de8b784-03a8-4ba8-a440-3bfea1b04fe6,ea608120-148a-4eba-a64c-4d9a8010e7b0
   sentry_url: https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933
 
@@ -31,12 +33,10 @@ api:
 image: 
   tag:  {{ env "DOCKER_TAG" | default "latest" }}
 api:
-  api_host_name: https://api.staging.notification.cdssandbox.xyz
+  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
   hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
   hc_fr_service_id: changeme
   allow_debug_route: "true"
-  asset_domain: assets.staging.notification.cdssandbox.xyz
-  documentation_domain: 'documentation.staging.notification.cdssandbox.xyz'
   new_relic_distributed_tracing_enabled: "true"
   allow_html_service_ids: 4de8b784-03a8-4ba8-a440-3bfea1b04fe6,ea608120-148a-4eba-a64c-4d9a8010e7b0
   sentry_url: https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933
@@ -48,17 +48,28 @@ api:
 image: 
   tag:  {{ env "API_DOCKER_TAG" | default "latest" }}
 api: 
-  api_host_name: https://api.notification.canada.ca
+  document_download_api_host: "http://document-download-api.main.svc.cluster.local:7000"
   hc_en_service_id: 9d7eb35c-e15f-46d0-b7a4-6859b843fedb
   hc_fr_service_id: 3e2589c4-a0d7-4592-9eb9-c178cddf2b1f
   allow_debug_route: "false"
-  asset_domain: https://assets.notification.canada.ca
-  documentation_domain: 'documentation.notification.canada.ca'
-  notification_queue_prefix: eks-notification-canada-ca
   salesforce_domain: login
   new_relic_distributed_tracing_enabled: "true"
   allow_html_service_ids: 98277a4a-63e4-47c3-8194-dffe8ed51c08,c500520b-977f-49df-8695-84e1c50a90da
-  sentry_url: changeme
+
+######################################################
+# SANDBOX
+######################################################
+{{ else if eq .Environment.Name "sandbox" }}
+image: 
+  tag:  {{ env "DOCKER_TAG" | default "latest" }}
+api:
+  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+  api_host_name: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
+  hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
+  hc_fr_service_id: changeme
+  allow_debug_route: "true"
+  allow_html_service_ids: 4de8b784-03a8-4ba8-a440-3bfea1b04fe6,ea608120-148a-4eba-a64c-4d9a8010e7b0
+  sentry_url: https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933
 
 {{ end }}
 
