@@ -7,26 +7,26 @@ replicaCount: 2
 # COMMON and DEFAULT Variables
 api:
   env: default
-  document_download_api_host: http://document-download-api.{{ .Environment.Name }}.svc.cluster.local:7000
-  base_domain: "{{ .Environment.Name }}.notification.cdssandbox.xyz"
+  document_download_api_host: http://document-download-api.{{ .Values.api.env }}.svc.cluster.local:7000
+  base_domain: notification.canada.ca
   hc_en_service_id: changeme
   hc_fr_service_id: changeme
-  asset_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-asset-upload
+  asset_upload_bucket_name: notification-canada-ca-{{ .Values.api.env }}-asset-upload
   allow_debug_route: "true"
-  asset_domain: assets.{{ .Environment.Name }}.notification.cdssandbox.xyz
+  asset_domain: assets.{{ .Values.api.env }}.notification.cdssandbox.xyz
   crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json
-  csv_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-csv-upload
-  documentation_domain: 'documentation.{{ .Environment.Name }}.notification.cdssandbox.xyz'
+  csv_upload_bucket_name: notification-canada-ca-{{ .Values.api.env }}-csv-upload
+  documentation_domain: 'documentation.{{ .Values.api.env }}.notification.cdssandbox.xyz'
   ff_salesforce_contact: "false"
   flask_app: application.py
   notification_queue_prefix: eks-notification-canada-ca
   redis_enabled: "0"
   salesforce_domain: changeme
   new_relic_monitor_mode: "false"
-  api_host_name: https://api.{{ .Environment.Name }}.notification.cdssandbox.xyz
+  api_host_name: https://api.{{ .Values.api.env }}.notification.cdssandbox.xyz
   batch_insertion_chunk_size: "10"
   sql_alchemy_pool_size: "256"
-  new_relic_app_name: "notify-api-{{ .Environment.Name }}"
+  new_relic_app_name: "notify-api-{{ .Values.api.env }}"
   new_relic_distributed_tracing_enabled: "false"
   aws_ses_region: us-east-1
   aws_ses_smtp: email-smtp.us-east-1.amazonaws.com

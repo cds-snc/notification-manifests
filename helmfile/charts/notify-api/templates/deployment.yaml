@@ -104,13 +104,13 @@ spec:
               value: {{ .Values.api.crm_org_list_url }}
             - name: CSV_UPLOAD_BUCKET_NAME
               value: {{ .Values.api.csv_upload_bucket_name }}
-{{ if .Values.api.allow_debug_route }}    
+          {{ if .Values.api.allow_debug_route }}
             - name: DEBUG_KEY
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: DEBUG_KEY
-{{ end }}
+          {{ end }}
             - name: DANGEROUS_SALT
               valueFrom:
                 secretKeyRef:
@@ -227,7 +227,6 @@ spec:
                 secretKeyRef:
                   name: notify-api
                   key: ZENDESK_API_KEY
-
           command:
             [
               "sh",
