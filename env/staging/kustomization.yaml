@@ -613,14 +613,14 @@ vars:
       apiVersion: v1
       kind: ConfigMap
       name: application-config
-- fieldref:
+  - fieldref:
       fieldPath: data.CYPRESS_USER_PW_SECRET
     name: CYPRESS_USER_PW_SECRET
     objref:
       apiVersion: v1
       kind: ConfigMap
       name: application-config
-- fieldref:
+  - fieldref:
       fieldPath: data.CYPRESS_AUTH_CLIENT_SECRET
     name: CYPRESS_AUTH_CLIENT_SECRET
     objref:
