@@ -264,6 +264,10 @@ spec:
               value: 'True'
             - name: CACHE_CLEAR_CLIENT_SECRET
               value: '$(CACHE_CLEAR_CLIENT_SECRET)'
+            - name: CYPRESS_USER_PW_SECRET
+              value: '$(CYPRESS_USER_PW_SECRET)'
+            - name: CYPRESS_AUTH_CLIENT_SECRET
+              value: '$(CYPRESS_AUTH_CLIENT_SECRET)'
           resources:
             requests:
               cpu: "200m"
