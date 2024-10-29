@@ -1,0 +1,10 @@
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/xray-daemon-role
+                                
+settings:
+  clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
+
+xray:
+  region: ca-central-1
+  loglevel: prod

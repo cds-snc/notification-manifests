@@ -1,0 +1,30 @@
+######################################################
+# PRODUCTION
+######################################################
+api: 
+  env: {{ .Environment.Name }}
+  asset_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-asset-upload
+  csv_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-csv-upload
+  new_relic_app_name: "notify-api-{{ .Environment.Name }}"
+  base_domain: {{ requiredEnv "BASE_DOMAIN" }}
+  asset_domain: https://assets.{{ requiredEnv "BASE_DOMAIN" }}
+  documentation_domain: 'documentation.{{ requiredEnv "BASE_DOMAIN" }}'
+  api_host_name: https://api.{{ requiredEnv "BASE_DOMAIN" }}
+  document_download_api_host: "http://document-download-api.main.svc.cluster.local:7000"
+  hc_en_service_id: 9d7eb35c-e15f-46d0-b7a4-6859b843fedb
+  hc_fr_service_id: 3e2589c4-a0d7-4592-9eb9-c178cddf2b1f
+  allow_debug_route: "false"
+  salesforce_domain: login
+  new_relic_distributed_tracing_enabled: "true"
+  allow_html_service_ids: 98277a4a-63e4-47c3-8194-dffe8ed51c08,c500520b-977f-49df-8695-84e1c50a90da
+
+image: 
+  tag:  {{ env "API_DOCKER_TAG" | default "latest" }}
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-api
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "API_TARGET_GROUP_ARN"}}

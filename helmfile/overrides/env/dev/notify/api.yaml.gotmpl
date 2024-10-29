@@ -1,0 +1,30 @@
+######################################################
+# DEV
+######################################################
+api:
+  env: {{ .Environment.Name }}
+  asset_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-asset-upload
+  csv_upload_bucket_name: notification-canada-ca-{{ .Environment.Name }}-csv-upload
+  new_relic_app_name: "notify-api-{{ .Environment.Name }}"
+  base_domain: {{ requiredEnv "BASE_DOMAIN" }}
+  asset_domain: https://assets.{{ requiredEnv "BASE_DOMAIN" }}
+  documentation_domain: 'documentation.{{ requiredEnv "BASE_DOMAIN" }}'
+  api_host_name: https://api.{{ requiredEnv "BASE_DOMAIN" }}
+  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+  api_host_name: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
+  hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
+  hc_fr_service_id: changeme
+  allow_debug_route: "true"
+  allow_html_service_ids: 4de8b784-03a8-4ba8-a440-3bfea1b04fe6,ea608120-148a-4eba-a64c-4d9a8010e7b0
+  sentry_url: https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933
+
+image: 
+  tag:  {{ env "DOCKER_TAG" | default "latest" }}
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-api
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "API_TARGET_GROUP_ARN"}}

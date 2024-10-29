@@ -1,0 +1,132 @@
+applicationName: blazer
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  servicePort: http
+  hosts:
+  - host: blazer.{{ requiredEnv "INTERNAL_DNS_FQDN" }}
+    paths: 
+    - path: /
+      pathType: Prefix
+
+deployment:
+  initContainers:
+    migrate:
+      image: ankane/blazer
+      imagePullPolicy: IfNotPresent
+      command: ['rails', 'db:migrate']
+      env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: blazer
+              key: DATABASE_URL
+        - name: BLAZER_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: blazer
+              key: BLAZER_DATABASE_URL              
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "blazer-secrets"
+      volumeMounts:
+              - name: secrets-store-inline
+                mountPath: "/mnt/secrets-store"
+                readOnly: true                        
+
+  image: 
+    repository: {{ requiredEnv "AWS_ACCOUNT_ID" }}.dkr.ecr.ca-central-1.amazonaws.com/database-tools/blazer
+    #repository: ankane/blazer
+    tag: bootstrap
+  replicas: 1
+  env:
+    LOG_LEVEL:
+      value: "info"
+    NOTIFY_URL:
+      {{ if eq .Environment.Name "production"}} 
+      value: notification.canada.ca
+      {{ else }}
+      value: {{ .Environment.Name }}.notification.cdssandbox.xyz      
+      {{ end }}
+    BLAZER_DATABASE_URL:
+      valueFrom:
+        secretKeyRef:
+          name: blazer
+          key: BLAZER_DATABASE_URL
+    DATABASE_URL:
+      valueFrom:
+        secretKeyRef:
+          name: blazer
+          key: DATABASE_URL
+    GOOGLE_OAUTH_CLIENT_ID:
+      valueFrom:
+        secretKeyRef:
+          name: blazer
+          key: GOOGLE_OAUTH_CLIENT_ID
+    GOOGLE_OAUTH_CLIENT_SECRET:
+      valueFrom:
+        secretKeyRef:
+          name: blazer
+          key: GOOGLE_OAUTH_CLIENT_SECRET   
+  volumes:
+    - name: secrets-store-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "blazer-secrets"
+  volumeMounts:
+          - name: secrets-store-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true                                                         
+  resources: 
+    limits:
+      memory: 1024Mi
+      cpu: 1
+    requests:
+      memory: 128Mi
+      cpu: 0.1
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: false
+
+rbac:
+  serviceAccount:
+    enabled: true
+    name: blazer
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-blazer
+
+
+secretProviderClass:
+  enabled: true
+  name: blazer-secrets
+  provider: aws
+  objects: |
+    - objectName: sqlalchemy_database_reader_uri
+      objectType: "ssmparameter"
+    - objectName: BLAZER_DATABASE_URL
+      objectType: "ssmparameter"
+    - objectName: notify_o11y_google_oauth_client_id
+      objectType: "ssmparameter"
+    - objectName: notify_o11y_google_oauth_client_secret
+      objectType: "ssmparameter"
+
+  secretObjects:
+    - data:
+      - key: BLAZER_DATABASE_URL
+        objectName: sqlalchemy_database_reader_uri
+      - key: DATABASE_URL
+        objectName: BLAZER_DATABASE_URL
+      - key: GOOGLE_OAUTH_CLIENT_ID
+        objectName: notify_o11y_google_oauth_client_id
+      - key: GOOGLE_OAUTH_CLIENT_SECRET
+        objectName: notify_o11y_google_oauth_client_secret
+      secretName: blazer
+      type: Opaque
+        

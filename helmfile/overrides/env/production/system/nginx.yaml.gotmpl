@@ -1,0 +1,47 @@
+controller:
+  image:
+    tag: 3.4.2
+  service:
+    type: ClusterIP
+  wildcardTLS:
+    secret: {{.Release.Namespace}}/nginx
+  defaultTLS:
+    secret: {{.Release.Namespace}}/nginx
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-nginx
+  volumes:
+    - name: secrets-store-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "nginx"
+  volumeMounts:
+          - name: secrets-store-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true          
+prometheus:
+  create: false
+secretProviderClass:
+  enabled: true
+  provider: aws
+  parameters:
+    objects: |
+      - objectName: INTERNAL_DNS_KEY_BASE64
+        objectType: "secretsmanager"
+      - objectName: INTERNAL_DNS_CERT_BASE64
+        objectType: "secretsmanager"
+
+  secretObjects:
+    - data:
+      - key: tls.key
+        objectName: INTERNAL_DNS_KEY_BASE64
+      - key: tls.crt
+        objectName: INTERNAL_DNS_CERT_BASE64
+      secretName: nginx
+      type: kubernetes.io/tls
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{ requiredEnv "NGINX_TARGET_GROUP_ARN" }}
