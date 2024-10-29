@@ -35,6 +35,16 @@ releases:
     values:
     - ./overrides/env/{{ .Environment.Name }}/notify/documentation.yaml.gotmpl
 
+  - name: notify-api
+    namespace: notify-{{ .Environment.Name }}
+    labels:
+      app: notify-api
+      tier: backend
+      category: deliverable
+    chart: charts/notify-api
+    values:
+    - ./overrides/env/{{ .Environment.Name }}/notify/api.yaml.gotmpl
+
   - name: notify-admin
     namespace: notify-{{ .Environment.Name }}
     labels:
@@ -46,18 +56,6 @@ releases:
     - ./overrides/env/{{ .Environment.Name }}/notify/admin.yaml.gotmpl
 
 {{ end }}
-
-
-  - name: notify-api
-    namespace: notify-{{ .Environment.Name }}
-    labels:
-      app: notify-api
-      tier: backend
-      category: deliverable
-    chart: charts/notify-api
-    values:
-    - ./overrides/env/{{ .Environment.Name }}/notify/api.yaml.gotmpl
-
 
   - name: karpenter-crd
     namespace: karpenter
