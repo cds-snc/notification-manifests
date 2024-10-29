@@ -419,6 +419,16 @@ spec:
                 secretKeyRef:
                   name: notify-api
                   key: ZENDESK_API_KEY
+            - name: CYPRESS_USER_PW_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: CYPRESS_USER_PW_SECRET
+            - name: CYPRESS_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: CYPRESS_AUTH_CLIENT_SECRET
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: "true"
           {{ if .Values.secretProviderClass.enabled}}    
