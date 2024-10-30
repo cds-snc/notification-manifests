@@ -14,7 +14,7 @@ api:
   ff_salesforce_contact: "false"
   flask_app: application.py
   notification_queue_prefix: eks-notification-canada-ca
-  redis_enabled: "0"
+  redis_enabled: "1"
   salesforce_domain: changeme
   new_relic_monitor_mode: "false"
   batch_insertion_chunk_size: "10"
