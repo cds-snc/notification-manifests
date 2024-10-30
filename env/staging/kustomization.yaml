@@ -613,13 +613,13 @@ vars:
       apiVersion: v1
       kind: ConfigMap
       name: application-config
-  - name: FF_ANNUAL_LIMIT
+  - fieldref:
+      fieldPath: data.FF_ANNUAL_LIMIT
+    name: FF_ANNUAL_LIMIT
     objref:
+      apiVersion: v1
       kind: ConfigMap
       name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_ANNUAL_LIMIT
   - fieldref:
       fieldPath: data.CYPRESS_USER_PW_SECRET
     name: CYPRESS_USER_PW_SECRET
