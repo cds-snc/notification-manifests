@@ -9,7 +9,6 @@ api:
   base_domain: {{ requiredEnv "BASE_DOMAIN" }}
   asset_domain: https://assets.{{ requiredEnv "BASE_DOMAIN" }}
   documentation_domain: 'documentation.{{ requiredEnv "BASE_DOMAIN" }}'
-  api_host_name: https://api.{{ requiredEnv "BASE_DOMAIN" }}
   document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
   api_host_name: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
   hc_en_service_id: c2fe9fac-2f28-40ca-b152-08ee41cd6843
