@@ -135,7 +135,7 @@ spec:
               valueFrom:
                   secretKeyRef:
                     name: notify-api
-                    key: REDIS_URL
+                    key: REDIS_PUBLISH_URL
             - name: REDIS_ENABLED
               value: "{{ .Values.api.redis_enabled }}"
             - name: SALESFORCE_DOMAIN
