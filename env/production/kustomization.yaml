@@ -599,6 +599,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_RTL
+  - name: FF_ANNUAL_LIMIT
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_ANNUAL_LIMIT
   - name: CYPRESS_USER_PW_SECRET
     objref:
       kind: ConfigMap
