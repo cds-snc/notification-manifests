@@ -6,30 +6,30 @@ replicaCount: 2
 
 # DEFAULTS
 api:
-  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json
-  allow_debug_route: "true"
-  hc_en_service_id: changeme
-  hc_fr_service_id: changeme
-  crm_org_list_url: https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json
-  ff_salesforce_contact: "false"
-  flask_app: application.py
-  notification_queue_prefix: eks-notification-canada-ca
+  crm_org_list_url: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
+  allow_debug_route: true
+  hc_en_service_id: "changeme"
+  hc_fr_service_id: "changeme"
+  crm_org_list_url: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
+  ff_salesforce_contact: false
+  flask_app: "application.py"
+  notification_queue_prefix: "eks-notification-canada-ca"
   redis_enabled: "1"
-  salesforce_domain: changeme
-  new_relic_monitor_mode: "false"
+  salesforce_domain: "changeme"
+  new_relic_monitor_mode: false
   batch_insertion_chunk_size: "10"
   sql_alchemy_pool_size: "256"
-  new_relic_distributed_tracing_enabled: "false"
-  aws_ses_region: us-east-1
-  aws_ses_smtp: email-smtp.us-east-1.amazonaws.com
-  aws_us_toll_free_number: +18005555555
-  zendesk_sell_api_url: https://cds-snc.zendesk.com
-  zendesk_api_url: https://api.getbase.com
-  allow_html_service_ids: "1,2,3"
-  aws_pinpoint_region: us-west-2
-  aws_region: ca-central-1
-  fresh_desk_api_url: https://cds-snc.freshdesk.com
-  sentry_url: changeme
+  new_relic_distributed_tracing_enabled: false
+  aws_ses_region: "us-east-1"
+  aws_ses_smtp: "email-smtp.us-east-1.amazonaws.com"
+  aws_us_toll_free_number: "+18005555555"
+  zendesk_sell_api_url: "https://cds-snc.zendesk.com"
+  zendesk_api_url: "https://api.getbase.com"
+  allow_html_service_ids: "111111111,222222222,333333333"
+  aws_pinpoint_region: "us-west-2"
+  aws_region: "ca-central-1"
+  fresh_desk_api_url: "https://cds-snc.freshdesk.com"
+  sentry_url: "changeme"
 
 image:
   repository: public.ecr.aws/cds-snc/notify-api
