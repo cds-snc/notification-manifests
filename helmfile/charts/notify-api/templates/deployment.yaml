@@ -430,7 +430,7 @@ spec:
                   name: notify-api
                   key: CYPRESS_AUTH_CLIENT_SECRET
             - name: FF_CLOUDWATCH_METRICS_ENABLED
-              value: "true"
+              value: {{ .Values.api.ff_cloudwatch_metrics_enabled }}
           {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
             - name: secrets-store-inline
