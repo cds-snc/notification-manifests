@@ -25,7 +25,7 @@ api:
   aws_us_toll_free_number: +18005555555
   zendesk_sell_api_url: https://cds-snc.zendesk.com
   zendesk_api_url: https://api.getbase.com
-  allow_html_service_ids: 1,2,3
+  allow_html_service_ids: "1,2,3"
   aws_pinpoint_region: us-west-2
   aws_region: ca-central-1
   fresh_desk_api_url: https://cds-snc.freshdesk.com
