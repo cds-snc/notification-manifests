@@ -129,6 +129,8 @@ spec:
               value: "$(FF_SALESFORCE_CONTACT)"
             - name: FF_RTL
               value: "$(FF_RTL)"
+            - name: FF_ANNUAL_LIMIT
+              value: "$(FF_ANNUAL_LIMIT)"
           resources:
             requests:
               cpu: "250m"
