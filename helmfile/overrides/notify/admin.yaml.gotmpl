@@ -17,7 +17,7 @@ hcFrServiceId: "{{ .StateValues.hc_fr_service_id }}"
 redisEnabled: {{ .StateValues.redis_enabled }}
 sentryUrl: "{{ .StateValues.sentry_url }}"
 showStyleGuide: {{ .StateValues.show_style_guide }} 
-NewRelicAppName: notification-admin-{{ .Values.env }}
+NewRelicAppName: "notification-admin-{{ .Values.env }}"
 NewRelicDistributedTracingEnabled: {{ .StateValues.new_relic_distributed_tracing_enabled }}
 NewRelicMonitorMode: {{ .StateValues.new_relic_monitor_mode }}
 gcArticlesApi: "{{ .StateValues.gc_articles_api }}"
