@@ -13,7 +13,7 @@ api:
   flask_app: "application.py"
   notification_queue_prefix: "eks-notification-canada-ca"
   redis_enabled: "1"
-  salesforce_domain: "changeme"
+  salesforce_domain: "login"
   batch_insertion_chunk_size: "10"
   sql_alchemy_pool_size: "256"
   aws_ses_region: "us-east-1"
