@@ -53,12 +53,12 @@ priorityClassName: high-priority
 readinessProbe:
   httpGet:
     path: /_status?simple=true
-    port: 6012
+    port: 6011
 
 livenessProbe:
   httpGet:
     path: "/_status?simple=true"
-    port: 6012
+    port: 6011
 
 serviceAccount:
   create: true
@@ -82,7 +82,7 @@ securityContext:
 service:
   enabled: true
   type: LoadBalancer
-  port: 6012
+  port: 6011
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-internal: "true"
 
