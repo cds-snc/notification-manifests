@@ -3,9 +3,25 @@ awsRegion: "{{ requiredEnv "AWS_REGION" }}"
 awsAccountId: {{ requiredEnv "AWS_ACCOUNT_ID" }}
 baseDomain: "{{ requiredEnv "BASE_DOMAIN"}}"
 assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
+bulkSendAwsBucket: "{{ .Release.Namespace }}-{{ .Environment.Name }}-bulk-send"
+csvUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv"
 ipGeolocateService: "http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080"
-apiURL: "{{ .StateValues.api_host_name_prefix }}.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
+apiUrl: "{{ .StateValues.api_host_name_prefix }}.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
+adminBaseUrl: "{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
 allowDebugRoute: {{ .StateValues.allow_debug_route }}
+bulkSendTestServiceId: "{{ .StateValues.bulk_send_test_service_id }}"
+contactEmail: "{{ .StateValues.contact_email }}"
+documentationDomain: "https://documentation.{{ .Values.baseDomain }}"
+hcEnServiceId: "{{ .StateValues.hc_en_service_id }}"
+hcFrServiceId: "{{ .StateValues.hc_fr_service_id }}"
+redisEnabled: {{ .StateValues.redis_enabled }}
+sentryUrl: "{{ .StateValues.sentry_url }}"
+showStyleGuide: {{ .StateValues.show_style_guide }} 
+NewRelicAppName: notification-admin-{{ .Values.env }}
+NewRelicDistributedTracingEnabled: {{ .StateValues.new_relic_distributed_tracing_enabled }}
+NewRelicMonitorMode: {{ .StateValues.new_relic_monitor_mode }}
+gcArticlesApi: "{{ .StateValues.gc_articles_api }}"
+ffSalesforceContact: {{ .StateValues.ff_salesforce_contact }}
 
 image:
   tag: {{ env "{{ .StateValues.docker_tag" | default "latest" }}
