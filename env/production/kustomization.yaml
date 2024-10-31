@@ -58,9 +58,9 @@ patches:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:618014e
+    newName: public.ecr.aws/cds-snc/notify-admin:2cdb4d4
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:2d0c0dd
+    newName: public.ecr.aws/cds-snc/notify-api:b75c267
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:fc59224
   - name: documentation
@@ -599,6 +599,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_RTL
+  - name: FF_ANNUAL_LIMIT
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_ANNUAL_LIMIT
   - name: CYPRESS_USER_PW_SECRET
     objref:
       kind: ConfigMap

@@ -262,6 +262,8 @@ spec:
               value: '$(ZENDESK_API_KEY)'
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: 'True'
+            - name: FF_ANNUAL_LIMIT
+              value: "$(FF_ANNUAL_LIMIT)"
             - name: CACHE_CLEAR_CLIENT_SECRET
               value: '$(CACHE_CLEAR_CLIENT_SECRET)'
             - name: CYPRESS_USER_PW_SECRET
