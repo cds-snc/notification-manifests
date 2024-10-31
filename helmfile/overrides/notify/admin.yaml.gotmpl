@@ -1,44 +1,19 @@
-# APPLICATION CONFIG
-env: {{ .Environment.Name }}
-awsRegion: {{requiredEnv "AWS_REGION"}}
+env: "{{ .Environment.Name }}"
+awsRegion: "{{ requiredEnv "AWS_REGION" }}"
 awsAccountId: {{ requiredEnv "AWS_ACCOUNT_ID" }}
-baseDomain: {{ requiredEnv "BASE_DOMAIN"}}
-assetUploadBucketName: "notification-canada-{{ .Environment.Name }}-assets"
-ipGeolocateService: http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080
+baseDomain: "{{ requiredEnv "BASE_DOMAIN"}}"
+assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
+ipGeolocateService: "http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080"
+apiURL: "{{ .StateValues.api_host_name_prefix }}.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
+allowDebugRoute: {{ .StateValues.allow_debug_route }}
 
-# ENVIRONMENT SPECIFIC 
-# DEV
-{{ if eq .Environment.Name "dev" }}
-apiURL: api-k8s.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN"}}
-allowDebugRoute: "true"
 image:
-  tag: {{ env "DOCKER_TAG" | default "latest" }}
-# STAGING
-{{ else if eq .Environment.Name "staging" }}
-apiURL: api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN"}}
-allowDebugRoute: "true"
-image:
-  tag: {{ env "DOCKER_TAG" | default "latest" }}
-# PRODUCTION
-{{ else if eq .Environment.Name "production" }}
-apiURL: api.notification.canada.ca
-allowDebugRoute: "false"
-image:
-  tag: {{ env "ADMIN_DOCKER_TAG" | default "latest" }}
-# OTHERS
-{{ else }}
-apiURL: api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN"}}
-allowDebugRoute: "true"
-image:
-  tag: {{ env "DOCKER_TAG" | default "latest" }}
-{{ end }}
-
-# KUBERNETES CONFIG
-
-targetGroupBinding:
-  enabled: false
-  targetGroupARN: {{ requiredEnv "ADMIN_TARGET_GROUP_ARN" }}
+  tag: {{ env "{{ .StateValues.docker_tag" | default "latest" }}
 
 serviceAccount:
-  annotations: 
-    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-notify-admin
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/admin-eks-role
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "ADMIN_TARGET_GROUP_ARN"}}

@@ -59,16 +59,11 @@ spec:
             - name: ALLOW_DEBUG_ROUTE
               value: {{ .Values.allowDebugRoute | quote }}
             - name: ALLOW_HTML_SERVICE_IDS
-              valueFrom:
-                secretKeyRef:
-                  name: notify-admin
-                  key: ALLOW_HTML_SERVICE_IDS
+              value: "{{ .Values.allowHtmlServiceIds}}"
             - name: API_HOST_NAME
-              value: https://{{ .Values.apiURL }}
+              value: "{{ .Values.apiURL }}"
             - name: ASSET_UPLOAD_BUCKET_NAME
-              value: .Values.assetUploadBucketName
-            - name: ASSET_DOMAIN
-              value: https://assets.{{ .Values.baseDomain }}
+              value: "{{ .Values.assetUploadBucketName }}"
             - name: AWS_REGION
               value: {{ .Values.awsRegion }}
             - name: BULK_SEND_AWS_BUCKET
