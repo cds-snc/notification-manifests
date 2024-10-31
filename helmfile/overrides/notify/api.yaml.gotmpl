@@ -1,31 +1,28 @@
-#  APPLICATION CONFIG
-baseURL: {{ requiredEnv "BASE_DOMAIN" }}
-docDownloadApiHost: http://document-download-api.{{.Release.Namespace}}.svc.cluster.local:7000
+api:
+  env: "{{ .Environment.Name }}"
+  admin_base_domain: "https://{{ requiredEnv "BASE_DOMAIN" }}"
+  asset_upload_bucket_name: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
+  csv_upload_bucket_name: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
+  new_relic_app_name: "{{ .Release.Name }}-{{ .Environment.Name }}"
+  base_domain: "{{ requiredEnv "BASE_DOMAIN" }}"
+  asset_domain: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
+  documentation_domain: "documentation.{{ requiredEnv "BASE_DOMAIN" }}"
+  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+  api_host_name: "https://{{ .StateValues.api_host_name_prefix }}.{{ requiredEnv "BASE_DOMAIN" }}"
+  hc_en_service_id: "{{ .StateValues.hc_en_service_id }}"
+  hc_fr_service_id: "{{ .StateValues.hc_fr_service_id }}"
+  allow_debug_route: {{ .StateValues.allow_debug_route }}
+  new_relic_distributed_tracing_enabled: {{ .StateValues.new_relic_distributed_tracing_enabled }}
+  allow_html_service_ids: "{{ .StateValues.allow_html_service_ids }}"
+  sentry_url: "{{ .StateValues.sentry_url }}"
+
+image: 
+  tag:  {{ env "{{ .StateValues.docker_tag }}" | default "latest" }}
 
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-notify-api
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/api-eks-role
 
-# ENVIRONMENT SPECIFIC 
-# DEV
-{{ if eq .Environment.Name "dev" }}
-apiHostName: https://api-k8s.{{ requiredEnv "BASE_DOMAIN" }}
-image: 
-  tag:  {{ env "DOCKER_TAG" | default "latest" }}
-# STAGING
-{{ else if eq .Environment.Name "staging" }}
-apiHostName: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
-image: 
-  tag:  {{ env "DOCKER_TAG" | default "latest" }}
-# PRODUCTION
-{{ else if eq .Environment.Name "production" }}
-apiHostName: https://api.{{ requiredEnv "BASE_DOMAIN" }}
-image: 
-  tag:  {{ env "API_DOCKER_TAG" | default "latest" }}
-{{ else }}
-# OTHER
-apiHostName: https://api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
-image: 
-  tag:  {{ env "DOCKER_TAG" | default "latest" }}
-{{ end }}
-
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "API_TARGET_GROUP_ARN"}}

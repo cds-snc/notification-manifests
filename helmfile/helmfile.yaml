@@ -1,9 +1,19 @@
 environments:
   sandbox:
+    values:
+      - ./overrides/sandbox.env
   scratch:
+    values:
+      - ./overrides/scratch.env
   dev:
+    values:
+      - ./overrides/dev.env
   staging:
+    values:
+      - ./overrides/staging.env
   production:
+    values:
+      - ./overrides/production.env
 ---
 
 helmDefaults:
@@ -36,7 +46,7 @@ releases:
     - ./overrides/notify/documentation.yaml.gotmpl
 
   - name: notify-api
-    namespace: notify-{{ .Environment.Name }}
+    namespace: notification-canada-ca
     labels:
       app: notify-api
       tier: backend

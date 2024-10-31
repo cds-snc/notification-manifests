@@ -4,13 +4,36 @@
 
 replicaCount: 2
 
-baseDomain: notification.canada.ca
-env: production
-postgresHost: something
-docDownloadApiHost:  'http://document-download-api.main.svc.cluster.local:7000'
+# DEFAULTS
+api:
+  crm_org_list_url: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
+  hc_en_service_id: "changeme"
+  hc_fr_service_id: "changeme"
+  crm_org_list_url: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
+  flask_app: "application.py"
+  notification_queue_prefix: "eks-notification-canada-ca"
+  redis_enabled: "1"
+  salesforce_domain: "login"
+  batch_insertion_chunk_size: "10"
+  sql_alchemy_pool_size: "256"
+  aws_ses_region: "us-east-1"
+  aws_ses_smtp: "email-smtp.us-east-1.amazonaws.com"
+  aws_us_toll_free_number: "+18005555555"
+  zendesk_sell_api_url: "https://cds-snc.zendesk.com"
+  zendesk_api_url: "https://api.getbase.com"
+  allow_html_service_ids: "111111111,222222222,333333333"
+  aws_pinpoint_region: "us-west-2"
+  aws_region: "ca-central-1"
+  fresh_desk_api_url: "https://cds-snc.freshdesk.com"
+  sentry_url: "changeme"
+  allow_debug_route: true
+  new_relic_monitor_mode: false
+  ff_salesforce_contact: false
+  ew_relic_distributed_tracing_enabled: false
+  ff_cloudwatch_metrics_enabled: false
 
 image:
-  repository: public.ecr.aws/cds-snc/notify-admin
+  repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -23,20 +46,19 @@ updateStrategy:
   type: RollingUpdate
   rollingUpdate:
     maxSurge: 25%
-    maxUnavailable: 25%  
+    maxUnavailable: 25%
 
 priorityClassName: high-priority
 
 readinessProbe:
   httpGet:
     path: /_status?simple=true
-    port: 6012
+    port: 6011
 
 livenessProbe:
   httpGet:
     path: "/_status?simple=true"
-    port: 6012
-
+    port: 6011
 
 serviceAccount:
   create: true
@@ -44,10 +66,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -58,14 +82,15 @@ securityContext: {}
 service:
   enabled: true
   type: LoadBalancer
-  port: 6012
-  annotations: 
+  port: 6011
+  annotations:
     service.beta.kubernetes.io/aws-load-balancer-internal: "true"
 
 ingress:
   enabled: false
   className: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -78,7 +103,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: 
+resources:
   requests:
     cpu: "250m"
     memory: "700Mi"
@@ -96,7 +121,7 @@ pdb:
   enabled: true
   minAvailable: 1
 
-nodeSelector:  
+nodeSelector:
   eks.amazonaws.com/capacityType: ON_DEMAND
 
 targetGroupBinding:
@@ -119,9 +144,9 @@ secretProviderClass:
 
   secretObjects:
     - data:
-      - key: tls.key
-        objectName: INTERNAL_DNS_KEY_BASE64
-      - key: tls.crt
-        objectName: INTERNAL_DNS_CERT_BASE64
+        - key: tls.key
+          objectName: INTERNAL_DNS_KEY_BASE64
+        - key: tls.crt
+          objectName: INTERNAL_DNS_CERT_BASE64
       secretName: nginx
       type: kubernetes.io/tls
