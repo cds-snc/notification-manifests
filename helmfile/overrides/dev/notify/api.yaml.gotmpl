@@ -23,7 +23,7 @@ image:
 
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-api
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/api-eks-role
 
 targetGroupBinding:
   enabled: true
