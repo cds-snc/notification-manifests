@@ -11,13 +11,13 @@ adminBaseUrl: "{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
 allowDebugRoute: {{ .StateValues.allow_debug_route }}
 bulkSendTestServiceId: "{{ .StateValues.bulk_send_test_service_id }}"
 contactEmail: "{{ .StateValues.contact_email }}"
-documentationDomain: "https://documentation.{{ .Values.baseDomain }}"
+documentationDomain: "https://documentation.{{ requiredEnv "BASE_DOMAIN" }}"
 hcEnServiceId: "{{ .StateValues.hc_en_service_id }}"
 hcFrServiceId: "{{ .StateValues.hc_fr_service_id }}"
 redisEnabled: {{ .StateValues.redis_enabled }}
 sentryUrl: "{{ .StateValues.sentry_url }}"
 showStyleGuide: {{ .StateValues.show_style_guide }} 
-newRelicAppName: "notification-admin-{{ .Values.env }}"
+newRelicAppName: "notification-admin-{{ .Environment.Name }}"
 newRelicDistributedTracingEnabled: {{ .StateValues.new_relic_distributed_tracing_enabled }}
 newRelicMonitorMode: {{ .StateValues.new_relic_monitor_mode }}
 ffSalesforceContact: {{ .StateValues.ff_salesforce_contact }}
