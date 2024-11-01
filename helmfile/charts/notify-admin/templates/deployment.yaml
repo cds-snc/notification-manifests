@@ -167,6 +167,10 @@ spec:
               value: "{{ .Values.crmOrgListURL }}"
             - name: FF_SALESFORCE_CONTACT
               value: {{ .Values.ffSalesforceContact }}
+            - name: AWS_XRAY_TRACING_ENABLED
+              value: "{{ .Values.aws_xray_tracing_enabled }}"
+            - name: AWS_XRAY_CONTEXT_MISSING
+              value: "{{ .Values.aws_xray_context_missing }}"
             {{ if .Values.allowDebugRoute }}
             - name: DEBUG_KEY
               valueFrom:

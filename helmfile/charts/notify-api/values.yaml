@@ -4,7 +4,7 @@
 
 replicaCount: 2
 
-# DEFAULTS
+# Default values for notify-api.
 api:
   crm_org_list_url: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
   hc_en_service_id: "changeme"
@@ -31,7 +31,9 @@ api:
   ff_salesforce_contact: false
   ew_relic_distributed_tracing_enabled: false
   ff_cloudwatch_metrics_enabled: false
-
+  aws_xray_sdk_enabled: true
+  aws_xray_context_missing: "LOG_WARNING"
+  
 image:
   repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always

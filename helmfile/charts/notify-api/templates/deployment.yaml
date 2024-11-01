@@ -428,6 +428,10 @@ spec:
                   key: CYPRESS_AUTH_CLIENT_SECRET
             - name: FF_CLOUDWATCH_METRICS_ENABLED
               value: "{{ .Values.api.ff_cloudwatch_metrics_enabled }}"
+            - name: AWS_XRAY_TRACING_ENABLED
+              value: "{{ .Values.api.aws_xray_tracing_enabled }}"
+            - name: AWS_XRAY_CONTEXT_MISSING
+              value: "{{ .Values.api.aws_xray_context_missing }}"
           {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
             - name: secrets-store-inline
