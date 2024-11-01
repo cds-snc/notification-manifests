@@ -56,6 +56,11 @@ spec:
                 secretKeyRef:
                   name: notify-admin
                   key: ADMIN_CLIENT_SECRET
+            - name: MIXPANEL_PROJECT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: notify-admin
+                  key: MIXPANEL_PROJECT_TOKEN
             - name: ALLOW_DEBUG_ROUTE
               value: {{ .Values.allowDebugRoute }}
             - name: ALLOW_HTML_SERVICE_IDS
@@ -122,18 +127,18 @@ spec:
             - name: SHOW_STYLEGUIDE
               value: "{{ .Values.showStyleguide }}"
             - name: NEW_RELIC_APP_NAME
-              value: "{{ .Values.NewRelicAppName }}"
+              value: "{{ .Values.newRelicAppName }}"
             - name: NEW_RELIC_CONFIG_FILE
-              value: "{{ .Values.NewRelicConfigFile }}"
+              value: "{{ .Values.newRelicConfigFile }}"
             - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: {{ .Values.NewRelicDistributedTracingEnabled }}
+              value: {{ .Values.newRelicDistributedTracingEnabled }}
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
                   secretKeyRef:
                     name: notify-admin
                     key: NEW_RELIC_LICENSE_KEY
             - name: NEW_RELIC_MONITOR_MODE
-              value: {{ .Values.NewRelicMonitorMode }}
+              value: {{ .Values.newRelicMonitorMode }}
             - name: IP_GEOLOCATE_SERVICE
               value: "{{ .Values.ipGeolocateService }}"
             - name: GC_ARTICLES_API

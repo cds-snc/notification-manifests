@@ -1,5 +1,7 @@
+# Default values for notify-admin.
 env: "default"
 awsAccountId: 123456789
+awsRegion: "ca-central-1"
 apiUrl: "https://api.notification.canada.ca"
 adminBaseUrl: "https://notification.canada.ca"
 baseDomain: "notification.canada.ca"
@@ -7,24 +9,24 @@ allowDebugRoute: false
 assetUploadBucketName: "notification-canada-ca-default-asset-upload"
 bulkSendAwsBucket: "notification-canada-ca-default-bulk-send"
 csvUploadBucketName: "notification-canada-ca-default-csv"
-awsRegion: "ca-central-1"
 ipGeolocateService:  "http://ipv4.notification-canada-ca.svc.cluster.local:8080"
-crmOrgListURL: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
 bulkSendTestServiceId: "123456789"
 contactEmail: "notification-ops@cds-snc.ca"
 documentationDomain: "https://documentation.notification.canada.ca"
 hcEnServiceId: "123456789"
 hcFrServiceId: "123456789"
-flaskApp: "application.py"
 redisEnabled: "1"
 sentryUrl: "changeme"
 showStyleGuide: true 
-NewRelicAppName: "notification-admin-default"
-NewRelicConfigFile: "/app/newrelic.ini"
-NewRelicDistributedTracingEnabled: false
-NewRelicMonitorMode: false
-gcArticlesApi: "articles.alpha.canada.ca/notification-gc-notify"
+newRelicAppName: "notification-admin-default"
+newRelicDistributedTracingEnabled: false
+newRelicMonitorMode: false
 ffSalesforceContact: false
+# Common values for notify-admin
+crmOrgListURL: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
+flaskApp: "application.py"
+gcArticlesApi: "articles.alpha.canada.ca/notification-gc-notify"
+newRelicConfigFile: "/app/newrelic.ini"
 
 serviceAccount:
   create: true
