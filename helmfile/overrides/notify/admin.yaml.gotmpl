@@ -6,24 +6,24 @@ assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-u
 bulkSendAwsBucket: "{{ .Release.Namespace }}-{{ .Environment.Name }}-bulk-send"
 csvUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv"
 ipGeolocateService: "http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080"
-apiUrl: "{{ .StateValues.api_host_name_prefix }}.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
+apiUrl: "{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
 adminBaseUrl: "{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
-allowDebugRoute: {{ .StateValues.allow_debug_route }}
-bulkSendTestServiceId: "{{ .StateValues.bulk_send_test_service_id }}"
-contactEmail: "{{ .StateValues.contact_email }}"
+allowDebugRoute: {{ .StateValues.ALLOW_DEBUG_ROUTE }}
+bulkSendTestServiceId: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
+contactEmail: "{{ .StateValues.CONTACT_EMAIL }}"
 documentationDomain: "https://documentation.{{ requiredEnv "BASE_DOMAIN" }}"
-hcEnServiceId: "{{ .StateValues.hc_en_service_id }}"
-hcFrServiceId: "{{ .StateValues.hc_fr_service_id }}"
-redisEnabled: {{ .StateValues.redis_enabled }}
-sentryUrl: "{{ .StateValues.sentry_url }}"
-showStyleGuide: {{ .StateValues.show_style_guide }} 
+hcEnServiceId: "{{ .StateValues.HC_EN_SERVICE_ID }}"
+hcFrServiceId: "{{ .StateValues.HC_FR_SERVICE_ID }}"
+redisEnabled: {{ .StateValues.REDIS_ENABLED }}
+sentryUrl: "{{ .StateValues.SENTRY_URL }}"
+showStyleGuide: {{ .StateValues.SHOW_STYLE_GUIDE }} 
 newRelicAppName: "notification-admin-{{ .Environment.Name }}"
-newRelicDistributedTracingEnabled: {{ .StateValues.new_relic_distributed_tracing_enabled }}
-newRelicMonitorMode: {{ .StateValues.new_relic_monitor_mode }}
-ffSalesforceContact: {{ .StateValues.ff_salesforce_contact }}
+newRelicDistributedTracingEnabled: {{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}
+newRelicMonitorMode: {{ .StateValues.NEW_RELIC_MONITOR_MODE }}
+ffSalesforceContact: {{ .StateValues.FF_SALESFORCE_CONTACT }}
 
 image:
-  tag: {{ env "{{ .StateValues.docker_tag" | default "latest" }}
+  tag: {{ env "{{ .StateValues.DOCKER_TAG" | default "latest" }}
 
 serviceAccount:
   annotations:

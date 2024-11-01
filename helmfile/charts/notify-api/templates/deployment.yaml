@@ -56,27 +56,27 @@ spec:
               readOnly: true   
           env:
             - name: ADMIN_BASE_URL
-              value: "{{ .Values.api.admin_base_domain }}"
+              value: "{{ .Values.api.adminBaseDomain }}"
             - name: ADMIN_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: ADMIN_CLIENT_SECRET
             - name: ALLOW_DEBUG_ROUTE
-              value: "{{ .Values.api.allow_debug_route }}"    
+              value: "{{ .Values.api.allowDebugRoute }}"    
             - name: ASSET_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.api.asset_upload_bucket_name }}"
+              value: "{{ .Values.api.assetUploadBucketName }}"
             - name: ASSET_DOMAIN
-              value: "{{ .Values.api.asset_domain }}"
+              value: "{{ .Values.api.assetDomain }}"
             - name: AWS_ROUTE53_ZONE
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: AWS_ROUTE53_ZONE
             - name: AWS_SES_REGION
-              value: "{{ .Values.api.aws_ses_region }}"
+              value: "{{ .Values.api.awsSesRegion }}"
             - name: AWS_SES_SMTP
-              value: "{{ .Values.api.aws_ses_smtp }}"
+              value: "{{ .Values.api.awsSesSmtp }}"
             - name: AWS_SES_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -95,10 +95,10 @@ spec:
                     name: notify-api
                     key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
             - name: CRM_ORG_LIST_URL
-              value: "{{ .Values.api.crm_org_list_url }}"
+              value: "{{ .Values.api.crmOrgListUrl }}"
             - name: CSV_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.api.csv_upload_bucket_name }}"
-          {{ if .Values.api.allow_debug_route }}
+              value: "{{ .Values.api.csvUploadBucketName }}"
+          {{ if .Values.api.allowDebugRoute }}
             - name: DEBUG_KEY
               valueFrom:
                 secretKeyRef:
@@ -111,21 +111,21 @@ spec:
                   name: notify-api
                   key: DANGEROUS_SALT
             - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: "{{ .Values.api.document_download_api_host }}"
+              value: "{{ .Values.api.documentDownloadApiHost }}"
             - name: DOCUMENTATION_DOMAIN
-              value: "{{ .Values.api.documentation_domain }}"
+              value: "{{ .Values.api.documentationDomain }}"
             - name: FF_SALESFORCE_CONTACT
-              value: "{{ .Values.api.ff_salesforce_contact }}"
+              value: "{{ .Values.api.ffSalesforceContact }}"
             - name: FIDO2_DOMAIN
-              value: "{{ .Values.api.base_domain }}"
+              value: "{{ .Values.api.baseDomain }}"
             - name: FLASK_APP
-              value: "{{ .Values.api.flask_app }}"
+              value: "{{ .Values.api.flaskApp }}"
             - name: NOTIFY_EMAIL_DOMAIN
-              value: "{{ .Values.api.base_domain }}"
+              value: "{{ .Values.api.baseDomain }}"
             - name: NOTIFY_ENVIRONMENT
               value: "{{ .Values.api.env }}"
             - name: NOTIFICATION_QUEUE_PREFIX
-              value: "{{ .Values.api.notification_queue_prefix }}"
+              value: "{{ .Values.api.notificationQueuePrefix }}"
             - name: REDIS_URL
               valueFrom:
                   secretKeyRef:
@@ -137,9 +137,9 @@ spec:
                     name: notify-api
                     key: REDIS_PUBLISH_URL
             - name: REDIS_ENABLED
-              value: "{{ .Values.api.redis_enabled }}"
+              value: "{{ .Values.api.redisEnabled }}"
             - name: SALESFORCE_DOMAIN
-              value: "{{ .Values.api.salesforce_domain }}"
+              value: "{{ .Values.api.salesforceDomain }}"
             - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
               valueFrom:
                   secretKeyRef:
@@ -195,18 +195,18 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: AWS_US_TOLL_FREE_NUMBER
-              value: "{{ .Values.api.aws_us_toll_free_number }}"
+              value: "{{ .Values.api.awsUsTollFreeNumber }}"
             - name: NEW_RELIC_MONITOR_MODE
-              value: "{{ .Values.api.new_relic_monitor_mode }}"
+              value: "{{ .Values.api.newRelicMonitorMode }}"
             - name: ZENDESK_SELL_API_URL
-              value: "{{ .Values.api.zendesk_sell_api_url }}"
+              value: "{{ .Values.api.zendeskSellApiUrl }}"
             - name: ZENDESK_SELL_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: ZENDESK_SELL_API_KEY
             - name: ZENDESK_API_URL
-              value: "{{ .Values.api.zendesk_api_url }}"
+              value: "{{ .Values.api.zendeskApiUrl }}"
             - name: ZENDESK_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -226,33 +226,33 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ADMIN_BASE_URL
-              value: "{{ .Values.api.base_domain }}"
+              value: "{{ .Values.api.baseDomain }}"
             - name: ADMIN_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: ADMIN_CLIENT_SECRET
             - name: ALLOW_HTML_SERVICE_IDS
-              value: "{{ .Values.api.allow_html_service_ids }}"
+              value: "{{ .Values.api.allowHtmlServiceIds }}"
             - name: API_HOST_NAME
-              value: "{{ .Values.api.api_host_name }}"
+              value: "{{ .Values.api.apiHostName }}"
             - name: ASSET_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.api.asset_upload_bucket_name }}"
+              value: "{{ .Values.api.assetUploadBucketName }}"
             - name: ASSET_DOMAIN
-              value: "{{ .Values.api.asset_domain }}"
+              value: "{{ .Values.api.assetDomain }}"
             - name: AWS_PINPOINT_REGION
-              value: "{{ .Values.api.aws_pinpoint_region }}"
+              value: "{{ .Values.api.awsPinpointRegion }}"
             - name: AWS_REGION
-              value: "{{ .Values.api.aws_region }}"
+              value: "{{ .Values.api.awsRegion }}"
             - name: AWS_ROUTE53_ZONE
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: AWS_ROUTE53_ZONE
             - name: AWS_SES_REGION
-              value: "{{ .Values.api.aws_ses_region }}"
+              value: "{{ .Values.api.awsSesRegion }}"
             - name: AWS_SES_SMTP
-              value: "{{ .Values.api.aws_ses_smtp }}"
+              value: "{{ .Values.api.awsSesSmtp }}"
             - name: AWS_SES_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -264,31 +264,31 @@ spec:
                   name: notify-api
                   key: AWS_SES_SECRET_KEY
             - name: BATCH_INSERTION_CHUNK_SIZE
-              value: "{{ .Values.api.batch_insertion_chunk_size }}"
+              value: "{{ .Values.api.batchInsertionChunkSize }}"
             - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
               valueFrom:
                   secretKeyRef:
                     name: notify-api
                     key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
             - name: CRM_ORG_LIST_URL
-              value: "{{ .Values.api.crm_org_list_url }}"
+              value: "{{ .Values.api.crmOrgListUrl }}"
             - name: CSV_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.api.csv_upload_bucket_name }}"
+              value: "{{ .Values.api.csvUploadBucketName }}"
             - name: DANGEROUS_SALT
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: DANGEROUS_SALT
             - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: "{{ .Values.api.document_download_api_host }}"
+              value: "{{ .Values.api.documentDownloadApiHost }}"
             - name: FF_SALESFORCE_CONTACT
-              value: "{{ .Values.api.ff_salesforce_contact }}"
+              value: "{{ .Values.api.ffSalesforceContact }}"
             - name: FIDO2_DOMAIN
-              value: "{{ .Values.api.base_domain }}"
+              value: "{{ .Values.api.baseDomain }}"
             - name: NOTIFY_EMAIL_DOMAIN
-              value: "{{ .Values.api.base_domain }}"
+              value: "{{ .Values.api.baseDomain }}"
             - name: FRESH_DESK_API_URL
-              value: "{{ .Values.api.fresh_desk_api_url }}"
+              value: "{{ .Values.api.freshDeskApiUrl }}"
             - name: FRESH_DESK_API_KEY
               valueFrom:
                   secretKeyRef:
@@ -300,13 +300,13 @@ spec:
                     name: notify-api
                     key: FRESH_DESK_PRODUCT_ID
             - name: HC_EN_SERVICE_ID
-              value: "{{ .Values.api.hc_en_service_id }}"
+              value: "{{ .Values.api.hcEnServiceId }}"
             - name: HC_FR_SERVICE_ID
-              value: "{{ .Values.api.hc_fr_service_id }}"
+              value: "{{ .Values.api.hcFrServiceId }}"
             - name: NOTIFY_ENVIRONMENT
               value: "{{ .Values.api.env }}"
             - name: NOTIFICATION_QUEUE_PREFIX
-              value: "{{ .Values.api.notification_queue_prefix }}"
+              value: "{{ .Values.api.notificationQueuePrefix }}"
             - name: REDIS_URL
               valueFrom:
                   secretKeyRef:
@@ -318,9 +318,9 @@ spec:
                     name: notify-api
                     key: REDIS_URL
             - name: REDIS_ENABLED
-              value: "{{ .Values.api.redis_enabled }}"
+              value: "{{ .Values.api.redisEnabled }}"
             - name: SALESFORCE_DOMAIN
-              value: "{{ .Values.api.salesforce_domain }}"
+              value: "{{ .Values.api.salesforceDomain }}"
             - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
               valueFrom:
                   secretKeyRef:
@@ -377,7 +377,7 @@ spec:
                   name: notify-api
                   key: SQLALCHEMY_DATABASE_READER_URI
             - name: SQLALCHEMY_POOL_SIZE
-              value: "{{ .Values.api.sql_alchemy_pool_size }}"
+              value: "{{ .Values.api.sqlAlchemyPoolSize }}"
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
@@ -388,29 +388,29 @@ spec:
                   name: notify-api
                   key: SRE_CLIENT_SECRET
             - name: AWS_US_TOLL_FREE_NUMBER
-              value: "{{ .Values.api.aws_us_toll_free_number }}"
+              value: "{{ .Values.api.awsUsTollFreeNumber }}"
             - name: SENTRY_URL
-              value: "{{ .Values.api.sentry_url }}"
+              value: "{{ .Values.api.sentryUrl }}"
             - name: NEW_RELIC_APP_NAME
-              value: "{{ .Values.api.new_relic_app_name }}"
+              value: "{{ .Values.api.newRelicAppName }}"
             - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: "{{ .Values.api.new_relic_distributed_tracing_enabled }}"
+              value: "{{ .Values.api.newRelicDistributedTracingEnabled }}"
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
                   secretKeyRef:
                     name: notify-api
                     key: NEW_RELIC_LICENSE_KEY
             - name: NEW_RELIC_MONITOR_MODE
-              value: "{{ .Values.api.new_relic_monitor_mode }}"
+              value: "{{ .Values.api.newRelicMonitorMode }}"
             - name: ZENDESK_SELL_API_URL
-              value: "{{ .Values.api.zendesk_sell_api_url }}"
+              value: "{{ .Values.api.zendeskSellApiUrl }}"
             - name: ZENDESK_SELL_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: notify-api
                   key: ZENDESK_SELL_API_KEY
             - name: ZENDESK_API_URL
-              value: "{{ .Values.api.zendesk_api_url }}"
+              value: "{{ .Values.api.zendeskApiUrl }}"
             - name: ZENDESK_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -427,11 +427,11 @@ spec:
                   name: notify-api
                   key: CYPRESS_AUTH_CLIENT_SECRET
             - name: FF_CLOUDWATCH_METRICS_ENABLED
-              value: "{{ .Values.api.ff_cloudwatch_metrics_enabled }}"
+              value: "{{ .Values.api.ffCloudwatchMetricsEnabled }}"
             - name: AWS_XRAY_TRACING_ENABLED
-              value: "{{ .Values.api.aws_xray_tracing_enabled }}"
+              value: "{{ .Values.api.awsXrayTracingEnabled }}"
             - name: AWS_XRAY_CONTEXT_MISSING
-              value: "{{ .Values.api.aws_xray_context_missing }}"
+              value: "{{ .Values.api.awsXrayContextMissing }}"
           {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
             - name: secrets-store-inline
