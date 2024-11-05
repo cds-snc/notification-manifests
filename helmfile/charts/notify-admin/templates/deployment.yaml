@@ -40,7 +40,7 @@ spec:
             [
               "sh",
               "-c",
-              "until nc -z -w 2 {{ .Values.apiURL }} 443; do echo waiting for api; sleep 2; done"
+              "until nc -z -w 2 {{ .Values.apiUrl }} 443; do echo waiting for api; sleep 2; done"
             ]
       containers:
         - name: {{ .Chart.Name }}
@@ -50,7 +50,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ADMIN_BASE_URL
-              value: "{{ .Values.adminBaseURL }}"
+              value: "{{ .Values.adminBaseUrl }}"
             - name: ADMIN_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -62,11 +62,11 @@ spec:
                   name: notify-admin
                   key: MIXPANEL_PROJECT_TOKEN
             - name: ALLOW_DEBUG_ROUTE
-              value: {{ .Values.allowDebugRoute }}
+              value: "{{ .Values.allowDebugRoute }}"
             - name: ALLOW_HTML_SERVICE_IDS
               value: "{{ .Values.allowHtmlServiceIds}}"
             - name: API_HOST_NAME
-              value: "{{ .Values.apiURL }}"
+              value: "{{ .Values.apiUrl }}"
             - name: ASSET_UPLOAD_BUCKET_NAME
               value: "{{ .Values.assetUploadBucketName }}"
             - name: AWS_REGION
@@ -131,14 +131,14 @@ spec:
             - name: NEW_RELIC_CONFIG_FILE
               value: "{{ .Values.newRelicConfigFile }}"
             - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: {{ .Values.newRelicDistributedTracingEnabled }}
+              value: "{{ .Values.newRelicDistributedTracingEnabled }}"
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
                   secretKeyRef:
                     name: notify-admin
                     key: NEW_RELIC_LICENSE_KEY
             - name: NEW_RELIC_MONITOR_MODE
-              value: {{ .Values.newRelicMonitorMode }}
+              value: "{{ .Values.newRelicMonitorMode }}"
             - name: IP_GEOLOCATE_SERVICE
               value: "{{ .Values.ipGeolocateService }}"
             - name: GC_ARTICLES_API
@@ -164,9 +164,9 @@ spec:
                     name: notify-admin
                     key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
             - name: CRM_ORG_LIST_URL
-              value: "{{ .Values.crmOrgListURL }}"
+              value: "{{ .Values.crmOrgListUrl }}"
             - name: FF_SALESFORCE_CONTACT
-              value: {{ .Values.ffSalesforceContact }}
+              value: "{{ .Values.ffSalesforceContact }}"
             - name: AWS_XRAY_TRACING_ENABLED
               value: "{{ .Values.aws_xray_tracing_enabled }}"
             - name: AWS_XRAY_CONTEXT_MISSING
