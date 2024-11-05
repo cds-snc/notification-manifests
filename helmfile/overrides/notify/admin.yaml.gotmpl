@@ -2,25 +2,28 @@ env: "{{ .Environment.Name }}"
 awsRegion: "{{ requiredEnv "AWS_REGION" }}"
 awsAccountId: {{ requiredEnv "AWS_ACCOUNT_ID" }}
 baseDomain: "{{ requiredEnv "BASE_DOMAIN"}}"
+allowHtmlServiceIds: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
 assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
 bulkSendAwsBucket: "{{ .Release.Namespace }}-{{ .Environment.Name }}-bulk-send"
 csvUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv"
 ipGeolocateService: "http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080"
-apiUrl: "{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
-adminBaseUrl: "{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}"
-allowDebugRoute: {{ .StateValues.ALLOW_DEBUG_ROUTE }}
+apiUrl: "{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
+adminBaseUrl: "{{ requiredEnv "BASE_DOMAIN" }}"
+allowDebugRoute: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
 bulkSendTestServiceId: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
 contactEmail: "{{ .StateValues.CONTACT_EMAIL }}"
 documentationDomain: "https://documentation.{{ requiredEnv "BASE_DOMAIN" }}"
 hcEnServiceId: "{{ .StateValues.HC_EN_SERVICE_ID }}"
 hcFrServiceId: "{{ .StateValues.HC_FR_SERVICE_ID }}"
-redisEnabled: {{ .StateValues.REDIS_ENABLED }}
+redisEnabled: "{{ .StateValues.REDIS_ENABLED }}"
 sentryUrl: "{{ .StateValues.SENTRY_URL }}"
-showStyleGuide: {{ .StateValues.SHOW_STYLE_GUIDE }} 
+showStyleGuide: "{{ .StateValues.SHOW_STYLEGUIDE }}" 
 newRelicAppName: "notification-admin-{{ .Environment.Name }}"
-newRelicDistributedTracingEnabled: {{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}
-newRelicMonitorMode: {{ .StateValues.NEW_RELIC_MONITOR_MODE }}
-ffSalesforceContact: {{ .StateValues.FF_SALESFORCE_CONTACT }}
+newRelicDistributedTracingEnabled: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
+newRelicMonitorMode: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+ffSalesforceContact: "{{ .StateValues.FF_SALESFORCE_CONTACT }}"
+awsXrayTracingEnabled: "{{ .StateValues.AWS_XRAY_TRACING_ENABLED }}"
+awsXrayContextMissing: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
 
 image:
   tag: {{ env "{{ .StateValues.DOCKER_TAG" | default "latest" }}

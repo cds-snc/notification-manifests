@@ -31,7 +31,7 @@ api:
   ffSalesforceContact: false
   ewRelicDistributedTracingEnabled: false
   ffCloudwatchMetricsEnabled: false
-  awsXraySdkEnabled: true
+  awsXrayTracingEnabled: true
   awsXrayContextMissing: "LOG_WARNING"
   
 image:

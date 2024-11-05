@@ -125,7 +125,7 @@ spec:
             - name: SENTRY_URL
               value: "{{ .Values.sentryUrl }}"
             - name: SHOW_STYLEGUIDE
-              value: "{{ .Values.showStyleguide }}"
+              value: "{{ .Values.showStyleGuide }}"
             - name: NEW_RELIC_APP_NAME
               value: "{{ .Values.newRelicAppName }}"
             - name: NEW_RELIC_CONFIG_FILE
@@ -168,9 +168,9 @@ spec:
             - name: FF_SALESFORCE_CONTACT
               value: "{{ .Values.ffSalesforceContact }}"
             - name: AWS_XRAY_TRACING_ENABLED
-              value: "{{ .Values.aws_xray_tracing_enabled }}"
+              value: "{{ .Values.awsXrayTracingEnabled }}"
             - name: AWS_XRAY_CONTEXT_MISSING
-              value: "{{ .Values.aws_xray_context_missing }}"
+              value: "{{ .Values.awsXrayContextMissing }}"
             {{ if .Values.allowDebugRoute }}
             - name: DEBUG_KEY
               valueFrom:
