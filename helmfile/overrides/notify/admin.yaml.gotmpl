@@ -7,7 +7,7 @@ assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-u
 bulkSendAwsBucket: "{{ .Release.Namespace }}-{{ .Environment.Name }}-bulk-send"
 csvUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv"
 ipGeolocateService: "http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080"
-apiUrl: "{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
+apiUrl: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
 adminBaseUrl: "{{ requiredEnv "BASE_DOMAIN" }}"
 allowDebugRoute: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
 bulkSendTestServiceId: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
