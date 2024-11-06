@@ -26,6 +26,7 @@ api:
   ewRelicDistributedTracingEnabled: false
   ffCloudwatchMetricsEnabled: false
   awsXrayTracingEnabled: true
+  awsXraySdkEnabled: true
   awsXrayContextMissing: "LOG_WARNING"
   
 image:

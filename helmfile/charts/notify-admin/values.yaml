@@ -24,13 +24,13 @@ newRelicDistributedTracingEnabled: "false"
 newRelicMonitorMode: "false"
 ffSalesforceContact: "false"
 awsXrayTracingEnabled: "false"
+awsXraySdkEnabled: "false"
 awsXrayContextMissing: "LOG_ERROR"
 # Common values for notify-admin
 crmOrgListUrl: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
 flaskApp: "application.py"
 gcArticlesApi: "articles.alpha.canada.ca/notification-gc-notify"
 newRelicConfigFile: "/app/newrelic.ini"
-
 
 serviceAccount:
   create: true

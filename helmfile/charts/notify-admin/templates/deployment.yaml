@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "notify.fullname" . }}
   labels:
-    {{- include "notify.labels" . | nindent 4 }}
+    app: {{ include "notify.name" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -13,7 +13,7 @@ spec:
     {{ toYaml .Values.updateStrategy | nindent 4 }}
   selector:
     matchLabels:
-      {{- include "notify.selectorLabels" . | nindent 6 }}
+      app: {{ include "notify.name" . }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -21,7 +21,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "notify.selectorLabels" . | nindent 8 }}
+        app: {{ include "notify.name" . }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -172,6 +172,8 @@ spec:
               value: "{{ .Values.ffSalesforceContact }}"
             - name: AWS_XRAY_TRACING_ENABLED
               value: "{{ .Values.awsXrayTracingEnabled }}"
+            - name: AWS_XRAY_SDK_ENABLED
+              value: "{{ .Values.awsXraySdkEnabled }}"
             - name: AWS_XRAY_CONTEXT_MISSING
               value: "{{ .Values.awsXrayContextMissing }}"
             {{ if .Values.allowDebugRoute }}
