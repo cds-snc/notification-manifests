@@ -1,0 +1,13 @@
+{{ if .Values.pdb.enabled -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "notify-document-download.fullname" . }}
+  labels:
+    app: {{ include "notify-document-download.name" . }}
+spec:
+  minAvailable: {{ .Values.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      app: {{ include "notify-document-download.name" . }}
+{{- end }}      

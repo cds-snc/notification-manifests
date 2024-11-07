@@ -36,6 +36,53 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          # NON-SECRET CONFIGURATIONS
+            - name: ALLOW_DEBUG_ROUTE
+              value: "{{ .Values.document-download.allowDebugRoute }}"
+            - name: AWS_REGION
+              value: "{{ .Values.document-download.awsRegion }}"
+            - name: AWS_XRAY_CONTEXT_MISSING
+              value: "{{ .Values.document-download.awsXrayContextMissing }}"
+            - name: AWS_XRAY_DAEMON_ADDRESS
+              value: "{{ .Values.document-download.awsXrayDaemonAddress }}"
+            - name: AWS_XRAY_SDK_ENABLED
+              value: "{{ .Values.document-download.awsXraySdkEnabled }}"
+            - name: DEBUG
+              value: "{{ .Values.document-download.debug }}"
+            - name: DOCUMENTS_BUCKET
+              value: "{{ .Values.document-download.documentsBucket }}"
+            - name: BACKEND_HOSTNAME
+              value: "{{ .Values.document-download.backendHostname }}"
+            - name: HTTP_SCHEME
+              value: "{{ .Values.document-download.httpScheme }}"
+            - name: SCAN_FILES_DOCUMENTS_BUCKET
+              value: "{{ .Values.document-download.scanFilesDocumentsBucket }}"
+            - name: EXTRA_MIME_TYPES
+              value: "{{ .Values.document-download.extraMimeTypes }}"
+            - name: NEW_RELIC_APP_NAME
+              value: "{{ .Values.document-download.newRelicAppName }}"
+            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+              value: "{{ .Values.document-download.newRelicDistributedTracingEnabled }}"
+            - name: NEW_RELIC_MONITOR_MODE
+              value: "{{ .Values.document-download.newRelicMonitorMode }}"
+            - name: NOTIFY_ENVIRONMENT
+              value: "{{ .Values.document-download.notifyEnvironment }}"
+
+          # SECRET CONFIGURATIONS       
+            - name: AUTH_TOKENS
+              value: '$(AUTH_TOKENS)'
+            - name: DEBUG_KEY
+              value: '$(DEBUG_KEY)'
+            - name: SECRET_KEY
+              value: '$(SECRET_KEY)'
+            - name: NEW_RELIC_LICENSE_KEY
+              value: '$(NEW_RELIC_LICENSE_KEY)'
+            - name: SECRET_KEY
+              value: '$(SECRET_KEY)'
+            - name: NEW_RELIC_LICENSE_KEY
+              value: '$(NEW_RELIC_LICENSE_KEY)'
+
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
