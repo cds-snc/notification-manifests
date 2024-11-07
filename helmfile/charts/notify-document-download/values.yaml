@@ -1,4 +1,4 @@
-document-download:
+documentDownload:
   allowDebugRoute: "true"
   awsRegion: "ca-central-1"
   awsXrayContextMissing: "LOG_ERROR"
