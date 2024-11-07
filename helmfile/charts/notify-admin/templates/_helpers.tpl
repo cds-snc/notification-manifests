@@ -46,6 +46,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "notify.selectorLabels" -}}
+app: {{ include "notify.name" . }}
 app.kubernetes.io/name: {{ include "notify.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

@@ -1,23 +1,26 @@
 api:
   env: "{{ .Environment.Name }}"
-  admin_base_domain: "https://{{ requiredEnv "BASE_DOMAIN" }}"
-  asset_upload_bucket_name: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
-  csv_upload_bucket_name: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
-  new_relic_app_name: "{{ .Release.Name }}-{{ .Environment.Name }}"
-  base_domain: "{{ requiredEnv "BASE_DOMAIN" }}"
-  asset_domain: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
-  documentation_domain: "documentation.{{ requiredEnv "BASE_DOMAIN" }}"
-  document_download_api_host: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
-  api_host_name: "https://{{ .StateValues.api_host_name_prefix }}.{{ requiredEnv "BASE_DOMAIN" }}"
-  hc_en_service_id: "{{ .StateValues.hc_en_service_id }}"
-  hc_fr_service_id: "{{ .StateValues.hc_fr_service_id }}"
-  allow_debug_route: {{ .StateValues.allow_debug_route }}
-  new_relic_distributed_tracing_enabled: {{ .StateValues.new_relic_distributed_tracing_enabled }}
-  allow_html_service_ids: "{{ .StateValues.allow_html_service_ids }}"
-  sentry_url: "{{ .StateValues.sentry_url }}"
+  adminBaseDomain: "https://{{ requiredEnv "BASE_DOMAIN" }}"
+  assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
+  csvUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
+  newRelicAppName: "{{ .Release.Name }}-{{ .Environment.Name }}"
+  baseDomain: "{{ requiredEnv "BASE_DOMAIN" }}"
+  assetDomain: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
+  documentationDomain: "documentation.{{ requiredEnv "BASE_DOMAIN" }}"
+  documentDownloadApiHost: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+  apiHostName: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
+  hcEnServiceId: "{{ .StateValues.HC_EN_SERVICE_ID }}"
+  hcFrServiceId: "{{ .StateValues.HC_FR_SERVICE_ID }}"
+  allowDebugRoute: {{ .StateValues.ALLOW_DEBUG_ROUTE }}
+  newRelicDistributedTracingEnabled: {{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}
+  allowHtmlServiceIds: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
+  sentryUrl: "{{ .StateValues.SENTRY_URL }}"
+  awsXraySdkEnabled: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
+  awsXrayTracingEnabled: "{{ .StateValues.AWS_XRAY_TRACING_ENABLED }}"
+  awsXrayContextMissing: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
 
 image: 
-  tag:  {{ env "{{ .StateValues.docker_tag }}" | default "latest" }}
+  tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
 
 serviceAccount:
   annotations:

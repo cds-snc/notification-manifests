@@ -1,42 +1,41 @@
-# Default values for notify.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 2
-
-# DEFAULTS
+# Default values for notify-api.
 api:
-  crm_org_list_url: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
-  hc_en_service_id: "changeme"
-  hc_fr_service_id: "changeme"
-  crm_org_list_url: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
-  flask_app: "application.py"
-  notification_queue_prefix: "eks-notification-canada-ca"
-  redis_enabled: "1"
-  salesforce_domain: "login"
-  batch_insertion_chunk_size: "10"
-  sql_alchemy_pool_size: "256"
-  aws_ses_region: "us-east-1"
-  aws_ses_smtp: "email-smtp.us-east-1.amazonaws.com"
-  aws_us_toll_free_number: "+18005555555"
-  zendesk_sell_api_url: "https://cds-snc.zendesk.com"
-  zendesk_api_url: "https://api.getbase.com"
-  allow_html_service_ids: "111111111,222222222,333333333"
-  aws_pinpoint_region: "us-west-2"
-  aws_region: "ca-central-1"
-  fresh_desk_api_url: "https://cds-snc.freshdesk.com"
-  sentry_url: "changeme"
-  allow_debug_route: true
-  new_relic_monitor_mode: false
-  ff_salesforce_contact: false
-  ew_relic_distributed_tracing_enabled: false
-  ff_cloudwatch_metrics_enabled: false
-
+  crmOrgListUrl: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
+  hcEnServiceId: "changeme"
+  hcFrServiceId: "changeme"
+  crmOrgListUrl: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
+  flaskApp: "application.py"
+  notificationQueuePrefix: "eks-notification-canada-ca"
+  redisEnabled: "1"
+  salesforceDomain: "login"
+  batchInsertionChunkSize: "10"
+  sqlAlchemyPoolSize: "256"
+  awsSesRegion: "us-east-1"
+  awsSesSmtp: "email-smtp.us-east-1.amazonaws.com"
+  awsUsTollFreeNumber: "+18005555555"
+  zendeskSellApiUrl: "https://cds-snc.zendesk.com"
+  zendeskApiUrl: "https://api.getbase.com"
+  allowHtmlServiceIds: "111111111,222222222,333333333"
+  awsPinpointRegion: "us-west-2"
+  awsRegion: "ca-central-1"
+  freshDeskApiUrl: "https://cds-snc.freshdesk.com"
+  sentryUrl: "changeme"
+  allowDebugRoute: true
+  newRelicMonitorMode: false
+  ffSalesforceContact: false
+  ewRelicDistributedTracingEnabled: false
+  ffCloudwatchMetricsEnabled: false
+  awsXrayTracingEnabled: true
+  awsXraySdkEnabled: true
+  awsXrayContextMissing: "LOG_WARNING"
+  
 image:
   repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
+
+replicaCount: 2
 
 imagePullSecrets: []
 nameOverride: ""

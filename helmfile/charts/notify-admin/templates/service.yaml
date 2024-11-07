@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ include "notify.fullname" . }}
   labels:
-    {{- include "notify.labels" . | nindent 4 }}
+    app: {{ include "notify.name" . }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 spec:
@@ -15,5 +15,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "notify.selectorLabels" . | nindent 4 }}
+    app: {{ include "notify.name" . }}
 {{- end }}

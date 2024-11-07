@@ -1,44 +1,39 @@
-# APPLICATION CONFIG
-env: {{ .Environment.Name }}
-awsRegion: {{requiredEnv "AWS_REGION"}}
-awsAccountId: {{ requiredEnv "AWS_ACCOUNT_ID" }}
-baseDomain: {{ requiredEnv "BASE_DOMAIN"}}
-assetUploadBucketName: "notification-canada-{{ .Environment.Name }}-assets"
-ipGeolocateService: http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080
+admin:
+  env: "{{ .Environment.Name }}"
+  awsRegion: "{{ requiredEnv "AWS_REGION" }}"
+  awsAccountId: {{ requiredEnv "AWS_ACCOUNT_ID" }}
+  baseDomain: "{{ requiredEnv "BASE_DOMAIN"}}"
+  allowHtmlServiceIds: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
+  assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
+  bulkSendAwsBucket: "{{ .Release.Namespace }}-{{ .Environment.Name }}-bulk-send"
+  csvUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv"
+  ipGeolocateService: "http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080"
+  apiUrl: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
+  adminBaseUrl: "{{ requiredEnv "BASE_DOMAIN" }}"
+  allowDebugRoute: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
+  bulkSendTestServiceId: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
+  contactEmail: "{{ .StateValues.CONTACT_EMAIL }}"
+  documentationDomain: "https://documentation.{{ requiredEnv "BASE_DOMAIN" }}"
+  hcEnServiceId: "{{ .StateValues.HC_EN_SERVICE_ID }}"
+  hcFrServiceId: "{{ .StateValues.HC_FR_SERVICE_ID }}"
+  redisEnabled: "{{ .StateValues.REDIS_ENABLED }}"
+  sentryUrl: "{{ .StateValues.SENTRY_URL }}"
+  showStyleGuide: "{{ .StateValues.SHOW_STYLEGUIDE }}" 
+  newRelicAppName: "notification-admin-{{ .Environment.Name }}"
+  newRelicDistributedTracingEnabled: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
+  newRelicMonitorMode: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+  ffSalesforceContact: "{{ .StateValues.FF_SALESFORCE_CONTACT }}"
+  awsXrayTracingEnabled: "{{ .StateValues.AWS_XRAY_TRACING_ENABLED }}"
+  awsXraySdkEnabled: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
+  awsXrayContextMissing: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
 
-# ENVIRONMENT SPECIFIC 
-# DEV
-{{ if eq .Environment.Name "dev" }}
-apiURL: api-k8s.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN"}}
-allowDebugRoute: "true"
 image:
-  tag: {{ env "DOCKER_TAG" | default "latest" }}
-# STAGING
-{{ else if eq .Environment.Name "staging" }}
-apiURL: api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN"}}
-allowDebugRoute: "true"
-image:
-  tag: {{ env "DOCKER_TAG" | default "latest" }}
-# PRODUCTION
-{{ else if eq .Environment.Name "production" }}
-apiURL: api.notification.canada.ca
-allowDebugRoute: "false"
-image:
-  tag: {{ env "ADMIN_DOCKER_TAG" | default "latest" }}
-# OTHERS
-{{ else }}
-apiURL: api.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN"}}
-allowDebugRoute: "true"
-image:
-  tag: {{ env "DOCKER_TAG" | default "latest" }}
-{{ end }}
-
-# KUBERNETES CONFIG
-
-targetGroupBinding:
-  enabled: false
-  targetGroupARN: {{ requiredEnv "ADMIN_TARGET_GROUP_ARN" }}
+  tag: {{ env "{{ .StateValues.DOCKER_TAG" | default "latest" }}
 
 serviceAccount:
-  annotations: 
-    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-notify-admin
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/admin-eks-role
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "ADMIN_TARGET_GROUP_ARN"}}

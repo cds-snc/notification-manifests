@@ -56,7 +56,7 @@ releases:
     - ./overrides/notify/api.yaml.gotmpl
 
   - name: notify-admin
-    namespace: notify-{{ .Environment.Name }}
+    namespace: notification-canada-ca
     labels:
       app: notify-admin
       tier: fronteend

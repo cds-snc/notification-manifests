@@ -1,17 +1,37 @@
-# Default values for notify.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-awsAccountId: 123456789
-apiURL: "https://api.notification.canada.ca"
-baseDomain: "notification.canada.ca"
-allowDebugRoute: "false"
-assetUploadBucketName: "notification-canada-ca-dev-assets"
-awsRegion: "ca-central-1"
-env: "production"
-ipGeolocateService:  http://ipv4.notification-canada-ca.svc.cluster.local:8080
-crmOrgListURL: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
-
+# Default values for notify-admin.
+admin:
+  env: "default"
+  awsAccountId: 123456789
+  awsRegion: "ca-central-1"
+  allowHtmlServiceIds: "1,2,3,4"
+  apiUrl: "https://api.notification.canada.ca"
+  adminBaseUrl: "https://notification.canada.ca"
+  baseDomain: "notification.canada.ca"
+  allowDebugRoute: "false"
+  assetUploadBucketName: "notification-canada-ca-default-asset-upload"
+  bulkSendAwsBucket: "notification-canada-ca-default-bulk-send"
+  csvUploadBucketName: "notification-canada-ca-default-csv"
+  ipGeolocateService:  "http://ipv4.notification-canada-ca.svc.cluster.local:8080"
+  bulkSendTestServiceId: "123456789"
+  contactEmail: "notification-ops@cds-snc.ca"
+  documentationDomain: "https://documentation.notification.canada.ca"
+  hcEnServiceId: "123456789"
+  hcFrServiceId: "123456789"
+  redisEnabled: "1"
+  sentryUrl: "changeme"
+  showStyleGuide: true
+  newRelicAppName: "notification-admin-default"
+  newRelicDistributedTracingEnabled: "false"
+  newRelicMonitorMode: "false"
+  ffSalesforceContact: "false"
+  awsXrayTracingEnabled: "false"
+  awsXraySdkEnabled: "false"
+  awsXrayContextMissing: "LOG_ERROR"
+  # Common values for notify-admin
+  crmOrgListUrl: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
+  flaskApp: "application.py"
+  gcArticlesApi: "articles.alpha.canada.ca/notification-gc-notify"
+  newRelicConfigFile: "/app/newrelic.ini"
 
 serviceAccount:
   create: true
@@ -39,7 +59,7 @@ priorityClassName: high-priority
 
 readinessProbe:
   httpGet:
-    path: /_status?simple=true
+    path: "/_status?simple=true"
     port: 6012
 
 livenessProbe:
