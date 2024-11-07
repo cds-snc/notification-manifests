@@ -124,6 +124,8 @@ spec:
             value: '$(AWS_PINPOINT_SC_TEMPLATE_IDS)'
           - name: AWS_PINPOINT_DEFAULT_POOL_ID
             value: '$(AWS_PINPOINT_DEFAULT_POOL_ID)'
+          - name: FF_ANNUAL_LIMIT
+            value: '$(FF_ANNUAL_LIMIT)'
         lifecycle:
           preStop:
             exec:
