@@ -2,7 +2,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "notify.name" . }}
+  name: {{ include "notify.fullname" . }}
   labels:
     app: {{ include "notify.name" . }}
 spec:

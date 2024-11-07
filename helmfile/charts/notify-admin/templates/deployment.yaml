@@ -44,7 +44,7 @@ spec:
             ]
           env:
             - name: API_HOST_NAME
-              value: {{ .Values.apiUrl | replace "https://" "" }}            
+              value: {{ .Values.admin.apiUrl | replace "https://" "" }}            
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -53,7 +53,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ADMIN_BASE_URL
-              value: "{{ .Values.adminBaseUrl }}"
+              value: "{{ .Values.admin.adminBaseUrl }}"
             - name: ADMIN_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -65,40 +65,40 @@ spec:
                   name: notify-admin
                   key: MIXPANEL_PROJECT_TOKEN
             - name: ALLOW_DEBUG_ROUTE
-              value: "{{ .Values.allowDebugRoute }}"
+              value: "{{ .Values.admin.allowDebugRoute }}"
             - name: ALLOW_HTML_SERVICE_IDS
-              value: "{{ .Values.allowHtmlServiceIds}}"
+              value: "{{ .Values.admin.allowHtmlServiceIds}}"
             - name: API_HOST_NAME
-              value: "{{ .Values.apiUrl }}"
+              value: "{{ .Values.admin.apiUrl }}"
             - name: ASSET_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.assetUploadBucketName }}"
+              value: "{{ .Values.admin.assetUploadBucketName }}"
             - name: AWS_REGION
-              value: "{{ .Values.awsRegion }}"
+              value: "{{ .Values.admin.awsRegion }}"
             - name: BULK_SEND_AWS_BUCKET
-              value: "{{ .Values.bulkSendAwsBucket }}"
+              value: "{{ .Values.admin.bulkSendAwsBucket }}"
             - name: BULK_SEND_TEST_SERVICE_ID
-              value: "{{ .Values.bulkSendTestServiceId }}"
+              value: "{{ .Values.admin.bulkSendTestServiceId }}"
             - name: CONTACT_EMAIL
-              value: "{{ .Values.contactEmail }}"
+              value: "{{ .Values.admin.contactEmail }}"
             - name: CSV_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.csvUploadBucketName }}"
+              value: "{{ .Values.admin.csvUploadBucketName }}"
             - name: DANGEROUS_SALT
               valueFrom:
                 secretKeyRef:
                   name: notify-admin
                   key: DANGEROUS_SALT
             - name: DOCUMENTATION_DOMAIN
-              value: "{{ .Values.documentationDomain }}"
+              value: "{{ .Values.admin.documentationDomain }}"
             - name: HC_EN_SERVICE_ID
-              value: "{{ .Values.hcEnServiceId }}"
+              value: "{{ .Values.admin.hcEnServiceId }}"
             - name: HC_FR_SERVICE_ID
-              value: "{{ .Values.hcFrServiceId }}"
+              value: "{{ .Values.admin.hcFrServiceId }}"
             - name: FLASK_APP
-              value: "{{ .Values.flaskApp }}"
+              value: "{{ .Values.admin.flaskApp }}"
             - name: NOTIFY_ENVIRONMENT
-              value: "{{ .Values.env}}"
+              value: "{{ .Values.admin.env}}"
             - name: SENDING_DOMAIN
-              value: "{{ .Values.baseDomain }}"
+              value: "{{ .Values.admin.baseDomain }}"
             - name: SQLALCHEMY_DATABASE_URI
               valueFrom:
                 secretKeyRef:
@@ -119,33 +119,33 @@ spec:
                     name: notify-admin
                     key: REDIS_PUBLISH_URL
             - name: REDIS_ENABLED
-              value: "{{ .Values.redisEnabled }}"
+              value: "{{ .Values.admin.redisEnabled }}"
             - name: SECRET_KEY
               valueFrom:
                   secretKeyRef:
                     name: notify-admin
                     key: SECRET_KEY
             - name: SENTRY_URL
-              value: "{{ .Values.sentryUrl }}"
+              value: "{{ .Values.admin.sentryUrl }}"
             - name: SHOW_STYLEGUIDE
-              value: "{{ .Values.showStyleGuide }}"
+              value: "{{ .Values.admin.showStyleGuide }}"
             - name: NEW_RELIC_APP_NAME
-              value: "{{ .Values.newRelicAppName }}"
+              value: "{{ .Values.admin.newRelicAppName }}"
             - name: NEW_RELIC_CONFIG_FILE
-              value: "{{ .Values.newRelicConfigFile }}"
+              value: "{{ .Values.admin.newRelicConfigFile }}"
             - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: "{{ .Values.newRelicDistributedTracingEnabled }}"
+              value: "{{ .Values.admin.newRelicDistributedTracingEnabled }}"
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
                   secretKeyRef:
                     name: notify-admin
                     key: NEW_RELIC_LICENSE_KEY
             - name: NEW_RELIC_MONITOR_MODE
-              value: "{{ .Values.newRelicMonitorMode }}"
+              value: "{{ .Values.admin.newRelicMonitorMode }}"
             - name: IP_GEOLOCATE_SERVICE
-              value: "{{ .Values.ipGeolocateService }}"
+              value: "{{ .Values.admin.ipGeolocateService }}"
             - name: GC_ARTICLES_API
-              value: "{{ .Values.gcArticlesApi }}"
+              value: "{{ .Values.admin.gcArticlesApi }}"
             - name: GC_ARTICLES_API_AUTH_USERNAME
               valueFrom:
                   secretKeyRef:
@@ -167,16 +167,16 @@ spec:
                     name: notify-admin
                     key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
             - name: CRM_ORG_LIST_URL
-              value: "{{ .Values.crmOrgListUrl }}"
+              value: "{{ .Values.admin.crmOrgListUrl }}"
             - name: FF_SALESFORCE_CONTACT
-              value: "{{ .Values.ffSalesforceContact }}"
+              value: "{{ .Values.admin.ffSalesforceContact }}"
             - name: AWS_XRAY_TRACING_ENABLED
-              value: "{{ .Values.awsXrayTracingEnabled }}"
+              value: "{{ .Values.admin.awsXrayTracingEnabled }}"
             - name: AWS_XRAY_SDK_ENABLED
-              value: "{{ .Values.awsXraySdkEnabled }}"
+              value: "{{ .Values.admin.awsXraySdkEnabled }}"
             - name: AWS_XRAY_CONTEXT_MISSING
-              value: "{{ .Values.awsXrayContextMissing }}"
-            {{ if .Values.allowDebugRoute }}
+              value: "{{ .Values.admin.awsXrayContextMissing }}"
+            {{ if .Values.admin.allowDebugRoute }}
             - name: DEBUG_KEY
               valueFrom:
                  secretKeyRef:
