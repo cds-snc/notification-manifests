@@ -70,27 +70,32 @@ spec:
               value: "{{ .Values.documentDownload.notifyEnvironment }}"
 
           # SECRET CONFIGURATIONS      
-            - name: AUTH_TOKENS
-              valueFrom:
-              secretKeyRef:
-                name: notify-document-download
-                key: AUTH_TOKENS
+            # - name: AUTH_TOKENS
+            #   valueFrom:
+            #   secretKeyRef:
+            #     name: notify-document-download
+            #     key: AUTH_TOKENS
             - name: DEBUG_KEY
               valueFrom:
-              secretKeyRef:
-                name: notify-document-download
-                key: DEBUG_KEY
+                  secretKeyRef:
+                    name: notify-document-download
+                    key: DEBUG_KEY
             - name: SECRET_KEY
               valueFrom:
-              secretKeyRef:
-                name: notify-document-download
-                key: SECRET_KEY
+                  secretKeyRef:
+                    name: notify-document-download
+                    key: SECRET_KEY
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
-              secretKeyRef:
-                name: notify-document-download
-                key: NEW_RELIC_LICENSE_KEY
-
+                  secretKeyRef:
+                    name: notify-admin
+                    key: NEW_RELIC_LICENSE_KEY
+          {{ if .Values.secretProviderClass.enabled}}    
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true          
+          {{ end }}  
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

@@ -18,7 +18,7 @@ documentDownload:
 replicaCount: 1
 
 image:
-  repository:  public.ecr.aws/cds-snc/notify-document-download
+  repository:  public.ecr.aws/cds-snc/notify-document-download-api
   pullPolicy: Always
   tag: "latest"
 
