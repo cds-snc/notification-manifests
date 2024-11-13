@@ -3,14 +3,14 @@ kind: Deployment
 metadata:
   name: {{ include "notify-documentation.fullname" . }}
   labels:
-    {{- include "notify-documentation.labels" . | nindent 4 }}
+    app: {{ include "notify-documentation.name" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "notify-documentation.selectorLabels" . | nindent 6 }}
+      app: {{ include "notify-documentation.name" . }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "notify-documentation.labels" . | nindent 8 }}
+        app: {{ include "notify-documentation.name" . }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
