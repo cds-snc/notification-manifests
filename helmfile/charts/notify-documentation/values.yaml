@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: "public.ecr.aws/cds-snc/documentation"
+  repository: "public.ecr.aws/cds-snc/notify-documentation"
   pullPolicy: Always
   tag: "910f947"
 
