@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "notify-documentation.name" -}}
+{{- define "documentation.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "notify-documentation.fullname" -}}
+{{- define "documentation.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "notify-documentation.chart" -}}
+{{- define "documentation.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "notify-documentation.labels" -}}
-helm.sh/chart: {{ include "notify-documentation.chart" . }}
-{{ include "notify-documentation.selectorLabels" . }}
+{{- define "documentation.labels" -}}
+helm.sh/chart: {{ include "documentation.chart" . }}
+{{ include "documentation.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "notify-documentation.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "notify-documentation.name" . }}
+{{- define "documentation.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "documentation.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "notify-documentation.serviceAccountName" -}}
+{{- define "documentation.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "notify-documentation.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "documentation.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

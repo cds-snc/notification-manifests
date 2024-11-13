@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "notify-documentation.fullname" . }}
+  name: {{ include "documentation.fullname" . }}
   labels:
-    app: {{ include "notify-documentation.name" . }}
+    app: {{ include "documentation.name" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      app: {{ include "notify-documentation.name" . }}
+      app: {{ include "documentation.name" . }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: {{ include "notify-documentation.name" . }}
+        app: {{ include "documentation.name" . }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -32,7 +32,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "notify-documentation.serviceAccountName" . }}
+      serviceAccountName: {{ include "documentation.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
