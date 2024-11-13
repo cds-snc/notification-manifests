@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "notify-document-download.fullname" . }}
+  name: {{ include "documentDownload.fullname" . }}
   labels:
-    {{- include "notify-document-download.labels" . | nindent 4 }}
+    {{- include "documentDownload.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "notify-document-download.selectorLabels" . | nindent 6 }}
+      {{- include "documentDownload.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "notify-document-download.labels" . | nindent 8 }}
+        {{- include "documentDownload.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "notify-document-download.serviceAccountName" . }}
+      serviceAccountName: {{ include "documentDownload.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -73,17 +73,17 @@ spec:
             # - name: AUTH_TOKENS
             #   valueFrom:
             #   secretKeyRef:
-            #     name: notify-document-download
+            #     name: documentDownload
             #     key: AUTH_TOKENS
             - name: DEBUG_KEY
               valueFrom:
                   secretKeyRef:
-                    name: notify-document-download
+                    name: documentDownload
                     key: DEBUG_KEY
             - name: SECRET_KEY
               valueFrom:
                   secretKeyRef:
-                    name: notify-document-download
+                    name: documentDownload
                     key: SECRET_KEY
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
@@ -113,7 +113,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: {{ include "notify-document-download.fullname" . }}
+              secretProviderClass: {{ include "documentDownload.fullname" . }}
       {{ end }}  
       {{- with .Values.nodeSelector }}
       nodeSelector:
