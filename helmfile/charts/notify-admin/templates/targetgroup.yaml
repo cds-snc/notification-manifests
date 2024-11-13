@@ -2,12 +2,12 @@
 apiVersion: elbv2.k8s.aws/v1beta1
 kind: TargetGroupBinding
 metadata:
-  name: {{ include "notify.fullname" . }}
+  name: {{ include "admin.fullname" . }}
   labels:
-    {{- include "notify.labels" . | nindent 4 }}
+    {{- include "admin.labels" . | nindent 4 }}
 spec:
   serviceRef:
-    name: {{ include "notify.fullname" . }}
+    name: {{ include "admin.fullname" . }}
     port: {{ .Values.service.port }}
   targetGroupARN: {{ .Values.targetGroupBinding.targetGroupARN }}
 {{ end }}  
