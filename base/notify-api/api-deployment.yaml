@@ -63,6 +63,10 @@ spec:
               value: '$(CRM_ORG_LIST_URL)'
             - name: CSV_UPLOAD_BUCKET_NAME
               value: '$(CSV_UPLOAD_BUCKET_NAME)'
+            - name: CYPRESS_USER_PW_SECRET
+              value: '$(CYPRESS_USER_PW_SECRET)'
+            - name: CYPRESS_AUTH_CLIENT_SECRET
+              value: '$(CYPRESS_AUTH_CLIENT_SECRET)'              
             - name: DEBUG_KEY
               value: '$(DEBUG_KEY)'
             - name: DANGEROUS_SALT
