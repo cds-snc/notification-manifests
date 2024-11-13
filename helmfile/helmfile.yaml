@@ -36,7 +36,7 @@ repositories:
 releases:
 {{ if eq .Environment.Name "dev" }}
   - name: notify-documentation
-    namespace: notify-{{ .Environment.Name }}
+    namespace: notification-canada-ca
     labels:
       app: notify-documentation
       tier: frontend

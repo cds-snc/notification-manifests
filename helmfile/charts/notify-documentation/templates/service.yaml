@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ include "notify-documentation.fullname" . }}
   labels:
-    {{- include "notify-documentation.labels" . | nindent 4 }}
+    app: {{ include "notify-documentation.name" . }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "notify-documentation.selectorLabels" . | nindent 4 }}
+    app: {{ include "notify-documentation.name" . }}
