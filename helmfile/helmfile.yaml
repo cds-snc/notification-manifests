@@ -67,6 +67,16 @@ releases:
 
 {{ end }}
 
+  - name: k8s-event-logger
+    namespace: amazon-cloudwatch
+    labels:
+      app: k8s-event-logger
+      tier: full
+      category: monitoring
+      step: 2
+    chart: oci://ghcr.io/deliveryhero/helm-charts/k8s-event-logger
+    version: 1.1.8
+
   - name: karpenter-crd
     namespace: karpenter
     labels:
