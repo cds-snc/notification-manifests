@@ -2,12 +2,12 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "notify.fullname" . }}
+  name: {{ include "api.fullname" . }}
   labels:
-    app: {{ include "notify.name" . }}
+    app: {{ include "api.name" . }}
 spec:
   minAvailable: {{ .Values.pdb.minAvailable }}
   selector:
     matchLabels:
-      app: {{ include "notify.name" . }}
+      app: {{ include "api.name" . }}
 {{- end }}      

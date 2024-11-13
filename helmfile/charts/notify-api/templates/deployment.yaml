@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "notify.fullname" . }}
+  name: {{ include "api.fullname" . }}
   labels:
-    app: {{ include "notify.name" . }}
+    app: {{ include "api.name" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -13,7 +13,7 @@ spec:
     {{ toYaml .Values.updateStrategy | nindent 4 }}
   selector:
     matchLabels:
-      app: {{ include "notify.name" . }}
+      app: {{ include "api.name" . }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -21,13 +21,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app: {{ include "notify.name" . }}
+        app: {{ include "api.name" . }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "notify.serviceAccountName" . }}
+      serviceAccountName: {{ include "api.serviceAccountName" . }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
@@ -471,7 +471,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: {{ include "notify.fullname" . }}
+              secretProviderClass: {{ include "api.fullname" . }}
       {{ end }}                   
       {{- with .Values.nodeSelector }}
       nodeSelector:
