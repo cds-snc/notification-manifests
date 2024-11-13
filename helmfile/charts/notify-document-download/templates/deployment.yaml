@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "documentDownload.fullname" . }}
+  name: {{ include "document-download.fullname" . }}
   labels:
-    {{- include "documentDownload.labels" . | nindent 4 }}
+    {{- include "document-download.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "documentDownload.selectorLabels" . | nindent 6 }}
+      {{- include "document-download.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "documentDownload.labels" . | nindent 8 }}
+        {{- include "document-download.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "documentDownload.serviceAccountName" . }}
+      serviceAccountName: {{ include "document-download.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -70,25 +70,20 @@ spec:
               value: "{{ .Values.documentDownload.notifyEnvironment }}"
 
           # SECRET CONFIGURATIONS      
-            # - name: AUTH_TOKENS
-            #   valueFrom:
-            #   secretKeyRef:
-            #     name: documentDownload
-            #     key: AUTH_TOKENS
             - name: DEBUG_KEY
               valueFrom:
                   secretKeyRef:
-                    name: documentDownload
+                    name: document-download
                     key: DEBUG_KEY
             - name: SECRET_KEY
               valueFrom:
                   secretKeyRef:
-                    name: documentDownload
+                    name: document-download
                     key: SECRET_KEY
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
                   secretKeyRef:
-                    name: notify-admin
+                    name: document-download
                     key: NEW_RELIC_LICENSE_KEY
           {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
@@ -113,7 +108,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: {{ include "documentDownload.fullname" . }}
+              secretProviderClass: {{ include "document-download.fullname" . }}
       {{ end }}  
       {{- with .Values.nodeSelector }}
       nodeSelector:

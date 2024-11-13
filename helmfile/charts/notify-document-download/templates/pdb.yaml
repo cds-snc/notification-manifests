@@ -2,12 +2,12 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "documentDownload.fullname" . }}
+  name: {{ include "document-download.fullname" . }}
   labels:
-    app: {{ include "documentDownload.name" . }}
+    app: {{ include "document-download.name" . }}
 spec:
   minAvailable: {{ .Values.pdb.minAvailable }}
   selector:
     matchLabels:
-      app: {{ include "documentDownload.name" . }}
+      app: {{ include "document-download.name" . }}
 {{- end }}      

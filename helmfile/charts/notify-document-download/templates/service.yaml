@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "documentDownload.fullname" . }}
+  name: {{ include "document-download.fullname" . }}
   labels:
-    app: {{ include "documentDownload.name" . }}
+    app: {{ include "document-download.name" . }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 spec:
@@ -14,4 +14,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ include "documentDownload.name" . }}
+    app: {{ include "document-download.name" . }}
