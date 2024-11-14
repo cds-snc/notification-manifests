@@ -1,0 +1,25 @@
+documentDownload:
+  allowDebugRoute: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
+  awsRegion: "{{ requiredEnv "AWS_REGION" }}"
+  awsXrayContextMissing: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"  
+  awsXraySdkEnabled: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
+  debug: "{{ .StateValues.DEBUG }}"
+  newRelicAppName: "{{ .Release.Name }}-api-{{ .Environment.Name }}"
+  newRelicDistributedTracingEnabled: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
+  newRelicMonitorMode: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+  notifyEnvironment: "{{ .Environment.Name }}"
+  documentsBucket: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download"
+  backendHostname: "api.document.{{ requiredEnv "BASE_DOMAIN" }}"
+  scanFilesDocumentsBucket: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download-scan-files"
+  extraMimeTypes: "{{ .StateValues.EXTRA_MIME_TYPES }}"
+
+image: 
+  tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/document-download-eks-role
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "DOCUMENT_DOWNLOAD_API_TARGET_GROUP_ARN"}}

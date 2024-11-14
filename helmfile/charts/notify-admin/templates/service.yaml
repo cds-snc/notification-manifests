@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "notify.fullname" . }}
+  name: {{ include "admin.fullname" . }}
   labels:
-    app: {{ include "notify.name" . }}
+    app: {{ include "admin.name" . }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 spec:
@@ -15,5 +15,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ include "notify.name" . }}
+    app: {{ include "admin.name" . }}
 {{- end }}

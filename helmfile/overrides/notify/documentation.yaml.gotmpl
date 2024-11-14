@@ -1,5 +1,6 @@
-#ADD ANY ENVIRONMENT SPECIFIC VALUES THAT NEED TO BE OVERRIDDEN IN VALUES FILE
-# documentation:
-#     val1: "val1"
-#     val2: "val2"
-#     val3: "val3"
+image: 
+  tag: "910f947"
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}

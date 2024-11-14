@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: "public.ecr.aws/cds-snc/notify-documentation"
   pullPolicy: Always
-  tag: "910f947"
+  tag: "latest"
 
 pdb:
   enabled: true
@@ -55,6 +55,10 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
+
+targetGroupBinding:
+  enabled: false
+  targetGroupARN: ""
 
 ingress:
   enabled: false
