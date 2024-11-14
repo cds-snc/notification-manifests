@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "document-download.fullname" . }}
   labels:
-    {{- include "document-download.labels" . | nindent 4 }}
+    app: {{ include "document-download.name" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}

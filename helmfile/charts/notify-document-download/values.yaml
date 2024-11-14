@@ -78,6 +78,10 @@ autoscaling:
   maxReplicas: 2
   targetCPUUtilizationPercentage: 35
 
+targetGroupBinding:
+  enabled: false
+  targetGroupARN: ""
+
 pdb:
   enabled: true
   minAvailable: 1
