@@ -75,6 +75,16 @@ releases:
     values:
     - ./overrides/notify/document-download.yaml.gotmpl
 
+  - name: notify-celery-main
+    namespace: notification-canada-ca
+    labels:
+      app: notify-celery-main
+      tier: backend
+      category: deliverable
+    chart: charts/notify-celery-main
+    values:
+    - ./overrides/notify/celery-main.yaml.gotmpl
+
 {{ end }}
 
   - name: k8s-event-logger
