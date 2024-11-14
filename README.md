@@ -21,6 +21,7 @@ This means that before the overlay is applied, the file needs to be decrypted.
 ### Decrypting environment variables
 
 You should leverage the appropriate commands in the Makefile:
+
 - the `make decrypt-staging` command that will decrypt environment variables in staging ;
 - the `make decrypt-production` command that will decrypt environment variables in production.
 
