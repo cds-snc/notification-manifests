@@ -1,0 +1,27 @@
+celeryMain:
+  env: "{{ .Environment.Name }}"
+#   adminBaseDomain: "https://{{ requiredEnv "BASE_DOMAIN" }}"
+#   assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
+#   csvUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
+#   newRelicAppName: "{{ .Release.Name }}-{{ .Environment.Name }}"
+#   baseDomain: "{{ requiredEnv "BASE_DOMAIN" }}"
+#   assetDomain: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
+#   documentationDomain: "documentation.{{ requiredEnv "BASE_DOMAIN" }}"
+#   documentDownloadApiHost: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+#   apiHostName: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
+#   hcEnServiceId: "{{ .StateValues.HC_EN_SERVICE_ID }}"
+#   hcFrServiceId: "{{ .StateValues.HC_FR_SERVICE_ID }}"
+#   allowDebugRoute: {{ .StateValues.ALLOW_DEBUG_ROUTE }}
+#   newRelicDistributedTracingEnabled: {{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}
+#   allowHtmlServiceIds: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
+#   sentryUrl: "{{ .StateValues.SENTRY_URL }}"
+#   awsXraySdkEnabled: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
+#   awsXrayTracingEnabled: "{{ .StateValues.AWS_XRAY_TRACING_ENABLED }}"
+#   awsXrayContextMissing: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
+
+image: 
+  tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/celery-main-eks-role
