@@ -2,14 +2,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "api.fullname" . }}
-  labels:
-    {{- include "api.labels" . | nindent 4 }}
+  name: {{ include "document-download.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "api.fullname" . }}
+    name: {{ include "document-download.name" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
@@ -17,16 +16,8 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        target: 
+        target:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
-    {{- end }}
-    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: memory
-        target: 
-          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
-          type: Utilization
     {{- end }}
 {{- end }}

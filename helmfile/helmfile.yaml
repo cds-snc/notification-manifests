@@ -65,6 +65,16 @@ releases:
     values:
     - ./overrides/notify/admin.yaml.gotmpl
 
+  - name: notify-document-download
+    namespace: notification-canada-ca
+    labels:
+      app: notify-document-download
+      tier: backend
+      category: deliverable
+    chart: charts/notify-document-download
+    values:
+    - ./overrides/notify/document-download.yaml.gotmpl
+
 {{ end }}
 
   - name: k8s-event-logger
