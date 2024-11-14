@@ -283,20 +283,29 @@ spec:
               memory: "900Mi"
           ports:
             - containerPort: 6011
+          startupProbe:
+            httpGet:
+              path: /_status?simple=true
+              port: 6011
+            initialDelaySeconds: 15
+            periodSeconds: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 6
           readinessProbe:
             httpGet:
               path: /_status?simple=true
               port: 6011
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 3
-            failureThreshold: 10
+            failureThreshold: 5
           livenessProbe:
             httpGet:
               path: "/_status?simple=true"
               port: 6011
-            initialDelaySeconds: 30
+            initialDelaySeconds: 5
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 1

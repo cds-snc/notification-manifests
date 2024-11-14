@@ -21,6 +21,7 @@ This means that before the overlay is applied, the file needs to be decrypted.
 ### Decrypting environment variables
 
 You should leverage the appropriate commands in the Makefile:
+
 - the `make decrypt-staging` command that will decrypt environment variables in staging ;
 - the `make decrypt-production` command that will decrypt environment variables in production.
 
@@ -107,17 +108,17 @@ In production, we use set image hashes directly, take a look at [`env/production
 ## Connecting to the database
 
 1. First shell into the `jump-box` container inside the Kubernetes cluster (note the `-848d9c6787-p4r2v` suffix will be different):
-```
+```sh
 kubectl exec -n notification-canada-ca -it jump-box-848d9c6787-p4r2v -- /bin/sh 
 ```
 
 2. Use `socat` to forward all traffic from the `jump-box`'s port 5430 to the `DB_HOST_NAME` port 5432. `DB_HOST_NAME` should be something like `notification-canada-ca-staging-cluster.cluster-....ca-central-1.rds.amazonaws.com `
-```
+```sh
 socat TCP-LISTEN:5430,fork TCP:DB_HOST_NAME:5432
 ```
 
 3. Last, on your local machine, map the `jump-box` remote port 5430 to your local port 5430 (note the `-848d9c6787-p4r2v` suffix will be different):
-```
+```sh
 kubectl port-forward -n notification-canada-ca jump-box-848d9c6787-p4r2v 5430:5430 
 ```
 
