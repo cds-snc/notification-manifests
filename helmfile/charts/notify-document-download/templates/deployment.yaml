@@ -22,6 +22,7 @@ spec:
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        app: {{ include "document-download.name" . }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
