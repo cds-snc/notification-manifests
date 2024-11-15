@@ -13,9 +13,9 @@ spec:
       app: {{ include "celery-main.fullname" . }}
   strategy:
     rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+    type: {{ .Values.updateStrategy.type }}
   template:
     metadata:
       labels:
@@ -29,14 +29,16 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-        image: api
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh"]
         args: ["-c", "sh /app/scripts/cwcheck.sh"]
       containers:
-        - image: api
-          imagePullPolicy: Always
-          name: {{ include "celery-main.fullname" . }}
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ADMIN_BASE_URL
               value: https://$(BASE_DOMAIN)
@@ -158,9 +160,9 @@ spec:
       app: {{ include "celery-main.fullname" . }}-beat
   strategy:
     rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+    type: {{ .Values.updateStrategy.type }}
   template:
     metadata:
       labels:
@@ -177,8 +179,8 @@ spec:
               "until nslookup $(POSTGRES_HOST); do echo waiting for postgres; sleep 2; done;",
             ]
       containers:
-        - image: api
-          imagePullPolicy: Always
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           name: {{ include "celery-main.fullname" . }}-beat
           env:
             - name: ADMIN_BASE_URL
@@ -263,9 +265,9 @@ spec:
       app: {{ include "celery-main.fullname" . }}-sms
   strategy:
     rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+    type: {{ .Values.updateStrategy.type }}
   template:
     metadata:
       labels:
@@ -282,8 +284,8 @@ spec:
               "until nslookup $(POSTGRES_HOST); do echo waiting for postgres; sleep 2; done;",
             ]
       containers:
-        - image: api
-          imagePullPolicy: Always
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           name: {{ include "celery-main.fullname" . }}-sms
           env:
             - name: ADMIN_BASE_URL
