@@ -4,7 +4,7 @@ metadata:
   name: {{ include "celery-main.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
-  minAvailable: {{ .Values.celeryMain.replicaCount }}
+  minAvailable: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ include "celery-main.name" . }}
