@@ -4,6 +4,8 @@ metadata:
   name: {{ include "documentation.fullname" . }}
   labels:
     app: {{ include "documentation.name" . }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}    
 spec:
   type: {{ .Values.service.type }}
   ports:
