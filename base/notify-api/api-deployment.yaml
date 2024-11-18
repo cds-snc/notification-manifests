@@ -287,11 +287,11 @@ spec:
             httpGet:
               path: /_status?simple=true
               port: 6011
-            initialDelaySeconds: 15
+            initialDelaySeconds: 20
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 1
-            failureThreshold: 6
+            failureThreshold: 20
           readinessProbe:
             httpGet:
               path: /_status?simple=true
@@ -300,12 +300,12 @@ spec:
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 3
-            failureThreshold: 5
+            failureThreshold: 10
           livenessProbe:
             httpGet:
               path: "/_status?simple=true"
               port: 6011
-            initialDelaySeconds: 5
+            initialDelaySeconds: 35
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 1
