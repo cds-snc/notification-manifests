@@ -53,8 +53,11 @@ podSecurityContext: {}
 securityContext: {}
 
 service:
-  type: ClusterIP
+  enabled: true
   port: 80
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"  
 
 targetGroupBinding:
   enabled: false
