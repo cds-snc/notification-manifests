@@ -21,6 +21,7 @@ spec:
       labels:
         app: {{ include "celery.fullname" . }}-beat
     spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       priorityClassName: high-priority
       initContainers:
         - name: init-postgres
@@ -35,21 +36,31 @@ spec:
         - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           name: {{ include "celery.fullname" . }}-beat
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true  
           env:
+            # Includes specific ENV Variables
             - name: NEW_RELIC_APP_NAME
-              value: 'notification-celery-beat-$(ENVIRONMENT)'
+              value: {{ .Values.celeryBeat.newRelicAppName }}
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            {{- template "envVars" . }}
-            {{- template "envSecrets" . }}
-            {{ if .Values.secretProviderClass.enabled}}    
-              volumeMounts:
-                - name: secrets-store-inline
-                  mountPath: "/mnt/secrets-store"
-                readOnly: true          
-            {{ end }} 
+            # Includes common ENV Variables
+            {{- range $key, $val := .Values.celeryCommon }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            # Includes secret ENV Variables
+            {{- range $key, $val := .Values.celerySecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $val }}
+                  key: {{ $key }}
+            {{- end }}
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
           resources: {}

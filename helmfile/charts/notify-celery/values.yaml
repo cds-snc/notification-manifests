@@ -30,14 +30,25 @@ celeryCommon:
   ffCloudwatchMetricsEnabled: "True"
   ffAnnualLimit: true
 
+celerySecrets:
+  ADMIN_CLIENT_SECRET: notify-celery
+  DANGEROUS_SALT: notify-celery
+  SECRET_KEY: notify-celery
+  SENDGRID_API_KEY: notify-celery
+  SQLALCHEMY_DATABASE_URI: notify-celery
+  SQLALCHEMY_DATABASE_READER_URI: notify-celery
+  NEW_RELIC_LICENSE_KEY: notify-celery
+  REDIS_URL: notify-celery
+  REDIS_PUBLISH_URL: notify-celery
+
 celeryMain:
-  newRelicAppName: "notification-celery-$(ENVIRONMENT)"
+  newRelicAppName: "notification-celery-main-dev"
 
 celeryBeat:
-  newRelicAppName: "notification-celery-beat-$(ENVIRONMENT)"
+  newRelicAppName: "notification-celery-beat-dev"
 
 celerySms:
-  newRelicAppName: "notification-celery-sms-$(ENVIRONMENT)"
+  newRelicAppName: "notification-celery-sms-dev"
 
 image:
   repository: public.ecr.aws/cds-snc/notify-api
