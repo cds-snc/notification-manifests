@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ include "celery-main.fullname" . }}
-  name:  celery
+    app: {{ include "celery.fullname" . }}-main
+  name:  {{ include "celery.fullname" . }}-main
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: {{ include "celery-main.fullname" . }}
+      app: {{ include "celery.fullname" . }}-main
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
@@ -19,9 +19,9 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "celery-main.fullname" . }}
+        app: {{ include "celery.fullname" . }}-main
     spec:
-      priorityClassName: {{ include "celery-main.fullname" . }}
+      priorityClassName: {{ include "celery.fullname" . }}-main
       initContainers:
       - name: wait-cwagent-ready
         env:
@@ -46,6 +46,12 @@ spec:
                   fieldPath: spec.nodeName
             {{- template "envVars" . }}
             {{- template "envSecrets" . }}
+            {{ if .Values.secretProviderClass.enabled}}    
+              volumeMounts:
+                - name: secrets-store-inline
+                  mountPath: "/mnt/secrets-store"
+                readOnly: true          
+            {{ end }} 
           lifecycle:
             preStop:
               exec:
@@ -62,6 +68,15 @@ spec:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
+      {{ if .Values.secretProviderClass.enabled}}    
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "api.fullname" . }}
+      {{ end }}   
       dnsPolicy: {{ .Values.dnsPolicy }}
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}

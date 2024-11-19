@@ -1,44 +1,42 @@
 # Default values for celery.
 celeryCommon:
-  adminBaseUrl: "https://admin.notify.tools"
-  allowHtmlServiceIds: "lskdjf"
-  apiHostName: "api.notify.tools"
-  assetUploadBucketName: "asset-upload-notify"
-  awsPinpointRegion: "us-east-1"
-  awsRegion: "us-east-1"
-  bulkSendTestServiceId: "lskdjf"
-  csvUploadBucketName: "csv-upload-notify"
-  documentDownloadApiHost: "https://document-download.notify.tools"
-  fido2Domain: "https://fido2.notify.tools"
-  hcEnServiceId: "lskdjf"
-  hcFrServiceId: "lskdjf"
-  notifyEmailDomain: "notify.tools"
-  notifyEnvironment: "development"
-  notificationQueuePrefix: "development"
-  redisEnabled: "True"
-  sqlalchemyDatabaseUri: "postgresql://notify:notify@notify-postgres:5432/notify"
-  sqlalchemyDatabaseReaderUri: "postgresql://notify:notify@notify-postgres:5432/notify"
-  awsUsTollFreeNumber: "1234567890"
-  sentryUrl: "https://sentry.notify.tools"
-  newRelicDistributedTracingEnabled: "True"
-  newRelicMonitorMode: "False"
-  awsXrayContextMissing: "LOG_ERROR"
-  awsXrayDaemonAddress: "xray-daemon:2000"
-  awsXraySdkEnabled: "True"
-  newRelicMonitorMode: "False"
-  assetDomain: "https://assets.notify.tools"
-  batchInsertionChunkSize: "1000"
-  celeryConcurrency: "10"
+  adminBaseUrl: "https://dev.notification.cdssandbox.xyz"
+  allowHtmlServiceIds: "4de8b784-03a8-4ba8-a440-3bfea1b04fe6,ea608120-148a-4eba-a64c-4d9a8010e7b0"
+  apiHostName: "https://api-k8s.dev.notification.cdssandbox.xyz"
+  assetUploadBucketName: "notification-canada-ca-dev-asset-upload"
+  awsPinpointRegion: "us-west-2"
+  awsRegion: "ca-central-1"
+  bulkSendTestServiceId: "ea608120-148a-4eba-a64c-4d9a8010e7b0"
+  csvUploadBucketName: "notification-canada-ca-dev-csv-upload"
+  documentDownloadApiHost: "http://document-download-api.notification-canada-ca.svc.cluster.local:7000"
+  fido2Domain: "dev.notification.cdssandbox.xyz"
+  hcEnServiceId: "changeme"
+  hcFrServiceId: "changeme"
+  notifyEmailDomain: "dev.notification.cdssandbox.xyz"
+  notifyEnvironment: "dev"
+  notificationQueuePrefix: "eks-notification-canada-ca"
+  redisEnabled: "1"
+  awsUsTollFreeNumber: "+18449521252"
+  sentryUrl: "https://754db8b4e27045efb8ea40cbad086407@o142744.ingest.sentry.io/1522933"
+  newRelicDistributedTracingEnabled: true
+  newRelicMonitorMode: false
+  awsXrayContextMissing: "LOG_WARNING"
+  awsXrayDaemonAddress: "xray-daemon.notification-canada-ca.svc.cluster.local:2000"
+  awsXraySdkEnabled: true
+  newRelicMonitorMode: false
+  assetDomain: "assets.dev.notification.cdssandbox.xyz"
+  batchInsertionChunkSize: "10"
+  celeryConcurrency: "4"
   ffCloudwatchMetricsEnabled: "True"
-  ffAnnualLimit: "1000000"
+  ffAnnualLimit: true
 
 celeryMain:
   newRelicAppName: "notification-celery-$(ENVIRONMENT)"
 
-celeryMainBeat:
+celeryBeat:
   newRelicAppName: "notification-celery-beat-$(ENVIRONMENT)"
 
-celeryMainSms:
+celerySms:
   newRelicAppName: "notification-celery-sms-$(ENVIRONMENT)"
 
 image:
@@ -62,7 +60,7 @@ priorityClassName: high-priority
 
 serviceAccount:
   create: true
-  serviceAccountName: "notify-celery-main"
+  serviceAccountName: "notify-celery"
 
 podAnnotations: {}
 

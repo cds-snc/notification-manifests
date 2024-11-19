@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "celery-main.fullname" . }}
+  name: {{ include "celery.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   minReplicas: {{ .Values.autoscaling.minReplicas }}
@@ -9,4 +9,4 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "celery-main.fullname" . }}
+    name: {{ include "celery.fullname" . }}

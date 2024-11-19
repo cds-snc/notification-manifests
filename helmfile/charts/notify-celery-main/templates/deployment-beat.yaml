@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ include "celery-main.fullname" . }}-beat
-  name: {{ include "celery-main.fullname" . }}-beat
+    app: {{ include "celery.fullname" . }}-beat
+  name: {{ include "celery.fullname" . }}-beat
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: {{ include "celery-main.fullname" . }}-beat
+      app: {{ include "celery.fullname" . }}-beat
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "celery-main.fullname" . }}-beat
+        app: {{ include "celery.fullname" . }}-beat
     spec:
       priorityClassName: high-priority
       initContainers:
@@ -34,7 +34,7 @@ spec:
       containers:
         - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: {{ include "celery-main.fullname" . }}-beat
+          name: {{ include "celery.fullname" . }}-beat
           env:
             - name: NEW_RELIC_APP_NAME
               value: 'notification-celery-beat-$(ENVIRONMENT)'
@@ -44,9 +44,24 @@ spec:
                   fieldPath: spec.nodeName
             {{- template "envVars" . }}
             {{- template "envSecrets" . }}
+            {{ if .Values.secretProviderClass.enabled}}    
+              volumeMounts:
+                - name: secrets-store-inline
+                  mountPath: "/mnt/secrets-store"
+                readOnly: true          
+            {{ end }} 
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
           resources: {}
+      {{ if .Values.secretProviderClass.enabled}}    
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "api.fullname" . }}
+      {{ end }}   
       dnsPolicy: {{ .Values.dnsPolicy }}
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}

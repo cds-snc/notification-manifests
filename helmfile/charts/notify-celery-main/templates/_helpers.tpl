@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "celery-main.name" -}}
+{{- define "celery.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "celery-main.fullname" -}}
+{{- define "celery.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "celery-main.chart" -}}
+{{- define "celery.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "celery-main.labels" -}}
-helm.sh/chart: {{ include "celery-main.chart" . }}
-{{ include "celery-main.selectorLabels" . }}
+{{- define "celery.labels" -}}
+helm.sh/chart: {{ include "celery.chart" . }}
+{{ include "celery.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "celery-main.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "celery-main.name" . }}
+{{- define "celery.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "celery.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "celery-main.serviceAccountName" -}}
+{{- define "celery.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "celery-main.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "celery.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -125,46 +125,46 @@ Create the name of the service account to use
 - name: ADMIN_CLIENT_SECRET
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: ADMIN_CLIENT_SECRET
 - name: DANGEROUS_SALT
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: DANGEROUS_SALT
 - name: SECRET_KEY
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: SECRET_KEY
 - name: SENDGRID_API_KEY
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: SENDGRID_API_KEY
 - name: SQLALCHEMY_DATABASE_URI
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: SQLALCHEMY_DATABASE_URI
 - name: SQLALCHEMY_DATABASE_READER_URI
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: SQLALCHEMY_DATABASE_READER_URI
 - name: NEW_RELIC_LICENSE_KEY
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: NEW_RELIC_LICENSE_KEY
 - name: REDIS_URL
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: REDIS_URL
 - name: REDIS_PUBLISH_URL
   valueFrom:
     secretKeyRef:
-      name: notify-celery-main
+      name: notify-celery
       key: REDIS_PUBLISH_URL
 {{- end -}}

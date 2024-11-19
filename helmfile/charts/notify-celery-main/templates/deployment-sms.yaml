@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ include "celery-main.fullname" . }}-sms
+    app: {{ include "celery.fullname" . }}-sms
     profile: fargate
-  name: {{ include "celery-main.fullname" . }}-sms
+  name: {{ include "celery.fullname" . }}-sms
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: {{ include "celery-main.fullname" . }}-sms
+      app: {{ include "celery.fullname" . }}-sms
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "celery-main.fullname" . }}-sms
+        app: {{ include "celery.fullname" . }}-sms
     spec:
       priorityClassName: high-priority
       initContainers:
@@ -35,7 +35,7 @@ spec:
       containers:
         - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: {{ include "celery-main.fullname" . }}-sms
+          name: {{ include "celery.fullname" . }}-sms
           env:
 
             - name: NEW_RELIC_APP_NAME
@@ -46,8 +46,23 @@ spec:
                   fieldPath: spec.nodeName
             {{- template "envVars" . }}
             {{- template "envSecrets" . }}
+            {{ if .Values.secretProviderClass.enabled}}    
+              volumeMounts:
+                - name: secrets-store-inline
+                  mountPath: "/mnt/secrets-store"
+                readOnly: true          
+            {{ end }} 
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_sms.sh"]
+      {{ if .Values.secretProviderClass.enabled}}    
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "api.fullname" . }}
+      {{ end }}   
       dnsPolicy: {{ .Values.dnsPolicy }}
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}

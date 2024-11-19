@@ -75,15 +75,15 @@ releases:
     values:
     - ./overrides/notify/document-download.yaml.gotmpl
 
-  - name: notify-celery-main
+  - name: notify-celery
     namespace: notification-canada-ca
     labels:
-      app: notify-celery-main
+      app: notify-celery
       tier: backend
       category: deliverable
-    chart: charts/notify-celery-main
+    chart: charts/notify-celery
     values:
-    - ./overrides/notify/celery-main.yaml.gotmpl
+    - ./overrides/notify/celery.yaml.gotmpl
 
 {{ end }}
 
