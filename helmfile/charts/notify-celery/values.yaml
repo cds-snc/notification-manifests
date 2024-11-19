@@ -62,6 +62,12 @@ serviceAccount:
   create: true
   serviceAccountName: "notify-celery"
 
+service:
+  enabled: true
+  port: 80
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+
 podAnnotations: {}
 
 podSecurityContext: {}

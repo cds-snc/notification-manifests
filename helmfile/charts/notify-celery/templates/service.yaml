@@ -10,8 +10,8 @@ spec:
   type: ClusterIP
   # Putting a dummy port because we need to specify ports
   ports:
-    - port: 80
-      targetPort: 80
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
   selector:
     app: {{ include "celery.fullname" . }}-main
 
@@ -29,7 +29,7 @@ spec:
   type: ClusterIP
   # Putting a dummy port because we need to specify ports
   ports:
-    - port: 80
-      targetPort: 80
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
   selector:
     app: {{ include "celery.fullname" . }}-sms
