@@ -61,7 +61,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: {{ include "api.fullname" . }}
+              secretProviderClass: {{ include "celery.fullname" . }}
       {{ end }}   
       dnsPolicy: {{ .Values.dnsPolicy }}
       restartPolicy: {{ .Values.restartPolicy }}
