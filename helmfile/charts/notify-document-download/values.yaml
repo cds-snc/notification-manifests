@@ -41,7 +41,7 @@ service:
   type: LoadBalancer
   port: 7000
   annotations:
-  service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
 
 ingress:
   enabled: false
