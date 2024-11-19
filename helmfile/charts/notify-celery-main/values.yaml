@@ -1,6 +1,45 @@
-# Default values for notify-api.
+# Default values for celery.
+celeryCommon:
+  adminBaseUrl: "https://admin.notify.tools"
+  allowHtmlServiceIds: "lskdjf"
+  apiHostName: "api.notify.tools"
+  assetUploadBucketName: "asset-upload-notify"
+  awsPinpointRegion: "us-east-1"
+  awsRegion: "us-east-1"
+  bulkSendTestServiceId: "lskdjf"
+  csvUploadBucketName: "csv-upload-notify"
+  documentDownloadApiHost: "https://document-download.notify.tools"
+  fido2Domain: "https://fido2.notify.tools"
+  hcEnServiceId: "lskdjf"
+  hcFrServiceId: "lskdjf"
+  notifyEmailDomain: "notify.tools"
+  notifyEnvironment: "development"
+  notificationQueuePrefix: "development"
+  redisEnabled: "True"
+  sqlalchemyDatabaseUri: "postgresql://notify:notify@notify-postgres:5432/notify"
+  sqlalchemyDatabaseReaderUri: "postgresql://notify:notify@notify-postgres:5432/notify"
+  awsUsTollFreeNumber: "1234567890"
+  sentryUrl: "https://sentry.notify.tools"
+  newRelicDistributedTracingEnabled: "True"
+  newRelicMonitorMode: "False"
+  awsXrayContextMissing: "LOG_ERROR"
+  awsXrayDaemonAddress: "xray-daemon:2000"
+  awsXraySdkEnabled: "True"
+  newRelicMonitorMode: "False"
+  assetDomain: "https://assets.notify.tools"
+  batchInsertionChunkSize: "1000"
+  celeryConcurrency: "10"
+  ffCloudwatchMetricsEnabled: "True"
+  ffAnnualLimit: "1000000"
+
 celeryMain:
-  val1: "val1"
+  newRelicAppName: "notification-celery-$(ENVIRONMENT)"
+
+celeryMainBeat:
+  newRelicAppName: "notification-celery-beat-$(ENVIRONMENT)"
+
+celeryMainSms:
+  newRelicAppName: "notification-celery-sms-$(ENVIRONMENT)"
 
 image:
   repository: public.ecr.aws/cds-snc/notify-api
@@ -27,19 +66,15 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext:
-  {}
-
-securityContext:
-  {}
+podSecurityContext: {}
 
 resources:
   requests:
-    cpu: "250m"
-    memory: "700Mi"
+    cpu: "100m"
+    memory: "500Mi"
   limits:
-    cpu: "1200m"
-    memory: "900Mi"
+    cpu: "550m"
+    memory: "1024Mi"
 
 autoscaling:
   enabled: true
@@ -54,13 +89,14 @@ pdb:
 nodeSelector:
   eks.amazonaws.com/capacityType: ON_DEMAND
 
-targetGroupBinding:
-  enabled: false
-  targetGroupARN: ""
-
 tolerations: []
 
 affinity: {}
+
+dnsPolicy: ClusterFirst
+restartPolicy: Always
+schedulerName: default-scheduler
+terminationGracePeriodSeconds: 60
 
 secretProviderClass:
   enabled: true

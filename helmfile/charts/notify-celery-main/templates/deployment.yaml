@@ -1,3 +1,113 @@
+{{- define "envVars" -}}
+- name: ADMIN_BASE_URL
+  value: {{ .Values.celeryCommon.adminBaseUrl }}
+- name: ALLOW_HTML_SERVICE_IDS
+  value: {{ .Values.celeryCommon.allowHtmlServiceIds }}
+- name: API_HOST_NAME
+  value: {{ .Values.celeryCommon.apiHostName }}
+- name: ASSET_UPLOAD_BUCKET_NAME
+  value: {{ .Values.celeryCommon.assetUploadBucketName }}
+- name: AWS_PINPOINT_REGION
+  value: {{ .Values.celeryCommon.awsPinpointRegion }}
+- name: AWS_REGION
+  value: {{ .Values.celeryCommon.awsRegion }}
+- name: BULK_SEND_TEST_SERVICE_ID
+  value: {{ .Values.celeryCommon.bulkSendTestServiceId }}
+- name: CSV_UPLOAD_BUCKET_NAME
+  value: {{ .Values.celeryCommon.csvUploadBucketName }}
+- name: DOCUMENT_DOWNLOAD_API_HOST
+  value: {{ .Values.celeryCommon.documentDownloadApiHost }}
+- name: FIDO2_DOMAIN
+  value: {{ .Values.celeryCommon.fido2Domain }}
+- name: HC_EN_SERVICE_ID
+  value: {{ .Values.celeryCommon.hcEnServiceId }}
+- name: HC_FR_SERVICE_ID
+  value: {{ .Values.celeryCommon.hcFrServiceId }}
+- name: NOTIFY_EMAIL_DOMAIN
+  value: {{ .Values.celeryCommon.notifyEmailDomain }}
+- name: NOTIFY_ENVIRONMENT
+  value: {{ .Values.celeryCommon.notifyEnvironment }}
+- name: NOTIFICATION_QUEUE_PREFIX
+  value: {{ .Values.celeryCommon.notificationQueuePrefix }}
+- name: REDIS_ENABLED
+  value: {{ .Values.celeryCommon.redisEnabled }}
+- name: AWS_US_TOLL_FREE_NUMBER
+  value: {{ .Values.celeryCommon.awsUsTollFreeNumber }}
+- name: SENTRY_URL
+  value: {{ .Values.celeryCommon.sentryUrl }}
+- name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+  value: {{ .Values.celeryCommon.newRelicDistributedTracingEnabled }}
+- name: NEW_RELIC_MONITOR_MODE
+  value: {{ .Values.celeryCommon.newRelicMonitorMode }}
+- name: AWS_XRAY_CONTEXT_MISSING
+  value: {{ .Values.celeryCommon.awsXrayContextMissing }}
+- name: AWS_XRAY_DAEMON_ADDRESS
+  value: {{ .Values.celeryCommon.awsXrayDaemonAddress }}
+- name: AWS_XRAY_SDK_ENABLED
+  value: {{ .Values.celeryCommon.awsXraySdkEnabled }}
+- name: NEW_RELIC_MONITOR_MODE
+  value: {{ .Values.celeryCommon.newRelicMonitorMode }}
+- name: ASSET_DOMAIN
+  value: {{ .Values.celeryCommon.assetDomain }}
+- name: BATCH_INSERTION_CHUNK_SIZE
+  value: {{ .Values.celeryCommon.batchInsertionChunkSize }}
+- name: CELERY_CONCURRENCY
+  value: {{ .Values.celeryCommon.celeryConcurrency }}
+- name: FF_CLOUDWATCH_METRICS_ENABLED
+  value: {{ .Values.celeryCommon.ffCloudwatchMetricsEnabled }}
+- name: FF_ANNUAL_LIMIT
+  value: {{ .Values.celeryCommon.ffAnnualLimit }}
+{{- end -}}
+{{- define "envSecrets" -}}
+- name: ADMIN_CLIENT_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: ADMIN_CLIENT_SECRET
+- name: DANGEROUS_SALT
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: DANGEROUS_SALT
+- name: SECRET_KEY
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: SECRET_KEY
+- name: SENDGRID_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: SENDGRID_API_KEY
+- name: SQLALCHEMY_DATABASE_URI
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: SQLALCHEMY_DATABASE_URI
+- name: SQLALCHEMY_DATABASE_READER_URI
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: SQLALCHEMY_DATABASE_READER_URI
+- name: NEW_RELIC_LICENSE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: NEW_RELIC_LICENSE_KEY
+- name: REDIS_URL
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: REDIS_URL
+- name: REDIS_PUBLISH_URL
+  valueFrom:
+    secretKeyRef:
+      name: notify-celery-main
+      key: REDIS_PUBLISH_URL
+{{- end -}}
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,91 +145,17 @@ spec:
         args: ["-c", "sh /app/scripts/cwcheck.sh"]
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: ADMIN_BASE_URL
-              value: https://$(BASE_DOMAIN)
-            - name: ADMIN_CLIENT_SECRET
-              value: '$(ADMIN_CLIENT_SECRET)'
-            - name: ALLOW_HTML_SERVICE_IDS
-              value: '$(ALLOW_HTML_SERVICE_IDS)'
-            - name: API_HOST_NAME
-              value: '$(API_HOST_NAME)'
-            - name: ASSET_DOMAIN
-              value: '$(ASSET_DOMAIN)'
-            - name: ASSET_UPLOAD_BUCKET_NAME
-              value: '$(ASSET_UPLOAD_BUCKET_NAME)'
-            - name: AWS_PINPOINT_REGION
-              value: '$(AWS_PINPOINT_REGION)'
-            - name: AWS_REGION
-              value: '$(AWS_REGION)'
-            - name: AWS_XRAY_CONTEXT_MISSING
-              value: '$(AWS_XRAY_CONTEXT_MISSING)'
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_SDK_ENABLED
-              value: '$(AWS_XRAY_SDK_ENABLED)'
-            - name: BATCH_INSERTION_CHUNK_SIZE
-              value: '$(BATCH_INSERTION_CHUNK_SIZE)'
-            - name: BULK_SEND_TEST_SERVICE_ID
-              value: '$(BULK_SEND_TEST_SERVICE_ID)'
-            - name: {{ include "celery-main.fullname" . }}_CONCURRENCY
-              value: '$(CELERY_CONCURRENCY)'
-            - name: CSV_UPLOAD_BUCKET_NAME
-              value: '$(CSV_UPLOAD_BUCKET_NAME)'
-            - name: DANGEROUS_SALT
-              value: '$(DANGEROUS_SALT)'
-            - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
-            - name: FIDO2_DOMAIN
-              value: '$(FIDO2_DOMAIN)'
-            - name: HC_EN_SERVICE_ID
-              value: '$(HC_EN_SERVICE_ID)'
-            - name: HC_FR_SERVICE_ID
-              value: '$(HC_FR_SERVICE_ID)'
-            - name: NOTIFY_EMAIL_DOMAIN
-              value: '$(BASE_DOMAIN)'
-            - name: NOTIFY_ENVIRONMENT
-              value: '$(ENVIRONMENT)'
-            - name: NOTIFICATION_QUEUE_PREFIX
-              value: 'eks-notification-canada-ca'
-            - name: REDIS_URL
-              value: '$(REDIS_URL)'
-            - name: REDIS_PUBLISH_URL
-              value: '$(REDIS_PUBLISH_URL)'
-            - name: REDIS_ENABLED
-              value: '1'
-            - name: SECRET_KEY
-              value: '$(SECRET_KEY)'
-            - name: SENDGRID_API_KEY
-              value: '$(SENDGRID_API_KEY)'
-            - name: SQLALCHEMY_DATABASE_URI
-              value: '$(POSTGRES_SQL)'
-            - name: SQLALCHEMY_DATABASE_READER_URI
-              value: '$(SQLALCHEMY_DATABASE_READER_URI)'
+            - name: NEW_RELIC_APP_NAME
+              value: 'notification-celery-$(ENVIRONMENT)'
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: AWS_US_TOLL_FREE_NUMBER
-              value: '$(AWS_US_TOLL_FREE_NUMBER)'
-            - name: SENTRY_URL
-              value: '$(SENTRY_URL)'
-            - name: NEW_RELIC_APP_NAME
-              value: 'notification-celery-$(ENVIRONMENT)'
-            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: 'true'
-            - name: NEW_RELIC_LICENSE_KEY
-              value: '$(NEW_RELIC_LICENSE_KEY)'
-            - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'
-            - name: FF_CLOUDWATCH_METRICS_ENABLED
-              value: 'True'
-            - name: FF_ANNUAL_LIMIT
-              value: '$(FF_ANNUAL_LIMIT)'
+            {{- template "envVars" . }}
+            {{- template "envSecrets" . }}
           lifecycle:
             preStop:
               exec:
@@ -131,16 +167,16 @@ spec:
           args: ["-c", "sh /app/scripts/run_celery_core_tasks.sh"]
           resources:
             requests:
-              cpu: "100m"
-              memory: "500Mi"
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
             limits:
-              cpu: "550m"
-              memory: "1024Mi"
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      schedulerName: {{ .Values.schedulerName }}
       securityContext: {}
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 status: {}
 
 ---
@@ -183,67 +219,21 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           name: {{ include "celery-main.fullname" . }}-beat
           env:
-            - name: ADMIN_BASE_URL
-              value: https://$(BASE_DOMAIN)
-            - name: ADMIN_CLIENT_SECRET
-              value: '$(ADMIN_CLIENT_SECRET)'
-            - name: ALLOW_HTML_SERVICE_IDS
-              value: '$(ALLOW_HTML_SERVICE_IDS)'
-            - name: AWS_REGION
-              value: '$(AWS_REGION)'
-            - name: AWS_XRAY_CONTEXT_MISSING
-              value: '$(AWS_XRAY_CONTEXT_MISSING)'
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'xray-daemon-aws-xray.xray.svc.cluster.local:2000'
-            - name: AWS_XRAY_SDK_ENABLED
-              value: '$(AWS_XRAY_SDK_ENABLED)'
-            - name: BULK_SEND_TEST_SERVICE_ID
-              value: '$(BULK_SEND_TEST_SERVICE_ID)'
-            - name: DANGEROUS_SALT
-              value: '$(DANGEROUS_SALT)'
-            - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
-            - name: FIDO2_DOMAIN
-              value: '$(FIDO2_DOMAIN)'
-            - name: NOTIFY_EMAIL_DOMAIN
-              value: '$(BASE_DOMAIN)'
-            - name: NOTIFY_ENVIRONMENT
-              value: '$(ENVIRONMENT)'
-            - name: NOTIFICATION_QUEUE_PREFIX
-              value: 'eks-notification-canada-ca'
-            - name: REDIS_URL
-              value: '$(REDIS_URL)'
-            - name: REDIS_PUBLISH_URL
-              value: '$(REDIS_PUBLISH_URL)'
-            - name: REDIS_ENABLED
-              value: '1'
-            - name: SECRET_KEY
-              value: '$(SECRET_KEY)'
-            - name: SENDGRID_API_KEY
-              value: '$(SENDGRID_API_KEY)'
-            - name: SQLALCHEMY_DATABASE_URI
-              value: '$(POSTGRES_SQL)'
+            - name: NEW_RELIC_APP_NAME
+              value: 'notification-celery-beat-$(ENVIRONMENT)'
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: AWS_US_TOLL_FREE_NUMBER
-              value: '$(AWS_US_TOLL_FREE_NUMBER)'
-            - name: NEW_RELIC_APP_NAME
-              value: 'notification-celery-beat-$(ENVIRONMENT)'
-            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: 'true'
-            - name: NEW_RELIC_LICENSE_KEY
-              value: '$(NEW_RELIC_LICENSE_KEY)'
-            - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'
+            {{- template "envVars" . }}
+            {{- template "envSecrets" . }}
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
           resources: {}
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      schedulerName: {{ .Values.schedulerName }}
+      securityContext: {}          
       terminationGracePeriodSeconds: 30
 status: {}
 
@@ -288,75 +278,20 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           name: {{ include "celery-main.fullname" . }}-sms
           env:
-            - name: ADMIN_BASE_URL
-              value: https://$(BASE_DOMAIN)
-            - name: ADMIN_CLIENT_SECRET
-              value: '$(ADMIN_CLIENT_SECRET)'
-            - name: ALLOW_HTML_SERVICE_IDS
-              value: '$(ALLOW_HTML_SERVICE_IDS)'
-            - name: API_HOST_NAME
-              value: '$(API_HOST_NAME)'
-            - name: ASSET_UPLOAD_BUCKET_NAME
-              value: '$(ASSET_UPLOAD_BUCKET_NAME)'
-            - name: AWS_PINPOINT_REGION
-              value: '$(AWS_PINPOINT_REGION)'
-            - name: AWS_REGION
-              value: '$(AWS_REGION)'
-            - name: BULK_SEND_TEST_SERVICE_ID
-              value: '$(BULK_SEND_TEST_SERVICE_ID)'
-            - name: CSV_UPLOAD_BUCKET_NAME
-              value: '$(CSV_UPLOAD_BUCKET_NAME)'
-            - name: DANGEROUS_SALT
-              value: '$(DANGEROUS_SALT)'
-            - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: 'http://document-download-api.notification-canada-ca.svc.cluster.local:7000'
-            - name: FIDO2_DOMAIN
-              value: '$(FIDO2_DOMAIN)'
-            - name: HC_EN_SERVICE_ID
-              value: '$(HC_EN_SERVICE_ID)'
-            - name: HC_FR_SERVICE_ID
-              value: '$(HC_FR_SERVICE_ID)'
-            - name: NOTIFY_EMAIL_DOMAIN
-              value: '$(BASE_DOMAIN)'
-            - name: NOTIFY_ENVIRONMENT
-              value: '$(ENVIRONMENT)'
-            - name: NOTIFICATION_QUEUE_PREFIX
-              value: 'eks-notification-canada-ca'
-            - name: REDIS_URL
-              value: '$(REDIS_URL)'
-            - name: REDIS_PUBLISH_URL
-              value: '$(REDIS_PUBLISH_URL)'
-            - name: REDIS_ENABLED
-              value: '1'
-            - name: SECRET_KEY
-              value: '$(SECRET_KEY)'
-            - name: SENDGRID_API_KEY
-              value: '$(SENDGRID_API_KEY)'
-            - name: SQLALCHEMY_DATABASE_URI
-              value: '$(POSTGRES_SQL)'
-            - name: SQLALCHEMY_DATABASE_READER_URI
-              value: '$(SQLALCHEMY_DATABASE_READER_URI)'
+
+            - name: NEW_RELIC_APP_NAME
+              value: 'notification-celery-sms-$(ENVIRONMENT)'
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: AWS_US_TOLL_FREE_NUMBER
-              value: '$(AWS_US_TOLL_FREE_NUMBER)'
-            - name: SENTRY_URL
-              value: '$(SENTRY_URL)'
-            - name: NEW_RELIC_APP_NAME
-              value: 'notification-celery-sms-$(ENVIRONMENT)'
-            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: 'true'
-            - name: NEW_RELIC_LICENSE_KEY
-              value: '$(NEW_RELIC_LICENSE_KEY)'
-            - name: NEW_RELIC_MONITOR_MODE
-              value: '$(NEW_RELIC_MONITOR_MODE)'
+            {{- template "envVars" . }}
+            {{- template "envSecrets" . }}
           command: ["/bin/sh"]
           args: ["-c", "sh /app/scripts/run_celery_sms.sh"]
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      schedulerName: {{ .Values.schedulerName }}
       securityContext: {}
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 status: {}
