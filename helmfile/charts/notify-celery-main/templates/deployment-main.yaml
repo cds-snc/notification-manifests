@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ include "celery-main.fullname" . }}
+  name:  celery
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: {{ include "celery-main.fullname" . }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+    type: {{ .Values.updateStrategy.type }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "celery-main.fullname" . }}
+    spec:
+      priorityClassName: {{ include "celery-main.fullname" . }}
+      initContainers:
+      - name: wait-cwagent-ready
+        env:
+          - name: STATSD_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args: ["-c", "sh /app/scripts/cwcheck.sh"]
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: NEW_RELIC_APP_NAME
+              value: 'notification-celery-$(ENVIRONMENT)'
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            {{- template "envVars" . }}
+            {{- template "envSecrets" . }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - /app/scripts/run_celery_exit.sh
+          command: ["/bin/sh"]
+          args: ["-c", "sh /app/scripts/run_celery_core_tasks.sh"]
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      schedulerName: {{ .Values.schedulerName }}
+      securityContext: {}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+status: {}

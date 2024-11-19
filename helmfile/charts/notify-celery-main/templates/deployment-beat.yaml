@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ include "celery-main.fullname" . }}-beat
+  name: {{ include "celery-main.fullname" . }}-beat
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: {{ include "celery-main.fullname" . }}-beat
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+    type: {{ .Values.updateStrategy.type }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "celery-main.fullname" . }}-beat
+    spec:
+      priorityClassName: high-priority
+      initContainers:
+        - name: init-postgres
+          image: alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "until nslookup $(POSTGRES_HOST); do echo waiting for postgres; sleep 2; done;",
+            ]
+      containers:
+        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: {{ include "celery-main.fullname" . }}-beat
+          env:
+            - name: NEW_RELIC_APP_NAME
+              value: 'notification-celery-beat-$(ENVIRONMENT)'
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            {{- template "envVars" . }}
+            {{- template "envSecrets" . }}
+          command: ["/bin/sh"]
+          args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
+          resources: {}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      schedulerName: {{ .Values.schedulerName }}
+      securityContext: {}          
+      terminationGracePeriodSeconds: 30
+status: {}
