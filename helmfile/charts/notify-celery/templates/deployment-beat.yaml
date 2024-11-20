@@ -32,6 +32,12 @@ spec:
               "-c",
               "until nslookup $(POSTGRES_HOST); do echo waiting for postgres; sleep 2; done;",
             ]
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: notify-celery
+                  key: POSTGRES_HOST
       containers:
         - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
