@@ -1,23 +1,25 @@
-celeryMain:
+celeryCommon:
   env: "{{ .Environment.Name }}"
-#   adminBaseDomain: "https://{{ requiredEnv "BASE_DOMAIN" }}"
-#   assetUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
-#   csvUploadBucketName: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
-#   newRelicAppName: "{{ .Release.Name }}-{{ .Environment.Name }}"
-#   baseDomain: "{{ requiredEnv "BASE_DOMAIN" }}"
-#   assetDomain: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
-#   documentationDomain: "documentation.{{ requiredEnv "BASE_DOMAIN" }}"
-#   documentDownloadApiHost: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
-#   apiHostName: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
-#   hcEnServiceId: "{{ .StateValues.HC_EN_SERVICE_ID }}"
-#   hcFrServiceId: "{{ .StateValues.HC_FR_SERVICE_ID }}"
-#   allowDebugRoute: {{ .StateValues.ALLOW_DEBUG_ROUTE }}
-#   newRelicDistributedTracingEnabled: {{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}
-#   allowHtmlServiceIds: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
-#   sentryUrl: "{{ .StateValues.SENTRY_URL }}"
-#   awsXraySdkEnabled: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
-#   awsXrayTracingEnabled: "{{ .StateValues.AWS_XRAY_TRACING_ENABLED }}"
-#   awsXrayContextMissing: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
+  ADMIN_BASE_URL: "https://{{ requiredEnv "BASE_DOMAIN" }}"
+  ALLOW_HTML_SERVICE_IDS: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
+  API_HOST_NAME: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
+  ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
+  AWS_REGION: "{{ requiredEnv "AWS_REGION" }}"
+  BULK_SEND_TEST_SERVICE_ID: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
+  CSV_UPLOAD_BUCKET_NAME: "notification-canada-ca-dev-csv-upload"
+  DOCUMENT_DOWNLOAD_API_HOST: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
+  FIDO2_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
+  HC_EN_SERVICE_ID: "{{ .StateValues.HC_EN_SERVICE_ID }}"
+  HC_FR_SERVICE_ID: "{{ .StateValues.HC_FR_SERVICE_ID }}"
+  NOTIFY_EMAIL_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
+  NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
+  REDIS_ENABLED: "{{ .StateValues.REDIS_ENABLED }}"
+  SENTRY_URL: "{{ .StateValues.SENTRY_URL }}"
+  NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: {{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}
+  NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+  AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
+  AWS_XRAY_SDK_ENABLED: {{ .StateValues.AWS_XRAY_SDK_ENABLED }}
+  ASSET_DOMAIN: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
 
 image: 
   tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
