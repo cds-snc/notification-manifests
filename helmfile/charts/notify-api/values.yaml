@@ -1,6 +1,5 @@
 # Default values for notify-api.
 api:
-  crmOrgListUrl: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
   hcEnServiceId: "changeme"
   hcFrServiceId: "changeme"
   crmOrgListUrl: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
@@ -23,7 +22,7 @@ api:
   allowDebugRoute: true
   newRelicMonitorMode: false
   ffSalesforceContact: false
-  ewRelicDistributedTracingEnabled: false
+  newRelicDistributedTracingEnabled: false
   ffCloudwatchMetricsEnabled: false
   awsXrayTracingEnabled: true
   awsXraySdkEnabled: true
