@@ -1,17 +1,18 @@
+{{- range $node := .Values.nodes.other }}
+{{- with $ -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ include "celery.fullname" . }}-sms
-    profile: fargate
-  name: {{ include "celery.fullname" . }}-sms
+    app: {{ include "celery.fullname" . }}-{{ $node.name }}
+  name: {{ include "celery.fullname" . }}-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: {{ include "celery.fullname" . }}-sms
+      app: {{ include "celery.fullname" . }}-{{ $node.name }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
@@ -20,10 +21,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "celery.fullname" . }}-sms
+        app: {{ include "celery.fullname" . }}-{{ $node.name }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
-      priorityClassName: high-priority
+      priorityClassName: {{ $node.priorityClassName }}
       initContainers:
         - name: init-postgres
           image: alpine
@@ -42,7 +43,7 @@ spec:
       containers:
         - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: {{ include "celery.fullname" . }}-sms
+          name: {{ include "celery.fullname" . }}-{{ $node.name }}
           volumeMounts:
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"
@@ -50,7 +51,7 @@ spec:
           env:
             # Includes specific ENV Variables
             - name: NEW_RELIC_APP_NAME
-              value: {{ .Values.celerySms.newRelicAppName }}
+              value: {{ $node.newRelicAppName }}
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
@@ -69,7 +70,7 @@ spec:
                   key: {{ $key }}
             {{- end }}
           command: ["/bin/sh"]
-          args: ["-c", "sh /app/scripts/run_celery_sms.sh"]
+          args: ["-c", "{{ $node.scriptArg }}"]
       {{ if .Values.secretProviderClass.enabled}}    
       volumes:
         - name: secrets-store-inline
@@ -83,5 +84,8 @@ spec:
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}
       securityContext: {}
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ $node.terminationGracePeriodSeconds }}
 status: {}
+{{- end }}
+---
+{{- end }}

@@ -42,14 +42,59 @@ celerySecrets:
   REDIS_PUBLISH_URL: MANIFEST_REDIS_PUBLISH_URL
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
 
-celeryMain:
-  newRelicAppName: "notification-celery-main-dev"
-
-celeryBeat:
-  newRelicAppName: "notification-celery-beat-dev"
-
-celerySms:
-  newRelicAppName: "notification-celery-sms-dev"
+nodes:
+  other:
+    # OTHER CONFIGS
+    other-sms:
+      name: sms
+      newRelicAppName: "notification-celery-sms-dev"
+      scriptArg: "sh /app/scripts/run_celery_beat.sh"
+      terminationGracePeriodSeconds: 60
+    other-beat:
+      name: beat
+      newRelicAppName: "notification-celery-beat-dev"
+      scriptArg: "sh /app/scripts/run_celery_beat.sh"
+      terminationGracePeriodSeconds: 30
+  primaryAndScalable:
+    # PRIMARY CONFIGS
+    primary-main:
+      name: primary
+      newRelicAppName: "notification-celery-main-primary-dev"
+      terminationGracePeriodSeconds: 60
+      scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
+      priorityClassName: high-priority
+    primary-email:
+      name: email-send-primary
+      newRelicAppName: "notification-celery-email-send-primary-dev"
+      terminationGracePeriodSeconds: 60
+      scriptArg: "sh /app/scripts/run_celery_email.sh"
+      priorityClassName: high-priority
+    primary-sms:
+      name: sms-send-primary
+      newRelicAppName: "notification-celery-sms-send-primary-dev"
+      terminationGracePeriodSeconds: 60
+      scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
+      priorityClassName: high-priority
+    # SCALABLE CONFIGS
+    scalable-main:
+      name: scalable
+      newRelicAppName: "notification-celery-main-scalable-dev"
+      terminationGracePeriodSeconds: 60
+      scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
+      priorityClassName: high-priority
+    scalable-email:
+      name: email-send-scalable
+      newRelicAppName: "notification-celery-email-send-scalable-dev"
+      terminationGracePeriodSeconds: 60
+      scriptArg: "sh /app/scripts/run_celery_email.sh"
+      priorityClassName: high-priority
+    scalable-sms:
+      name: sms-send-scalable
+      newRelicAppName: "notification-celery-sms-send-scalable-dev"
+      terminationGracePeriodSeconds: 60
+      scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
+      priorityClassName: high-priority
+  
 
 image:
   repository: public.ecr.aws/cds-snc/notify-api
@@ -67,8 +112,6 @@ updateStrategy:
   rollingUpdate:
     maxSurge: 25%
     maxUnavailable: 25%
-
-priorityClassName: high-priority
 
 serviceAccount:
   create: true
@@ -95,7 +138,7 @@ resources:
 autoscaling:
   enabled: true
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 2
   targetCPUUtilizationPercentage: 50
 
 pdb:

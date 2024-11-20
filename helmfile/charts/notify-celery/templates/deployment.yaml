@@ -1,16 +1,18 @@
+{{- range $node := .Values.nodes.primaryAndScalable }}
+{{- with $ -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ include "celery.fullname" . }}-beat
-  name: {{ include "celery.fullname" . }}-beat
+    app: {{ include "celery.fullname" . }}-{{ $node.name }}
+  name:  {{ include "celery.fullname" . }}-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: {{ include "celery.fullname" . }}-beat
+      app: {{ include "celery.fullname" . }}-{{ $node.name }}
   strategy:
     rollingUpdate:
       maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
@@ -19,29 +21,25 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "celery.fullname" . }}-beat
+        app: {{ include "celery.fullname" . }}-{{ $node.name }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
-      priorityClassName: high-priority
+      priorityClassName: {{ $node.priorityClassName }}
       initContainers:
-        - name: init-postgres
-          image: alpine
-          command:
-            [
-              "sh",
-              "-c",
-              "until nslookup $(POSTGRES_HOST); do echo waiting for postgres; sleep 2; done;",
-            ]
-          env:
-            - name: POSTGRES_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: notify-celery
-                  key: POSTGRES_HOST
+      - name: wait-cwagent-ready
+        env:
+          - name: STATSD_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args: ["-c", "sh /app/scripts/cwcheck.sh"]
       containers:
-        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        - name: {{ include "celery.fullname" . }}-{{ $node.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          name: {{ include "celery.fullname" . }}-beat
           volumeMounts:
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"
@@ -49,7 +47,7 @@ spec:
           env:
             # Includes specific ENV Variables
             - name: NEW_RELIC_APP_NAME
-              value: {{ .Values.celeryBeat.newRelicAppName }}
+              value: {{ $node.newRelicAppName }}
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
@@ -67,9 +65,22 @@ spec:
                   name: notify-celery
                   key: {{ $key }}
             {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - /app/scripts/run_celery_exit.sh
           command: ["/bin/sh"]
-          args: ["-c", "sh /app/scripts/run_celery_beat.sh"]
-          resources: {}
+          args: ["-c", "{{ $node.scriptArg }}"]
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
       {{ if .Values.secretProviderClass.enabled}}    
       volumes:
         - name: secrets-store-inline
@@ -82,6 +93,9 @@ spec:
       dnsPolicy: {{ .Values.dnsPolicy }}
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}
-      securityContext: {}          
-      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 status: {}
+{{- end }}
+---
+{{- end }}
