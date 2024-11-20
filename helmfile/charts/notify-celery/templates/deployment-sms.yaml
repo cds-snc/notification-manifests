@@ -22,7 +22,7 @@ spec:
       labels:
         app: {{ include "celery.fullname" . }}-sms
     spec:
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
       priorityClassName: high-priority
       initContainers:
         - name: init-postgres
@@ -59,7 +59,7 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ $val }}
+                  name: notify-celery
                   key: {{ $key }}
             {{- end }}
           command: ["/bin/sh"]

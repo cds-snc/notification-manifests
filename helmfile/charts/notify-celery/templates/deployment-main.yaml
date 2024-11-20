@@ -21,7 +21,7 @@ spec:
       labels:
         app: {{ include "celery.fullname" . }}-main
     spec:
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
       priorityClassName: {{ include "celery.fullname" . }}-main
       initContainers:
       - name: wait-cwagent-ready
@@ -60,7 +60,7 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ $val }}
+                  name: notify-celery
                   key: {{ $key }}
             {{- end }}
           lifecycle:
