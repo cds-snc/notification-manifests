@@ -67,7 +67,7 @@ nodes:
       name: email-send-primary
       newRelicAppName: "notification-celery-email-send-primary-dev"
       terminationGracePeriodSeconds: 60
-      scriptArg: "sh /app/scripts/run_celery_email.sh"
+      scriptArg: "sh /app/scripts/run_celery_send_email.sh"
       priorityClassName: high-priority
     primary-sms:
       name: sms-send-primary
@@ -86,7 +86,7 @@ nodes:
       name: email-send-scalable
       newRelicAppName: "notification-celery-email-send-scalable-dev"
       terminationGracePeriodSeconds: 60
-      scriptArg: "sh /app/scripts/run_celery_email.sh"
+      scriptArg: "sh /app/scripts/run_celery_send_email.sh"
       priorityClassName: high-priority
     scalable-sms:
       name: sms-send-scalable
@@ -95,7 +95,6 @@ nodes:
       scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
       priorityClassName: high-priority
   
-
 image:
   repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
