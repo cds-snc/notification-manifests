@@ -8,8 +8,8 @@ metadata:
   name: celery-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  minReplicas: {{ $node.minReplicas }}
+  maxReplicas: {{ $node.maxReplicas }}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment

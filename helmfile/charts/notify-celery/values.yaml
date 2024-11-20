@@ -82,18 +82,24 @@ nodes:
       terminationGracePeriodSeconds: 60
       scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
       priorityClassName: high-priority
+      minReplicas: 1
+      maxReplicas: 2      
     scalable-email:
       name: email-send-scalable
       newRelicAppName: "notification-celery-email-send-scalable-dev"
       terminationGracePeriodSeconds: 60
       scriptArg: "sh /app/scripts/run_celery_send_email.sh"
       priorityClassName: high-priority
+      minReplicas: 1
+      maxReplicas: 2      
     scalable-sms:
       name: sms-send-scalable
       newRelicAppName: "notification-celery-sms-send-scalable-dev"
       terminationGracePeriodSeconds: 60
       scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
       priorityClassName: high-priority
+      minReplicas: 1
+      maxReplicas: 2
   
 image:
   repository: public.ecr.aws/cds-snc/notify-api
@@ -136,8 +142,6 @@ resources:
 
 autoscaling:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 2
   targetCPUUtilizationPercentage: 50
 
 pdb:
