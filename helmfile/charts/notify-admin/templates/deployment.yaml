@@ -44,7 +44,7 @@ spec:
             ]
           env:
             - name: API_HOST_NAME
-              value: {{ .Values.admin.API_URL | replace "https://" "" }}            
+              value: {{ .Values.admin.API_HOST_NAME | replace "https://" "" }}            
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
