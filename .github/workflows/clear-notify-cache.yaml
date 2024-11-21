@@ -31,7 +31,7 @@ jobs:
 
       - name: Call API to clear cache
         env:
-          CACHE_CLEAR_USER_NAME: CACHE_CLEAR_USER
+          CACHE_CLEAR_USER_NAME: ${{ secrets.CACHE_CLEAR_USER_NAME }}
           CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.CACHE_CLEAR_CLIENT_SECRET }}
-          API_URL: https://api.notification.canada.ca
+          API_URL: ${{ secrets.API_URL }}
         run: node scripts/clear-cache.js
