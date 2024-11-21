@@ -72,8 +72,7 @@ jobs:
 
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster     
-          kubectl config rename-context arn:aws:eks:ca-central-1:$STAGING_ACCOUNT_ID:cluster/notification-canada-ca-staging-eks-cluster staging   
+          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging 
 
       - name: Load EnvVars
         run: |
