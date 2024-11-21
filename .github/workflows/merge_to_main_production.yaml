@@ -172,6 +172,6 @@ jobs:
     with:
       environment: production
     secrets:
-      CACHE_CLEAR_USER_NAME: ${{ secrets.PRODUCTION_CACHE_CLEAR_USER_NAME }}
+      CACHE_CLEAR_USER_NAME: CACHE_CLEAR_USER
       CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.PRODUCTION_CACHE_CLEAR_CLIENT_SECRET }}
-      API_URL: ${{ secrets.PRODUCTION_API_URL }}
+      API_URL: https://api.notification.canada.ca

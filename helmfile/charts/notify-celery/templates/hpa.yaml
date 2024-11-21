@@ -1,0 +1,20 @@
+{{- range $node := .Values.nodes.primaryAndScalable }}
+{{- with $ -}}
+{{- $scalableNames := list "scalable" "sms-send-scalable" "email-send-scalable" -}}
+{{ if has $node.name $scalableNames }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: celery-{{ $node.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  minReplicas: {{ $node.minReplicas }}
+  maxReplicas: {{ $node.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: celery-{{ $node.name }}
+{{- end }}
+---
+{{- end }}
+{{- end }}

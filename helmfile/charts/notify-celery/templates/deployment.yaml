@@ -1,0 +1,101 @@
+{{- range $node := .Values.nodes.primaryAndScalable }}
+{{- with $ -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ include "celery.fullname" . }}-{{ $node.name }}
+  name:  {{ include "celery.fullname" . }}-{{ $node.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: {{ include "celery.fullname" . }}-{{ $node.name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.updateStrategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.updateStrategy.rollingUpdate.maxUnavailable }}
+    type: {{ .Values.updateStrategy.type }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "celery.fullname" . }}-{{ $node.name }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
+      priorityClassName: {{ $node.priorityClassName }}
+      initContainers:
+      - name: wait-cwagent-ready
+        env:
+          - name: STATSD_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args: ["-c", "sh /app/scripts/cwcheck.sh"]
+      containers:
+        - name: {{ include "celery.fullname" . }}-{{ $node.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true  
+          env:
+            # Includes specific ENV Variables
+            - name: NEW_RELIC_APP_NAME
+              value: {{ $node.newRelicAppName }}
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            # Includes common ENV Variables
+            {{- range $key, $val := .Values.celeryCommon }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            # Includes secret ENV Variables
+            {{- range $key, $val := .Values.celerySecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: notify-celery
+                  key: {{ $key }}
+            {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/bash
+                - -c
+                - /app/scripts/run_celery_exit.sh
+          command: ["/bin/sh"]
+          args: ["-c", "{{ $node.scriptArg }}"]
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+      {{ if .Values.secretProviderClass.enabled}}    
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "celery.fullname" . }}
+      {{ end }}   
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      schedulerName: {{ .Values.schedulerName }}
+      securityContext: {}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+status: {}
+{{- end }}
+---
+{{- end }}
