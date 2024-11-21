@@ -49,18 +49,18 @@ jobs:
       - name: Run smoke tests on staging
         env:
           SMOKE_ADMIN_CLIENT_SECRET: ${{ secrets.SMOKE_ADMIN_CLIENT_SECRET}}
-          SMOKE_API_HOST_NAME: ${{ secrets.SMOKE_API_HOST_NAME}}
           SMOKE_API_KEY: ${{ secrets.SMOKE_API_KEY}}
-          SMOKE_AWS_ACCESS_KEY_ID: ${{ secrets.SMOKE_AWS_ACCESS_KEY_ID}}
-          SMOKE_AWS_SECRET_ACCESS_KEY: ${{ secrets.SMOKE_AWS_SECRET_ACCESS_KEY}}
-          SMOKE_CSV_UPLOAD_BUCKET_NAME: ${{ secrets.SMOKE_CSV_UPLOAD_BUCKET_NAME}}
-          SMOKE_EMAIL_TEMPLATE_ID: ${{ secrets.SMOKE_EMAIL_TEMPLATE_ID}}
-          SMOKE_EMAIL_TO: ${{ secrets.SMOKE_EMAIL_TO}}
-          SMOKE_SMS_TO: ${{ secrets.SMOKE_SMS_TO}}
-          SMOKE_SERVICE_ID: ${{ secrets.SMOKE_SERVICE_ID}}
-          SMOKE_SMS_TEMPLATE_ID: ${{ secrets.SMOKE_SMS_TEMPLATE_ID}}
-          SMOKE_USER_ID: ${{ secrets.SMOKE_USER_ID}}
-          SMOKE_POLL_TIMEOUT: ${{ secrets.SMOKE_POLL_TIMEOUT}}
+          SMOKE_AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID}}
+          SMOKE_AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY}}
+          SMOKE_API_HOST_NAME: https://api.staging.notification.cdssandbox.xyz
+          SMOKE_CSV_UPLOAD_BUCKET_NAME: notification-canada-ca-staging-csv-upload
+          SMOKE_EMAIL_TEMPLATE_ID: 9544dc32-9d23-4bdd-a8d8-81b4ec9e0485
+          SMOKE_EMAIL_TO: success@simulator.amazonses.com
+          SMOKE_SMS_TO: 16135550123
+          SMOKE_SERVICE_ID: f316aa6b-38dd-4d9e-83f8-b6ee3e1d428f
+          SMOKE_SMS_TEMPLATE_ID: d8234b4d-4def-4ad6-aafe-526a24ee5f19
+          SMOKE_USER_ID: f8763157-9c67-44f1-aaec-5d2564b41c8e
+          SMOKE_POLL_TIMEOUT: 320
         run: poetry run make smoke-test
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}

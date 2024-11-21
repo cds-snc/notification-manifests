@@ -1,6 +1,7 @@
 name: "Merge to main (Staging)"
 
 on:
+  workflow_dispatch: 
   push:
     branches:
       - main
@@ -141,7 +142,7 @@ jobs:
     uses: ./.github/workflows/clear-notify-cache.yaml
     with:
       environment: staging
+      cache_clear_user_name: CACHE_CLEAR_USER
+      api_url: https://api.staging.notification.cdssandbox.xyz
     secrets:
-      CACHE_CLEAR_USER_NAME: ${{ secrets.STAGING_CACHE_CLEAR_USER_NAME }}
       CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.STAGING_CACHE_CLEAR_CLIENT_SECRET }}
-      API_URL: ${{ secrets.STAGING_API_URL }}
