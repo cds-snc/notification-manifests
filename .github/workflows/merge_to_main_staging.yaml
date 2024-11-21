@@ -141,7 +141,6 @@ jobs:
     needs: kubectl-apply
     uses: ./.github/workflows/clear-notify-cache.yaml
     with:
-      environment: staging
-    secrets:
-      CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.STAGING_CACHE_CLEAR_CLIENT_SECRET }}
-      API_URL: https://api.staging.notification.cdssandbox.xyz
+      cache_clear_user_name: CACHE_CLEAR_USER
+      cache_clear_client_secret: ${{ secrets.STAGING_CACHE_CLEAR_CLIENT_SECRET }}
+      api_url: https://api.staging.notification.cdssandbox.xyz

@@ -170,7 +170,6 @@ jobs:
     needs: kubectl-apply
     uses: ./.github/workflows/clear-notify-cache.yaml
     with:
-      environment: production
-    secrets:
-      CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.PRODUCTION_CACHE_CLEAR_CLIENT_SECRET }}
-      API_URL: https://api.notification.canada.ca
+      cache_clear_user_name: CACHE_CLEAR_USER
+      cache_clear_client_secret: ${{ secrets.PRODUCTION_CACHE_CLEAR_CLIENT_SECRET }}
+      api_url: https://api.notification.canada.ca
