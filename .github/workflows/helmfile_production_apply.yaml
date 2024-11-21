@@ -74,8 +74,7 @@ jobs:
 
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster   
-          kubectl config rename-context arn:aws:eks:ca-central-1:$PRODUCTION_AWS_ACCOUNT:cluster/notification-canada-ca-production-eks-cluster production
+          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias production
 
       - name: Load EnvVars
         run: |
