@@ -1,31 +1,17 @@
-{{- range $node := .Values.nodes.primaryAndScalable }}
+{{- range $node := .Values.nodes }}
 {{- with $ -}}
+{{ if $node.pdbEnabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: celery-{{ $node.name }}
+  name: notify-celery-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   minAvailable: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: celery-{{ $node.name }}
+      app: notify-celery-{{ $node.name }}
 {{- end }}
----
-{{- end }}
-
-{{- range $node := .Values.nodes.other }}
-{{- with $ -}}
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: celery-{{ $node.name }}
-  namespace: {{ .Release.Namespace }}
-spec:
-  minAvailable: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      app: celery-{{ $node.name }}
 {{- end }}
 ---
 {{- end }}

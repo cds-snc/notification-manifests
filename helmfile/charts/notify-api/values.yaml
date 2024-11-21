@@ -1,32 +1,64 @@
 # Default values for notify-api.
 api:
-  hcEnServiceId: "changeme"
-  hcFrServiceId: "changeme"
-  crmOrgListUrl: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
-  flaskApp: "application.py"
-  notificationQueuePrefix: "eks-notification-canada-ca"
-  redisEnabled: "1"
-  salesforceDomain: "login"
-  batchInsertionChunkSize: "10"
-  sqlAlchemyPoolSize: "256"
-  awsSesRegion: "us-east-1"
-  awsSesSmtp: "email-smtp.us-east-1.amazonaws.com"
-  awsUsTollFreeNumber: "+18005555555"
-  zendeskSellApiUrl: "https://cds-snc.zendesk.com"
-  zendeskApiUrl: "https://api.getbase.com"
-  allowHtmlServiceIds: "111111111,222222222,333333333"
-  awsPinpointRegion: "us-west-2"
-  awsRegion: "ca-central-1"
-  freshDeskApiUrl: "https://cds-snc.freshdesk.com"
-  sentryUrl: "changeme"
-  allowDebugRoute: true
-  newRelicMonitorMode: false
-  ffSalesforceContact: false
-  newRelicDistributedTracingEnabled: false
-  ffCloudwatchMetricsEnabled: false
-  awsXrayTracingEnabled: true
-  awsXraySdkEnabled: true
-  awsXrayContextMissing: "LOG_WARNING"
+  NOTIFY_ENVIRONMENT: "default"
+  HC_EN_SERVICE_ID: "changeme"
+  HC_FR_SERVICE_ID: "changeme"
+  CRM_ORG_LIST_URL: "https://raw.githubusercontent.com/cds-snc/gc-organisations-qa/main/data/all.json"
+  FLASK_APP: "application.py"
+  NOTIFICATION_QUEUE_PREFIX: "eks-notification-canada-ca"
+  REDIS_ENABLED: "1"
+  SALESFORCE_DOMAIN: "login"
+  BATCH_INSERTION_CHUNK_SIZE: "10"
+  SQL_ALCHEMY_POOL_SIZE: "256"
+  AWS_SES_REGION: "us-east-1"
+  AWS_SES_SMTP: "email-smtp.us-east-1.amazonaws.com"
+  AWS_US_TOLL_FREE_NUMBER: "+18005555555"
+  ZENDESK_SELL_API_URL: "https://cds-snc.zendesk.com"
+  ZENDESK_API_URL: "https://api.getbase.com"
+  ALLOW_HTML_SERVICE_IDS: "111111111,222222222,333333333"
+  AWS_PINPOINT_REGION: "us-west-2"
+  AWS_REGION: "ca-central-1"
+  FRESH_DESK_API_URL: "https://cds-snc.freshdesk.com"
+  SENTRY_URL: "changeme"
+  ALLOW_DEBUG_ROUTE: true
+  NEW_RELIC_MONITOR_MODE: false
+  FF_SALESFORCE_CONTACT: false
+  NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: false
+  FF_CLOUDWATCH_METRICS_ENABLED: false
+  AWS_XRAY_TRACING_ENABLED: true
+  AWS_XRAY_SDK_ENABLED: true
+  AWS_XRAY_CONTEXT_MISSING: "LOG_WARNING"
+
+apiSecrets:
+  ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
+  AWS_ROUTE53_ZONE: MANIFEST_AWS_ROUTE53_ZONE
+  AWS_SES_ACCESS_KEY: MANIFEST_AWS_SES_ACCESS_KEY
+  AWS_SES_SECRET_KEY: MANIFEST_AWS_SES_SECRET_KEY
+  CRM_GITHUB_PERSONAL_ACCESS_TOKEN: MANIFEST_CRM_GITHUB_PERSONAL_ACCESS_TOKEN
+  DANGEROUS_SALT: MANIFEST_DANGEROUS_SALT
+  SALESFORCE_ENGAGEMENT_PRODUCT_ID: MANIFEST_SALESFORCE_ENGAGEMENT_PRODUCT_ID
+  SALESFORCE_ENGAGEMENT_RECORD_TYPE: MANIFEST_SALESFORCE_ENGAGEMENT_RECORD_TYPE
+  SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID: MANIFEST_SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
+  SALESFORCE_GENERIC_ACCOUNT_ID: MANIFEST_SALESFORCE_GENERIC_ACCOUNT_ID
+  SALESFORCE_PASSWORD: MANIFEST_SALESFORCE_PASSWORD
+  SALESFORCE_SECURITY_TOKEN: MANIFEST_SALESFORCE_SECURITY_TOKEN
+  SALESFORCE_USERNAME: MANIFEST_SALESFORCE_USERNAME
+  SECRET_KEY: MANIFEST_SECRET_KEY
+  SENDGRID_API_KEY: MANIFEST_SENDGRID_API_KEY
+  SQLALCHEMY_DATABASE_URI: MANIFEST_SQLALCHEMY_DATABASE_URI
+  ZENDESK_SELL_API_KEY: MANIFEST_ZENDESK_SELL_API_KEY
+  ZENDESK_API_KEY: MANIFEST_ZENDESK_API_KEY
+  FRESH_DESK_API_KEY: MANIFEST_FRESH_DESK_API_KEY
+  FRESH_DESK_PRODUCT_ID: MANIFEST_FRESH_DESK_PRODUCT_ID
+  SQLALCHEMY_DATABASE_READER_URI: MANIFEST_SQLALCHEMY_DATABASE_READER_URI
+  POSTGRES_HOST: MANIFEST_POSTGRES_HOST
+  SRE_CLIENT_SECRET: MANIFEST_SRE_CLIENT_SECRET
+  NEW_RELIC_LICENSE_KEY: MANIFEST_NEW_RELIC_LICENSE_KEY
+  DEBUG_KEY: MANIFEST_DEBUG_KEY
+  REDIS_URL: MANIFEST_REDIS_URL
+  REDIS_PUBLISH_URL: MANIFEST_REDIS_PUBLISH_URL
+  CYPRESS_USER_PW_SECRET: MANIFEST_CYPRESS_USER_PW_SECRET
+  CYPRESS_AUTH_CLIENT_SECRET: MANIFEST_CYPRESS_AUTH_CLIENT_SECRET
   
 image:
   repository: public.ecr.aws/cds-snc/notify-api
@@ -131,6 +163,7 @@ tolerations: []
 affinity: {}
 
 secretProviderClass:
+  secretname: notify-api
   enabled: true
   provider: aws
   parameters:

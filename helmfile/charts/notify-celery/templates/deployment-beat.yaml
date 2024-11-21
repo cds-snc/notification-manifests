@@ -1,5 +1,6 @@
-{{- range $node := .Values.nodes.other }}
+{{- range $node := .Values.nodes }}
 {{- with $ -}}
+{{ if $node.deploymentBeatEnabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -86,6 +87,7 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: {{ $node.terminationGracePeriodSeconds }}
 status: {}
+{{- end }}
 {{- end }}
 ---
 {{- end }}

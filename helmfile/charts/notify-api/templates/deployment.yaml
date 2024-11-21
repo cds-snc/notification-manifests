@@ -55,163 +55,23 @@ spec:
               mountPath: "/mnt/secrets-store"
               readOnly: true   
           env:
-            - name: ADMIN_BASE_URL
-              value: "{{ .Values.api.adminBaseDomain }}"
-            - name: ADMIN_CLIENT_SECRET
+            # Includes common ENV Variables
+            {{- range $key, $val := .Values.api }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            # Includes secret ENV Variables
+            {{- range $key, $val := .Values.apiSecrets }}
+            - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
                   name: notify-api
-                  key: ADMIN_CLIENT_SECRET
-            - name: ALLOW_DEBUG_ROUTE
-              value: "{{ .Values.api.allowDebugRoute }}"    
-            - name: ASSET_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.api.assetUploadBucketName }}"
-            - name: ASSET_DOMAIN
-              value: "{{ .Values.api.assetDomain }}"
-            - name: AWS_ROUTE53_ZONE
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: AWS_ROUTE53_ZONE
-            - name: AWS_SES_REGION
-              value: "{{ .Values.api.awsSesRegion }}"
-            - name: AWS_SES_SMTP
-              value: "{{ .Values.api.awsSesSmtp }}"
-            - name: AWS_SES_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: AWS_SES_ACCESS_KEY
-            - name: AWS_SES_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: AWS_SES_SECRET_KEY
-            - name: BATCH_INSERTION_CHUNK_SIZE
-              value: '10'
-            - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-            - name: CRM_ORG_LIST_URL
-              value: "{{ .Values.api.crmOrgListUrl }}"
-            - name: CSV_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.api.csvUploadBucketName }}"
-          {{ if .Values.api.allowDebugRoute }}
-            - name: DEBUG_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: DEBUG_KEY
-          {{ end }}
-            - name: DANGEROUS_SALT
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: DANGEROUS_SALT
-            - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: "{{ .Values.api.documentDownloadApiHost }}"
-            - name: DOCUMENTATION_DOMAIN
-              value: "{{ .Values.api.documentationDomain }}"
-            - name: FF_SALESFORCE_CONTACT
-              value: "{{ .Values.api.ffSalesforceContact }}"
-            - name: FIDO2_DOMAIN
-              value: "{{ .Values.api.baseDomain }}"
-            - name: FLASK_APP
-              value: "{{ .Values.api.flaskApp }}"
-            - name: NOTIFY_EMAIL_DOMAIN
-              value: "{{ .Values.api.baseDomain }}"
-            - name: NOTIFY_ENVIRONMENT
-              value: "{{ .Values.api.env }}"
-            - name: NOTIFICATION_QUEUE_PREFIX
-              value: "{{ .Values.api.notificationQueuePrefix }}"
-            - name: REDIS_URL
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: REDIS_URL                 
-            - name: REDIS_PUBLISH_URL
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: REDIS_PUBLISH_URL
-            - name: REDIS_ENABLED
-              value: "{{ .Values.api.redisEnabled }}"
-            - name: SALESFORCE_DOMAIN
-              value: "{{ .Values.api.salesforceDomain }}"
-            - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_ENGAGEMENT_PRODUCT_ID
-            - name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_ENGAGEMENT_RECORD_TYPE
-            - name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
-            - name: SALESFORCE_GENERIC_ACCOUNT_ID
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_GENERIC_ACCOUNT_ID                      
-            - name: SALESFORCE_PASSWORD
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_PASSWORD   
-            - name: SALESFORCE_SECURITY_TOKEN
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_SECURITY_TOKEN   
-            - name: SALESFORCE_USERNAME
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_USERNAME                 
-            - name: SECRET_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SECRET_KEY
-            - name: SENDGRID_API_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SENDGRID_API_KEY
-            - name: SQLALCHEMY_DATABASE_URI
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: SQLALCHEMY_DATABASE_URI
+                  key: {{ $key }}
+            {{- end }}
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: AWS_US_TOLL_FREE_NUMBER
-              value: "{{ .Values.api.awsUsTollFreeNumber }}"
-            - name: NEW_RELIC_MONITOR_MODE
-              value: "{{ .Values.api.newRelicMonitorMode }}"
-            - name: ZENDESK_SELL_API_URL
-              value: "{{ .Values.api.zendeskSellApiUrl }}"
-            - name: ZENDESK_SELL_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: ZENDESK_SELL_API_KEY
-            - name: ZENDESK_API_URL
-              value: "{{ .Values.api.zendeskApiUrl }}"
-            - name: ZENDESK_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: ZENDESK_API_KEY
           command:
             [
               "sh",
@@ -225,215 +85,23 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: ADMIN_BASE_URL
-              value: "{{ .Values.api.baseDomain }}"
-            - name: ADMIN_CLIENT_SECRET
+            # Includes common ENV Variables
+            {{- range $key, $val := .Values.api }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            # Includes secret ENV Variables
+            {{- range $key, $val := .Values.apiSecrets }}
+            - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
                   name: notify-api
-                  key: ADMIN_CLIENT_SECRET
-            - name: ALLOW_HTML_SERVICE_IDS
-              value: "{{ .Values.api.allowHtmlServiceIds }}"
-            - name: API_HOST_NAME
-              value: "{{ .Values.api.apiHostName }}"
-            - name: ASSET_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.api.assetUploadBucketName }}"
-            - name: ASSET_DOMAIN
-              value: "{{ .Values.api.assetDomain }}"
-            - name: AWS_PINPOINT_REGION
-              value: "{{ .Values.api.awsPinpointRegion }}"
-            - name: AWS_REGION
-              value: "{{ .Values.api.awsRegion }}"
-            - name: AWS_ROUTE53_ZONE
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: AWS_ROUTE53_ZONE
-            - name: AWS_SES_REGION
-              value: "{{ .Values.api.awsSesRegion }}"
-            - name: AWS_SES_SMTP
-              value: "{{ .Values.api.awsSesSmtp }}"
-            - name: AWS_SES_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: AWS_SES_ACCESS_KEY
-            - name: AWS_SES_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: AWS_SES_SECRET_KEY
-            - name: BATCH_INSERTION_CHUNK_SIZE
-              value: "{{ .Values.api.batchInsertionChunkSize }}"
-            - name: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: CRM_GITHUB_PERSONAL_ACCESS_TOKEN
-            - name: CRM_ORG_LIST_URL
-              value: "{{ .Values.api.crmOrgListUrl }}"
-            - name: CSV_UPLOAD_BUCKET_NAME
-              value: "{{ .Values.api.csvUploadBucketName }}"
-            - name: DANGEROUS_SALT
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: DANGEROUS_SALT
-            - name: DOCUMENT_DOWNLOAD_API_HOST
-              value: "{{ .Values.api.documentDownloadApiHost }}"
-            - name: FF_SALESFORCE_CONTACT
-              value: "{{ .Values.api.ffSalesforceContact }}"
-            - name: FIDO2_DOMAIN
-              value: "{{ .Values.api.baseDomain }}"
-            - name: NOTIFY_EMAIL_DOMAIN
-              value: "{{ .Values.api.baseDomain }}"
-            - name: FRESH_DESK_API_URL
-              value: "{{ .Values.api.freshDeskApiUrl }}"
-            - name: FRESH_DESK_API_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: FRESH_DESK_API_KEY
-            - name: FRESH_DESK_PRODUCT_ID
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: FRESH_DESK_PRODUCT_ID
-            - name: HC_EN_SERVICE_ID
-              value: "{{ .Values.api.hcEnServiceId }}"
-            - name: HC_FR_SERVICE_ID
-              value: "{{ .Values.api.hcFrServiceId }}"
-            - name: NOTIFY_ENVIRONMENT
-              value: "{{ .Values.api.env }}"
-            - name: NOTIFICATION_QUEUE_PREFIX
-              value: "{{ .Values.api.notificationQueuePrefix }}"
-            - name: REDIS_URL
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: REDIS_URL
-            - name: REDIS_PUBLISH_URL
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: REDIS_URL
-            - name: REDIS_ENABLED
-              value: "{{ .Values.api.redisEnabled }}"
-            - name: SALESFORCE_DOMAIN
-              value: "{{ .Values.api.salesforceDomain }}"
-            - name: SALESFORCE_ENGAGEMENT_PRODUCT_ID
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_ENGAGEMENT_PRODUCT_ID
-            - name: SALESFORCE_ENGAGEMENT_RECORD_TYPE
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_ENGAGEMENT_RECORD_TYPE
-            - name: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_ENGAGEMENT_STANDARD_PRICEBOOK_ID
-            - name: SALESFORCE_GENERIC_ACCOUNT_ID
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_GENERIC_ACCOUNT_ID                      
-            - name: SALESFORCE_PASSWORD
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_PASSWORD   
-            - name: SALESFORCE_SECURITY_TOKEN
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_SECURITY_TOKEN   
-            - name: SALESFORCE_USERNAME
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SALESFORCE_USERNAME                 
-            - name: SECRET_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SECRET_KEY
-            - name: SENDGRID_API_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: SENDGRID_API_KEY
-            - name: SQLALCHEMY_DATABASE_URI
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: SQLALCHEMY_DATABASE_URI
-            - name: SQLALCHEMY_DATABASE_READER_URI
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: SQLALCHEMY_DATABASE_READER_URI
-            - name: SQLALCHEMY_POOL_SIZE
-              value: "{{ .Values.api.sqlAlchemyPoolSize }}"
+                  key: {{ $key }}
+            {{- end }}
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: SRE_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: SRE_CLIENT_SECRET
-            - name: AWS_US_TOLL_FREE_NUMBER
-              value: "{{ .Values.api.awsUsTollFreeNumber }}"
-            - name: SENTRY_URL
-              value: "{{ .Values.api.sentryUrl }}"
-            - name: NEW_RELIC_APP_NAME
-              value: "{{ .Values.api.newRelicAppName }}"
-            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: "{{ .Values.api.newRelicDistributedTracingEnabled }}"
-            - name: NEW_RELIC_LICENSE_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: notify-api
-                    key: NEW_RELIC_LICENSE_KEY
-            - name: NEW_RELIC_MONITOR_MODE
-              value: "{{ .Values.api.newRelicMonitorMode }}"
-            - name: ZENDESK_SELL_API_URL
-              value: "{{ .Values.api.zendeskSellApiUrl }}"
-            - name: ZENDESK_SELL_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: ZENDESK_SELL_API_KEY
-            - name: ZENDESK_API_URL
-              value: "{{ .Values.api.zendeskApiUrl }}"
-            - name: ZENDESK_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: ZENDESK_API_KEY
-            - name: CYPRESS_USER_PW_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: CYPRESS_USER_PW_SECRET
-            - name: CYPRESS_AUTH_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: CYPRESS_AUTH_CLIENT_SECRET
-            - name: FF_CLOUDWATCH_METRICS_ENABLED
-              value: "{{ .Values.api.ffCloudwatchMetricsEnabled }}"
-            - name: AWS_XRAY_TRACING_ENABLED
-              value: "{{ .Values.api.awsXrayTracingEnabled }}"
-            - name: AWS_XRAY_SDK_ENABLED
-              value: "{{ .Values.api.awsXraySdkEnabled }}"
-            - name: AWS_XRAY_CONTEXT_MISSING
-              value: "{{ .Values.api.awsXrayContextMissing }}"
           {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
             - name: secrets-store-inline
