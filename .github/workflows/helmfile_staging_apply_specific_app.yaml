@@ -30,7 +30,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
-  STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT }}
+  STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_ACCOUNT_ID }}
   DOCKER_TAG: ${{ github.event.inputs.tag }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
 
@@ -91,7 +91,7 @@ jobs:
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster   
-          kubectl config rename-context arn:aws:eks:ca-central-1:$STAGING_AWS_ACCOUNT:cluster/notification-canada-ca-staging-eks-cluster staging
+          kubectl config rename-context arn:aws:eks:ca-central-1:$STAGING_ACCOUNT_ID:cluster/notification-canada-ca-staging-eks-cluster staging
 
       - name: Load EnvVars
         run: |
