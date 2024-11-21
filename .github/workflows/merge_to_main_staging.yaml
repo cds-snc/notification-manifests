@@ -142,6 +142,6 @@ jobs:
     with:
       environment: staging
     secrets:
-      CACHE_CLEAR_USER_NAME: ${{ secrets.STAGING_CACHE_CLEAR_USER_NAME }}
+      CACHE_CLEAR_USER_NAME: CACHE_CLEAR_USER
       CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.STAGING_CACHE_CLEAR_CLIENT_SECRET }}
       API_URL: https://api.staging.notification.cdssandbox.xyz
