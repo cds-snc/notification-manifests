@@ -6,12 +6,14 @@ on:
       environment:
         required: true
         type: string
+      api_url:
+        required: true
+        type: string
+      cache_clear_user_name:
+        required: true
+        type: string
     secrets:
-      CACHE_CLEAR_USER_NAME:
-        required: true
       CACHE_CLEAR_CLIENT_SECRET:
-        required: true
-      API_URL:
         required: true
 
 jobs:
@@ -31,7 +33,7 @@ jobs:
 
       - name: Call API to clear cache
         env:
-          CACHE_CLEAR_USER_NAME: ${{ secrets.CACHE_CLEAR_USER_NAME }}
+          CACHE_CLEAR_USER_NAME: ${{ inputs.cache_clear_user_name }}
           CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.CACHE_CLEAR_CLIENT_SECRET }}
-          API_URL: ${{ secrets.API_URL }}
+          API_URL:  ${{ inputs.api_url }}
         run: node scripts/clear-cache.js
