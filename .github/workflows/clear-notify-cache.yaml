@@ -3,16 +3,19 @@ name: Reusable Clear Cache Workflow
 on:
   workflow_call:
     inputs:
-      environment:
+      cache_clear_user_name:
+        description: 'Username for cache clearing'
+        required: true
+        default: 'CACHE_CLEAR_USER'
+        type: string
+      cache_clear_client_secret:
+        description: 'Client secret for cache clearing'
         required: true
         type: string
-    secrets:
-      CACHE_CLEAR_USER_NAME:
+      api_url:
+        description: 'API URL to clear cache'
         required: true
-      CACHE_CLEAR_CLIENT_SECRET:
-        required: true
-      API_URL:
-        required: true
+        type: string
 
 jobs:
   clear-cache:
@@ -31,7 +34,8 @@ jobs:
 
       - name: Call API to clear cache
         env:
-          CACHE_CLEAR_USER_NAME: CACHE_CLEAR_USER
-          CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.CACHE_CLEAR_CLIENT_SECRET }}
-          API_URL: https://api.notification.canada.ca
+          CACHE_CLEAR_USER_NAME: ${{ github.event.inputs.cache_clear_user_name }}
+          CACHE_CLEAR_CLIENT_SECRET: ${{ github.event.inputs.cache_clear_client_secret }}
+          API_URL: ${{ github.event.inputs.api_url }}
         run: node scripts/clear-cache.js
+        
