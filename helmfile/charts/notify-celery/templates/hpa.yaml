@@ -1,7 +1,6 @@
-{{- range $node := .Values.nodes.primaryAndScalable }}
+{{- range $node := .Values.nodes }}
 {{- with $ -}}
-{{- $scalableNames := list "scalable" "sms-send-scalable" "email-send-scalable" -}}
-{{ if has $node.name $scalableNames }}
+{{ if $node.hpaEnabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
