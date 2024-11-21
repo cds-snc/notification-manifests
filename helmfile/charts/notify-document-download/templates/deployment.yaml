@@ -38,54 +38,20 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          # NON-SECRET CONFIGURATIONS
-            - name: ALLOW_DEBUG_ROUTE
-              value: "{{ .Values.documentDownload.allowDebugRoute }}"
-            - name: AWS_REGION
-              value: "{{ .Values.documentDownload.awsRegion }}"
-            - name: AWS_XRAY_CONTEXT_MISSING
-              value: "{{ .Values.documentDownload.awsXrayContextMissing }}"
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: "{{ .Values.documentDownload.awsXrayDaemonAddress }}"
-            - name: AWS_XRAY_SDK_ENABLED
-              value: "{{ .Values.documentDownload.awsXraySdkEnabled }}"
-            - name: DEBUG
-              value: "{{ .Values.documentDownload.debug }}"
-            - name: DOCUMENTS_BUCKET
-              value: "{{ .Values.documentDownload.documentsBucket }}"
-            - name: BACKEND_HOSTNAME
-              value: "{{ .Values.documentDownload.backendHostname }}"
-            - name: HTTP_SCHEME
-              value: "{{ .Values.documentDownload.httpScheme }}"
-            - name: SCAN_FILES_DOCUMENTS_BUCKET
-              value: "{{ .Values.documentDownload.scanFilesDocumentsBucket }}"
-            - name: EXTRA_MIME_TYPES
-              value: "{{ .Values.documentDownload.extraMimeTypes }}"
-            - name: NEW_RELIC_APP_NAME
-              value: "{{ .Values.documentDownload.newRelicAppName }}"
-            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
-              value: "{{ .Values.documentDownload.newRelicDistributedTracingEnabled }}"
-            - name: NEW_RELIC_MONITOR_MODE
-              value: "{{ .Values.documentDownload.newRelicMonitorMode }}"
-            - name: NOTIFY_ENVIRONMENT
-              value: "{{ .Values.documentDownload.notifyEnvironment }}"
+            # NON-SECRET CONFIGURATIONS
+            {{- range $key, $val := .Values.documentDownload }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
 
           # SECRET CONFIGURATIONS      
-            - name: DEBUG_KEY
+            {{- range $key, $val := .Values.documentDownloadSecrets }}
+            - name: {{ $key }}
               valueFrom:
-                  secretKeyRef:
-                    name: document-download
-                    key: DEBUG_KEY
-            - name: SECRET_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: document-download
-                    key: SECRET_KEY
-            - name: NEW_RELIC_LICENSE_KEY
-              valueFrom:
-                  secretKeyRef:
-                    name: document-download
-                    key: NEW_RELIC_LICENSE_KEY
+                secretKeyRef:
+                  name: document-download
+                  key: {{ $key }}
+            {{- end }}
           {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
             - name: secrets-store-inline
