@@ -1,0 +1,9 @@
+system:
+    something: "something"
+
+image: 
+  tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/system-eks-role
