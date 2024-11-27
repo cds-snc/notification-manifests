@@ -34,5 +34,5 @@ serviceAccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/admin-eks-role
 
 targetGroupBinding:
-  enabled: true
+  enabled: false
   targetGroupARN: {{requiredEnv "ADMIN_TARGET_GROUP_ARN"}}

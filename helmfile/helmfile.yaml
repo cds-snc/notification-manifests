@@ -41,6 +41,7 @@ releases:
       app: notify-documentation
       tier: frontend
       category: documentation
+      step: 5
     chart: charts/notify-documentation
     values:
     - ./overrides/notify/documentation.yaml.gotmpl
@@ -51,6 +52,7 @@ releases:
       app: notify-api
       tier: backend
       category: deliverable
+      step: 5
     chart: charts/notify-api
     values:
     - ./overrides/notify/api.yaml.gotmpl
@@ -61,6 +63,7 @@ releases:
       app: notify-admin
       tier: fronteend
       category: deliverable
+      step: 5
     chart: charts/notify-admin
     values:
     - ./overrides/notify/admin.yaml.gotmpl
@@ -71,6 +74,7 @@ releases:
       app: notify-document-download
       tier: backend
       category: deliverable
+      step: 5
     chart: charts/notify-document-download
     values:
     - ./overrides/notify/document-download.yaml.gotmpl
@@ -81,6 +85,7 @@ releases:
       app: notify-celery
       tier: backend
       category: deliverable
+      step: 5
     chart: charts/notify-celery
     values:
     - ./overrides/notify/celery.yaml.gotmpl
