@@ -4,7 +4,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: celery-{{ $node.name }}
+  name: notify-celery-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   minReplicas: {{ $node.minReplicas }}
