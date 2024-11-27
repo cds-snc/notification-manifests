@@ -20,6 +20,7 @@ admin:
   SENTRY_URL: "changeme"
   SHOW_STYLE_GUIDE: true
   NEW_RELIC_APP_NAME: "notification-admin-default"
+  NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "false"
   NEW_RELIC_MONITOR_MODE: "false"
   FF_SALESFORCE_CONTACT: "false"
@@ -30,7 +31,6 @@ admin:
   CRM_ORG_LIST_URL: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
   FLASK_APP: "application.py"
   GC_ARTICLES_API: "articles.alpha.canada.ca/notification-gc-notify"
-  NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
 
 adminSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
