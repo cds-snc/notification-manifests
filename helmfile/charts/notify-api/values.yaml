@@ -21,9 +21,11 @@ api:
   FRESH_DESK_API_URL: "https://cds-snc.freshdesk.com"
   SENTRY_URL: "changeme"
   ALLOW_DEBUG_ROUTE: true
-  NEW_RELIC_MONITOR_MODE: false
   FF_SALESFORCE_CONTACT: false
+  NEW_RELIC_APP_NAME: "notification-api-default"
+  NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: false
+  NEW_RELIC_MONITOR_MODE: false
   FF_CLOUDWATCH_METRICS_ENABLED: false
   AWS_XRAY_TRACING_ENABLED: true
   AWS_XRAY_SDK_ENABLED: true
