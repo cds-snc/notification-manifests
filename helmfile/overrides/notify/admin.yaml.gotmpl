@@ -34,7 +34,7 @@ serviceAccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/admin-eks-role
 
 targetGroupBinding:
-  enabled: false
+  enabled: {{ if eq .Environment.Name "production" }} false {{ else if eq .Environment.Name "staging" }} false {{ else }} true {{ end }}
   targetGroupARN: {{requiredEnv "ADMIN_TARGET_GROUP_ARN"}}
 
 resources:

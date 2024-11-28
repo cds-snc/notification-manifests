@@ -2,7 +2,7 @@ image:
   tag: "910f947"
 
 targetGroupBinding:
-  enabled: false
+  enabled: {{ if eq .Environment.Name "production" }} false {{ else if eq .Environment.Name "staging" }} false {{ else }} true {{ end }}
   targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}
 
 pdb:
