@@ -51,8 +51,12 @@ nodes:
     deployment:
       deploymentBeatEnabled: true
       terminationGracePeriodSeconds: 60
-      nodeSelector: eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: ON_DEMAND
       replicas: 3
+    pdb:
+      pdbEnabled: false
+    autoscaling:
+      hpaEnabled: false
   other-beat:
     name: beat
     newRelicAppName: "notification-celery-beat-dev"
@@ -60,8 +64,12 @@ nodes:
     deployment:
       deploymentBeatEnabled: true
       terminationGracePeriodSeconds: 30
-      nodeSelector: eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: ON_DEMAND
       replicas: 3
+    pdb:
+      pdbEnabled: false
+    autoscaling:
+      hpaEnabled: false
   # PRIMARY CONFIGS
   primary-main:
     name: primary
@@ -78,11 +86,13 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
       priorityClassName: high-priority
-      nodeSelector: eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: ON_DEMAND
       replicas: 3
     pdb:
       pdbEnabled: true
       minAvailable: 2
+    autoscaling:
+      hpaEnabled: false
   primary-email:
     name: email-send-primary
     newRelicAppName: "notification-celery-email-send-primary-dev"
@@ -98,11 +108,13 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
       priorityClassName: high-priority
-      nodeSelector: eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: ON_DEMAND
       replicas: 3
     pdb:  
       pdbEnabled: true
       minAvailable: 2
+    autoscaling:
+      hpaEnabled: false
   primary-sms:
     name: sms-send-primary
     newRelicAppName: "notification-celery-sms-send-primary-dev"
@@ -118,11 +130,13 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
       priorityClassName: high-priority
-      nodeSelector: eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: ON_DEMAND
       replicas: 3
     pdb:
       pdbEnabled: true
       minAvailable: 2
+    autoscaling:
+      hpaEnabled: false
   # SCALABLE CONFIGS
   scalable-main:
     name: scalable
@@ -133,7 +147,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 3
-      nodeSelector: eks.amazonaws.com/capacityType: spot
+      nodeSelector: spot
       resources:
         requests:
           cpu: "100m"
@@ -160,7 +174,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 3
-      nodeSelector: eks.amazonaws.com/capacityType: spot
+      nodeSelector: spot
       resources:
         requests:
           cpu: "100m"
@@ -187,7 +201,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 3
-      nodeSelector: eks.amazonaws.com/capacityType: spot
+      nodeSelector: spot
       resources:
         requests:
           cpu: "100m"
