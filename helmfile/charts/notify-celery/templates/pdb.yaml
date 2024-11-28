@@ -1,13 +1,13 @@
 {{- range $node := .Values.nodes }}
 {{- with $ -}}
-{{ if $node.pdbEnabled }}
+{{ if $node.pdb.pdbEnabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: notify-celery-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  minAvailable: {{ .Values.replicaCount }}
+  minAvailable: {{ $node.deployment.minAvailable }}
   selector:
     matchLabels:
       app: notify-celery-{{ $node.name }}
