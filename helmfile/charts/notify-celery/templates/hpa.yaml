@@ -1,19 +1,19 @@
 {{- range $node := .Values.nodes }}
 {{- with $ -}}
-{{ if $node.hpa.hpaEnabled }}
+{{ if $node.autoscaling.hpaEnabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: notify-celery-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  minReplicas: {{ $node.hpa.minReplicas }}
-  maxReplicas: {{ $node.hpa.maxReplicas }}
+  minReplicas: {{ $node.autoscaling.minReplicas }}
+  maxReplicas: {{ $node.autoscaling.maxReplicas }}
   metrics:
   - resource:
       name: cpu
       target:
-        averageUtilization: {{ $node.hpa.targetCPUUtilizationPercentage }}
+        averageUtilization: {{ $node.autoscaling.targetCPUUtilizationPercentage }}
         type: Utilization
     type: Resource
   behavior:
@@ -21,8 +21,8 @@ spec:
       stabilizationWindowSeconds: 0
       policies:
       - type: Pods
-        value: {{ $node.hpa.scaleUpPodsValue }}
-        periodSeconds: {{ $node.hpa.scaleUpPeriodSeconds }}
+        value: {{ $node.autoscaling.scaleUpPodsValue }}
+        periodSeconds: {{ $node.autoscaling.scaleUpPeriodSeconds }}
       selectPolicy: Max
   scaleTargetRef:
     apiVersion: apps/v1

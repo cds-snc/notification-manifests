@@ -141,7 +141,7 @@ nodes:
         limits:
           cpu: "550m"
           memory: "1024Mi"
-    hpa:
+    autoscaling:
       hpaEnabled: true
       minReplicas: 3
       maxReplicas: 30
@@ -168,7 +168,7 @@ nodes:
         limits:
           cpu: "550m"
           memory: "1024Mi"
-    hpa:
+    autoscaling:
       hpaEnabled: true
       minReplicas: 3
       maxReplicas: 30
@@ -195,7 +195,7 @@ nodes:
         limits:
           cpu: "550m"
           memory: "1024Mi"
-    hpa:
+    autoscaling:
       hpaEnabled: true
       minReplicas: 3
       maxReplicas: 3

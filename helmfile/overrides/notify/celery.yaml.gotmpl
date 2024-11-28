@@ -96,7 +96,7 @@ nodes:
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
-    hpa:
+    autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       maxReplicas: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
@@ -118,7 +118,7 @@ nodes:
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
-    hpa:
+    autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       maxReplicas: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
@@ -140,7 +140,7 @@ nodes:
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
-    hpa:
+    autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       maxReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}

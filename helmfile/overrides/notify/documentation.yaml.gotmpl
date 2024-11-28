@@ -4,3 +4,14 @@ image:
 targetGroupBinding:
   enabled: false
   targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}
+
+pdb:
+  enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
+  minAvailable: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
+
+requests:
+  cpu: {{ if eq .Environment.Name "production" }} "50m" {{ else if eq .Environment.Name "staging" }} "50m" {{ else }} "50m" {{ end }}
+  memory: {{ if eq .Environment.Name "production" }} "50Mi" {{ else if eq .Environment.Name "staging" }} "50Mi" {{ else }} "50Mi" {{ end }}
+limits:
+  cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
+  memory: {{ if eq .Environment.Name "production" }} "100Mi" {{ else if eq .Environment.Name "staging" }} "100Mi" {{ else }} "100Mi" {{ end }}
