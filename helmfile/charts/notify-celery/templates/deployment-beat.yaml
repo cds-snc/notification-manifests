@@ -1,6 +1,6 @@
 {{- range $node := .Values.nodes }}
 {{- with $ -}}
-{{ if $node.deploymentBeatEnabled }}
+{{ if $node.deployment.deploymentBeatEnabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,7 +9,7 @@ metadata:
   name: {{ include "celery.fullname" . }}-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ $node.deployment.replicas }}
   revisionHistoryLimit: 5
   selector:
     matchLabels:
@@ -24,8 +24,10 @@ spec:
       labels:
         app: {{ include "celery.fullname" . }}-{{ $node.name }}
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: {{ $node.deployment.nodeSelector }}  
       serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
-      priorityClassName: {{ $node.priorityClassName }}
+      priorityClassName: {{ $node.deployment.priorityClassName }}
       initContainers:
         - name: init-postgres
           image: alpine
@@ -85,7 +87,7 @@ spec:
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}
       securityContext: {}
-      terminationGracePeriodSeconds: {{ $node.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ $node.deployment.terminationGracePeriodSeconds }}
 status: {}
 {{- end }}
 {{- end }}

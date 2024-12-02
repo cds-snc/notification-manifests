@@ -21,5 +21,23 @@ serviceAccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/document-download-eks-role
 
 targetGroupBinding:
-  enabled: false
+  enabled: {{ if eq .Environment.Name "production" }} false {{ else if eq .Environment.Name "staging" }} false {{ else }} true {{ end }}
   targetGroupARN: {{requiredEnv "DOCUMENT_DOWNLOAD_API_TARGET_GROUP_ARN"}}
+
+resources:
+  requests:
+    cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "400Mi" {{ else if eq .Environment.Name "staging" }} "400Mi" {{ else }} "400Mi" {{ end }}
+  limits:
+    cpu: {{ if eq .Environment.Name "production" }} "400m" {{ else if eq .Environment.Name "staging" }} "400m" {{ else }} "400m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
+
+autoscaling:
+  enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
+  minReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
+  maxReplicas: {{ if eq .Environment.Name "production" }} 4 {{ else if eq .Environment.Name "staging" }} 4 {{ else }} 4 {{ end }}
+  targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 35 {{ else if eq .Environment.Name "staging" }} 35 {{ else }} 35 {{ end }}
+
+pdb:
+  enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
+  minAvailable: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}

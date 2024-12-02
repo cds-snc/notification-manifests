@@ -1,6 +1,6 @@
 {{- range $node := .Values.nodes }}
 {{- with $ -}}
-{{ if $node.deploymentEnabled }}
+{{ if $node.deployment.deploymentEnabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,7 +9,7 @@ metadata:
   name:  {{ include "celery.fullname" . }}-{{ $node.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ $node.deployment.replicas }}
   revisionHistoryLimit: 5
   selector:
     matchLabels:
@@ -24,8 +24,10 @@ spec:
       labels:
         app: {{ include "celery.fullname" . }}-{{ $node.name }}
     spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: {{ $node.deployment.nodeSelector }}  
       serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
-      priorityClassName: {{ $node.priorityClassName }}
+      priorityClassName: {{ $node.deployment.priorityClassName }}
       initContainers:
       - name: wait-cwagent-ready
         env:
@@ -77,11 +79,11 @@ spec:
           args: ["-c", "{{ $node.scriptArg }}"]
           resources:
             requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ $node.deployment.resources.requests.cpu }}
+              memory: {{ $node.deployment.resources.requests.memory }}
             limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ $node.deployment.resources.limits.cpu }}
+              memory: {{ $node.deployment.resources.limits.memory }}
       {{ if .Values.secretProviderClass.enabled}}    
       volumes:
         - name: secrets-store-inline
@@ -95,7 +97,7 @@ spec:
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}
       securityContext: {}
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ $node.deployment.terminationGracePeriodSeconds }}
 status: {}
 {{- end }}
 {{- end }}
