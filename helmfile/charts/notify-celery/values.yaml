@@ -48,80 +48,184 @@ nodes:
     name: sms
     newRelicAppName: "notification-celery-sms-dev"
     scriptArg: "sh /app/scripts/run_celery_beat.sh"
-    terminationGracePeriodSeconds: 60
-    deploymentBeatEnabled: true
+    deployment:
+      deploymentBeatEnabled: true
+      terminationGracePeriodSeconds: 60
+      nodeSelector: ON_DEMAND
+      replicas: 3
+    pdb:
+      pdbEnabled: false
+    autoscaling:
+      hpaEnabled: false
   other-beat:
     name: beat
     newRelicAppName: "notification-celery-beat-dev"
     scriptArg: "sh /app/scripts/run_celery_beat.sh"
-    terminationGracePeriodSeconds: 30
-    deploymentBeatEnabled: true
+    deployment:
+      deploymentBeatEnabled: true
+      terminationGracePeriodSeconds: 30
+      nodeSelector: ON_DEMAND
+      replicas: 3
+    pdb:
+      pdbEnabled: false
+    autoscaling:
+      hpaEnabled: false
   # PRIMARY CONFIGS
   primary-main:
     name: primary
     newRelicAppName: "notification-celery-main-primary-dev"
-    terminationGracePeriodSeconds: 60
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
-    priorityClassName: high-priority
-    pdbEnabled: true
-    deploymentEnabled: true
+    deployment:
+      deploymentEnabled: true
+      terminationGracePeriodSeconds: 60
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+      priorityClassName: high-priority
+      nodeSelector: ON_DEMAND
+      replicas: 3
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
+    autoscaling:
+      hpaEnabled: false
   primary-email:
     name: email-send-primary
     newRelicAppName: "notification-celery-email-send-primary-dev"
-    terminationGracePeriodSeconds: 60
     scriptArg: "sh /app/scripts/run_celery_send_email.sh"
-    priorityClassName: high-priority
-    deploymentEnabled: true
-    pdbEnabled: true
+    deployment:
+      deploymentEnabled: true
+      terminationGracePeriodSeconds: 60
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+      priorityClassName: high-priority
+      nodeSelector: ON_DEMAND
+      replicas: 3
+    pdb:  
+      pdbEnabled: true
+      minAvailable: 2
+    autoscaling:
+      hpaEnabled: false
   primary-sms:
     name: sms-send-primary
     newRelicAppName: "notification-celery-sms-send-primary-dev"
-    terminationGracePeriodSeconds: 60
     scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
-    priorityClassName: high-priority
-    deploymentEnabled: true
-    pdbEnabled: true
+    deployment:
+      deploymentEnabled: true
+      terminationGracePeriodSeconds: 60
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+      priorityClassName: high-priority
+      nodeSelector: ON_DEMAND
+      replicas: 3
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
+    autoscaling:
+      hpaEnabled: false
   # SCALABLE CONFIGS
   scalable-main:
     name: scalable
     newRelicAppName: "notification-celery-main-scalable-dev"
-    terminationGracePeriodSeconds: 60
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
-    priorityClassName: celery
-    deploymentEnabled: true
-    pdbEnabled: true
-    hpaEnabled: true
-    minReplicas: 1
-    maxReplicas: 2      
+    deployment:
+      deploymentEnabled: true
+      priorityClassName: celery
+      terminationGracePeriodSeconds: 60
+      replicas: 3
+      nodeSelector: spot
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: true
+      minReplicas: 3
+      maxReplicas: 30
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
   scalable-email:
     name: email-send-scalable
     newRelicAppName: "notification-celery-email-send-scalable-dev"
-    terminationGracePeriodSeconds: 60
     scriptArg: "sh /app/scripts/run_celery_send_email.sh"
-    priorityClassName: celery
-    deploymentEnabled: true
-    pdbEnabled: true
-    hpaEnabled: true
-    minReplicas: 1
-    maxReplicas: 2      
+    deployment:
+      deploymentEnabled: true
+      priorityClassName: celery
+      terminationGracePeriodSeconds: 60
+      replicas: 3
+      nodeSelector: spot
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: true
+      minReplicas: 3
+      maxReplicas: 30
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
   scalable-sms:
     name: sms-send-scalable
     newRelicAppName: "notification-celery-sms-send-scalable-dev"
-    terminationGracePeriodSeconds: 60
     scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
-    priorityClassName: celery
-    deploymentEnabled: true
-    pdbEnabled: true
-    hpaEnabled: true
-    minReplicas: 1
-    maxReplicas: 2
+    deployment:
+      deploymentEnabled: true
+      priorityClassName: celery
+      terminationGracePeriodSeconds: 60
+      replicas: 3
+      nodeSelector: spot
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: true
+      minReplicas: 3
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
   
 image:
   repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
   tag: "latest"
 
-replicaCount: 2
+replicaCount: 3
 
 imagePullSecrets: []
 nameOverride: ""
@@ -146,25 +250,6 @@ service:
 podAnnotations: {}
 
 podSecurityContext: {}
-
-resources:
-  requests:
-    cpu: "100m"
-    memory: "500Mi"
-  limits:
-    cpu: "550m"
-    memory: "1024Mi"
-
-autoscaling:
-  enabled: true
-  targetCPUUtilizationPercentage: 50
-
-pdb:
-  enabled: true
-  minAvailable: 1
-
-nodeSelector:
-  eks.amazonaws.com/capacityType: ON_DEMAND
 
 tolerations: []
 
