@@ -30,7 +30,7 @@ resources:
     memory: {{ if eq .Environment.Name "production" }} "400Mi" {{ else if eq .Environment.Name "staging" }} "400Mi" {{ else }} "400Mi" {{ end }}
   limits:
     cpu: {{ if eq .Environment.Name "production" }} "400m" {{ else if eq .Environment.Name "staging" }} "400m" {{ else }} "400m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "800m" {{ else if eq .Environment.Name "staging" }} "800m" {{ else }} "800m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
