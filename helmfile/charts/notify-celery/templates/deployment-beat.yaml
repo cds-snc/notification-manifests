@@ -24,8 +24,7 @@ spec:
       labels:
         app: {{ include "celery.fullname" . }}-{{ $node.name }}
     spec:
-      nodeSelector:
-        eks.amazonaws.com/capacityType: {{ $node.deployment.nodeSelector }}  
+      nodeSelector: {{ $node.deployment.nodeSelector | toYaml | nindent 8 }}
       serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
       priorityClassName: {{ $node.deployment.priorityClassName }}
       initContainers:
