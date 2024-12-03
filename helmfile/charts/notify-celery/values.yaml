@@ -58,6 +58,8 @@ nodes:
       pdbEnabled: false
     autoscaling:
       hpaEnabled: false
+    service:
+      serviceEnabled: true
   other-beat:
     name: beat
     newRelicAppName: "notification-celery-beat-dev"
@@ -72,6 +74,8 @@ nodes:
       pdbEnabled: false
     autoscaling:
       hpaEnabled: false
+    service:
+      serviceEnabled: true
   # PRIMARY CONFIGS
   primary-main:
     name: primary
@@ -96,6 +100,8 @@ nodes:
       minAvailable: 2
     autoscaling:
       hpaEnabled: false
+    service:
+      serviceEnabled: true
   primary-email:
     name: email-send-primary
     newRelicAppName: "notification-celery-email-send-primary-dev"
@@ -119,6 +125,8 @@ nodes:
       minAvailable: 2
     autoscaling:
       hpaEnabled: false
+    service:
+      serviceEnabled: true
   primary-sms:
     name: sms-send-primary
     newRelicAppName: "notification-celery-sms-send-primary-dev"
@@ -142,6 +150,8 @@ nodes:
       minAvailable: 2
     autoscaling:
       hpaEnabled: false
+    service:
+      serviceEnabled: true
   # SCALABLE CONFIGS
   scalable-main:
     name: scalable
@@ -171,6 +181,8 @@ nodes:
     pdb:
       pdbEnabled: true
       minAvailable: 2
+    service:
+      serviceEnabled: true
   scalable-email:
     name: email-send-scalable
     newRelicAppName: "notification-celery-email-send-scalable-dev"
@@ -199,6 +211,8 @@ nodes:
     pdb:
       pdbEnabled: true
       minAvailable: 2
+    service:
+      serviceEnabled: true
   scalable-sms:
     name: sms-send-scalable
     newRelicAppName: "notification-celery-sms-send-scalable-dev"
@@ -227,7 +241,9 @@ nodes:
     pdb:
       pdbEnabled: true
       minAvailable: 2
-  
+    service:
+      serviceEnabled: true
+
 image:
   repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
