@@ -155,7 +155,7 @@ releases:
       category: system
       step: 1
     chart: secrets-store-csi-driver/secrets-store-csi-driver
-    version: 1.4.1
+    version: 1.4.6
     values:
     - ./overrides/system/secrets-csi.yaml.gotmpl
 
@@ -167,7 +167,7 @@ releases:
       category: system
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 0.3.5
+    version: 0.3.10
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
@@ -191,7 +191,7 @@ releases:
       category: tools
       step: 3
     chart: stakater/application
-    version: 2.3.2
+    version: 2.3.4
     values:
     - ./overrides/tools/blazer.yaml.gotmpl
 
