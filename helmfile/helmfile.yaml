@@ -177,6 +177,7 @@ releases:
       app: kube-state-metrics
       tier: full
       category: system
+      step: 2
     chart: prometheus-community/kube-state-metrics
     version: 5.18.1
     values:
