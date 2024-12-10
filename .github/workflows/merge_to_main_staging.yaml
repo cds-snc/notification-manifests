@@ -77,9 +77,9 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster
 
-      - name: Apply changes
-        run: |
-          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
+      # - name: Apply changes
+      #   run: |
+      #     ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
 
       - name: Check for env changes
         working-directory: env/staging
