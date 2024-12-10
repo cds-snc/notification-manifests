@@ -9,11 +9,11 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:a5b0cc6
+  API_LAMBDA_IMAGE: api-lambda:f21f01f
   HEARTBEAT_IMAGE: heartbeat:5c8da95
   SYSTEM_STATUS_IMAGE: system_status:078cf82
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
-  
+
 
 defaults:
   run:
@@ -56,15 +56,15 @@ jobs:
       - name: Setup Terraform tools
         uses: cds-snc/terraform-tools-setup@v1
         env: # In case you want to override default versions
-          CONFTEST_VERSION: 0.30.0 
+          CONFTEST_VERSION: 0.30.0
           TERRAFORM_VERSION: 1.9.5
           TERRAGRUNT_VERSION: 0.66.9
-          TF_SUMMARIZE_VERSION: 0.2.3                    
+          TF_SUMMARIZE_VERSION: 0.2.3
 
       - name: Install 1Pass CLI
         run: |
           curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
-          sudo dpkg -i 1pass.deb 
+          sudo dpkg -i 1pass.deb
 
       - name: Retrieve VPN Config
         run: |
@@ -74,7 +74,7 @@ jobs:
         uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
         with:
           config_file: /var/tmp/production.ovpn
-          echo_config: false            
+          echo_config: false
 
       # We are using this to install kubectl in this case
       - name: Setup helmfile
@@ -82,7 +82,7 @@ jobs:
         with:
           install-kubectl: yes
           install-helm: yes
-          
+
       - name: Run manifest build
         run: |
           cp env.example env/production/.env
