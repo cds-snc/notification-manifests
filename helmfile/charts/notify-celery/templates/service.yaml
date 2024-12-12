@@ -1,0 +1,22 @@
+{{- range $node := .Values.nodes }}
+{{- with $ -}}
+{{ if $node.service.serviceEnabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "celery.fullname" . }}-{{ $node.name }}
+  labels:
+    app: {{ include "celery.fullname" . }}-{{ $node.name }}
+  namespace: notification-canada-ca
+spec:
+  type: ClusterIP
+  # Putting a dummy port because we need to specify ports
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: notify-celery-{{ $node.name }}
+{{- end }}
+{{- end }}
+---
+{{- end }}
