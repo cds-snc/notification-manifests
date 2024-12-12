@@ -20,6 +20,7 @@ celeryCommon:
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
   AWS_XRAY_SDK_ENABLED: {{ .StateValues.AWS_XRAY_SDK_ENABLED }}
   ASSET_DOMAIN: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
+  FF_ANNUAL_LIMIT: "{{ .StateValues.FF_ANNUAL_LIMIT }}"
 
 image: 
   tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
