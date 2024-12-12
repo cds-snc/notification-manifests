@@ -27,7 +27,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: celery-{{ $node.name }}
+    name: notify-celery-{{ $node.name }}
 {{- end }}
 ---
 {{- end }}
