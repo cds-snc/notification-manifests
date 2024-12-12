@@ -82,7 +82,7 @@ jobs:
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment staging apply
+          helmfile --environment staging sync
           popd
 
       - name: Notify Slack channel if this job failed
