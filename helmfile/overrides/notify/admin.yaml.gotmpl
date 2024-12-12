@@ -25,6 +25,7 @@ admin:
   AWS_XRAY_TRACING_ENABLED: "{{ .StateValues.AWS_XRAY_TRACING_ENABLED }}"
   AWS_XRAY_SDK_ENABLED: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
+  FF_ANNUAL_LIMIT: "{{ .StateValues.FF_ANNUAL_LIMIT }}"
 
 image:
   tag: {{ env "{{ .StateValues.DOCKER_TAG" | default "latest" }}
