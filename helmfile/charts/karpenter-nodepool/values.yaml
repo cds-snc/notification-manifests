@@ -5,8 +5,8 @@ nodePool:
   annotations: {}
   zones: "['ca-central-1a', 'ca-central-1b', 'ca-central-1c', 'ca-central-1d']"
   instanceCategories: "['m', 'r']"
-  instanceFamily: "['m5', 'r5', 'm4', 'r4']"
-  instanceCPU: "['2', '4', '6']"
+  instanceFamily: "['m5', 'r5']"
+  instanceCPU: "['2', '4']"
   capacityTypes: ["spot"]
   disruption:
     consolidationPolicy: WhenEmpty
