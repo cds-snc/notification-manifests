@@ -6,7 +6,7 @@ celeryCommon:
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
   AWS_REGION: "{{ requiredEnv "AWS_REGION" }}"
   BULK_SEND_TEST_SERVICE_ID: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
-  CSV_UPLOAD_BUCKET_NAME: "notification-canada-ca-dev-csv-upload"
+  CSV_UPLOAD_BUCKET_NAME: "notification-canada-ca-{{ .Environment.Name }}-csv-upload"
   DOCUMENT_DOWNLOAD_API_HOST: "http://document-download-api.{{ .Release.Namespace }}.svc.cluster.local:7000"
   FIDO2_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
   HC_EN_SERVICE_ID: "{{ .StateValues.HC_EN_SERVICE_ID }}"
