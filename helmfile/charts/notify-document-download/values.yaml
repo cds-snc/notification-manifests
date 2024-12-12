@@ -70,11 +70,13 @@ resources:
     memory: "800Mi"
 
 livenessProbe:
+  initialDelaySeconds: 30
   httpGet:
     path: /_status
     port: 7000
 
 readinessProbe:
+  initialDelaySeconds: 30
   httpGet:
     path: /_status
     port: 7000
