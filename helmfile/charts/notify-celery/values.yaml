@@ -21,7 +21,7 @@ celeryCommon:
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: true
   NEW_RELIC_MONITOR_MODE: false
   AWS_XRAY_CONTEXT_MISSING: "LOG_WARNING"
-  AWS_XRAY_DAEMON_ADDRESS: "xray-daemon.xray.svc.cluster.local:2000"
+  AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
   AWS_XRAY_SDK_ENABLED: true
   ASSET_DOMAIN: "assets.dev.notification.cdssandbox.xyz"
   BATCH_INSERTION_CHUNK_SIZE: "10"
