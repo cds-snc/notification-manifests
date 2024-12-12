@@ -8,7 +8,7 @@ celeryCommon:
   AWS_REGION: "ca-central-1"
   BULK_SEND_TEST_SERVICE_ID: "ea608120-148a-4eba-a64c-4d9a8010e7b0"
   CSV_UPLOAD_BUCKET_NAME: "notification-canada-ca-dev-csv-upload"
-  DOCUMENT_DOWNLOAD_API_HOST: "http://document-download-api.notification-canada-ca.svc.cluster.local:7000"
+  DOCUMENT_DOWNLOAD_API_HOST: "http://notify-document-download.notification-canada-ca.svc.cluster.local:7000"
   FIDO2_DOMAIN: "dev.notification.cdssandbox.xyz"
   HC_EN_SERVICE_ID: "changeme"
   HC_FR_SERVICE_ID: "changeme"
