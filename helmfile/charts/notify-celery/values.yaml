@@ -183,6 +183,36 @@ nodes:
       minAvailable: 2
     service:
       serviceEnabled: true
+  scalable-delivery:
+    name: delivery-scalable
+    newRelicAppName: "notification-celery-delivery-scalable-dev"
+    scriptArg: "sh /app/scripts/run_celery_delivery.sh"
+    deployment:
+      deploymentEnabled: true
+      priorityClassName: celery
+      terminationGracePeriodSeconds: 60
+      replicas: 3
+      nodeSelector:
+        karpenter.sh/capacity-type: spot
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "500Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: true
+      minReplicas: 3
+      maxReplicas: 30
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
+    service:
+      serviceEnabled: true
   scalable-email:
     name: email-send-scalable
     newRelicAppName: "notification-celery-email-send-scalable-dev"
