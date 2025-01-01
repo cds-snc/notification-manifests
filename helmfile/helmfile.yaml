@@ -110,7 +110,7 @@ releases:
       category: system
       step: 0
     chart: oci://public.ecr.aws/karpenter/karpenter-crd
-    version: 0.36.1
+    version: 0.37.6
 
   - name: karpenter
     namespace: karpenter
@@ -120,7 +120,7 @@ releases:
       category: system
       step: 1
     chart: oci://public.ecr.aws/karpenter/karpenter
-    version: 0.36.1
+    version: 0.37.6
     values:
     - ./overrides/system/karpenter.yaml.gotmpl
 
@@ -179,7 +179,7 @@ releases:
       category: system
       step: 2
     chart: prometheus-community/kube-state-metrics
-    version: 5.18.1
+    version: 5.27.1
     values:
     - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
