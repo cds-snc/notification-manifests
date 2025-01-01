@@ -1,0 +1,23 @@
+global:
+  licenseKey: {{ requiredEnv "NEW_RELIC_LICENSE_KEY" }}
+  cluster: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
+  priorityClassName: system-node-critical
+
+newrelic-prometheus-agent:
+# Automatically scrape prometheus metrics for annotated services in the cluster
+# Collecting prometheus metrics for large clusters might impact data usage significantly
+  enabled: true
+nri-metadata-injection:
+# Deploy our webhook to link APM and Kubernetes entities
+  enabled: true
+nri-kube-events:
+# Report Kubernetes events
+  enabled: true
+newrelic-logging:
+# Report logs for containers running in the cluster
+  enabled: true
+  priorityClassName: system-node-critical
+kube-state-metrics:
+# Deploy kube-state-metrics in the cluster.
+# Set this to true unless it is already deployed.
+  enabled: true
