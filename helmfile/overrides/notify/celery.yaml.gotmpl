@@ -21,6 +21,9 @@ celeryCommon:
   AWS_XRAY_SDK_ENABLED: {{ .StateValues.AWS_XRAY_SDK_ENABLED }}
   ASSET_DOMAIN: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
   FF_ANNUAL_LIMIT: "{{ .StateValues.FF_ANNUAL_LIMIT }}"
+  AWS_PINPOINT_SC_POOL_ID: "{{ .StateValues.AWS_PINPOINT_SC_POOL_ID }}"
+  AWS_PINPOINT_SC_TEMPLATE_IDS: "{{ .StateValues.AWS_PINPOINT_SC_TEMPLATE_IDS }}"
+  AWS_PINPOINT_DEFAULT_POOL_ID: "{{ .StateValues.AWS_PINPOINT_DEFAULT_POOL_ID }}"
 
 image: 
   tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
