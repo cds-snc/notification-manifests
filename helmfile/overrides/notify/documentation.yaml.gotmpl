@@ -1,5 +1,5 @@
 image: 
-  tag: "910f947"
+  tag:  {{ env "{{ .StateValues.DOCUMENTATION_DOCKER_TAG }}" | default "latest" }}
 
 targetGroupBinding:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
