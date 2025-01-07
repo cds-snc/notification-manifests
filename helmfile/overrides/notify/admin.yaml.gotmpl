@@ -28,7 +28,7 @@ admin:
   FF_ANNUAL_LIMIT: "{{ .StateValues.FF_ANNUAL_LIMIT }}"
 
 image:
-  tag: {{ env "{{ .StateValues.DOCKER_TAG" | default "latest" }}
+  tag: {{ env "{{ .StateValues.ADMIN_DOCKER_TAG" | default "latest" }}
 
 serviceAccount:
   annotations:
