@@ -1,4 +1,4 @@
-name: Update docker image for manifests in staging
+name: Update Docker Image for Manifests in Staging
 
 on:
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
           git config user.name "Notify PR Bot"
           git config user.email "action@github.com"
 
-      - name: Make changes to the file
+      - name: Update the docker tag in staging.env
         run: |
           echo "Updating docker tag in staging.env"
           sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: "'"${GITHUB_SHA::7}"'"/' helmfile/overrides/staging.env
