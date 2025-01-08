@@ -2,9 +2,13 @@ name: Update Docker Image for Manifests in Staging
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - release-automation-helm-staging
+  repository_dispatch:
+    types:
+      - update-docker-image
+    inputs:
+      docker_image:
+        type: string
+        required: true
 
 jobs:
   update-image:
