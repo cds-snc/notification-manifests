@@ -38,11 +38,16 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: null
-          required_linear_history: null
-          enforce_admins: null
-          required_pull_request_reviews: null
-          restrictions: null
+          required_status_checks: | 
+            null
+          required_linear_history: |
+            null
+          enforce_admins: |
+            null
+          required_pull_request_reviews: |
+            null
+          restrictions: | 
+            null 
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
@@ -58,14 +63,17 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
-          required_status_checks: 
+          required_status_checks: | 
             strict: true
             checks:
               - context: testing_manifest
-          required_linear_history: true
-          enforce_admins: true
-          required_pull_request_reviews: 
+          required_linear_history: |
+            true
+          enforce_admins: |
+            true
+          required_pull_request_reviews: |
             required_approving_review_count: 1
-          restrictions: null
+          restrictions: | 
+            null 
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
