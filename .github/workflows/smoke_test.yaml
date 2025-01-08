@@ -3,7 +3,7 @@ name: "Staging smoke test"
 on:
   push:
     branches:
-      - "*"
+      - "release-*"
   schedule:
     - cron: "0 3,6,9,12,15,18,21 * * *"
 defaults:
