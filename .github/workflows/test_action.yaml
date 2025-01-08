@@ -19,5 +19,5 @@ jobs:
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.PR_BOT_GITHUB_TOKEN }}" \
-            https://api.github.com/repos/OWNER/REPO/dispatches \
+            https://api.github.com/repos/cds-snc/notification-manifests/dispatches \
             -d '{"event_type":"update-docker-image","client_payload":{"docker_image":"PONDTEST"}}'
