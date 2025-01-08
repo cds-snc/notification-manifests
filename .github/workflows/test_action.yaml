@@ -20,4 +20,4 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}" \
             https://api.github.com/repos/cds-snc/notification-manifests/dispatches \
-            -d '{"ref":"release-automation-helm-staging","inputs":{"docker_image":"PONDTEST"}}'
+            -d '{"ref":"release-automation-helm-staging","event_type":"update-docker-image","inputs":{"docker_image":"PONDTEST"}}'
