@@ -1,0 +1,23 @@
+name: Trigger Update Image Tags in Staging
+
+on:
+  push:
+    branches:
+      - release-automation-helm-staging
+  workflow_dispatch:
+    inputs:
+      docker_image:
+        description: 'Docker image to update in staging.env'
+        required: true
+
+jobs:
+  trigger-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger repository_dispatch
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.PR_BOT_GITHUB_TOKEN }}" \
+            https://api.github.com/repos/OWNER/REPO/dispatches \
+            -d '{"event_type":"update-docker-image","client_payload":{"docker_image":"PONDTEST"}}'

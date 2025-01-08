@@ -1,14 +1,9 @@
 name: Update Docker Image for Manifests in Staging
 
 on:
-  workflow_dispatch:
   repository_dispatch:
     types:
       - update-docker-image
-    inputs:
-      docker_image:
-        type: string
-        required: true
 
 jobs:
   update-image:
@@ -35,7 +30,7 @@ jobs:
       - name: Update the docker tag in staging.env
         run: |
           echo "Updating docker tag in staging.env"
-          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: "'"${GITHUB_SHA::7}"'"/' helmfile/overrides/staging.env
+          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: "'"${{ github.event.client_payload.docker_image }}"'"/' helmfile/overrides/staging.env
           cat helmfile/overrides/staging.env
 
       - name: Branch protection OFF
@@ -59,7 +54,7 @@ jobs:
       - name: Commit
         run: |
           git add helmfile/overrides/staging.env
-          git commit -m "Update Admin docker image tag to '${GITHUB_SHA::7}'"
+          git commit -m "Update Admin docker image tag to ${{ github.event.client_payload.docker_image }}"
           git push
 
       - name: Branch protection ON
