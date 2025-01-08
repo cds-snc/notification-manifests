@@ -1,6 +1,0 @@
-{
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/test_action.yaml",
-        ".github/workflows/update_image_tags_staging.yaml"
-    ]
-}
