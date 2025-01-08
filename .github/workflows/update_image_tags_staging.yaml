@@ -27,10 +27,14 @@ jobs:
           git config user.name "Notify PR Bot"
           git config user.email "action@github.com"
 
+      # ADMIN_DOCKER_TAG
+      # API_DOCKER_TAG
+      # DOCUMENT_DOWNLOAD_DOCKER_TAG
+      # DOCUMENTATION_DOCKER_TAG
       - name: Update the docker tag in staging.env
         run: |
           echo "Updating docker tag in staging.env"
-          sed -i 's/^ADMIN_DOCKER_TAG:.*/ADMIN_DOCKER_TAG: "'"${{ github.event.client_payload.docker_image }}"'"/' helmfile/overrides/staging.env
+          sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/staging.env
           cat helmfile/overrides/staging.env
 
       - name: Branch protection OFF
@@ -54,7 +58,7 @@ jobs:
       - name: Commit
         run: |
           git add helmfile/overrides/staging.env
-          git commit -m "Update Admin docker image tag to ${{ github.event.client_payload.docker_image }}"
+          git commit -m "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
           git push
 
       - name: Branch protection ON
