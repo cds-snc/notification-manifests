@@ -88,5 +88,5 @@ jobs:
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
-          json="{'text':'<!here> Staging Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
+          json='{"text":"<!here> Staging Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

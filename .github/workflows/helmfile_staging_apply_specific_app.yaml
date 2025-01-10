@@ -105,5 +105,5 @@ jobs:
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
-          json="{'text':'<!here> Staging - ${{ github.event.inputs.app }} - ${{ github.event.inputs.tag }} Kubernetes Rollout is failing in <https://github.com/cds-snc/notification-manifests/actions/runs/${GITHUB_RUN_ID}|notification-manifests> !'}"
+          json='{"text":"<!here> Staging - ${{ github.event.inputs.app }} - ${{ github.event.inputs.tag }} Kubernetes Rollout is failing in <https://github.com/cds-snc/notification-manifests/actions/runs/'${{ github.run_id }}'|notification-manifests> !"}'
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
