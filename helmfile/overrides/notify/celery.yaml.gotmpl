@@ -26,7 +26,7 @@ celeryCommon:
   AWS_PINPOINT_DEFAULT_POOL_ID: "{{ .StateValues.AWS_PINPOINT_DEFAULT_POOL_ID }}"
 
 image: 
-  tag:  {{ env "{{ .StateValues.API_DOCKER_TAG }}" | default "latest" }}
+  tag: {{ .StateValues.API_DOCKER_TAG | default "latest" }}
 
 serviceAccount:
   annotations:

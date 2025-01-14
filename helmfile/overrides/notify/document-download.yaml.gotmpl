@@ -14,8 +14,8 @@ documentDownload:
   EXTRA_MIME_TYPES: "{{ .StateValues.EXTRA_MIME_TYPES }}"
 
 image: 
-  tag:  {{ env "{{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG }}" | default "latest" }}
-
+  tag: {{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG | default "latest" }}
+  
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/document-download-eks-role

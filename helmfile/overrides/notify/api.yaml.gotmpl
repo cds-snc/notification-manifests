@@ -22,7 +22,7 @@ api:
   SALESFORCE_DOMAIN: "{{ .StateValues.SALESFORCE_DOMAIN }}"
 
 image: 
-  tag:  {{ env "{{ .StateValues.API_DOCKER_TAG }}" | default "latest" }}
+  tag: {{ .StateValues.API_DOCKER_TAG | default "latest" }}
 
 serviceAccount:
   annotations:
