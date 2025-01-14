@@ -14,7 +14,7 @@ documentDownload:
   EXTRA_MIME_TYPES: "{{ .StateValues.EXTRA_MIME_TYPES }}"
 
 image: 
-  tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
+  tag:  {{ env "{{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG }}" | default "latest" }}
 
 serviceAccount:
   annotations:
