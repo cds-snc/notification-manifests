@@ -84,11 +84,13 @@ updateStrategy:
 priorityClassName: high-priority
 
 readinessProbe:
+  initialDelaySeconds: 45
   httpGet:
     path: /_status?simple=true
     port: 6011
 
 livenessProbe:
+  initialDelaySeconds: 45
   httpGet:
     path: "/_status?simple=true"
     port: 6011
