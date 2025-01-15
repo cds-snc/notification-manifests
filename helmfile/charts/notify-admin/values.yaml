@@ -32,6 +32,7 @@ admin:
   FLASK_APP: "application.py"
   GC_ARTICLES_API: "articles.alpha.canada.ca/notification-gc-notify"
   FF_ANNUAL_LIMIT: "false"
+  FF_RTL: "true"
 
 adminSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
