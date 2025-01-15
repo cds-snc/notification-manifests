@@ -22,14 +22,14 @@ api:
   SALESFORCE_DOMAIN: "{{ .StateValues.SALESFORCE_DOMAIN }}"
 
 image: 
-  tag:  {{ env "{{ .StateValues.API_DOCKER_TAG }}" | default "latest" }}
+  tag: {{ .StateValues.API_DOCKER_TAG | default "latest" }}
 
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/api-eks-role
 
 targetGroupBinding:
-  enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
+  enabled: {{ if eq .Environment.Name "production" }} false {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   targetGroupARN: {{requiredEnv "API_TARGET_GROUP_ARN"}}
 
 resources:
