@@ -1,8 +1,8 @@
 image: 
-  tag:  {{ env "{{ .StateValues.DOCUMENTATION_DOCKER_TAG }}" | default "latest" }}
+  tag: {{ .StateValues.DOCUMENTATION_DOCKER_TAG | default "latest" }}
 
 targetGroupBinding:
-  enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
+  enabled: {{ if eq .Environment.Name "production" }} false {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}
 
 pdb:
