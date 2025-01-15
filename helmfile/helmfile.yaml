@@ -34,7 +34,7 @@ repositories:
   url: https://okgolove.github.io/helm-charts
 
 releases:
-{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
+
   - name: notify-documentation
     namespace: notification-canada-ca
     labels:
@@ -89,8 +89,6 @@ releases:
     chart: charts/notify-celery
     values:
     - ./overrides/notify/celery.yaml.gotmpl
-
-{{ end }}
 
   - name: k8s-event-logger
     namespace: amazon-cloudwatch
