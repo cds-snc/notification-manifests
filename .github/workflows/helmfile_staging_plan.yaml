@@ -10,9 +10,12 @@ env:
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
 
 
+
+
 jobs:
   helmfile-diff:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged && (! contains(github.event.pull_request.title, '[AUTO-PR]') || ! contains(github.event.pull_request.title, '[MANIFEST]'))
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
@@ -82,3 +85,4 @@ jobs:
             ```shell 
             ${{join(steps.helmfile_diff.outputs.*, '\n')}}
             ```
+            
