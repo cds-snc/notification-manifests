@@ -193,9 +193,9 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR DELIVERY RECEIPTS
-  scalable-delivery:
-    name: delivery-scalable
-    newRelicAppName: "notification-celery-delivery-scalable-dev"
+  scalable-receipts:
+    name: receipts-scalable
+    newRelicAppName: "notification-celery-receipts-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_delivery.sh"
     deployment:
       deploymentEnabled: true
@@ -214,7 +214,7 @@ nodes:
     autoscaling:
       hpaEnabled: true
       minReplicas: 3
-      maxReplicas: 30
+      maxReplicas: 10
       targetCPUUtilizationPercentage: 25
       scaleUpPodsValue: 6
       scaleUpPeriodSeconds: 45
