@@ -135,7 +135,7 @@ spec:
             [
               "sh",
               "-c",
-              "flask db upgrade || echo '---- database migration failed ----'",
+              "flask db upgrade || echo 'ERROR: database migration failed'",
             ]
       containers:
         - image: api
