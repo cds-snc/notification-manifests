@@ -605,13 +605,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_ANNUAL_LIMIT
-  - name: FF_PT_SERVICE_SKIP_FRESHDESK
-    objref:
-      kind: ConfigMap
-      name: application-config
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.FF_PT_SERVICE_SKIP_FRESHDESK
   - name: CYPRESS_USER_PW_SECRET
     objref:
       kind: ConfigMap
