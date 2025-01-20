@@ -19,6 +19,7 @@ api:
   AWS_XRAY_TRACING_ENABLED: "{{ .StateValues.AWS_XRAY_TRACING_ENABLED }}"
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
   FF_ANNUAL_LIMIT: "{{ .StateValues.FF_ANNUAL_LIMIT }}"
+  FF_PT_SERVICE_SKIP_FRESHDESK: "{{ .StateValues.FF_PT_SERVICE_SKIP_FRESHDESK }}"
   SALESFORCE_DOMAIN: "{{ .StateValues.SALESFORCE_DOMAIN }}"
 
 image: 
@@ -42,7 +43,7 @@ resources:
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
+  minReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 2 {{ end }}
   maxReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
   targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
 
