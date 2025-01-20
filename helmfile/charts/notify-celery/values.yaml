@@ -196,7 +196,7 @@ nodes:
   scalable-delivery:
     name: delivery-scalable
     newRelicAppName: "notification-celery-delivery-scalable-dev"
-    scriptArg: "sh /app/scripts/run_celery_delivery.sh"
+    scriptArg: "sh /app/scripts/run_celery_receipts.sh"
     deployment:
       deploymentEnabled: true
       priorityClassName: celery
@@ -214,7 +214,7 @@ nodes:
     autoscaling:
       hpaEnabled: true
       minReplicas: 3
-      maxReplicas: 30
+      maxReplicas: 10
       targetCPUUtilizationPercentage: 25
       scaleUpPodsValue: 6
       scaleUpPeriodSeconds: 45
