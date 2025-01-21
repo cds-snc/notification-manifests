@@ -47,23 +47,7 @@ celerySecrets:
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
 
 nodes:
-  # BEAT CONFIGS
-  other-sms:
-    name: sms
-    newRelicAppName: "notification-celery-sms-dev"
-    scriptArg: "sh /app/scripts/run_celery_beat.sh"
-    deployment:
-      deploymentBeatEnabled: true
-      terminationGracePeriodSeconds: 60
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
-      replicas: 3
-    pdb:
-      pdbEnabled: false
-    autoscaling:
-      hpaEnabled: false
-    service:
-      serviceEnabled: true
+  # CELERY BEAT
   other-beat:
     name: beat
     newRelicAppName: "notification-celery-beat-dev"
@@ -81,6 +65,7 @@ nodes:
     service:
       serviceEnabled: true
   # PRIMARY CONFIGS
+  # CELERY FOR CORE TASKS
   primary-main:
     name: primary
     newRelicAppName: "notification-celery-main-primary-dev"
@@ -106,6 +91,7 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
+  # CELERY FOR SENDING EMAILS
   primary-email:
     name: email-send-primary
     newRelicAppName: "notification-celery-email-send-primary-dev"
@@ -131,6 +117,7 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
+  # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
   primary-sms:
     name: sms-send-primary
     newRelicAppName: "notification-celery-sms-send-primary-dev"
@@ -156,7 +143,25 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
+  # CELERY FOR SENDING SMS OVER DEDICATED LONG CODE
+  other-sms:
+    name: sms
+    newRelicAppName: "notification-celery-sms-dev"
+    scriptArg: "sh /app/scripts/run_celery_sms.sh"
+    deployment:
+      deploymentBeatEnabled: true
+      terminationGracePeriodSeconds: 60
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+      replicas: 3
+    pdb:
+      pdbEnabled: false
+    autoscaling:
+      hpaEnabled: false
+    service:
+      serviceEnabled: true      
   # SCALABLE CONFIGS
+  # CELERY FOR CORE TASKS
   scalable-main:
     name: scalable
     newRelicAppName: "notification-celery-main-scalable-dev"
@@ -187,10 +192,11 @@ nodes:
       minAvailable: 2
     service:
       serviceEnabled: true
+  # CELERY FOR DELIVERY RECEIPTS
   scalable-delivery:
     name: delivery-scalable
     newRelicAppName: "notification-celery-delivery-scalable-dev"
-    scriptArg: "sh /app/scripts/run_celery_delivery.sh"
+    scriptArg: "sh /app/scripts/run_celery_receipts.sh"
     deployment:
       deploymentEnabled: true
       priorityClassName: celery
@@ -208,7 +214,7 @@ nodes:
     autoscaling:
       hpaEnabled: true
       minReplicas: 3
-      maxReplicas: 30
+      maxReplicas: 10
       targetCPUUtilizationPercentage: 25
       scaleUpPodsValue: 6
       scaleUpPeriodSeconds: 45
@@ -217,6 +223,7 @@ nodes:
       minAvailable: 2
     service:
       serviceEnabled: true
+  # CELERY FOR SENDING EMAILS
   scalable-email:
     name: email-send-scalable
     newRelicAppName: "notification-celery-email-send-scalable-dev"
@@ -247,6 +254,7 @@ nodes:
       minAvailable: 2
     service:
       serviceEnabled: true
+  # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
   scalable-sms:
     name: sms-send-scalable
     newRelicAppName: "notification-celery-sms-send-scalable-dev"

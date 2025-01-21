@@ -1,5 +1,5 @@
 image: 
-  tag:  {{ env "{{ .StateValues.DOCUMENTATION_DOCKER_TAG }}" | default "latest" }}
+  tag: {{ .StateValues.DOCUMENTATION_DOCKER_TAG | default "latest" }}
 
 targetGroupBinding:
   enabled: true

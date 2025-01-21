@@ -57,13 +57,13 @@ patches:
 
 images:
   - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:8a47c0c
+    newName: public.ecr.aws/cds-snc/notify-admin:f9cdc39
   - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:429d2f7
+    newName: public.ecr.aws/cds-snc/notify-api:a341728
   - name: document-download-api
     newName: public.ecr.aws/cds-snc/notify-document-download-api:7f5dc9d
   - name: documentation
-    newName: public.ecr.aws/cds-snc/notify-documentation:5c45cc5
+    newName: public.ecr.aws/cds-snc/notify-documentation:b1374dc
 configMapGenerator:
   - name: application-config
     env: .env
@@ -605,6 +605,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FF_ANNUAL_LIMIT
+  - name: FF_PT_SERVICE_SKIP_FRESHDESK
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.FF_PT_SERVICE_SKIP_FRESHDESK
   - name: CYPRESS_USER_PW_SECRET
     objref:
       kind: ConfigMap
