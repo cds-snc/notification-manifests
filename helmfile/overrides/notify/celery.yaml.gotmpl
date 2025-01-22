@@ -37,7 +37,7 @@ nodes:
     deployment:
       deploymentBeatEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
-      replicas: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
+      replicas: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
     newRelicAppName: "notification-celery-sms-{{ .Environment.Name }}"
   other-beat:
     deployment:
