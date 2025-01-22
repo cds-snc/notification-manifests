@@ -35,6 +35,17 @@ repositories:
 
 releases:
 
+  - name: notify-system
+    namespace: notification-canada-ca
+    labels:
+      app: notify-system
+      tier: backend
+      category: system
+      step: 5
+    chart: charts/notify-system
+    values:
+    - ./overrides/system/notify-system.yaml.gotmpl
+
   - name: notify-documentation
     namespace: notification-canada-ca
     labels:
