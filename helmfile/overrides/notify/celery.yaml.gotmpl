@@ -37,13 +37,13 @@ nodes:
     deployment:
       deploymentBeatEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
-      replicas: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
+      replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
     newRelicAppName: "notification-celery-sms-{{ .Environment.Name }}"
   other-beat:
     deployment:
       deploymentBeatEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
-      replicas: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
+      replicas: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
     newRelicAppName: "notification-celery-beat-{{ .Environment.Name }}"
   primary-main:
     deployment:
@@ -88,7 +88,7 @@ nodes:
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
-      replicas: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
+      replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
@@ -131,7 +131,7 @@ nodes:
     autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
-      maxReplicas: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
+      maxReplicas: {{ if eq .Environment.Name "production" }} 10 {{ else if eq .Environment.Name "staging" }} 10 {{ else }} 10 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
@@ -166,7 +166,7 @@ nodes:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
-      replicas: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
+      replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
