@@ -21,6 +21,7 @@ api:
   FF_ANNUAL_LIMIT: "{{ .StateValues.FF_ANNUAL_LIMIT }}"
   FF_PT_SERVICE_SKIP_FRESHDESK: "{{ .StateValues.FF_PT_SERVICE_SKIP_FRESHDESK }}"
   SALESFORCE_DOMAIN: "{{ .StateValues.SALESFORCE_DOMAIN }}"
+  GC_ORGANISATIONS_BUCKET_NAME: "{{ .StateValues.GC_ORGANISATIONS_BUCKET_NAME }}"
 
 image: 
   tag: {{ .StateValues.API_DOCKER_TAG | default "latest" }}
