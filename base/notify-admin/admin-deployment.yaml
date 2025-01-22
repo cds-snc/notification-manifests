@@ -131,6 +131,8 @@ spec:
               value: "$(FF_RTL)"
             - name: FF_ANNUAL_LIMIT
               value: "$(FF_ANNUAL_LIMIT)"
+            - name: GC_ORGANISATIONS_BUCKET_NAME
+              value: "$(GC_ORGANISATIONS_BUCKET_NAME)"
           resources:
             requests:
               cpu: "250m"
