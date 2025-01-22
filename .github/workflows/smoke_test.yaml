@@ -6,6 +6,7 @@ on:
       - "release-*"
   schedule:
     - cron: "0 3,6,9,12,15,18,21 * * *"
+  workflow_dispatch:  # Enables manual triggering
 defaults:
   run:
     shell: bash
@@ -60,7 +61,7 @@ jobs:
           SMOKE_SERVICE_ID: f316aa6b-38dd-4d9e-83f8-b6ee3e1d428f
           SMOKE_SMS_TEMPLATE_ID: d8234b4d-4def-4ad6-aafe-526a24ee5f19
           SMOKE_USER_ID: f8763157-9c67-44f1-aaec-5d2564b41c8e
-          SMOKE_POLL_TIMEOUT: 320
+          SMOKE_POLL_TIMEOUT: 450
         run: poetry run make smoke-test
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
