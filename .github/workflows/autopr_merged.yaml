@@ -85,7 +85,7 @@ jobs:
           required_status_checks: | 
             strict: true
             checks:
-              - context: testing_manifest
+              - context: helmfile-diff
           required_linear_history: |
             true
           enforce_admins: |
