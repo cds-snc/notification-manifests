@@ -67,6 +67,10 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
+          required_status_checks: | 
+            strict: true
+            checks:
+              - context: helmfile-diff
           required_linear_history: |
             true
           enforce_admins: |
@@ -77,3 +81,4 @@ jobs:
             null 
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+

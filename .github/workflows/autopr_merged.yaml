@@ -1,6 +1,7 @@
 name: "Tag and release to production"
 
 on: 
+  workflow_dispatch:
   pull_request:
     types: [closed]
 
@@ -81,6 +82,10 @@ jobs:
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
+          required_status_checks: | 
+            strict: true
+            checks:
+              - context: helmfile-diff
           required_linear_history: |
             true
           enforce_admins: |

@@ -19,7 +19,7 @@ celeryCommon:
   NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
   AWS_XRAY_SDK_ENABLED: {{ .StateValues.AWS_XRAY_SDK_ENABLED }}
-  ASSET_DOMAIN: "https://assets.{{ requiredEnv "BASE_DOMAIN" }}"
+  ASSET_DOMAIN: "assets.{{ requiredEnv "BASE_DOMAIN" }}"
   FF_ANNUAL_LIMIT: "{{ .StateValues.FF_ANNUAL_LIMIT }}"
   AWS_PINPOINT_SC_POOL_ID: "{{ .StateValues.AWS_PINPOINT_SC_POOL_ID }}"
   AWS_PINPOINT_SC_TEMPLATE_IDS: "{{ .StateValues.AWS_PINPOINT_SC_TEMPLATE_IDS }}"
@@ -52,7 +52,7 @@ nodes:
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "500Mi" {{ else if eq .Environment.Name "staging" }} "500Mi" {{ else }} "500Mi" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
@@ -68,7 +68,7 @@ nodes:
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "500Mi" {{ else if eq .Environment.Name "staging" }} "500Mi" {{ else }} "500Mi" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
@@ -84,7 +84,7 @@ nodes:
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "500Mi" {{ else if eq .Environment.Name "staging" }} "500Mi" {{ else }} "500Mi" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
@@ -101,7 +101,7 @@ nodes:
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "500Mi" {{ else if eq .Environment.Name "staging" }} "500Mi" {{ else }} "500Mi" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
@@ -124,7 +124,7 @@ nodes:
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "500Mi" {{ else if eq .Environment.Name "staging" }} "500Mi" {{ else }} "500Mi" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
@@ -147,7 +147,7 @@ nodes:
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "500Mi" {{ else if eq .Environment.Name "staging" }} "500Mi" {{ else }} "500Mi" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
@@ -170,7 +170,7 @@ nodes:
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "500Mi" {{ else if eq .Environment.Name "staging" }} "500Mi" {{ else }} "500Mi" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
         limits:
           cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "550m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}

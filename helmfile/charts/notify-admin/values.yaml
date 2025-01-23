@@ -13,7 +13,7 @@ admin:
   IP_GEOLOCATE_SERVICE: "http://ipv4.notification-canada-ca.svc.cluster.local:8080"
   BULK_SEND_TEST_SERVICE_ID: "123456789"
   CONTACT_EMAIL: "notification-ops@cds-snc.ca"
-  DOCUMENTATION_DOMAIN: "https://documentation.notification.canada.ca"
+  DOCUMENTATION_DOMAIN: "documentation.notification.canada.ca"
   HC_EN_SERVICE_ID: "123456789"
   HC_FR_SERVICE_ID: "123456789"
   REDIS_ENABLED: "1"
@@ -33,6 +33,7 @@ admin:
   GC_ARTICLES_API: "articles.alpha.canada.ca/notification-gc-notify"
   FF_ANNUAL_LIMIT: "false"
   FF_RTL: "true"
+  GC_ORGANISATIONS_BUCKET_NAME: "notification-canada-ca-default-gc-organisations"
 
 adminSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
