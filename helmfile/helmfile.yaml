@@ -35,17 +35,6 @@ repositories:
 
 releases:
 
-  - name: notify-system
-    namespace: notification-canada-ca
-    labels:
-      app: notify-system
-      tier: backend
-      category: system
-      step: 5
-    chart: charts/notify-system
-    values:
-    - ./overrides/system/notify-system.yaml.gotmpl
-
   - name: notify-documentation
     namespace: notification-canada-ca
     labels:
@@ -230,3 +219,54 @@ releases:
     version: 4.0.8
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
+
+  - name: alb-ingress-controller
+    labels:
+      app: alb-ingress-controller
+      tier: backend
+      category: system
+      step: 10
+    chart: charts/alb-ingress-controller
+    values:
+    - ./overrides/system/alb-ingress-controller.yaml.gotmpl
+
+  # - name: cert-manager
+  #   labels:
+  #     app: cert-manager
+  #     tier: backend
+  #     category: system
+  #     step: 1
+  #   chart: charts/cert-manager
+  #   values:
+  #   - ./overrides/system/cert-manager.yaml.gotmpl
+
+  # - name: ipv4
+  #   namespace: notification-canada-ca
+  #   labels:
+  #     app: ipv4
+  #     tier: backend
+  #     category: system
+  #     step: 1
+  #   chart: charts/ipv4
+  #   values:
+  #   - ./overrides/system/ipv4.yaml.gotmpl
+
+  # - name: metrics-server
+  #   labels:
+  #     app: metrics-server
+  #     tier: backend
+  #     category: system
+  #     step: 1
+  #   chart: charts/metrics-server
+  #   values:
+  #   - ./overrides/system/metrics-server.yaml.gotmpl
+
+  # - name: namespace
+  #   labels:
+  #     app: namespace
+  #     tier: backend
+  #     category: system
+  #     step: 1
+  #   chart: charts/namespace
+  #   values:
+  #   - ./overrides/system/namespace.yaml.gotmpl
