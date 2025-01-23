@@ -18,7 +18,6 @@ jobs:
   helmfile-diff:
     runs-on: ubuntu-latest
     if: github.event.pull_request.base.ref == 'main' && (contains(github.event.pull_request.title, '[AUTO-PR]') || contains(github.event.pull_request.title, '[MANIFEST]'))
-
     steps:
 
       - name: Inject token authentication
