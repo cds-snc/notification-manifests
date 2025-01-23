@@ -83,6 +83,8 @@ jobs:
           repository: ${{ github.repository }}
           required_status_checks: | 
             strict: true
+            checks:
+              - context: testing_manifest
           required_linear_history: |
             true
           enforce_admins: |
