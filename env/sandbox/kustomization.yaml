@@ -474,6 +474,13 @@ vars:
       kind: ConfigMap
       name: application-config
   - fieldref:
+      fieldPath: data.GC_ORGANISATIONS_BUCKET_NAME
+    name: GC_ORGANISATIONS_BUCKET_NAME
+    objref:
+      apiVersion: v1
+      kind: ConfigMap
+      name: application-config
+  - fieldref:
       fieldPath: data.WAF_SECRET
     name: WAF_SECRET
     objref:
