@@ -17,6 +17,7 @@ env:
 jobs:
   helmfile-diff:
     runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.title, '[MANIFEST]')
 
     steps:
 
