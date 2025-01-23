@@ -12,7 +12,7 @@ admin:
   ALLOW_DEBUG_ROUTE: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
   BULK_SEND_TEST_SERVICE_ID: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
   CONTACT_EMAIL: "{{ .StateValues.CONTACT_EMAIL }}"
-  DOCUMENTATION_DOMAIN: "https://documentation.{{ requiredEnv "BASE_DOMAIN" }}"
+  DOCUMENTATION_DOMAIN: "documentation.{{ requiredEnv "BASE_DOMAIN" }}"
   HC_EN_SERVICE_ID: "{{ .StateValues.HC_EN_SERVICE_ID }}"
   HC_FR_SERVICE_ID: "{{ .StateValues.HC_FR_SERVICE_ID }}"
   REDIS_ENABLED: "{{ .StateValues.REDIS_ENABLED }}"
