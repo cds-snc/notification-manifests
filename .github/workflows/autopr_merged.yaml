@@ -1,6 +1,7 @@
 name: "Tag and release to production"
 
 on: 
+  workflow_dispatch:
   pull_request:
     types: [closed]
 
@@ -83,6 +84,8 @@ jobs:
           repository: ${{ github.repository }}
           required_status_checks: | 
             strict: true
+            checks:
+              - context: testing_manifest
           required_linear_history: |
             true
           enforce_admins: |
