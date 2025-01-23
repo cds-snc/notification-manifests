@@ -1,6 +1,7 @@
 name: "Tag and release to production"
 
 on: 
+  workflow_dispatch:
   pull_request:
     types: [closed]
 
