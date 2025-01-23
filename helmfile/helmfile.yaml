@@ -220,53 +220,94 @@ releases:
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
 
-  - name: alb-ingress-controller
+# SYSTEM AND OTHER STUFF
+
+  - name: ipv4
+    namespace: notification-canada-ca
     labels:
-      app: alb-ingress-controller
+      app: ipv4
       tier: backend
       category: system
       step: 10
-    chart: charts/alb-ingress-controller
+    chart: charts/ipv4
     values:
-    - ./overrides/system/alb-ingress-controller.yaml.gotmpl
-
-  # - name: cert-manager
-  #   labels:
-  #     app: cert-manager
-  #     tier: backend
-  #     category: system
-  #     step: 1
-  #   chart: charts/cert-manager
-  #   values:
-  #   - ./overrides/system/cert-manager.yaml.gotmpl
-
-  # - name: ipv4
-  #   namespace: notification-canada-ca
-  #   labels:
-  #     app: ipv4
-  #     tier: backend
-  #     category: system
-  #     step: 1
-  #   chart: charts/ipv4
-  #   values:
-  #   - ./overrides/system/ipv4.yaml.gotmpl
+    - ./overrides/system/ipv4.yaml.gotmpl
 
   # - name: metrics-server
+  #   namespace: kube-system
   #   labels:
   #     app: metrics-server
   #     tier: backend
   #     category: system
-  #     step: 1
+  #     step: 10
   #   chart: charts/metrics-server
   #   values:
   #   - ./overrides/system/metrics-server.yaml.gotmpl
 
-  # - name: namespace
+  # - name: alb-ingress-controller
+  #   namespace: kube-system
   #   labels:
-  #     app: namespace
+  #     app: alb-ingress-controller
   #     tier: backend
   #     category: system
-  #     step: 1
-  #   chart: charts/namespace
+  #     step: 10
+  #   chart: charts/alb-ingress-controller
   #   values:
-  #   - ./overrides/system/namespace.yaml.gotmpl
+  #   - ./overrides/system/alb-ingress-controller.yaml.gotmpl
+
+  # - name: aws-auth
+  #   namespace: kube-system
+  #   labels:
+  #     app: aws-auth
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/aws-auth
+  #   values:
+  #   - ./overrides/system/aws-auth.yaml.gotmpl
+
+  # - name: cert-manager
+  #   namespace: cert-manager
+  #   labels:
+  #     app: cert-manager
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/cert-manager
+  #   values:
+  #   - ./overrides/system/cert-manager.yaml.gotmpl
+
+  # - name: aws-cloudwatch-agent
+  #   namespace: amazon-cloudwatch
+  #   labels:
+  #     app: aws-cloudwatch-agent
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/aws-cloudwatch-agent
+  #   values:
+  #   - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
+
+  # - name: karpenter   
+  #   namespace: karpenter
+  #   labels:
+  #     app: karpenter
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/karpenter
+  #   values:
+  #   - ./overrides/system/karpenter.yaml.gotmpl
+
+  # - name: fluentbit
+  #   namespace: amazon-cloudwatch
+  #   labels:
+  #     app: fluentbit
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/fluentbit
+  #   values:
+  #   - ./overrides/system/fluentbit.yaml.gotmpl
+
+
