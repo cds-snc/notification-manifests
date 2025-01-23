@@ -8,8 +8,7 @@ on:
 jobs:
   tag-release:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged && (contains(github.event.pull_request.title, '[AUTO-PR]') || contains(github.event.pull_request.title, '[MANIFEST]'))
-    
+   
     steps:
 
       # Generate a bot token that will be used for all workflow actions.
