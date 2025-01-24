@@ -12,7 +12,7 @@ api:
   SQL_ALCHEMY_POOL_SIZE: "256"
   AWS_SES_REGION: "us-east-1"
   AWS_SES_SMTP: "email-smtp.us-east-1.amazonaws.com"
-  AWS_US_TOLL_FREE_NUMBER: "+18005555555"
+  AWS_US_TOLL_FREE_NUMBER: "+18449261787"
   ZENDESK_SELL_API_URL: "https://cds-snc.zendesk.com"
   ZENDESK_API_URL: "https://api.getbase.com"
   ALLOW_HTML_SERVICE_IDS: "111111111,222222222,333333333"
