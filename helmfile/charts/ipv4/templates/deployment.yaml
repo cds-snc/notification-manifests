@@ -27,11 +27,11 @@ spec:
               cpu: {{ .Values.resources.requests.cpu }}
               memory: {{ .Values.resources.requests.memory }}
           ports:
-            - containerPort: {{ .Values.containerPort }}
+            - containerPort: {{ .Values.service.ports.port }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.readinessProbe.path }}
-              port: {{ .Values.containerPort }}
+              path: {{ .Values.readinessProbe.httpGet.path }}
+              port: {{ .Values.service.ports.port }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -39,8 +39,8 @@ spec:
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.livenessProbe.path }}
-              port: {{ .Values.containerPort }}
+              path: {{ .Values.livenessProbe.httpGet.path }}
+              port: {{ .Values.service.ports.port }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -48,4 +48,4 @@ spec:
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           env:
           - name: PORT
-            value: {{ .Values.env.port }}
+            value: "{{ .Values.service.ports.port }}"
