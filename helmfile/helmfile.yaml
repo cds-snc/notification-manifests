@@ -221,19 +221,16 @@ releases:
     - ./overrides/system/xray-daemon.yaml.gotmpl
 
     # SYSTEM AND OTHER STUFF
-
-{{ if eq .Environment.Name "dev" }}
-  - name: ipv4
+  - name: ipv4-geolocate
     namespace: notification-canada-ca
     labels:
-      app: ipv4
+      app: ipv4-geolocate
       tier: backend
       category: system
       step: 1
-    chart: charts/ipv4
+    chart: charts/ipv4-geolocate
     values:
-    - ./overrides/system/ipv4.yaml.gotmpl
-{{ end }}
+    - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
   # - name: metrics-server
   #   namespace: kube-system
