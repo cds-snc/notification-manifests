@@ -219,3 +219,14 @@ releases:
     version: 4.0.8
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
+
+  - name: fluentbit-agent
+    namespace: amazon-cloudwatch
+    labels:
+      app: fluentbit-agent
+      tier: system
+      category: tools
+      step: 1
+    chart: charts/fluentbit-agent
+    values:
+    - ./overrides/system/fluentbit-agent.yaml.gotmpl
