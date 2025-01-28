@@ -222,16 +222,18 @@ releases:
 
     # SYSTEM AND OTHER STUFF
 
+{{ if eq .Environment.Name "dev" }}
   - name: ipv4
     namespace: notification-canada-ca
     labels:
       app: ipv4
       tier: backend
       category: system
-      step: 10
+      step: 1
     chart: charts/ipv4
     values:
     - ./overrides/system/ipv4.yaml.gotmpl
+{{ end }}
 
   # - name: metrics-server
   #   namespace: kube-system
