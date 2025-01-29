@@ -32,6 +32,8 @@ repositories:
   url: https://prometheus-community.github.io/helm-charts
 - name: okgolove
   url: https://okgolove.github.io/helm-charts
+- name: fluentbit-agent
+  url: https://fluent.github.io/helm-charts
 
 releases:
 
@@ -232,6 +234,20 @@ releases:
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
+  - name: fluentbit-agent
+    namespace: amazon-cloudwatch
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: fluentbit-agent
+      tier: system
+      category: tools
+      step: 1
+    chart: fluent/fluent-bit
+    version: 0.9.0
+    values:
+    - ./overrides/system/fluentbit-agent.yaml.gotmpl
+
   # - name: metrics-server
   #   namespace: kube-system
   #   labels:
@@ -309,16 +325,3 @@ releases:
   #   values:
   #   - ./overrides/system/fluentbit.yaml.gotmpl
 
-
-
-
-  - name: fluentbit-agent
-    namespace: amazon-cloudwatch
-    labels:
-      app: fluentbit-agent
-      tier: system
-      category: tools
-      step: 1
-    chart: charts/fluentbit-agent
-    values:
-    - ./overrides/system/fluentbit-agent.yaml.gotmpl
