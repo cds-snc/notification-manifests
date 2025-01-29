@@ -2,8 +2,6 @@ resources:
   - namespace.yaml
   - cert-manager.yaml
   - alb-ingress-controller.yaml
-  - ipv4-deployment.yaml
-  - ipv4-service.yaml
   - metrics-server.yaml
   - priority-classes.yaml
   

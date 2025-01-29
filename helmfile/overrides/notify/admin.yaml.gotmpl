@@ -6,7 +6,7 @@ admin:
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
   BULK_SEND_AWS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-bulk-send"
   CSV_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
-  IP_GEOLOCATE_SERVICE: "http://ipv4.{{ .Release.Namespace }}.svc.cluster.local:8080"
+  IP_GEOLOCATE_SERVICE: "http://ipv4-geolocate.{{ .Release.Namespace }}.svc.cluster.local:8080"
   API_HOST_NAME: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
   ADMIN_BASE_URL: "{{ requiredEnv "BASE_DOMAIN" }}"
   ALLOW_DEBUG_ROUTE: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
