@@ -24,7 +24,7 @@ api:
   GC_ORGANISATIONS_BUCKET_NAME: "{{ .StateValues.GC_ORGANISATIONS_BUCKET_NAME }}"
 
 image: 
-  tag: {{ .StateValues.API_DOCKER_TAG | default "latest" }}
+  tag: "{{ .StateValues.API_DOCKER_TAG }}"
 
 serviceAccount:
   annotations:
