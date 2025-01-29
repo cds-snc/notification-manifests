@@ -29,7 +29,7 @@ admin:
   GC_ORGANISATIONS_BUCKET_NAME: "{{ .StateValues.GC_ORGANISATIONS_BUCKET_NAME }}"
 
 image:
-  tag: {{ .StateValues.ADMIN_DOCKER_TAG | default "latest" }}
+  tag: "{{ .StateValues.ADMIN_DOCKER_TAG }}"
 
 serviceAccount:
   annotations:
