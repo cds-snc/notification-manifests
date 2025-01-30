@@ -278,6 +278,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.FRESH_DESK_PRODUCT_ID
+  - name: GC_ORGANISATIONS_BUCKET_NAME
+    objref:
+      kind: ConfigMap
+      name: application-config
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.GC_ORGANISATIONS_BUCKET_NAME
   - name: HC_EN_SERVICE_ID
     objref:
       kind: ConfigMap
