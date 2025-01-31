@@ -89,6 +89,19 @@ jobs:
           helmfile --environment staging sync
           popd
 
+      - name: Save ENV vars and secrets to AWS Param Store
+        run: |
+          DEPLOYMENT_NAME="notify-api"
+          NAMESPACE="notification-canada-ca"
+          env_vars=$(kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[*].env[*]}')
+          secrets=$(kubectl get secret $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
+          for env_var in $(echo "$env_vars" | jq -r 'select(.value != null and .value != "") | .name + "=" + .value'); do
+            params="$params\n$env_var"
+          done
+          params=$(echo -e "$params" | sort -u)
+          params="$params\n$secrets"
+          aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$params" --type "String" --overwrite
+
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
