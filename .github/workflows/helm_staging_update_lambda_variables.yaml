@@ -93,5 +93,5 @@ jobs:
           while IFS= read -r line; do
             key=$(echo $line | cut -d '=' -f 1)
             value=$(echo $line | cut -d '=' -f 2-)
-            aws ssm put-parameter --name "/my-app/$key" --value "$value" --type "String" --overwrite
+            aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$value" --type "String" --overwrite
           done < env_vars.txt
