@@ -86,3 +86,10 @@ jobs:
           # Get the secret and decode all its values
           secrets=$(kubectl get secret $SECRET_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
           aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$secrets" --type "String" --overwrite
+          env_vars=$(./get_env_vars.sh notification-canada-ca notify-api)
+          echo "$env_vars" > env_vars.txt
+          while IFS= read -r line; do
+            key=$(echo $line | cut -d '=' -f 1)
+            value=$(echo $line | cut -d '=' -f 2-)
+            aws ssm put-parameter --name "/my-app/$key" --value "$value" --type "String" --overwrite
+          done < env_vars.txt
