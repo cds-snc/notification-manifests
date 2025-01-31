@@ -40,16 +40,11 @@ jobs:
 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
-        env:
-          HELM_OS: linux
-          HELM_ARCH: amd64
         with:
           install-kubectl: yes
           install-helm: yes        
           helmfile-version: "v0.151.0"
-          helm-plugins: |
-            https://github.com/databus23/helm-diff.git@v3.9.14
-            https://github.com/hypnoglow/helm-s3.git@v0.16.2
+          helm-s3-plugin-version: "v0.16.2"
 
       - name: Install OpenVPN
         run: |
