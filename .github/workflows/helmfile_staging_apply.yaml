@@ -44,6 +44,9 @@ jobs:
           install-kubectl: yes
           install-helm: yes        
           helmfile-version: "v0.151.0"
+          helm-plugins: |
+            https://github.com/databus23/helm-diff
+            https://github.com/hypnoglow/helm-s3.git@v0.16.2
 
       - name: Install OpenVPN
         run: |
