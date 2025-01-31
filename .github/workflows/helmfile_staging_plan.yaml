@@ -29,7 +29,7 @@ jobs:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
       - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@62dfdc550fd88eb820e05b80a92ee40e04631194 # v2.0.0
+        uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
         with:
           install-kubectl: yes
           install-helm: yes
