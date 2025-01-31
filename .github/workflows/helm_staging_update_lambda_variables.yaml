@@ -1,0 +1,63 @@
+name: Capture Helmfile Variables and Save to AWS Parameter Store
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  save-env-vars:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.STAGING_AWS_REGION }}
+
+    - name: Extract Helmfile variables
+      id: extract-vars
+      run: |
+        helmfile -e staging -l name=notify-api values > helmfile_values.yaml
+        export VARIABLES=$(yq e '.variables' helmfile_values.yaml)
+        export SECRETS=$(yq e '.secrets' helmfile_values.yaml)
+        echo "VARIABLES=$VARIABLES" >> $GITHUB_ENV
+        echo "SECRETS=$SECRETS" >> $GITHUB_ENV
+
+    - name: Save environment variables to AWS Parameter Store
+      run: |
+        for var in $(echo "${{ env.VARIABLES }}" | jq -r 'keys[]'); do
+        value=$(echo "${{ env.VARIABLES }}" | jq -r --arg var "$var" '.[$var]')
+        aws ssm put-parameter --name "/my-app/$var" --value "$value" --type "String" --overwrite
+        done
+        
+        for secret in $(echo "${{ env.SECRETS }}" | jq -r 'keys[]'); do
+        value=$(echo "${{ env.SECRETS }}" | jq -r --arg secret "$secret" '.[$secret]')
+        aws ssm put-parameter --name "/my-app/$secret" --value "$value" --type "SecureString" --overwrite
+        done
+
+    # - name: Force api-lambda to redeploy on environment changes
+    #   if: env.ENV_DIFF != '0'
+    #   uses: ./.github/actions/update-lambda-function
+    #   with:
+    #     alias-name: latest
+    #     function-name: api-lambda
+
+    # - name: Force heartbeat lambda to redeploy on environment changes
+    #   if: env.ENV_DIFF != '0'
+    #   uses: ./.github/actions/update-lambda-function
+    #   with:
+    #     alias-name: latest
+    #     function-name: heartbeat
+
+    # - name: Force system_status to redeploy on environment changes
+    #   if: env.ENV_DIFF != '0'
+    #   uses: ./.github/actions/update-lambda-function
+    #   with:
+    #     alias-name: latest
+    #     function-name: system_status
