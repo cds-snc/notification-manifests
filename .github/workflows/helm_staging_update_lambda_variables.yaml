@@ -94,9 +94,7 @@ jobs:
           #   value=$(echo "${{ env.VARIABLES }}" | jq -r --arg var "$var" '.[$var]')
           value="TEST"
           aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$value" --type "String" --overwrite
-          done
           
         #   for secret in $(echo "${{ env.SECRETS }}" | jq -r 'keys[]'); do
         #   value=$(echo "${{ env.SECRETS }}" | jq -r --arg secret "$secret" '.[$secret]')
         #   aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$value" --type "SecureString" --overwrite
-        #   done
