@@ -13,7 +13,7 @@ env:
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
 
 jobs:
-  helmfile-apply:
+  helmfile-update-lambda-variables:
     runs-on: ubuntu-latest
     steps:
 
@@ -79,23 +79,24 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
   
-      - name: Extract Helmfile variables
-        id: extract-vars
-        run: |
-          helmfile -e staging -l name=notify-api values > helmfile_values.yaml
-          export VARIABLES=$(yq e '.variables' helmfile_values.yaml)
-          export SECRETS=$(yq e '.secrets' helmfile_values.yaml)
-          echo "VARIABLES=$VARIABLES" >> $GITHUB_ENV
-          echo "SECRETS=$SECRETS" >> $GITHUB_ENV
+    #   - name: Extract Helmfile variables
+    #     id: extract-vars
+    #     run: |
+    #       helmfile -e staging -l name=notify-api values > helmfile_values.yaml
+    #       export VARIABLES=$(yq e '.variables' helmfile_values.yaml)
+    #       export SECRETS=$(yq e '.secrets' helmfile_values.yaml)
+    #       echo "VARIABLES=$VARIABLES" >> $GITHUB_ENV
+    #       echo "SECRETS=$SECRETS" >> $GITHUB_ENV
 
       - name: Save environment variables to AWS Parameter Store
         run: |
-          for var in $(echo "${{ env.VARIABLES }}" | jq -r 'keys[]'); do
-          value=$(echo "${{ env.VARIABLES }}" | jq -r --arg var "$var" '.[$var]')
+          #   for var in $(echo "${{ env.VARIABLES }}" | jq -r 'keys[]'); do
+          #   value=$(echo "${{ env.VARIABLES }}" | jq -r --arg var "$var" '.[$var]')
+          value="TEST"
           aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$value" --type "String" --overwrite
           done
           
-          for secret in $(echo "${{ env.SECRETS }}" | jq -r 'keys[]'); do
-          value=$(echo "${{ env.SECRETS }}" | jq -r --arg secret "$secret" '.[$secret]')
-          aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$value" --type "SecureString" --overwrite
-          done
+        #   for secret in $(echo "${{ env.SECRETS }}" | jq -r 'keys[]'); do
+        #   value=$(echo "${{ env.SECRETS }}" | jq -r --arg secret "$secret" '.[$secret]')
+        #   aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$value" --type "SecureString" --overwrite
+        #   done
