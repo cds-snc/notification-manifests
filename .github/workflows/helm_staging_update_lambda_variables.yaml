@@ -41,6 +41,7 @@ jobs:
           install-kubectl: yes
           install-helm: yes        
           helmfile-version: "v0.151.0"
+          helm-s3-plugin-version: "v0.16.2"
 
       - name: Install OpenVPN
         run: |
