@@ -82,6 +82,7 @@ jobs:
       - name: Save environment variables and secrets to AWS Parameter Store
         run: |
           SECRET_NAME="notify-api"
+          NAMESPACE="notification-canada-ca"
           # Get the secret and decode all its values
           secrets=$(kubectl get secret $SECRET_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
           aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$secrets" --type "String" --overwrite
