@@ -84,14 +84,13 @@ jobs:
           # Get the secret variables from the deployment
           DEPLOYMENT_NAME="notify-api"
           NAMESPACE="notification-canada-ca"
-          # Get the secret and decode all its values
-          secrets=$(kubectl get secret $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
-          aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$secrets" --type "String" --overwrite
           # Get the environment variables from the deployment
           env_vars=$(kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[*].env[*]}')
-          echo "$env_vars" > env_vars.txt
-          while IFS= read -r line; do
-            key=$(echo $line | cut -d '=' -f 1)
-            value=$(echo $line | cut -d '=' -f 2-)
-            aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$value" --type "String" --overwrite
-          done < env_vars.txt
+          echo "Writing Environment Variables...."
+          for env_var in $(echo "$env_vars" | jq -r '.name + "=" + .value'); do
+            aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$env_var" --type "String" --overwrite
+          done
+          # Get the secret and decode all its values
+          echo "Writing Secrets...."
+          secrets=$(kubectl get secret $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
+          aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$secrets" --type "String" --overwrite
