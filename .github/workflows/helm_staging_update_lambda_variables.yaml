@@ -79,18 +79,17 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
 
-      - name: Save environment variables and secrets to AWS Parameter Store
+      - name: Save ENV vars and secrets to AWS Param Store
         run: |
-          # Get the secret variables from the deployment
           DEPLOYMENT_NAME="notify-api"
           NAMESPACE="notification-canada-ca"
-          # Get the environment variables from the deployment
           env_vars=$(kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[*].env[*]}')
-          echo "Writing Environment Variables...."
-          for env_var in $(echo "$env_vars" | jq -r '.name + "=" + .value'); do
-            aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$env_var" --type "String" --overwrite
-          done
-          # Get the secret and decode all its values
-          echo "Writing Secrets...."
           secrets=$(kubectl get secret $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
-          aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$secrets" --type "String" --overwrite
+          params="####### ENVIRONMENT VARIABLES ############\n"
+          for env_var in $(echo "$env_vars" | jq -r 'select(.value != null and .value != "") | .name + "=" + .value'); do
+            params="$params\n$env_var"
+          done
+          params=$(echo -e "$params" | sort)
+          params="$params\n######### SECRET VARIABLES #########"
+          params="$params\n$secrets"
+          aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$params" --type "String" --overwrite
