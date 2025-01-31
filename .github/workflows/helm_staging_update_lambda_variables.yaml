@@ -90,6 +90,7 @@ jobs:
             params="$params\n$env_var"
           done
           params=$(echo -e "$params" | sort)
-          params="$params\n######### SECRET VARIABLES #########"
+          header="######### SECRET VARIABLES #########"
+          params="$params\n$header"
           params="$params\n$secrets"
           aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$params" --type "String" --overwrite
