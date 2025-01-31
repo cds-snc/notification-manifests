@@ -81,12 +81,14 @@ jobs:
 
       - name: Save environment variables and secrets to AWS Parameter Store
         run: |
-          SECRET_NAME="notify-api"
+          # Get the secret variables from the deployment
+          DEPLOYMENT_NAME="notify-api"
           NAMESPACE="notification-canada-ca"
           # Get the secret and decode all its values
-          secrets=$(kubectl get secret $SECRET_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
+          secrets=$(kubectl get secret $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
           aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$secrets" --type "String" --overwrite
-          env_vars=$(./get_env_vars.sh notification-canada-ca notify-api)
+          # Get the environment variables from the deployment
+          env_vars=$(kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[*].env[*]}')
           echo "$env_vars" > env_vars.txt
           while IFS= read -r line; do
             key=$(echo $line | cut -d '=' -f 1)
