@@ -91,16 +91,28 @@ jobs:
 
       - name: Save ENV vars and secrets to AWS Param Store
         run: |
-          DEPLOYMENT_NAME="notify-api"
           NAMESPACE="notification-canada-ca"
-          env_vars=$(kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[*].env[*]}')
-          secrets=$(kubectl get secret $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
-          for env_var in $(echo "$env_vars" | jq -r 'select(.value != null and .value != "") | .name + "=" + .value'); do
-            params="$params\n$env_var"
-          done
+          get_env_and_secrets() {
+            local DEPLOYMENT_NAME=$1
+            local SECRET_NAME=${2:-$DEPLOYMENT_NAME}
+            env_vars=$(kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[*].env[*]}')
+            secrets=$(kubectl get secret $SECRET_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
+            for env_var in $(echo "$env_vars" | jq -r 'select(.value != null and .value != "") | .name + "=" + .value'); do
+              params="$params\n$env_var"
+            done
+            params="$params\n$secrets"
+          }
+          params=""
+          # API
+          get_env_and_secrets "notify-api"
+          # ADMIN
+          get_env_and_secrets "notify-admin"
+          # DOCUMENT DOWNLOAD
+          get_env_and_secrets "notify-document-download" "document-download"
+          # CELERY
+          get_env_and_secrets "notify-celery-primary" "notify-celery"
           params=$(echo -e "$params" | sort -u)
-          params="$params\n$secrets"
-          aws ssm put-parameter --name "HELM_ENVIRONMENT_VARIABLES" --value "$params" --type "String" --overwrite
+          aws ssm put-parameter --name "ENVIRONMENT_VARIABLES" --value "$params" --type "String" --overwrite
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
