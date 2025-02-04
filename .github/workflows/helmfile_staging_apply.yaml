@@ -114,6 +114,24 @@ jobs:
           params=$(echo -e "$params" | sort -u)
           aws ssm put-parameter --name "ENVIRONMENT_VARIABLES" --value "$params" --type "String" --overwrite
 
+      - name: Force api-lambda to redeploy on environment changes
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: api-lambda
+
+      - name: Force heartbeat lambda to redeploy on environment changes
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: heartbeat
+
+      - name: Force system_status to redeploy on environment changes
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: system_status
+
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
