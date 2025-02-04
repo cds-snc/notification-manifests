@@ -5,64 +5,14 @@ resources:
   - fluentbit.yaml
   - cwagent.yaml
   - cwagent-configmap.yaml
-  # - notification-service-account.yaml
-  # - api-target-group.yaml
-  # - admin-target-group.yaml
-  # - document-download-api-target-group.yaml
-  # - documentation-target-group.yaml
+  - cert-manager.yaml
   - aws-auth-configmap.yaml
 
   - ../../base/prometheus-cloudwatch
-  # - ../../base/notify-admin
-  # - ../../base/notify-api
-  # - ../../base/notify-celery-other
-  # - ../../base/notify-celery-main-primary
-  # - ../../base/notify-celery-sms-send-primary
-  # - ../../base/notify-celery-email-send-primary
-  # - ../../base/notify-celery-main-scalable
-  # - ../../base/notify-celery-sms-send-scalable
-  # - ../../base/notify-celery-email-send-scalable
-  # - ../../base/notify-document-download
-  # - ../../base/notify-documentation
   - ../../base/notify-system
 
 patches:
-  # - path: performance/admin-hpa-patch.yaml
-  # - path: performance/admin-deployment-patch.yaml
-  # - path: performance/api-hpa-patch.yaml
-  # - path: performance/api-deployment-patch.yaml
-  # - path: performance/celery-email-send-primary-deployment-patch.yaml
-  # - path: performance/celery-email-send-scalable-deployment-patch.yaml
-  # - path: performance/celery-email-send-scalable-hpa-patch.yaml
-  # - path: performance/celery-primary-deployment-patch.yaml
-  # - path: performance/celery-scalable-deployment-patch.yaml
-  # - path: performance/celery-scalable-hpa-patch.yaml
-  # - path: performance/celery-sms-send-primary-deployment-patch.yaml
-  # - path: performance/celery-sms-send-scalable-deployment-patch.yaml
-  # - path: performance/celery-sms-send-scalable-hpa-patch.yaml
-  # - path: performance/document-download-api-hpa-patch.yaml
-  # - path: performance/documentation-deployment-patch.yaml
-
-  # - path: services/admin-service-patch.yaml
-  # - path: services/api-service-patch.yaml
-  # - path: services/document-download-api-service-patch.yaml
-  # - path: services/documentation-service-patch.yaml
-
   - path: cwagent/cwagent-deployment-patch.yaml
-
-  # - path: nodeselectors/admin-node-selector-patch.yaml
-  # - path: nodeselectors/api-node-selector-patch.yaml
-  # - path: nodeselectors/celery-api-node-selector-patch.yaml
-  # - path: nodeselectors/celery-beat-node-selector-patch.yaml
-  # - path: nodeselectors/celery-email-send-node-selector-patch.yaml
-  # - path: nodeselectors/celery-email-send-scalable-node-selector-patch.yaml
-  # - path: nodeselectors/celery-primary-node-selector-patch.yaml
-  # - path: nodeselectors/celery-scalable-node-selector-patch.yaml
-  # - path: nodeselectors/celery-sms-node-selector-patch.yaml
-  # - path: nodeselectors/celery-sms-send-node-selector-patch.yaml
-  # - path: nodeselectors/celery-sms-send-scalable-node-selector-patch.yaml
-  # - path: nodeselectors/document-download-api-node-selector-patch.yaml
-  # - path: nodeselectors/documentation-node-selector-patch.yaml
 
 images:
   - name: admin
