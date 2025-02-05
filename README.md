@@ -31,7 +31,7 @@ Secrets are set using Kubernetes secrets, which ensures that we do not ever spit
 
 If the value you are adding is a secret, DO NOT USE THIS METHOD. [Instead follow the instructions in the adding a secret document.](https://github.com/cds-snc/notification-terraform/blob/main/docs/creatingSecrets.md)
 
-### Steps for everything but API
+### Steps for all components
 
 To add an environment variable for admin or celery, you will need to update up to 3 files. 
 
