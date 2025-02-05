@@ -36,9 +36,8 @@ admin:
   GC_ORGANISATIONS_BUCKET_NAME: "notification-canada-ca-default-gc-organisations"
   SENDING_DOMAIN: "notification.canada.ca"
   FF_CARETAKER: "false"
-  HELM_TEST_ADMIN: "HELM-IS-COOL!-ADMIN"
-  HELM_TEST_ADMIN: "HELM-IS-AWESOME!-ADMIN"
   FRESH_DESK_ENABLED: "true"
+  HELM_TEST_ADMIN: "HELM-IS-GROOVY!!!!-ADMIN"
 
 adminSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
