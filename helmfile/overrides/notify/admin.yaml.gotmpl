@@ -29,6 +29,7 @@ admin:
   FF_ANNUAL_LIMIT: "{{ .StateValues.FF_ANNUAL_LIMIT }}"
   GC_ORGANISATIONS_BUCKET_NAME: "{{ .StateValues.GC_ORGANISATIONS_BUCKET_NAME }}"
   SENDING_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
+  FF_CARETAKER: "{{ .StateValues.FF_CARETAKER }}"
 
 image:
   tag: "{{ .StateValues.ADMIN_DOCKER_TAG }}"
