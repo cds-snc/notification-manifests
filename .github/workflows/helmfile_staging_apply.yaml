@@ -78,7 +78,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging 
 
-      - name: Load EnvVars
+      - name: Load Context Variables
         run: |
             ./helmfile/getContext.sh -g
             
