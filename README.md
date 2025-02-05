@@ -33,7 +33,7 @@ If the value you are adding is a secret, DO NOT USE THIS METHOD. [Instead follow
 
 ### Steps for all components
 
-To add an environment variable for admin or celery, you will need to update up to 3 files. 
+To add an environment variable for admin , API, celery, you will need to update up to 3 files. 
 
 1. In the values.yaml file in helmfile/charts/notify-\<component\> add a new key value pair with the expected default value under the main component tag (ex. admin: or celeryCommon: etc)
 
