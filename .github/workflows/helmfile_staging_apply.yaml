@@ -101,7 +101,6 @@ jobs:
         with:
           alias-name: latest
           function-name: api-lambda
-          
 
       - name: Force heartbeat lambda to redeploy on environment changes
         if: env.ENV_DIFF != '0'  
