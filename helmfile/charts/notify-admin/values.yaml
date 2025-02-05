@@ -35,7 +35,7 @@ admin:
   FF_RTL: "true"
   GC_ORGANISATIONS_BUCKET_NAME: "notification-canada-ca-default-gc-organisations"
   SENDING_DOMAIN: "notification.canada.ca"
-  HELM_TEST_ADMIN: "HELM IS COOL! ADMIN"
+  HELM_TEST_ADMIN: "HELM-IS-COOL!-ADMIN"
 
 adminSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
