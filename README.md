@@ -4,11 +4,15 @@ Kubernetes manifest files for [notification.canada.ca](https://notification.cana
 
 ## How does this repository work?
 
-This repository uses version 2.0.3 of [Kustomize](https://github.com/kubernetes-sigs/kustomize/tree/v2.0.3), which is baked into `kubectl` to apply different environment overlays (staging, production), on to an existing base configuration. As a result the `base` directory describes all the commonalities between all environments, while the [`env/staging`](env/staging) and [`env/production`](env/production) directories contain the environment specific configurations. These include:
+Notify components are deployed to Kubernetes using [helm](https://helm.sh/) and [helmfile](https://github.com/helmfile/helmfile). This allows us to do "diffs" on our environments, and apply applications surgically using labeles.
 
-- Environment variables
-- Target group bindings between the AWS network infrastructure and the Kubernetes cluster
-- Replica count patches (ex. How many pods of each type run in each environment)
+```bash
+helmfile -e dev -l app=notify-admin diff
+```
+
+```bash
+helmfile -e dev -l app=notify-admin sync
+```
 
 ## How are environment variables set?
 
