@@ -30,6 +30,7 @@ admin:
   GC_ORGANISATIONS_BUCKET_NAME: "{{ .StateValues.GC_ORGANISATIONS_BUCKET_NAME }}"
   SENDING_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
   FF_CARETAKER: "{{ .StateValues.FF_CARETAKER }}"
+  FRESH_DESK_ENABLED: "{{ .StateValues.FRESH_DESK_ENABLED }}"
 
 image:
   tag: "{{ .StateValues.ADMIN_DOCKER_TAG }}"
