@@ -4,7 +4,7 @@ Kubernetes manifest files for [notification.canada.ca](https://notification.cana
 
 ## How does this repository work?
 
-Notify components are deployed to Kubernetes using [helm](https://helm.sh/) and [helmfile](https://github.com/helmfile/helmfile). This allows us to do "diffs" on our environments, and apply applications surgically using labeles.
+Notify components are deployed to Kubernetes using [helm](https://helm.sh/) and [helmfile](https://github.com/helmfile/helmfile). This allows us to do "diffs" on our environments, leverage charts for reusable modules, and apply applications surgically using labels.
 
 ```bash
 helmfile -e dev -l app=notify-admin diff
@@ -96,9 +96,9 @@ SOME_NEW_ENV_VAR: "false"
 
 ```
 
-### Steps for API
+### Steps for API Lambda
 
-Since the API is run on both kubernetes and AWS Lambda, you will need to modify the Terraform parameter store configuration as well. Follow the steps in the preceeding section and then [update the terraform file as necessary.](https://github.com/cds-snc/notification-terraform/blob/main/aws/lambda-api/secrets_manager.tf)
+Since the API is run on both kubernetes and AWS Lambda, you will need to modify BOTH Helm and the Terraform parameter store configuration. Follow the steps in the preceeding section and then [update the terraform file as necessary.](https://github.com/cds-snc/notification-terraform/blob/main/aws/lambda-api/secrets_manager.tf)
 
 ```terraform
 
