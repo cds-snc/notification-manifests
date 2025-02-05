@@ -92,6 +92,7 @@ jobs:
       - name: Save ENV vars and secrets to AWS Param Store
         run: |
           ./scripts/lambdaParamStoreUpdates.sh -g
+          echo DIFF=$DIFF
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
 
       - name: Force api-lambda to redeploy on environment changes
