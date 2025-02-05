@@ -21,11 +21,9 @@ get_env_and_secrets "notify-document-download" "document-download"
 # CELERY
 get_env_and_secrets "notify-celery-primary" "notify-celery"
 params=$(echo -e "$params" | sort -u)
-
 aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .previous.env
 aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value "$params" --tier "Intelligent-Tiering" --overwrite
 aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .new.env
 export DIFF="$(set +o pipefail && diff -B .new.env .previous.env | wc -l)"
-echo "::add-mask::$DIFF"
 DIFF=$(echo $DIFF | tr -d ' ') 
-echo $DIFF
+echo "DIFF=$DIFF"
