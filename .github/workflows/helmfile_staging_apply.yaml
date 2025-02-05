@@ -91,6 +91,8 @@ jobs:
 
       - name: Save ENV vars and secrets to AWS Param Store
         run: |
+          # wait for the secrets and env vars to be available
+          sleep 20
           source ./scripts/lambdaParamStoreUpdates.sh -g
           echo DIFF=$DIFF
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
