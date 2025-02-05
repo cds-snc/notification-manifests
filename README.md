@@ -125,7 +125,7 @@ EOF
 
 ```
 
-## How are image tag sets?
+## How are image tag set?
 
 Image tags are automatically set via Notify PR Bot in the helmfile/overrides/\<environment\>.env file
 
