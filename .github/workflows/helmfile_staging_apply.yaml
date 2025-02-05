@@ -95,21 +95,21 @@ jobs:
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
 
       - name: Force api-lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
+        if: env.ENV_DIFF != ''
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: api-lambda
 
       - name: Force heartbeat lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'  
+        if: env.ENV_DIFF != ''  
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: heartbeat
 
       - name: Force system_status to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
+        if: env.ENV_DIFF != ''
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
