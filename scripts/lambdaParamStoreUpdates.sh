@@ -27,3 +27,6 @@ aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type 
 aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .new.env
 export DIFF="$(set +o pipefail && diff -B .new.env .previous.env | wc -l)"
 echo "::add-mask::$DIFF"
+if [ -z "$DIFF" ]; then
+  DIFF='0'
+fi
