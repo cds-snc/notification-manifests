@@ -41,6 +41,8 @@ jobs:
         with:
           install-kubectl: yes
           install-helm: yes
+          helmfile-version: "v0.151.0"
+          helm-s3-plugin-version: "v0.16.2"
 
       - name: Install OpenVPN
         run: |
@@ -69,10 +71,6 @@ jobs:
           config_file: /var/tmp/staging.ovpn
           echo_config: false                  
 
-      - name: Decrypt staging env
-        run: |
-          make decrypt-staging
-
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster
@@ -80,41 +78,6 @@ jobs:
       - name: Apply changes
         run: |
           ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
-
-      - name: Check for env changes
-        working-directory: env/staging
-        run: |
-          aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .previous.env
-          DIFF="$(set +o pipefail && diff -B .env .previous.env | wc -l)"
-          echo "::add-mask::$DIFF"
-          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
-
-      - name: Update parameter store environment variable
-        if: env.ENV_DIFF != '0' # Only update secrets when changes detected
-        working-directory: env/staging
-        run: |
-          aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value file://.env --tier "Intelligent-Tiering" --overwrite
-
-      - name: Force api-lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: api-lambda
-
-      - name: Force heartbeat lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: heartbeat
-
-      - name: Force system_status to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: system_status
 
       - name: Bump version and push tag
         id: bump_and_push_tag

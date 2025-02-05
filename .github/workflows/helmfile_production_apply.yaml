@@ -43,6 +43,7 @@ jobs:
           install-kubectl: yes
           install-helm: yes       
           helmfile-version: "v0.151.0"
+          helm-s3-plugin-version: "v0.16.2"
 
       - name: Install OpenVPN
         run: |
@@ -76,7 +77,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias production
 
-      - name: Load EnvVars
+      - name: Load Context Variables
         run: |
             ./helmfile/getContext.sh -g
 
