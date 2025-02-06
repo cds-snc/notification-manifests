@@ -234,7 +234,7 @@ releases:
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
-{{ if eq .Environment.Name "dev" || eq .Environment.Name "staging" }}
+{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
   - name: cert-manager
     namespace: cert-manager
