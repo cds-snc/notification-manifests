@@ -78,7 +78,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging 
 
-      - name: Load EnvVars
+      - name: Load Context Variables
         run: |
             ./helmfile/getContext.sh -g
             
@@ -88,6 +88,35 @@ jobs:
           pushd helmfile
           helmfile --environment staging sync
           popd
+
+      - name: Save ENV vars and secrets to AWS Param Store
+        run: |
+          # wait for the secrets and env vars to be available
+          sleep 20
+          source ./scripts/lambdaParamStoreUpdates.sh -g
+          echo DIFF=$DIFF
+          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
+
+      - name: Force api-lambda to redeploy on environment changes
+        if: env.ENV_DIFF != '0'
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: api-lambda
+
+      - name: Force heartbeat lambda to redeploy on environment changes
+        if: env.ENV_DIFF != '0'  
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: heartbeat
+
+      - name: Force system_status to redeploy on environment changes
+        if: env.ENV_DIFF != '0'
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: system_status
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
