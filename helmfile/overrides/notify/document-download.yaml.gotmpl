@@ -8,6 +8,7 @@ documentDownload:
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
   NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
   NEW_RELIC_IGNORE_STARTUP_ERRORS: "{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"
+  NEW_RELIC_ENVIRONMENT: "{{ .Environment.Name }}"
   NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
   DOCUMENTS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download"
   BACKEND_HOSTNAME: "api.document.{{ requiredEnv "BASE_DOMAIN" }}"
