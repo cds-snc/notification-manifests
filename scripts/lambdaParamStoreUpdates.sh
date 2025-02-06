@@ -16,10 +16,7 @@ params=""
 get_env_and_secrets "notify-api"
 # ADMIN
 get_env_and_secrets "notify-admin"
-# DOCUMENT DOWNLOAD
-get_env_and_secrets "notify-document-download" "document-download"
-# CELERY
-get_env_and_secrets "notify-celery-primary" "notify-celery"
+
 params=$(echo -e "$params" | sort -u)
 aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .previous.env
 aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value "$params" --tier "Intelligent-Tiering" --overwrite
