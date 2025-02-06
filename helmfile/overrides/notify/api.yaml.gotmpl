@@ -3,7 +3,6 @@ api:
   ADMIN_BASE_DOMAIN: "https://{{ requiredEnv "BASE_DOMAIN" }}"
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
   CSV_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
-  NEW_RELIC_APP_NAME: "notification-api-{{ .Environment.Name }}"
   BASE_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
   ASSET_DOMAIN: "assets.{{ requiredEnv "BASE_DOMAIN" }}"
   DOCUMENTATION_DOMAIN: "documentation.{{ requiredEnv "BASE_DOMAIN" }}"
@@ -12,8 +11,10 @@ api:
   HC_EN_SERVICE_ID: "{{ .StateValues.HC_EN_SERVICE_ID }}"
   HC_FR_SERVICE_ID: "{{ .StateValues.HC_FR_SERVICE_ID }}"
   ALLOW_DEBUG_ROUTE: {{ .StateValues.ALLOW_DEBUG_ROUTE }}
+  NEW_RELIC_APP_NAME: "notification-api-{{ .Environment.Name }}"
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: {{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}
   NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+  NEW_RELIC_IGNORE_STARTUP_ERRORS: "{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"
   ALLOW_HTML_SERVICE_IDS: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
   SENTRY_URL: "{{ .StateValues.SENTRY_URL }}"
   AWS_XRAY_SDK_ENABLED: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"

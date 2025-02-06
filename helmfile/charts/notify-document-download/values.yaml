@@ -14,6 +14,8 @@ documentDownload:
   NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "false"
   NEW_RELIC_MONITOR_MODE: "false"
+  NEW_RELIC_IGNORE_STARTUP_ERRORS: false
+  NEW_RELIC_ENVIRONMENT: "default"
   NOTIFY_ENVIRONMENT: "default"
   
 documentDownloadSecrets:
