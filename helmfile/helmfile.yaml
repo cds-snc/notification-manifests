@@ -34,6 +34,8 @@ repositories:
   url: https://okgolove.github.io/helm-charts
 - name: jetstack
   url: https://charts.jetstack.io
+- name: eks
+  url: https://aws.github.io/eks-charts
 
 releases:
 
@@ -247,6 +249,33 @@ releases:
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
+{{ end }}
+
+{{ if eq .Environment.Name "dev" }}
+
+  - name: target-group-crds
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: crds
+      tier: backend
+      category: system
+      step: 0
+    chart: charts/crds
+
+  - name: aws-lb-controller
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: aws-lb-controller
+      tier: backend
+      category: system
+      step: 3
+    chart: eks/aws-load-balancer-controller
+    values:
+    - ./overrides/system/aws-lb-controller.yaml.gotmpl
+  
 {{ end }}
 
   # - name: metrics-server
