@@ -251,7 +251,7 @@ releases:
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
 
-{{ if eq .Environment.Name "dev" }}
+{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
   - name: cert-manager
     namespace: cert-manager

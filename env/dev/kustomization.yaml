@@ -11,9 +11,3 @@ resources:
 
 patches:
   - path: cwagent/cwagent-deployment-patch.yaml
-
-
-configMapGenerator:
-  - envs:
-      - .env
-    name: application-config
