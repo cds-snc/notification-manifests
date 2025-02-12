@@ -3,8 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-sms-send-primary
-  name:  celery-sms-send-primary
+    app: celery-sms-send-static
+  name:  celery-sms-send-static
   namespace: notification-canada-ca
 spec:
   template:

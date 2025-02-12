@@ -124,8 +124,8 @@ nodes:
       serviceEnabled: true
   # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
   primary-sms:
-    name: sms-send-primary
-    newRelicAppName: "notification-celery-sms-send-primary-dev"
+    name: sms-send-static
+    newRelicAppName: "notification-celery-sms-send-static-dev"
     scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
     deployment:
       deploymentEnabled: true

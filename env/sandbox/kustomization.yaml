@@ -16,7 +16,7 @@ resources:
   # - ../../base/notify-api
   # - ../../base/notify-celery-other
   # - ../../base/notify-celery-main-primary
-  # - ../../base/notify-celery-sms-send-primary
+  # - ../../base/notify-celery-sms-send-static
   # - ../../base/notify-celery-email-send-static
   # - ../../base/notify-celery-main-scalable
   # - ../../base/notify-celery-sms-send-scalable
@@ -44,7 +44,7 @@ patches:
   # - path: performance/celery-primary-deployment-patch.yaml
   # - path: performance/celery-scalable-deployment-patch.yaml
   # - path: performance/celery-scalable-hpa-patch.yaml
-  # - path: performance/celery-sms-send-primary-deployment-patch.yaml
+  # - path: performance/celery-sms-send-static-deployment-patch.yaml
   # - path: performance/celery-sms-send-scalable-deployment-patch.yaml
   # - path: performance/celery-sms-send-scalable-hpa-patch.yaml
 
@@ -72,7 +72,7 @@ patches:
   # - path: celery-init-delete/celery-email-send-scalable-init-delete-patch.yaml
   # - path: celery-init-delete/celery-primary-init-delete-patch.yaml
   # - path: celery-init-delete/celery-scalable-init-delete-patch.yaml
-  # - path: celery-init-delete/celery-sms-send-primary-init-delete-patch.yaml
+  # - path: celery-init-delete/celery-sms-send-static-init-delete-patch.yaml
   # - path: celery-init-delete/celery-sms-send-scalable-init-delete-patch.yaml
 
 configMapGenerator:
