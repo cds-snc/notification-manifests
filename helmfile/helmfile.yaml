@@ -234,8 +234,6 @@ releases:
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
-{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
-
   - name: cert-manager
     namespace: cert-manager
     labels:
@@ -246,8 +244,6 @@ releases:
     chart: jetstack/cert-manager
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
-
-{{ end }}
 
   # - name: metrics-server
   #   namespace: kube-system
