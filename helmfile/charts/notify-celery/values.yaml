@@ -53,7 +53,7 @@ celerySecrets:
 
 nodes:
   # CELERY BEAT
-  other-beat:
+  beat:
     name: beat
     newRelicAppName: "notification-celery-beat-dev"
     scriptArg: "sh /app/scripts/run_celery_beat.sh"
