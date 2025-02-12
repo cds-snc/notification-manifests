@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-primary
+    app: celery-core-tasks-static
     # profile: fargate
-  name:  celery-primary
+  name:  celery-core-tasks-static
   namespace: notification-canada-ca
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: celery-primary
+      app: celery-core-tasks-static
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       labels:
-        app: celery-primary
+        app: celery-core-tasks-static
         # profile: fargate
     spec:
       priorityClassName: high-priority
@@ -38,7 +38,7 @@ spec:
       containers:
         - image: api
           imagePullPolicy: Always
-          name: celery-primary
+          name: celery-core-tasks-static
           env:
             - name: ADMIN_BASE_URL
               value: https://$(BASE_DOMAIN)

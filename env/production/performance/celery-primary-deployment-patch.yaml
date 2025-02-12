@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-primary
-  name:  celery-primary
+    app: celery-core-tasks-static
+  name:  celery-core-tasks-static
   namespace: notification-canada-ca
 spec:
   replicas: 3
   template:
     spec:
       containers:
-      - name: celery-primary
+      - name: celery-core-tasks-static
         resources:
           requests:
             cpu: "150m"

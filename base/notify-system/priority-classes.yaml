@@ -4,7 +4,7 @@ metadata:
   name: high-priority
 value: 1000000
 globalDefault: false
-description: "This priority class is for pods that must run on primary nodes (Admin/API/DocDownload/Documentation)"
+description: "This priority class is for pods that must run on static nodes (Admin/API/DocDownload/Documentation)"
 
 ---
 
@@ -14,4 +14,4 @@ metadata:
   name: celery
 value: 10
 globalDefault: false
-description: "This priority class is for celery pods that can be evicted from primary nodes."
+description: "This priority class is for celery pods that can be evicted from static nodes."

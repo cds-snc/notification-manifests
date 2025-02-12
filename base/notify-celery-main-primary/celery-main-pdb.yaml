@@ -1,10 +1,10 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: celery-main-primary-pdb
+  name: celery-core-tasks-static-pdb
   namespace: notification-canada-ca
 spec:
   minAvailable: 2
   selector:
     matchLabels:
-      app: celery-primary
+      app: celery-core-tasks-static

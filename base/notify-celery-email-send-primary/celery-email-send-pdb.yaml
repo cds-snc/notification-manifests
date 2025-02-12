@@ -1,7 +1,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: celery-email-pdb-primary
+  name: celery-email-pdb-static
   namespace: notification-canada-ca
 spec:
   minAvailable: 2

@@ -69,11 +69,11 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
-  # PRIMARY CONFIGS
+  # STATIC CONFIGS
   # CELERY FOR CORE TASKS
-  primary-main:
-    name: primary
-    newRelicAppName: "notification-celery-main-primary-dev"
+  core-tasks-static:
+    name: core-tasks-static
+    newRelicAppName: "notification-celery-core-tasks-static-dev"
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
     deployment:
       deploymentEnabled: true
@@ -97,7 +97,7 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING EMAILS
-  primary-email:
+  email-send-static:
     name: email-send-static
     newRelicAppName: "notification-celery-email-send-static-dev"
     scriptArg: "sh /app/scripts/run_celery_send_email.sh"
@@ -123,7 +123,7 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
-  primary-sms:
+  sms-send-static:
     name: sms-send-static
     newRelicAppName: "notification-celery-sms-send-static-dev"
     scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
