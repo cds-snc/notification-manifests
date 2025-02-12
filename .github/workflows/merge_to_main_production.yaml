@@ -9,7 +9,7 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:c933ab0
+  API_LAMBDA_IMAGE: api-lambda:124e04e
   HEARTBEAT_IMAGE: heartbeat:d4082e9
   SYSTEM_STATUS_IMAGE: system_status:feaaf98
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
