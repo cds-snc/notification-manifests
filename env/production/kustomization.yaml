@@ -7,7 +7,6 @@ resources:
   - cwagent-configmap.yaml
   - fluentbit.yaml
   - aws-auth-configmap.yaml
-  - cert-manager.yaml
 
 patches:
   - path: cwagent/cwagent-deployment-patch.yaml
