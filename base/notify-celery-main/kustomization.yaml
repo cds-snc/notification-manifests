@@ -3,7 +3,7 @@ resources:
   - celery-deployment.yaml
   - celery-service.yaml
   - celery-hpa.yaml
-  - celery-sms-deployment.yaml
-  - celery-sms-service.yaml
+  - celery-sms-dedicated-static-dedicated-static-deployment.yaml
+  - celery-sms-dedicated-static-dedicated-static-service.yaml
   - celery-main-pdb.yaml
   

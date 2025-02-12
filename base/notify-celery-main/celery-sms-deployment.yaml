@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-sms
+    app: celery-sms-dedicated-static
     profile: fargate
-  name:  celery-sms
+  name:  celery-sms-dedicated-static
   namespace: notification-canada-ca
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: celery-sms
+      app: celery-sms-dedicated-static
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       labels:
-        app: celery-sms
+        app: celery-sms-dedicated-static
     spec:
       priorityClassName: high-priority
       initContainers:
@@ -35,7 +35,7 @@ spec:
       containers:
         - image: api
           imagePullPolicy: Always
-          name: celery-sms
+          name: celery-sms-dedicated-static
           env:
             - name: ADMIN_BASE_URL
               value: https://$(BASE_DOMAIN)
@@ -94,7 +94,7 @@ spec:
             - name: SENTRY_URL
               value: '$(SENTRY_URL)'
             - name: NEW_RELIC_APP_NAME
-              value: 'notification-celery-sms-$(ENVIRONMENT)'
+              value: 'notification-celery-sms-dedicated-static-$(ENVIRONMENT)'
             - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
               value: 'true'
             - name: NEW_RELIC_LICENSE_KEY
