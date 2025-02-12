@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-email-send-primary
-  name:  celery-email-send-primary
+    app: celery-email-send-static
+  name:  celery-email-send-static
   namespace: notification-canada-ca
 spec:
   replicas: 1
   revisionHistoryLimit: 5
   selector:
     matchLabels:
-      app: celery-email-send-primary
+      app: celery-email-send-static
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: celery-email-send-primary
+        app: celery-email-send-static
     spec:
       priorityClassName: high-priority
       initContainers:
@@ -36,7 +36,7 @@ spec:
       containers:
         - image: api
           imagePullPolicy: Always
-          name: celery-email-send-primary
+          name: celery-email-send-static
           env:
             - name: ADMIN_BASE_URL
               value: https://$(BASE_DOMAIN)

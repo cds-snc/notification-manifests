@@ -78,7 +78,7 @@ nodes:
     pdb:  
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-    newRelicAppName: "notification-celery-email-send-primary-{{ .Environment.Name }}"
+    newRelicAppName: "notification-celery-email-send-static-{{ .Environment.Name }}"
   primary-sms:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}

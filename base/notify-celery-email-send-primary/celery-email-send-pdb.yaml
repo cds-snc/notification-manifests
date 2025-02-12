@@ -7,4 +7,4 @@ spec:
   minAvailable: 2
   selector:
     matchLabels:
-      app: celery-email-send-primary
+      app: celery-email-send-static

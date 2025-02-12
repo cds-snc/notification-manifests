@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-email-send-primary
-  name:  celery-email-send-primary
+    app: celery-email-send-static
+  name:  celery-email-send-static
   namespace: notification-canada-ca
 spec:
   replicas: 3
   template:
     spec:
       containers:
-      - name: celery-email-send-primary
+      - name: celery-email-send-static
         resources:
           requests:
             cpu: "100m"

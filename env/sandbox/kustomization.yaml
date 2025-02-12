@@ -17,7 +17,7 @@ resources:
   # - ../../base/notify-celery-other
   # - ../../base/notify-celery-main-primary
   # - ../../base/notify-celery-sms-send-primary
-  # - ../../base/notify-celery-email-send-primary
+  # - ../../base/notify-celery-email-send-static
   # - ../../base/notify-celery-main-scalable
   # - ../../base/notify-celery-sms-send-scalable
   # - ../../base/notify-celery-email-send-scalable
@@ -38,7 +38,7 @@ images:
 patches:
   # - path: performance/admin-hpa-patch.yaml
   # - path: performance/api-hpa-patch.yaml
-  # - path: performance/celery-email-send-primary-deployment-patch.yaml
+  # - path: performance/celery-email-send-static-deployment-patch.yaml
   # - path: performance/celery-email-send-scalable-deployment-patch.yaml
   # - path: performance/celery-email-send-scalable-hpa-patch.yaml
   # - path: performance/celery-primary-deployment-patch.yaml
@@ -68,7 +68,7 @@ patches:
   # - path: nodeselectors/document-download-api-node-selector-patch.yaml
   # - path: nodeselectors/documentation-node-selector-patch.yaml
 
-  # - path: celery-init-delete/celery-email-send-primary-init-delete-patch.yaml
+  # - path: celery-init-delete/celery-email-send-static-init-delete-patch.yaml
   # - path: celery-init-delete/celery-email-send-scalable-init-delete-patch.yaml
   # - path: celery-init-delete/celery-primary-init-delete-patch.yaml
   # - path: celery-init-delete/celery-scalable-init-delete-patch.yaml

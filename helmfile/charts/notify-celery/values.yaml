@@ -98,8 +98,8 @@ nodes:
       serviceEnabled: true
   # CELERY FOR SENDING EMAILS
   primary-email:
-    name: email-send-primary
-    newRelicAppName: "notification-celery-email-send-primary-dev"
+    name: email-send-static
+    newRelicAppName: "notification-celery-email-send-static-dev"
     scriptArg: "sh /app/scripts/run_celery_send_email.sh"
     deployment:
       deploymentEnabled: true
