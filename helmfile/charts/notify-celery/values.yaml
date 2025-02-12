@@ -167,9 +167,9 @@ nodes:
       serviceEnabled: true      
   # SCALABLE CONFIGS
   # CELERY FOR CORE TASKS
-  scalable-main:
-    name: scalable
-    newRelicAppName: "notification-celery-main-scalable-dev"
+  core-tasks-scalable:
+    name: core-tasks-scalable
+    newRelicAppName: "notification-celery-core-tasks-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
     deployment:
       deploymentEnabled: true
@@ -198,7 +198,7 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR DELIVERY RECEIPTS
-  scalable-delivery:
+  delivery-receipts-scalable:
     name: delivery-receipts-scalable
     newRelicAppName: "notification-celery-delivery-receipts-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_receipts.sh"

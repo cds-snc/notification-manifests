@@ -42,8 +42,8 @@ patches:
   # - path: performance/celery-email-send-scalable-deployment-patch.yaml
   # - path: performance/celery-email-send-scalable-hpa-patch.yaml
   # - path: performance/celery-primary-deployment-patch.yaml
-  # - path: performance/celery-scalable-deployment-patch.yaml
-  # - path: performance/celery-scalable-hpa-patch.yaml
+  # - path: performance/celery-core-tasks-scalable-deployment-patch.yaml
+  # - path: performance/celery-core-tasks-scalable-hpa-patch.yaml
   # - path: performance/celery-sms-send-static-deployment-patch.yaml
   # - path: performance/celery-sms-send-scalable-deployment-patch.yaml
   # - path: performance/celery-sms-send-scalable-hpa-patch.yaml
@@ -61,7 +61,7 @@ patches:
   # - path: nodeselectors/celery-email-send-node-selector-patch.yaml
   # - path: nodeselectors/celery-email-send-scalable-node-selector-patch.yaml
   # - path: nodeselectors/celery-primary-node-selector-patch.yaml
-  # - path: nodeselectors/celery-scalable-node-selector-patch.yaml
+  # - path: nodeselectors/celery-core-tasks-scalable-node-selector-patch.yaml
   # - path: nodeselectors/celery-sms-node-selector-patch.yaml
   # - path: nodeselectors/celery-sms-send-node-selector-patch.yaml
   # - path: nodeselectors/celery-sms-send-scalable-node-selector-patch.yaml
@@ -71,7 +71,7 @@ patches:
   # - path: celery-init-delete/celery-email-send-static-init-delete-patch.yaml
   # - path: celery-init-delete/celery-email-send-scalable-init-delete-patch.yaml
   # - path: celery-init-delete/celery-primary-init-delete-patch.yaml
-  # - path: celery-init-delete/celery-scalable-init-delete-patch.yaml
+  # - path: celery-init-delete/celery-core-tasks-scalable-init-delete-patch.yaml
   # - path: celery-init-delete/celery-sms-send-static-init-delete-patch.yaml
   # - path: celery-init-delete/celery-sms-send-scalable-init-delete-patch.yaml
 

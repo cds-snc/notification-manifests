@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: celery-scalable
+  name: celery-core-tasks-scalable
   namespace: notification-canada-ca
 spec:
   template:

@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: celery-scalable
-  name:  celery-scalable
+    app: celery-core-tasks-scalable
+  name:  celery-core-tasks-scalable
   namespace: notification-canada-ca
 spec:
   replicas: 3
   template:
     spec:
       containers:
-      - name: celery-scalable
+      - name: celery-core-tasks-scalable
         resources:
           requests:
             cpu: "100m"

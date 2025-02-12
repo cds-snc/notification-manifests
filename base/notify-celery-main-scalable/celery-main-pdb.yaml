@@ -1,10 +1,10 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: celery-main-scalable-pdb
+  name: celery-core-tasks-scalable-pdb
   namespace: notification-canada-ca
 spec:
   minAvailable: 2
   selector:
     matchLabels:
-      app: celery-scalable
+      app: celery-core-tasks-scalable

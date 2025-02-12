@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: celery-scalable-hpa
+  name: celery-core-tasks-scalable-hpa
   namespace: notification-canada-ca
 spec:
   minReplicas: 3
