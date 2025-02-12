@@ -199,8 +199,8 @@ nodes:
       serviceEnabled: true
   # CELERY FOR DELIVERY RECEIPTS
   scalable-delivery:
-    name: delivery-scalable
-    newRelicAppName: "notification-celery-delivery-scalable-dev"
+    name: delivery-receipts-scalable
+    newRelicAppName: "notification-celery-delivery-receipts-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_receipts.sh"
     deployment:
       deploymentEnabled: true
