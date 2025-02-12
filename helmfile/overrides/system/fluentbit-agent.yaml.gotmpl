@@ -132,13 +132,13 @@ config:
 
   outputs: |
     [OUTPUT]
-        Name                cloudwatch_logs
-        Match               application.*
-        region              ${AWS_REGION}
-        log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
-        log_stream_name     application.${HOSTNAME}
-        auto_create_group   true
-        extra_user_agent    container-insights
+        Name cloudwatch_logs
+        Match application.*
+        region ${AWS_REGION} 
+        log_stream_prefix fallback-stream
+        log_group_name /aws/containerinsights/notification-canada-ca-dev-eks-cluster/application
+        log_stream_template $kubernetes['container_name']
+        auto_create_group on
 
   extraFiles:
     notify-log.conf: |
@@ -230,13 +230,14 @@ config:
           emitter_mem_buf_limit 150MB
 
       [OUTPUT]
-          Name                cloudwatch_logs
-          Match               celery.*
-          region              ${AWS_REGION}
-          log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
-          log_stream_name     celery.${HOST_NAME}
-          auto_create_group   true
-          extra_user_agent    container-insights
+          Name cloudwatch_logs
+          Match celery.*
+          region ${AWS_REGION} 
+          log_stream_prefix fallback-stream
+          log_group_name /aws/containerinsights/notification-canada-ca-dev-eks-cluster/application
+          log_stream_template $kubernetes['container_name']
+          auto_create_group on
+
 
     dataplane-log.conf: |
       [INPUT]
