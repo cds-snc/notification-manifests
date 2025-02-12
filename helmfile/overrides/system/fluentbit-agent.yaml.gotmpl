@@ -136,7 +136,7 @@ config:
         Match               application.*
         region              ${AWS_REGION}
         log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
-        log_stream_name     $(tag[4])
+        log_stream_name     application.${HOSTNAME}
         auto_create_group   true
         extra_user_agent    container-insights
 
@@ -193,15 +193,6 @@ config:
           Kubelet_Port        10250
           Buffer_Size         0
 
-      [OUTPUT]
-          Name                cloudwatch_logs
-          Match               application.*
-          region              ${AWS_REGION}
-          log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
-          log_stream_name     $(tag[4])
-          auto_create_group   true
-          extra_user_agent    container-insights
-
     celery-log.conf: |
       [INPUT]
           Name                tail
@@ -243,7 +234,7 @@ config:
           Match               celery.*
           region              ${AWS_REGION}
           log_group_name      /aws/containerinsights/${CLUSTER_NAME}/application
-          log_stream_name     $(tag[4])
+          log_stream_name     celery.${HOST_NAME}
           auto_create_group   true
           extra_user_agent    container-insights
 

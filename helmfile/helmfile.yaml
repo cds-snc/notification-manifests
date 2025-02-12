@@ -34,6 +34,9 @@ repositories:
   url: https://okgolove.github.io/helm-charts
 - name: fluent
   url: https://fluent.github.io/helm-charts
+# - name: eks
+#   url: https://aws.github.io/eks-charts
+
 - name: jetstack
   url: https://charts.jetstack.io
 
@@ -250,6 +253,20 @@ releases:
     version: 0.48.5
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
+
+  # - name: fb-agent
+  #   namespace: amazon-cloudwatch
+  #   disableValidationOnInstall: true
+  #   disableValidation: true 
+  #   labels:
+  #     app: fb-agent
+  #     tier: system
+  #     category: tools
+  #     step: 1
+  #   chart: eks/aws-for-fluent-bit
+  #   version: 0.1.34
+  #   values:
+  #   - ./overrides/system/fluentbit.yaml.gotmpl
 
 {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
