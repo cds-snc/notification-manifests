@@ -136,7 +136,7 @@ config:
         Match application.*
         region ${AWS_REGION} 
         log_stream_prefix fallback-stream
-        log_group_name /aws/containerinsights/notification-canada-ca-dev-eks-cluster/application
+        log_group_name /aws/containerinsights/${CLUSTER_NAME}/application
         log_stream_template $kubernetes['container_name']
         auto_create_group on
 
@@ -234,7 +234,7 @@ config:
           Match celery.*
           region ${AWS_REGION} 
           log_stream_prefix fallback-stream
-          log_group_name /aws/containerinsights/notification-canada-ca-dev-eks-cluster/application
+          log_group_name /aws/containerinsights/${CLUSTER_NAME}/application
           log_stream_template $kubernetes['container_name']
           auto_create_group on
 
