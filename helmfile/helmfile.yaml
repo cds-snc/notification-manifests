@@ -36,9 +36,6 @@ repositories:
   url: https://fluent.github.io/helm-charts
 - name: jetstack
   url: https://charts.jetstack.io
-- name: aws-auth
-  url: https://aws.github.io/aws-auth
-
 
 releases:
 
@@ -238,6 +235,17 @@ releases:
     chart: charts/ipv4-geolocate
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
+
+  - name: aws-auth
+    namespace: kube-system
+    labels:
+      app: aws-auth
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/aws-auth
+    values:
+    - ./overrides/system/aws-auth.yaml.gotmpl
 
 {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
