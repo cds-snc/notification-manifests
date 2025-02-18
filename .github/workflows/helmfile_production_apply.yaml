@@ -88,6 +88,32 @@ jobs:
           helmfile --environment production sync
           popd
 
+      - name: Save ENV vars and secrets to AWS Param Store
+        run: |
+          # wait for the secrets and env vars to be available
+          sleep 20
+          source ./scripts/lambdaParamStoreUpdatesProduction.sh -g
+          echo DIFF=$DIFF
+          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
+  
+      - name: Force api-lambda to redeploy on environment changes
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: api-lambda
+
+      - name: Force heartbeat lambda to redeploy on environment changes
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: heartbeat
+
+      - name: Force system_status to redeploy on environment changes
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: system_status
+
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
