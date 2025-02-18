@@ -37,7 +37,6 @@ repositories:
 - name: jetstack
   url: https://charts.jetstack.io
 
-
 releases:
 
   - name: notify-documentation
@@ -225,7 +224,6 @@ releases:
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
 
-    # SYSTEM AND OTHER STUFF
   - name: ipv4-geolocate
     namespace: notification-canada-ca
     labels:
@@ -236,6 +234,17 @@ releases:
     chart: charts/ipv4-geolocate
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
+
+  - name: plugins
+    namespace: kube-system
+    labels:
+      app: plugins
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/plugins
+    values:
+    - ./overrides/system/plugins.yaml.gotmpl
 
 {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
