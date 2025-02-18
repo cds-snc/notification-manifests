@@ -224,7 +224,6 @@ releases:
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
 
-    # SYSTEM AND OTHER STUFF
   - name: ipv4-geolocate
     namespace: notification-canada-ca
     labels:
