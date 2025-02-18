@@ -93,7 +93,7 @@ jobs:
         run: |
           # wait for the secrets and env vars to be available
           sleep 20
-          source ./scripts/lambdaParamStoreUpdates.sh -g
+          source ./scripts/lambdaParamStoreUpdatesStaging.sh -g
           echo DIFF=$DIFF
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
 
