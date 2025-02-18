@@ -1,9 +1,11 @@
 kind: ConfigMap
 metadata:
-  name: aws-auth
+  name: aws-auth-helm-plugin
   namespace: kube-system
 apiVersion: v1
 data:
+  mapAccounts: |
+    - 800095993820
   mapRoles: |
     - groups:
       - system:bootstrappers
@@ -38,3 +40,5 @@ data:
       username: ipv4-geolocate-webservice-apply
       groups:
         - system:masters
+  mapUsers: |
+    []

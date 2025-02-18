@@ -236,16 +236,16 @@ releases:
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
-  - name: aws-auth
+  - name: plugins
     namespace: kube-system
     labels:
-      app: aws-auth
+      app: plugins
       tier: backend
       category: system
       step: 1
-    chart: charts/aws-auth
+    chart: charts/plugins
     values:
-    - ./overrides/system/aws-auth.yaml.gotmpl
+    - ./overrides/system/plugins.yaml.gotmpl
 
 {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
