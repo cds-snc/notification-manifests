@@ -53,7 +53,7 @@ celerySecrets:
 
 nodes:
   # CELERY BEAT
-  other-beat:
+  beat:
     name: beat
     newRelicAppName: "notification-celery-beat-dev"
     scriptArg: "sh /app/scripts/run_celery_beat.sh"
@@ -69,11 +69,11 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
-  # PRIMARY CONFIGS
+  # STATIC CONFIGS
   # CELERY FOR CORE TASKS
-  primary-main:
-    name: primary
-    newRelicAppName: "notification-celery-main-primary-dev"
+  core-tasks-static:
+    name: core-tasks-static
+    newRelicAppName: "notification-celery-core-tasks-static-dev"
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
     deployment:
       deploymentEnabled: true
@@ -97,9 +97,9 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING EMAILS
-  primary-email:
-    name: email-send-primary
-    newRelicAppName: "notification-celery-email-send-primary-dev"
+  email-send-static:
+    name: email-send-static
+    newRelicAppName: "notification-celery-email-send-static-dev"
     scriptArg: "sh /app/scripts/run_celery_send_email.sh"
     deployment:
       deploymentEnabled: true
@@ -123,9 +123,9 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
-  primary-sms:
-    name: sms-send-primary
-    newRelicAppName: "notification-celery-sms-send-primary-dev"
+  sms-send-static:
+    name: sms-send-static
+    newRelicAppName: "notification-celery-sms-send-static-dev"
     scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
     deployment:
       deploymentEnabled: true
@@ -149,9 +149,9 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING SMS OVER DEDICATED LONG CODE
-  other-sms:
-    name: sms
-    newRelicAppName: "notification-celery-sms-dev"
+  sms-dedicated-static:
+    name: sms-dedicated-static
+    newRelicAppName: "notification-celery-sms-dedicated-static-dev"
     scriptArg: "sh /app/scripts/run_celery_sms.sh"
     deployment:
       deploymentBeatEnabled: true
@@ -167,9 +167,9 @@ nodes:
       serviceEnabled: true      
   # SCALABLE CONFIGS
   # CELERY FOR CORE TASKS
-  scalable-main:
-    name: scalable
-    newRelicAppName: "notification-celery-main-scalable-dev"
+  core-tasks-scalable:
+    name: core-tasks-scalable
+    newRelicAppName: "notification-celery-core-tasks-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
     deployment:
       deploymentEnabled: true
@@ -198,9 +198,9 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR DELIVERY RECEIPTS
-  scalable-delivery:
-    name: delivery-scalable
-    newRelicAppName: "notification-celery-delivery-scalable-dev"
+  delivery-receipts-scalable:
+    name: delivery-receipts-scalable
+    newRelicAppName: "notification-celery-delivery-receipts-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_receipts.sh"
     deployment:
       deploymentEnabled: true
