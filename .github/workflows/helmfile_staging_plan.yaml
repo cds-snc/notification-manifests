@@ -78,11 +78,13 @@ jobs:
           helmfile --environment staging diff >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
           popd
-      - name: Helmfile Diff Comment
+      - name: Staging Helmfile Diff Comment
         uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2.8.2
         with:
-          message: | 
-            ```shell 
+          message-id: staging_helmfile_diff
+          message: |
+            # STAGING HELMFILE DIFF:  
+            ```shell
             ${{join(steps.helmfile_diff.outputs.*, '\n')}}
             ```
             
