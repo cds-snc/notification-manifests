@@ -36,6 +36,8 @@ api:
   FF_PT_SERVICE_SKIP_FRESHDESK: false
   GC_ORGANISATIONS_BUCKET_NAME: "notification-canada-ca-default-gc-organisations"
   HELM_TEST_API: "HELM-IS-RADICAL!-API"
+  FIDO2_DOMAIN: "dev.notification.cdssandbox.xyz"
+  BASE_DOMAIN: "dev.notification.cdssandbox.xyz"
 
 apiSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
