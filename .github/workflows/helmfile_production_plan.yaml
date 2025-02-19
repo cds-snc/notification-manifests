@@ -92,5 +92,7 @@ jobs:
         with:
           message-id: prod_helmfile_diff
           message: | 
-            PRODUCTION HELMFILE DIFF:
+            ```shell
+            PRODUCTION HELMFILE DIFF: 
             ${{join(steps.helmfile_diff.outputs.*, '\n')}}
+            ```
