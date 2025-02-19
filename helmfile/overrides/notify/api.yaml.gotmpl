@@ -25,6 +25,7 @@ api:
   FF_PT_SERVICE_SKIP_FRESHDESK: "{{ .StateValues.FF_PT_SERVICE_SKIP_FRESHDESK }}"
   SALESFORCE_DOMAIN: "{{ .StateValues.SALESFORCE_DOMAIN }}"
   GC_ORGANISATIONS_BUCKET_NAME: "{{ .StateValues.GC_ORGANISATIONS_BUCKET_NAME }}"
+  FIDO2_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
 
 image: 
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
