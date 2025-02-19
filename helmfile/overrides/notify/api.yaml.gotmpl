@@ -26,6 +26,7 @@ api:
   FF_PT_SERVICE_SKIP_FRESHDESK: "{{ .StateValues.FF_PT_SERVICE_SKIP_FRESHDESK }}"
   SALESFORCE_DOMAIN: "{{ .StateValues.SALESFORCE_DOMAIN }}"
   GC_ORGANISATIONS_BUCKET_NAME: "{{ .StateValues.GC_ORGANISATIONS_BUCKET_NAME }}"
+  FIDO2_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
   # NON-ENVIRONMENT SPECIFIC VARIABLES
   SQL_ALCHEMY_POOL_SIZE: "256"
   ZENDESK_API_URL: "https://api.getbase.com"
@@ -35,7 +36,6 @@ api:
   NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
   HELM_TEST_API: "HELM-IS-RADICAL!-API"
   FF_SALESFORCE_CONTACT: "false"
-  FIDO2_DOMAIN: "staging.notification.cdssandbox.xyz"
   FLASK_APP: "application.py"
   FRESH_DESK_API_URL: "https://cds-snc.freshdesk.com"
   FF_CLOUDWATCH_METRICS_ENABLED: "false"
