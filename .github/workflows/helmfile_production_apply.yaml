@@ -13,6 +13,10 @@ env:
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
+  PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+  API_LAMBDA_IMAGE: api-lambda:d901ebf
+  HEARTBEAT_IMAGE: heartbeat:d4082e9
+  SYSTEM_STATUS_IMAGE: system_status:feaaf98
 
 jobs:
   helmfile-apply:
@@ -101,18 +105,21 @@ jobs:
         with:
           alias-name: latest
           function-name: api-lambda
+          image-uri: $PRIVATE_ECR/$API_LAMBDA_IMAGE
 
       - name: Force heartbeat lambda to redeploy on environment changes
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: heartbeat
+          image-uri: $PRIVATE_ECR/$HEARTBEAT_IMAGE
 
       - name: Force system_status to redeploy on environment changes
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: system_status
+          image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
