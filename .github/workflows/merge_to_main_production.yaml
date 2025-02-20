@@ -9,9 +9,9 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:1270b81
-  HEARTBEAT_IMAGE: heartbeat:5c8da95
-  SYSTEM_STATUS_IMAGE: system_status:078cf82
+  API_LAMBDA_IMAGE: api-lambda:bc5ad54
+  HEARTBEAT_IMAGE: heartbeat:d4082e9
+  SYSTEM_STATUS_IMAGE: system_status:feaaf98
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   
 
@@ -82,15 +82,6 @@ jobs:
         with:
           install-kubectl: yes
           install-helm: yes
-          
-      - name: Run manifest build
-        run: |
-          cp env.example env/production/.env
-          make production-debug > /dev/null 2>&1
-
-      - name: Decrypt production env
-        run: |
-          make decrypt-production
 
       - name: Configure kubeconfig
         run: |
@@ -99,41 +90,6 @@ jobs:
       - name: Apply changes
         run: |
           ./scripts/applyKube.sh env/production --kubeconfig=/home/runner/.kube/config
-
-      - name: Check for env changes
-        working-directory: env/production
-        run: |
-          aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .previous.env
-          DIFF="$(set +o pipefail && diff -B .env .previous.env | wc -l)"
-          echo "::add-mask::$DIFF"
-          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
-
-      - name: Update parameter store environment variable
-        if: env.ENV_DIFF != '0' # Only update secrets when changes detected
-        working-directory: env/production
-        run: |
-          aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value file://.env --tier "Intelligent-Tiering" --overwrite
-
-      - name: Deploy lambda
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: api-lambda
-          image-uri: $PRIVATE_ECR/$API_LAMBDA_IMAGE
-
-      - name: Deploy Heartbeat lambda
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: heartbeat
-          image-uri: $PRIVATE_ECR/$HEARTBEAT_IMAGE
-
-      - name: Deploy System Status lambda
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: system_status
-          image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
 
       - name: Add deployment to New Relic
         run: |

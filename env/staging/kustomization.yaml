@@ -5,8 +5,6 @@ resources:
   - fluentbit.yaml
   - cwagent.yaml
   - cwagent-configmap.yaml
-  - cert-manager.yaml
-  - aws-auth-configmap.yaml
 
   - ../../base/prometheus-cloudwatch
   - ../../base/notify-system
