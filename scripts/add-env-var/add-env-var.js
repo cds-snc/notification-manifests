@@ -218,7 +218,7 @@ async function main() {
         }
 
         console.log(chalk.green('\n✓ All changes applied successfully!'));
-        console.log(chalk.yellow('\nRemember to run `helmfile sync` to apply the changes.'));
+        console.log(chalk.yellow('\nReview the changes and create a PR when you\'re ready!'));
     } catch (error) {
         console.error(chalk.red('\n✗ Failed to apply all changes. Please check the errors above.'));
         process.exit(1);
