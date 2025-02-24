@@ -135,7 +135,7 @@ spec:
             [
               "sh",
               "-c",
-              "flask db upgrade",
+              "flask db upgrade || echo 'ERROR: database migration failed'",
             ]
       containers:
         - image: api
@@ -268,12 +268,16 @@ spec:
               value: 'True'
             - name: FF_ANNUAL_LIMIT
               value: "$(FF_ANNUAL_LIMIT)"
+            - name: FF_PT_SERVICE_SKIP_FRESHDESK
+              value: "$(FF_PT_SERVICE_SKIP_FRESHDESK)"
             - name: CACHE_CLEAR_CLIENT_SECRET
               value: '$(CACHE_CLEAR_CLIENT_SECRET)'
             - name: CYPRESS_USER_PW_SECRET
               value: '$(CYPRESS_USER_PW_SECRET)'
             - name: CYPRESS_AUTH_CLIENT_SECRET
               value: '$(CYPRESS_AUTH_CLIENT_SECRET)'
+            - name: GC_ORGANISATIONS_BUCKET_NAME
+              value: "$(GC_ORGANISATIONS_BUCKET_NAME)"
           resources:
             requests:
               cpu: "200m"

@@ -1,4 +1,5 @@
 documentDownload:
+  # ENVIRONMENT SPECIFIC VARIABLES
   ALLOW_DEBUG_ROUTE: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
   AWS_REGION: "{{ requiredEnv "AWS_REGION" }}"
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"  
@@ -7,21 +8,35 @@ documentDownload:
   NEW_RELIC_APP_NAME: "notification-dd-api-{{ .Environment.Name }}"
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
   NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+  NEW_RELIC_IGNORE_STARTUP_ERRORS: "{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"
+  NEW_RELIC_ENVIRONMENT: "{{ .Environment.Name }}"
   NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
   DOCUMENTS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download"
   BACKEND_HOSTNAME: "api.document.{{ requiredEnv "BASE_DOMAIN" }}"
   SCAN_FILES_DOCUMENTS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download-scan-files"
   EXTRA_MIME_TYPES: "{{ .StateValues.EXTRA_MIME_TYPES }}"
+  # NON-ENVIRONMENT SPECIFIC VARIABLES
+  AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
+  HTTP_SCHEME: "https"
+  NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
+
+documentDownloadSecrets:
+  SECRET_KEY: MANIFEST_SECRET_KEY
+  NEW_RELIC_LICENSE_KEY: MANIFEST_NEW_RELIC_LICENSE_KEY
+  NEW_RELIC_ACCOUNT_ID: MANIFEST_NEW_RELIC_ACCOUNT_ID
+  NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
+  DEBUG_KEY: MANIFEST_DEBUG_KEY
+  AUTH_TOKENS: MANIFEST_DOCUMENT_DOWNLOAD_API_KEY
 
 image: 
-  tag:  {{ env "{{ .StateValues.DOCKER_TAG }}" | default "latest" }}
-
+  tag: "{{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG }}"
+  
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/document-download-eks-role
 
 targetGroupBinding:
-  enabled: {{ if eq .Environment.Name "production" }} false {{ else if eq .Environment.Name "staging" }} false {{ else }} false {{ end }}
+  enabled: true
   targetGroupARN: {{requiredEnv "DOCUMENT_DOWNLOAD_API_TARGET_GROUP_ARN"}}
 
 resources:

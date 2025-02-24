@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "helmfile/**"
+      - ".github/workflows/helmfile_staging_apply.yaml"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,6 +44,7 @@ jobs:
           install-kubectl: yes
           install-helm: yes        
           helmfile-version: "v0.151.0"
+          helm-s3-plugin-version: "v0.16.2"
 
       - name: Install OpenVPN
         run: |
@@ -74,7 +78,7 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging 
 
-      - name: Load EnvVars
+      - name: Load Context Variables
         run: |
             ./helmfile/getContext.sh -g
             
@@ -85,8 +89,37 @@ jobs:
           helmfile --environment staging sync
           popd
 
+      - name: Save ENV vars and secrets to AWS Param Store
+        run: |
+          # wait for the secrets and env vars to be available
+          sleep 20
+          source ./scripts/lambdaParamStoreUpdatesStaging.sh -g
+          echo DIFF=$DIFF
+          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
+
+      - name: Force api-lambda to redeploy on environment changes
+        if: env.ENV_DIFF != '0'
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: api-lambda
+
+      - name: Force heartbeat lambda to redeploy on environment changes
+        if: env.ENV_DIFF != '0'  
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: heartbeat
+
+      - name: Force system_status to redeploy on environment changes
+        if: env.ENV_DIFF != '0'
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: system_status
+
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
-          json="{'text':'<!here> Staging Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !'}"
+          json='{"text":"<!here> Staging Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

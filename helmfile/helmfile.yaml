@@ -32,9 +32,14 @@ repositories:
   url: https://prometheus-community.github.io/helm-charts
 - name: okgolove
   url: https://okgolove.github.io/helm-charts
+- name: fluent
+  url: https://fluent.github.io/helm-charts
+- name: jetstack
+  url: https://charts.jetstack.io
+
 
 releases:
-{{ if eq .Environment.Name "dev" }}
+
   - name: notify-documentation
     namespace: notification-canada-ca
     labels:
@@ -89,8 +94,6 @@ releases:
     chart: charts/notify-celery
     values:
     - ./overrides/notify/celery.yaml.gotmpl
-
-{{ end }}
 
   - name: k8s-event-logger
     namespace: amazon-cloudwatch
@@ -221,3 +224,113 @@ releases:
     version: 4.0.8
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
+
+    # SYSTEM AND OTHER STUFF
+  - name: ipv4-geolocate
+    namespace: notification-canada-ca
+    labels:
+      app: ipv4-geolocate
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/ipv4-geolocate
+    values:
+    - ./overrides/system/ipv4-geolocate.yaml.gotmpl
+
+{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
+
+  - name: fb-agent
+    namespace: amazon-cloudwatch
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: fb-agent
+      tier: system
+      category: tools
+      step: 1
+    chart: fluent/fluent-bit
+    version: 0.48.5
+    values:
+    - ./overrides/system/fluentbit-agent.yaml.gotmpl
+
+  - name: cert-manager
+    namespace: cert-manager
+    labels:
+      app: cert-manager
+      tier: backend
+      category: system
+      step: 2
+    chart: jetstack/cert-manager
+    values:
+    - ./overrides/system/cert-manager.yaml.gotmpl
+
+{{ end }}
+
+  # - name: metrics-server
+  #   namespace: kube-system
+  #   labels:
+  #     app: metrics-server
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/metrics-server
+  #   values:
+  #   - ./overrides/system/metrics-server.yaml.gotmpl
+
+  # - name: alb-ingress-controller
+  #   namespace: kube-system
+  #   labels:
+  #     app: alb-ingress-controller
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/alb-ingress-controller
+  #   values:
+  #   - ./overrides/system/alb-ingress-controller.yaml.gotmpl
+
+  # - name: aws-auth
+  #   namespace: kube-system
+  #   labels:
+  #     app: aws-auth
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/aws-auth
+  #   values:
+  #   - ./overrides/system/aws-auth.yaml.gotmpl
+
+
+
+  # - name: aws-cloudwatch-agent
+  #   namespace: amazon-cloudwatch
+  #   labels:
+  #     app: aws-cloudwatch-agent
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/aws-cloudwatch-agent
+  #   values:
+  #   - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
+
+  # - name: karpenter   
+  #   namespace: karpenter
+  #   labels:
+  #     app: karpenter
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/karpenter
+  #   values:
+  #   - ./overrides/system/karpenter.yaml.gotmpl
+
+  # - name: fluentbit
+  #   namespace: amazon-cloudwatch
+  #   labels:
+  #     app: fluentbit
+  #     tier: backend
+  #     category: system
+  #     step: 10
+  #   chart: charts/fluentbit
+  #   values:
+  #   - ./overrides/system/fluentbit.yaml.gotmpl
+

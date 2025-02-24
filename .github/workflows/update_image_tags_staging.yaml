@@ -1,53 +1,41 @@
-name: "Tag and release to production"
+name: Update Docker Image for Manifests in Staging
 
-on: 
-  workflow_dispatch:
-  pull_request:
-    types: [closed]
+on:
+  repository_dispatch:
+    types:
+      - update-docker-image
 
 jobs:
-  tag-release:
+  update-image:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.base.ref == 'main' && github.event.pull_request.merged && (contains(github.event.pull_request.title, '[AUTO-PR]') || contains(github.event.pull_request.title, '[MANIFEST]'))
-    
     steps:
 
-      # Generate a bot token that will be used for all workflow actions.
-      # This is required as the default repo GITHUB_TOKEN does not trigger new workflow runs.
       - name: Obtain a Notify PR Bot GitHub App Installation Access Token
         run: |
           TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.PR_BOT_GITHUB_TOKEN }})"
           echo "::add-mask::$TOKEN"
           echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
 
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@d745f2e74aaf1ee82e747b181f7a0967978abee0 # v6.0
-        with:
-          github_token: ${{ env.GITHUB_TOKEN }}
-          release_branches: main
-
-      - name: Checkout main branch
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           token: ${{ env.GITHUB_TOKEN }}
+          ref: main
 
-      - name: Get current Prod Version
-        run: |
-          CURRENT_VERSION=`cat VERSION`
-          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
-
-      - name: Update version file
-        env:
-          NEW_VERSION: ${{ steps.tag_version.outputs.new_tag }}
-          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
-        run: |
-          echo $NEW_VERSION > VERSION
-
-      - name: setup git config
+      - name: Setup git config
         run: |
           git config user.name "Notify PR Bot"
           git config user.email "action@github.com"
+
+      # ADMIN_DOCKER_TAG
+      # API_DOCKER_TAG
+      # DOCUMENT_DOWNLOAD_DOCKER_TAG
+      # DOCUMENTATION_DOCKER_TAG
+      - name: Update the docker tag in staging.env
+        run: |
+          echo "Updating docker tag in staging.env"
+          sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/staging.env
+          cat helmfile/overrides/staging.env
 
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
@@ -66,15 +54,12 @@ jobs:
             null 
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-          
-      - name: commit
-        env:
-          NEW_VERSION: ${{ steps.tag_version.outputs.new_tag }}
-          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
+
+      - name: Commit
         run: |
-          git add VERSION
-          git commit -m "New release: ${CURRENT_VERSION} -> ${NEW_VERSION}"
-          git push origin main
+          git add helmfile/overrides/staging.env
+          git commit -m "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
+          git push
 
       - name: Branch protection ON
         if: always()
@@ -96,3 +81,4 @@ jobs:
             null 
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+
