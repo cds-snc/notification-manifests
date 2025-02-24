@@ -1,6 +1,5 @@
 celeryCommon:
   # ENVIRONMENT SPECIFIC VARIABLES
-  env: "{{ .Environment.Name }}"
   ADMIN_BASE_URL: "https://{{ requiredEnv "BASE_DOMAIN" }}"
   ALLOW_HTML_SERVICE_IDS: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
   API_HOST_NAME: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
@@ -50,6 +49,7 @@ celerySecrets:
   NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
   REDIS_URL: MANIFEST_REDIS_URL
   REDIS_PUBLISH_URL: MANIFEST_REDIS_PUBLISH_URL
+  # POSTGRES_HOST is used by the init script to verify the database is up
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
 
 image: 
