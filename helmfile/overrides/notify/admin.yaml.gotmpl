@@ -1,7 +1,6 @@
 admin:
   NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
   AWS_REGION: "{{ requiredEnv "AWS_REGION" }}"
-  BASE_DOMAIN: "{{ requiredEnv "BASE_DOMAIN"}}"
   ALLOW_HTML_SERVICE_IDS: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
   BULK_SEND_AWS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-bulk-send"
@@ -16,7 +15,6 @@ admin:
   HC_EN_SERVICE_ID: "{{ .StateValues.HC_EN_SERVICE_ID }}"
   HC_FR_SERVICE_ID: "{{ .StateValues.HC_FR_SERVICE_ID }}"
   REDIS_ENABLED: "{{ .StateValues.REDIS_ENABLED }}"
-  SENTRY_URL: "{{ .StateValues.SENTRY_URL }}"
   SHOW_STYLE_GUIDE: "{{ .StateValues.SHOW_STYLEGUIDE }}"
   NEW_RELIC_APP_NAME: "notification-admin-{{ .Environment.Name }}"
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
