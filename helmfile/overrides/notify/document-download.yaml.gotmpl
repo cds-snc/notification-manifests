@@ -1,5 +1,5 @@
 documentDownload:
-  ALLOW_DEBUG_ROUTE: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
+  # ENVIRONMENT SPECIFIC VARIABLES
   AWS_REGION: "{{ requiredEnv "AWS_REGION" }}"
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"  
   AWS_XRAY_SDK_ENABLED: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
@@ -14,6 +14,17 @@ documentDownload:
   BACKEND_HOSTNAME: "api.document.{{ requiredEnv "BASE_DOMAIN" }}"
   SCAN_FILES_DOCUMENTS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download-scan-files"
   EXTRA_MIME_TYPES: "{{ .StateValues.EXTRA_MIME_TYPES }}"
+  # NON-ENVIRONMENT SPECIFIC VARIABLES
+  AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
+  HTTP_SCHEME: "https"
+  NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
+
+documentDownloadSecrets:
+  SECRET_KEY: MANIFEST_SECRET_KEY
+  NEW_RELIC_LICENSE_KEY: MANIFEST_NEW_RELIC_LICENSE_KEY
+  NEW_RELIC_ACCOUNT_ID: MANIFEST_NEW_RELIC_ACCOUNT_ID
+  NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
+  AUTH_TOKENS: MANIFEST_DOCUMENT_DOWNLOAD_API_KEY
 
 image: 
   tag: "{{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG }}"
