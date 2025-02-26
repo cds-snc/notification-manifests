@@ -251,8 +251,6 @@ releases:
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
 
-{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
-
   - name: cert-manager
     namespace: cert-manager
     labels:
@@ -264,7 +262,6 @@ releases:
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
-{{ end }}
 
   # - name: metrics-server
   #   namespace: kube-system
