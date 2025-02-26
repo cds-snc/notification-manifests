@@ -103,7 +103,7 @@ releases:
       category: monitoring
       step: 2
     chart: oci://ghcr.io/deliveryhero/helm-charts/k8s-event-logger
-    version: 1.1.8
+    version: 1.1.9
 
   - name: karpenter-crd
     namespace: karpenter
@@ -158,7 +158,7 @@ releases:
       category: system
       step: 1
     chart: secrets-store-csi-driver/secrets-store-csi-driver
-    version: 1.4.1
+    version: 1.4.8
     values:
     - ./overrides/system/secrets-csi.yaml.gotmpl
 
@@ -170,7 +170,7 @@ releases:
       category: system
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 0.3.5
+    version: 0.3.11
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
@@ -194,7 +194,7 @@ releases:
       category: tools
       step: 3
     chart: stakater/application
-    version: 2.3.2
+    version: 2.3.4
     values:
     - ./overrides/tools/blazer.yaml.gotmpl
 
@@ -247,7 +247,7 @@ releases:
       category: tools
       step: 1
     chart: fluent/fluent-bit
-    version: 0.48.5
+    version: 0.48.6
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
 
