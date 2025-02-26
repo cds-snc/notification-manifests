@@ -116,3 +116,5 @@ env-keys-staging:
 env-keys-dev:
 	@cat helmfile/overrides/dev.env | xargs -0 -L1 | grep ":" | cut -f1 -d":" | sort | tr "\n" "|"
 	
+env-keys:
+	@cat $(ENV) | xargs -0 -L1 | grep ":" | cut -f1 -d":" | sort | tr "\n" "|"

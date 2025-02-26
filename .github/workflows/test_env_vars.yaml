@@ -17,41 +17,40 @@ defaults:
     shell: bash
 
 jobs:
-  test_env_vars:
+  list-env-var-files:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: echo "::set-output name=matrix::$(ls helmfile/overrides/*.env | jq -R -s -c 'split("\n")[:-1]')"
+
+  test_env_vars:
+    needs: list-env-var-files
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env-file: ${{ fromJson(needs.list-env-var-files.outputs.matrix) }}
     steps:
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
       - name: Get production env var keys
         run: |
-          ENV_KEYS_PRODUCTION="$(make env-keys-production)"
+          ENV_KEYS_PRODUCTION="$(make env-keys ENV=helmfile/overrides/production.env)"
           echo "ENV_KEYS_PRODUCTION=$ENV_KEYS_PRODUCTION" >> $GITHUB_ENV
 
-      - name: Get staging env var keys
+      - name: Get target env var keys
         run: |
-          ENV_KEYS_STAGING="$(make env-keys-staging)"
-          echo "ENV_KEYS_STAGING=$ENV_KEYS_STAGING" >> $GITHUB_ENV
+          ENV_KEYS="$(make env-keys ENV=${{ matrix.env-file }})"
+          echo "ENV_KEYS=$ENV_KEYS" >> $GITHUB_ENV
         
-      - name: Get dev env var keys
-        run: |
-          ENV_KEYS_DEV="$(make env-keys-dev)"
-          echo "ENV_KEYS_DEV=$ENV_KEYS_DEV" >> $GITHUB_ENV
-
-      - name: Test dev and production env vars
+      - name: Test env vars
         uses: ./.github/actions/diff-env-vars
         if: always()
         with:
-          env1-name: DEV
-          env1-vars: ${{ env.ENV_KEYS_DEV }}
-          env2-name: PRODUCTION
-          env2-vars: ${{ env.ENV_KEYS_PRODUCTION }}
-
-      - name: Test staging and production env vars
-        uses: ./.github/actions/diff-env-vars
-        if: always()
-        with:
-          env1-name: STAGING
-          env1-vars: ${{ env.ENV_KEYS_STAGING }}
-          env2-name: PRODUCTION
+          env1-name: ${{ matrix.env-file }}
+          env1-vars: ${{ env.ENV_KEYS }}
+          env2-name: helmfile/overrides/production.env
           env2-vars: ${{ env.ENV_KEYS_PRODUCTION }}
