@@ -104,5 +104,5 @@ staging-clear:
 staging-debug:
 	kubectl kustomize env/staging
 
-env-keys:
+env-vars:
 	@cat $(ENV_FILE) | xargs -0 -L1 | grep ":" | cut -f1 -d":" | sort | tr "\n" "|"
