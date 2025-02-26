@@ -237,8 +237,6 @@ releases:
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
-{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
-
   - name: fb-agent
     namespace: amazon-cloudwatch
     disableValidationOnInstall: true
@@ -252,6 +250,8 @@ releases:
     version: 0.48.5
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
+
+{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
   - name: cert-manager
     namespace: cert-manager

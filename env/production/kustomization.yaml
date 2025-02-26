@@ -5,7 +5,6 @@ bases:
 resources:
   - cwagent.yaml
   - cwagent-configmap.yaml
-  - fluentbit.yaml
   - aws-auth-configmap.yaml
   - cert-manager.yaml
 
