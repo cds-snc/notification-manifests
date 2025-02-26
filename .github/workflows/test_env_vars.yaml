@@ -1,5 +1,8 @@
 name: "Test environment variables are in sync"
 
+env:
+  PRODUCTION_ENV_VAR_FILE: helmfile/overrides/production.env
+
 on:
   pull_request:
     branches:
@@ -12,6 +15,7 @@ on:
     # paths:
     #   - "VERSION"
 
+  
 defaults:
   run:
     shell: bash
@@ -24,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: set-matrix
-        run: echo "::set-output name=matrix::$(ls helmfile/overrides/*.env | jq -R -s -c 'split("\n")[:-1]')"
+        run: echo "::set-output name=matrix::$(ls helmfile/overrides/*.env | grep -v $PRODUCTION_ENV_VAR_FILE | jq -R -s -c 'split("\n")[:-1]')"
 
   test_env_vars:
     needs: list-env-var-files
@@ -38,19 +42,19 @@ jobs:
 
       - name: Get production env var keys
         run: |
-          ENV_KEYS_PRODUCTION="$(make env-keys ENV=helmfile/overrides/production.env)"
+          ENV_KEYS_PRODUCTION="$(make env-keys ENV_FILE=$PRODUCTION_ENV_VAR_FILE)"
           echo "ENV_KEYS_PRODUCTION=$ENV_KEYS_PRODUCTION" >> $GITHUB_ENV
 
       - name: Get target env var keys
         run: |
-          ENV_KEYS="$(make env-keys ENV=${{ matrix.env-file }})"
+          ENV_KEYS="$(make env-keys ENV_FILE=${{ matrix.env-file }})"
           echo "ENV_KEYS=$ENV_KEYS" >> $GITHUB_ENV
         
-      - name: Test env vars
+      - name: Test env vars against production
         uses: ./.github/actions/diff-env-vars
         if: always()
         with:
-          env1-name: ${{ matrix.env-file }}
-          env1-vars: ${{ env.ENV_KEYS }}
-          env2-name: helmfile/overrides/production.env
-          env2-vars: ${{ env.ENV_KEYS_PRODUCTION }}
+          env1-name: ${{ env.PRODUCTION_ENV_VAR_FILE }}
+          env1-vars: ${{ env.ENV_KEYS_PRODUCTION }}
+          env2-name: ${{ matrix.env-file }}
+          env2-vars: ${{ env.ENV_KEYS }}
