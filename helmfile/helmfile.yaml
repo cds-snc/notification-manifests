@@ -259,6 +259,7 @@ releases:
       category: system
       step: 2
     chart: jetstack/cert-manager
+    version: v1.17.0
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
