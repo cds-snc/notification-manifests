@@ -71,17 +71,18 @@ config:
         storage.sync              normal
         storage.checksum          off
         storage.backlog.mem_limit 5M
-        
+
     @INCLUDE celery-log.conf
     @INCLUDE notify-log.conf
     @INCLUDE dataplane-log.conf
     @INCLUDE host-log.conf
 
+
   inputs: |
     [INPUT]
         Name                tail
         Tag                 application.*
-        Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/celery*
+        Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/notify-celery*
         Path                /var/log/containers/*.log
         multiline.parser    docker, cri
         DB                  /var/fluent-bit/state/flb_container.db
@@ -145,7 +146,7 @@ config:
       [INPUT]
           Name                tail
           Tag                 application.*
-          Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/celery*
+          Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/notify-celery*
           Path                /var/log/containers/*.log
           multiline.parser    docker, cri
           DB                  /var/fluent-bit/state/flb_container.db
@@ -196,9 +197,9 @@ config:
     celery-log.conf: |
       [INPUT]
           Name                tail
-          Tag                 celery.*
-          Path                /var/log/containers/celery*
-          multiline.parser    docker, cri
+          Tag                 notify-celery.*
+          multiline.parser    multiline-notify-python
+          Path                /var/log/containers/notify-celery*
           DB                  /var/fluent-bit/state/celery.db
           Mem_Buf_Limit       150MB
           Skip_Long_Lines     Off
@@ -209,7 +210,7 @@ config:
 
       [FILTER]
           Name                  kubernetes
-          Match                 celery.*
+          Match                 notify-celery.*
           Kube_URL              https://kubernetes.default.svc:443
           Kube_Tag_Prefix       celery.var.log.containers.
           Merge_Log             On
@@ -222,16 +223,9 @@ config:
           Kubelet_Port          10250
           Buffer_Size           0
 
-      [FILTER]
-          name                  multiline
-          match                 celery.*
-          multiline.key_content log
-          multiline.parser      multiline-notify-python
-          emitter_mem_buf_limit 150MB
-
       [OUTPUT]
           Name cloudwatch_logs
-          Match celery.*
+          Match notify-celery.*
           region ${AWS_REGION} 
           log_stream_prefix fallback-stream
           log_group_name /aws/containerinsights/${CLUSTER_NAME}/application
@@ -361,8 +355,8 @@ config:
           flush_timeout 1000
           # rules |   state name  | regex pattern         | next state
           # ------|---------------|-----------------------------------
-          rule      "start_state"   "/^\[.*\].*/"                "cont"
-          rule      "cont"          "/^[^\[].*/"           "cont"
+          rule      "start_state"   "/^\d{2,4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{1,2}:\d{1,2}.\d{1,9}Z\s(stderr|stdout)\sF\s\[.*/"          "cont"
+          rule      "cont"          "/^\d{2,4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{1,2}:\d{1,2}.\d{1,9}Z\s(stderr|stdout)\sF\s(?![\[]).*/"           "cont"
 
 # The config volume is mounted by default, either to the existingConfigMap value, or the default of "fluent-bit.fullname"
 volumeMounts:
