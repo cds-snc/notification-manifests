@@ -237,8 +237,6 @@ releases:
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
-{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
-
   - name: fb-agent
     namespace: amazon-cloudwatch
     disableValidationOnInstall: true
@@ -261,10 +259,10 @@ releases:
       category: system
       step: 2
     chart: jetstack/cert-manager
+    version: v1.17.0
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
-{{ end }}
 
   # - name: metrics-server
   #   namespace: kube-system
