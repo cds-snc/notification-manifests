@@ -87,7 +87,8 @@ jobs:
           if (( $LENGTH < 65000 )); then
               PAYLOAD=$(cat helm_diff.txt)
           else
-              PAYLOAD="Helmfile diff too large to display"
+              PAYLOAD="Helmfile diff too large to display. Check the github actions logs for more details."
+              cat helm_diff.txt
           fi
 
           echo 'var<<EOF' >> $GITHUB_OUTPUT
