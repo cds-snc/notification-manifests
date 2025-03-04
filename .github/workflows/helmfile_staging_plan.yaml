@@ -84,7 +84,9 @@ jobs:
               cat helm_diff.txt
           fi
 
-          echo "diff=$PAYLOAD" >> $GITHUB_OUTPUT
+          echo 'diff<<EOF' >> $GITHUB_OUTPUT
+          echo $PAYLOAD >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
           popd
 
       - name: Staging Helmfile Diff Comment
