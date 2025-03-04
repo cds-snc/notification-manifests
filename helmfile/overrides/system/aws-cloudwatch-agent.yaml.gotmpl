@@ -5,6 +5,7 @@
 replicaCount: 1
 ## Provide a name in place of cloudwatchagent-operator.
 ##
+
 nameOverride: ""
 ## Provide the ClusterName (this is a required parameter)
 clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
@@ -12,7 +13,7 @@ clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
 region: {{ requiredEnv "AWS_REGION" }}
 
 containerLogs:
-  enabled: true
+  enabled: false
 
 manager:
   name:

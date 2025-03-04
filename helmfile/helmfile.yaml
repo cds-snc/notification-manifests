@@ -269,6 +269,8 @@ releases:
 
   - name: aws-cloudwatch-agent
     namespace: amazon-cloudwatch
+    disableValidationOnInstall: true
+    disableValidation: true 
     labels:
       app: aws-cloudwatch-agent
       tier: backend
