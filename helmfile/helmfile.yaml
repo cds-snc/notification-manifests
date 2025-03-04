@@ -37,7 +37,6 @@ repositories:
 - name: jetstack
   url: https://charts.jetstack.io
 
-
 releases:
 
   - name: notify-documentation
@@ -262,7 +261,6 @@ releases:
     version: v1.17.0
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
-
 
   # - name: metrics-server
   #   namespace: kube-system

@@ -1,6 +1,0 @@
-resources:
-  - document-download-api-deployment.yaml
-  - document-download-api-hpa.yaml
-  - document-download-api-service.yaml
-  - document-download-api-pdb.yaml
-  
