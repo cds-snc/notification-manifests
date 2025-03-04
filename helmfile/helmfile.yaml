@@ -36,9 +36,6 @@ repositories:
   url: https://fluent.github.io/helm-charts
 - name: jetstack
   url: https://charts.jetstack.io
-- name: aws-observability
-  url: https://aws-observability.github.io/helm-charts
-
 
 releases:
 
@@ -264,23 +261,6 @@ releases:
     version: v1.17.0
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
-
-{{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
-
-  - name: aws-cloudwatch-agent
-    namespace: amazon-cloudwatch
-    labels:
-      app: aws-cloudwatch-agent
-      tier: backend
-      category: system
-      step: 1
-    chart: aws-observability/amazon-cloudwatch-observability
-    version: 3.2.0
-    values:
-    - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
-
-{{- end }}
-
 
   # - name: metrics-server
   #   namespace: kube-system
