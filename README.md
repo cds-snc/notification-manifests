@@ -1,4 +1,4 @@
-# notification-manifests
+# notification-manifests 
 
 Kubernetes manifest files for [notification.canada.ca](https://notification.canada.ca).
 
