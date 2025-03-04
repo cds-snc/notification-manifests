@@ -95,6 +95,6 @@ jobs:
           message-id: staging_helmfile_diff
           message: |
             # STAGING HELMFILE DIFF:  
-            ${{join(steps.helmfile_diff.outputs.diff, '\n')}}
+            "${{join(steps.helmfile_diff.outputs.diff, '\n')}}"
 
             
