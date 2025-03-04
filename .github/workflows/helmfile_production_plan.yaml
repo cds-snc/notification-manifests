@@ -92,7 +92,7 @@ jobs:
           fi
 
           echo 'diff<<EOF' >> $GITHUB_OUTPUT
-          echo $PAYLOAD >> $GITHUB_OUTPUT
+          echo "$PAYLOAD" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
           popd
 
@@ -102,4 +102,6 @@ jobs:
           message-id: prod_helmfile_diff
           message: |
             # PRODUCTION HELMFILE DIFF:  
+            ```shell
             ${{join(steps.helmfile_diff.outputs.diff, '\n')}}
+            ```
