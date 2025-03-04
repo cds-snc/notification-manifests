@@ -84,9 +84,11 @@ jobs:
               cat helm_diff.txt
           fi
 
-          echo 'var<<EOF' >> $GITHUB_OUTPUT
-          echo $PAYLOAD >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
+          echo 'var<<EOF' >> results.txt
+          echo $PAYLOAD >> results.txt
+          echo 'EOF' >> results.txt
+
+          echo "diff=$(cat results.txt)" >> $GITHUB_OUTPUT
           popd
 
       - name: Staging Helmfile Diff Comment
@@ -95,6 +97,6 @@ jobs:
           message-id: staging_helmfile_diff
           message: |
             # STAGING HELMFILE DIFF:  
-            ${{steps.helmfile_diff.outputs.*}}
+            ${{steps.helmfile_diff.outputs.diff}}
 
             
