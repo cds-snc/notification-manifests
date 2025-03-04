@@ -91,11 +91,10 @@ jobs:
               cat helm_diff.txt
           fi
 
-          echo 'var<<EOF' >> $GITHUB_OUTPUT
+          echo 'diff<<EOF' >> $GITHUB_OUTPUT
           echo $PAYLOAD >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
           popd
-    
 
       - name: Production Helmfile Diff Comment
         uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2.8.2
@@ -103,6 +102,4 @@ jobs:
           message-id: prod_helmfile_diff
           message: |
             # PRODUCTION HELMFILE DIFF:  
-            ```shell
-            ${{join(steps.helmfile_diff.outputs.*, '\n')}}
-            ```
+            ${{join(steps.helmfile_diff.outputs.diff, '\n')}}
