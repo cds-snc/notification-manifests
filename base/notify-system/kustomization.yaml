@@ -1,6 +1,0 @@
-resources:
-  - namespace.yaml
-  - alb-ingress-controller.yaml
-  - metrics-server.yaml
-  - priority-classes.yaml
-  
