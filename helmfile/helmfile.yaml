@@ -36,9 +36,6 @@ repositories:
   url: https://fluent.github.io/helm-charts
 - name: jetstack
   url: https://charts.jetstack.io
-- name: aws-observability
-  url: https://aws-observability.github.io/helm-charts
-
 
 releases:
 
