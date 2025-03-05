@@ -276,8 +276,7 @@ releases:
       tier: backend
       category: system
       step: 1
-    chart: aws-observability/amazon-cloudwatch-observability
-    version: 3.2.0
+    chart: charts/aws-cloudwatch
     values:
     - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
 
