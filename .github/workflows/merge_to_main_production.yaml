@@ -87,10 +87,6 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster
 
-      - name: Apply changes
-        run: |
-          ./scripts/applyKube.sh env/production --kubeconfig=/home/runner/.kube/config
-
       - name: Add deployment to New Relic
         run: |
           for application_id in 283469061 283468826 283468685; do
