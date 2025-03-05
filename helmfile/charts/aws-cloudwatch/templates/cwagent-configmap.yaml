@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cwagentconfig
+data:
+  # Configuration is in Json format. No matter what configure change you make,
+  # please keep the Json blob valid.
+  cwagentconfig.json: |
+    {	
+      "agent":{	
+          "region":"ca-central-1"	
+      },	
+      "logs":{	
+          "metrics_collected":{	
+            "kubernetes":{	
+                "cluster_name":"{{ .Values.clusterName }}",	
+                "metrics_collection_interval":60	
+            },	
+            "emf": { }	
+          },	
+          "force_flush_interval":5	
+      },	
+      "metrics":{	
+          "namespace": "NotificationCanadaCa",	
+          "metrics_collected":{	
+            "statsd":{	
+                "service_address":":8125",	
+                "metrics_collection_interval":15,	
+                "metrics_aggregation_interval":60	
+            }	
+          }	
+      }	
+    }
