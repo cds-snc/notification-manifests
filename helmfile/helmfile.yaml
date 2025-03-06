@@ -37,7 +37,6 @@ repositories:
 - name: jetstack
   url: https://charts.jetstack.io
 
-
 releases:
 
   - name: notify-documentation
@@ -263,72 +262,19 @@ releases:
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
+{{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
-  # - name: metrics-server
-  #   namespace: kube-system
-  #   labels:
-  #     app: metrics-server
-  #     tier: backend
-  #     category: system
-  #     step: 10
-  #   chart: charts/metrics-server
-  #   values:
-  #   - ./overrides/system/metrics-server.yaml.gotmpl
+  - name: aws-cloudwatch-agent
+    namespace: amazon-cloudwatch
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: aws-cloudwatch-agent
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/aws-cloudwatch
+    values:
+    - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
 
-  # - name: alb-ingress-controller
-  #   namespace: kube-system
-  #   labels:
-  #     app: alb-ingress-controller
-  #     tier: backend
-  #     category: system
-  #     step: 10
-  #   chart: charts/alb-ingress-controller
-  #   values:
-  #   - ./overrides/system/alb-ingress-controller.yaml.gotmpl
-
-  # - name: aws-auth
-  #   namespace: kube-system
-  #   labels:
-  #     app: aws-auth
-  #     tier: backend
-  #     category: system
-  #     step: 10
-  #   chart: charts/aws-auth
-  #   values:
-  #   - ./overrides/system/aws-auth.yaml.gotmpl
-
-
-
-  # - name: aws-cloudwatch-agent
-  #   namespace: amazon-cloudwatch
-  #   labels:
-  #     app: aws-cloudwatch-agent
-  #     tier: backend
-  #     category: system
-  #     step: 10
-  #   chart: charts/aws-cloudwatch-agent
-  #   values:
-  #   - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
-
-  # - name: karpenter   
-  #   namespace: karpenter
-  #   labels:
-  #     app: karpenter
-  #     tier: backend
-  #     category: system
-  #     step: 10
-  #   chart: charts/karpenter
-  #   values:
-  #   - ./overrides/system/karpenter.yaml.gotmpl
-
-  # - name: fluentbit
-  #   namespace: amazon-cloudwatch
-  #   labels:
-  #     app: fluentbit
-  #     tier: backend
-  #     category: system
-  #     step: 10
-  #   chart: charts/fluentbit
-  #   values:
-  #   - ./overrides/system/fluentbit.yaml.gotmpl
-
+{{- end }}
