@@ -70,19 +70,32 @@ jobs:
       - name: Load EnvVars
         run: |
             ./helmfile/getContext.sh -g
+
       - name: Helmfile Diff
         id: helmfile_diff
         run: |
           pushd helmfile
-          echo 'var<<EOF' >> $GITHUB_OUTPUT
-          helmfile --environment staging diff >> $GITHUB_OUTPUT
+          helmfile --environment staging diff >> helm_diff.txt
+          LENGTH=$(wc -m helm_diff.txt | awk '{print $1}')
+          if (( $LENGTH < 65000 )); then
+              PAYLOAD=$(cat helm_diff.txt)
+          else
+              PAYLOAD="Helmfile diff too large to display. Check the github actions logs for more details."
+              cat helm_diff.txt
+          fi
+
+          echo 'diff<<EOF' >> $GITHUB_OUTPUT
+          echo "$PAYLOAD" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
           popd
-      - name: Helmfile Diff Comment
+
+      - name: Staging Helmfile Diff Comment
         uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2.8.2
         with:
-          message: | 
-            ```shell 
-            ${{join(steps.helmfile_diff.outputs.*, '\n')}}
+          message-id: staging_helmfile_diff
+          message: |
+            # STAGING HELMFILE DIFF:  
+            ```shell
+            ${{join(steps.helmfile_diff.outputs.diff, '\n')}}
             ```
             

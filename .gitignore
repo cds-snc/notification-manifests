@@ -12,3 +12,5 @@
 !env/dev/.env.zip.enc.aws
 !env/production/.env.zip.enc.aws
 !env/staging/.env.zip.enc.aws
+
+node_modules/

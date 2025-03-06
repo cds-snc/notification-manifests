@@ -3,10 +3,6 @@ name: Production - Helmfile Diff
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
-    paths:
-      - "VERSION"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -86,13 +82,26 @@ jobs:
         id: helmfile_diff
         run: |
           pushd helmfile
-          echo 'var<<EOF' >> $GITHUB_OUTPUT
-          helmfile --environment production diff >> $GITHUB_OUTPUT
+          helmfile --environment production diff >> helm_diff.txt
+          LENGTH=$(wc -m helm_diff.txt | awk '{print $1}')
+          if (( $LENGTH < 65000 )); then
+              PAYLOAD=$(cat helm_diff.txt)
+          else
+              PAYLOAD="Helmfile diff too large to display. Check the github actions logs for more details."
+              cat helm_diff.txt
+          fi
+
+          echo 'diff<<EOF' >> $GITHUB_OUTPUT
+          echo "$PAYLOAD" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
           popd
 
-      - name: Helmfile Diff Comment
+      - name: Production Helmfile Diff Comment
         uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc # v2.8.2
         with:
-          message: | 
-            ${{join(steps.helmfile_diff.outputs.*, '\n')}}
+          message-id: prod_helmfile_diff
+          message: |
+            # PRODUCTION HELMFILE DIFF:  
+            ```shell
+            ${{join(steps.helmfile_diff.outputs.diff, '\n')}}
+            ```
