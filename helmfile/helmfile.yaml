@@ -264,7 +264,7 @@ releases:
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
-{{ if eq .Environment.Name "dev" }}
+{{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
   - name: target-group-crds
     disableValidationOnInstall: true
@@ -289,7 +289,6 @@ releases:
     values:
     - ./overrides/system/aws-lb-controller.yaml.gotmpl
  
-
   - name: aws-cloudwatch-agent
     namespace: amazon-cloudwatch
     disableValidationOnInstall: true
