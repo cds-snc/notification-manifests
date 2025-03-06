@@ -36,6 +36,8 @@ repositories:
   url: https://fluent.github.io/helm-charts
 - name: jetstack
   url: https://charts.jetstack.io
+- name: eks
+  url: https://aws.github.io/eks-charts
 
 releases:
 
@@ -264,6 +266,29 @@ releases:
 
 {{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
+  - name: target-group-crds
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: crds
+      tier: backend
+      category: system
+      step: 0
+    chart: charts/crds
+
+  - name: aws-lb-controller
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: aws-lb-controller
+      tier: backend
+      category: system
+      step: 3
+    chart: eks/aws-load-balancer-controller
+    values:
+    - ./overrides/system/aws-lb-controller.yaml.gotmpl
+ 
   - name: aws-cloudwatch-agent
     namespace: amazon-cloudwatch
     disableValidationOnInstall: true
