@@ -1,0 +1,58 @@
+# Execute database migrations using: 
+# kubectl create job --from=cronjob/notify-db-upgrade notify-database-upgrade-1
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: notify-db-upgrade-{{ .Release.Revision }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: notify-db-upgrade
+    tier: database
+    release: {{ .Release.Name }}
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 100
+  template:
+    metadata:
+      labels:
+        app: notify-db-upgrade
+        tier: database
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
+      containers:
+        - name: db-upgrade
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["poetry"]
+          args: ["run", "flask", "db", "upgrade"]
+          env:
+            # Common ENV Variables
+            {{- range $key, $val := .Values.api }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            # Secret ENV Variables
+            {{- range $key, $val := .Values.apiSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: {{ $key }}
+            {{- end }}
+            # Node-specific variables
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
+      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

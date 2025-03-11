@@ -41,6 +41,16 @@ repositories:
 
 releases:
 
+  - name: notify-database
+    namespace: notification-canada-ca
+    labels:
+      app: notify-database
+      tier: backend
+      category: deliverable
+    chart: charts/notify-database
+    values:
+    - ./overrides/notify/api.yaml.gotmpl
+
   - name: notify-documentation
     namespace: notification-canada-ca
     labels:
