@@ -70,6 +70,8 @@ getValue "API_TARGET_GROUP_ARN"
 getValue "AWS_REGION"
 getValue "BASE_DOMAIN"
 getValue "EKS_KARPENTER_AMI_ID"
+getValue "PINPOINT_DEFAULT_POOL_ID"
+getValue "PINPOINT_SHORT_CODE_POOL_ID"
 
 if [ "$LOAD_IMAGE_VERSIONS" = true ];
 then
