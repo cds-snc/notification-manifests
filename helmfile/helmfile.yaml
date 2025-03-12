@@ -38,6 +38,8 @@ repositories:
   url: https://charts.jetstack.io
 - name: eks
   url: https://aws.github.io/eks-charts
+- name: metrics-server
+  url: https://kubernetes-sigs.github.io/metrics-server/
 
 releases:
 
@@ -301,5 +303,15 @@ releases:
     chart: charts/aws-cloudwatch
     values:
     - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
+
+  - name: metrics-server
+    namespace: kube-system
+    labels:
+      app: metrics-server
+      tier: backend
+      category: system
+      step: 1
+    chart: metrics-server/metrics-server
+    version: 3.12.2
 
 {{- end }}
