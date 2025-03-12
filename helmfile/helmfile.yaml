@@ -38,6 +38,8 @@ repositories:
   url: https://charts.jetstack.io
 - name: eks
   url: https://aws.github.io/eks-charts
+- name: metrics-server
+  url: https://kubernetes-sigs.github.io/metrics-server/
 
 releases:
 
@@ -264,6 +266,19 @@ releases:
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
+  - name: aws-cloudwatch-agent
+    namespace: amazon-cloudwatch
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: aws-cloudwatch-agent
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/aws-cloudwatch
+    values:
+    - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
+
 {{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
   - name: target-group-crds
@@ -289,17 +304,14 @@ releases:
     values:
     - ./overrides/system/aws-lb-controller.yaml.gotmpl
  
-  - name: aws-cloudwatch-agent
-    namespace: amazon-cloudwatch
-    disableValidationOnInstall: true
-    disableValidation: true 
+  - name: metrics-server
+    namespace: kube-system
     labels:
-      app: aws-cloudwatch-agent
+      app: metrics-server
       tier: backend
       category: system
       step: 1
-    chart: charts/aws-cloudwatch
-    values:
-    - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
+    chart: metrics-server/metrics-server
+    version: 3.12.2
 
 {{- end }}
