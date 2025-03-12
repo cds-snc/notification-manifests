@@ -2,15 +2,15 @@ name: Database Upgrade
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - db-upgrade-github-action
+#   push:
+#       branches:
+#         - db-upgrade-github-action
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
-  DEV_AWS_ACCOUNT: ${{ secrets.DEV_AWS_ACCOUNT_ID }}
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV }}
+  STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
 
 jobs:
   helmfile-apply:
@@ -25,8 +25,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
         id: awsconfig
         with:
-          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
       - name: Checkout
@@ -63,17 +63,17 @@ jobs:
 
       - name: Retrieve VPN Config
         run: |
-          scripts/createVPNConfig.sh dev 2> /dev/null  
+          scripts/createVPNConfig.sh staging 2> /dev/null  
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
         with:
-          config_file: /var/tmp/dev.ovpn
+          config_file: /var/tmp/staging.ovpn
           echo_config: false            
 
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev 
+          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging 
 
       - name: Load Context Variables
         run: |
@@ -83,7 +83,7 @@ jobs:
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment dev -l app=notify-database sync
+          helmfile --environment staging -l app=notify-database sync
           popd
           
       - name: Run Database Upgrade Job

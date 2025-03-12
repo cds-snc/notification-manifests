@@ -1,42 +1,42 @@
-# apiVersion: batch/v1
-# kind: Job
-# metadata:
-#   name: notify-db-init-{{ .Release.Revision }}
-#   namespace: {{ .Release.Namespace }}
-#   labels:
-#     app: notify-db-init
-#     tier: database
-#     release: {{ .Release.Name }}
-# spec:
-#   backoffLimit: 3
-#   ttlSecondsAfterFinished: 100
-#   template:
-#     metadata:
-#       labels:
-#         app: notify-db-init
-#         tier: database
-#     spec:
-#       restartPolicy: OnFailure
-#       initContainers:
-#         - name: init-postgres
-#           image: alpine
-#           command:
-#             [
-#               "sh",
-#               "-c",
-#               "until nslookup $POSTGRES_HOST; do echo waiting for postgres; sleep 2; done;",
-#             ]
-#           env:
-#             - name: POSTGRES_HOST
-#               valueFrom:
-#                 secretKeyRef:
-#                   name: notify-api
-#                   key: POSTGRES_HOST
-#       containers:
-#         - name: init-complete
-#           image: alpine
-#           command: ["sh", "-c", "echo 'PostgreSQL is ready' && exit 0"]
-#       {{- with .Values.nodeSelector }}
-#       nodeSelector:
-#         {{- toYaml . | nindent 8 }}
-#       {{- end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: notify-db-init-{{ .Release.Revision }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: notify-db-init
+    tier: database
+    release: {{ .Release.Name }}
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 100
+  template:
+    metadata:
+      labels:
+        app: notify-db-init
+        tier: database
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: init-postgres
+          image: alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "until nslookup $POSTGRES_HOST; do echo waiting for postgres; sleep 2; done;",
+            ]
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: POSTGRES_HOST
+      containers:
+        - name: init-complete
+          image: alpine
+          command: ["sh", "-c", "echo 'PostgreSQL is ready' && exit 0"]
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
