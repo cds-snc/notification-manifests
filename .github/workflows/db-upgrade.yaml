@@ -2,6 +2,9 @@ name: Database Upgrade
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - db-upgrade-github-action
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
