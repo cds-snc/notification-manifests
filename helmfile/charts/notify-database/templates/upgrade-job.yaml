@@ -24,7 +24,7 @@ spec:
         - name: db-upgrade
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["poetry"]
-          args: ["run", "flask", "db", "upgrade"]
+          args: ["run", "flask", "db", "check"]
           env:
             # Common ENV Variables
             {{- range $key, $val := .Values.api }}
