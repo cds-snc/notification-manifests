@@ -13,7 +13,7 @@ env:
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
 
 jobs:
-  helmfile-apply:
+  database-upgrade-helm-sync:
     runs-on: ubuntu-latest
     steps:
 
@@ -93,7 +93,7 @@ jobs:
           IMAGE_TAG: ${{ steps.helmfile_apply.outputs.image_tag }}
         run: |
           echo "Using image tag: ${IMAGE_TAG}"
-          kubectl wait --for=condition=complete job/notify-database-upgrade-${IMAGE_TAG} \
+          kubectl wait --for=condition=complete job/notify-db-upgrade-${IMAGE_TAG} \
             -n notification-canada-ca \
             --timeout=400s
 
