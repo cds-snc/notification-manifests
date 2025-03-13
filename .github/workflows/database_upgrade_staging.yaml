@@ -1,10 +1,10 @@
-name: Database Upgrade
+name: Database Upgrade (STAGING)
 
 on:
   workflow_dispatch:
-#   push:
-#       branches:
-#         - db-upgrade-github-action
+  push:
+      branches:
+        - db-upgrade-github-action
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -83,22 +83,29 @@ jobs:
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment staging -l app=notify-database sync
+          helmfile --environment staging -l app=notify-database diff
+          IMAGE_TAG=$(helm get values notify-database -n notification-canada-ca -o json | jq -r '.image.tag')
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
           popd
-          
+              
       - name: Run Database Upgrade Job
+        env:
+          IMAGE_TAG: ${{ steps.helmfile_apply.outputs.image_tag }}
         run: |
-          kubectl create job --from=cronjob/notify-db-upgrade notify-database-upgrade-${{ github.run_number }} \
+          echo "Using image tag: ${IMAGE_TAG}"
+          kubectl create job --from=cronjob/notify-db-upgrade notify-database-upgrade-${IMAGE_TAG} \
             -n notification-canada-ca
           
       - name: Wait for Job Completion
+        env:
+          IMAGE_TAG: ${{ steps.helmfile_apply.outputs.image_tag }}
         run: |
-          kubectl wait --for=condition=complete job/notify-database-upgrade-${{ github.run_number }} \
+          kubectl wait --for=condition=complete job/notify-database-upgrade-${IMAGE_TAG} \
             -n notification-canada-ca \
             --timeout=30s
 
-    #   - name: Notify Slack channel if this job failed
-    #     if: ${{ failure() }}
-    #     run: |
-    #       json='{"text":"<!here> Staging Database Upgrade Initialization/Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
-    #       curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+      # - name: Notify Slack channel if this job failed
+      #   if: ${{ failure() }}
+      #   run: |
+      #     json='{"text":"<!here> Staging Database Upgrade Initialization/Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
+      #     curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

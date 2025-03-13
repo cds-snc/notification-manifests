@@ -47,6 +47,7 @@ releases:
       app: notify-database
       tier: backend
       category: deliverable
+      step: 5
     chart: charts/notify-database
     values:
     - ./overrides/notify/api.yaml.gotmpl

@@ -1,9 +1,7 @@
-# Execute database migrations using: 
-# kubectl create job --from=cronjob/notify-db-upgrade notify-database-upgrade-1
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: notify-db-upgrade-{{ .Release.Revision }}
+  name: notify-db-upgrade-{{ .Values.image.tag }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: notify-db-upgrade
