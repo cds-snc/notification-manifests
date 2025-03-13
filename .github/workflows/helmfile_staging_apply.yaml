@@ -3,7 +3,7 @@ name: Staging - Helmfile Apply
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Database Upgrade Staging"]
+    workflows: ["Staging - Database Upgrade"]
     types:
       - completed
     branches:
