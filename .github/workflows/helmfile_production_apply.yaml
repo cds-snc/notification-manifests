@@ -2,6 +2,12 @@ name: Production - Helmfile Apply
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Production - Database Upgrade"]
+    types:
+      - completed
+    branches:
+      - main
   push:
     branches:
       - main
@@ -89,7 +95,7 @@ jobs:
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment production sync
+          helmfile --environment production -l 'app!=notify-database' sync
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
