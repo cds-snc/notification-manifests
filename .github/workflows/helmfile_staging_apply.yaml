@@ -92,7 +92,7 @@ jobs:
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment staging sync
+          helmfile --environment staging -l 'app!=notify-database' sync
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
