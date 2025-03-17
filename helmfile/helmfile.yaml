@@ -279,6 +279,16 @@ releases:
     values:
     - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
 
+  - name: metrics-server
+    namespace: kube-system
+    labels:
+      app: metrics-server
+      tier: backend
+      category: system
+      step: 1
+    chart: metrics-server/metrics-server
+    version: 3.12.2    
+
 {{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
 
   - name: target-group-crds
@@ -303,15 +313,5 @@ releases:
     chart: eks/aws-load-balancer-controller
     values:
     - ./overrides/system/aws-lb-controller.yaml.gotmpl
- 
-  - name: metrics-server
-    namespace: kube-system
-    labels:
-      app: metrics-server
-      tier: backend
-      category: system
-      step: 1
-    chart: metrics-server/metrics-server
-    version: 3.12.2
 
 {{- end }}
