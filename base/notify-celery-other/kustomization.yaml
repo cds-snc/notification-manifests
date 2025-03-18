@@ -1,4 +1,0 @@
-resources:
-  - celery-beat-deployment.yaml
-  - celery-sms-deployment.yaml
-  - celery-sms-service.yaml
