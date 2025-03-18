@@ -289,8 +289,6 @@ releases:
     values:
     - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
 
-{{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
-
   - name: target-group-crds
     disableValidationOnInstall: true
     disableValidation: true 
@@ -312,7 +310,9 @@ releases:
       step: 3
     chart: eks/aws-load-balancer-controller
     values:
-    - ./overrides/system/aws-lb-controller.yaml.gotmpl
+    - ./overrides/system/aws-lb-controller.yaml.gotmpl    
+
+{{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
  
   - name: metrics-server
     namespace: kube-system
