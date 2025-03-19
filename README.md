@@ -7,58 +7,28 @@ Kubernetes manifest files for [notification.canada.ca](https://notification.cana
 This repository uses Helm and Helmfile to manage the deployments of all notify components along with any kubernetes tools and deployments that are used across our GC Notify kubernetes cluster. The  [`helmfile/overrides`](helmfile/overrides) folder contains our environment specific configurations (ie. dev, staging, production, etc.).  Read up on helmfile overrides here:
 [Helmfile Docs](https://helmfile.readthedocs.io/en/latest/)
 
-## How are environment variables set?
+## How are environment variables added and set?
 
 Environment variables for this repository are managed by Helmfile.  
+* Non-secret configurations are set in the [`helmfile/overrides`](helmfile/overrides) folder where environment specific .env files contain the most basic environment specific configurations. Component specific helmfile overrides files are organized into folders with the [`helmfile/overrides`](helmfile/overrides) folder, and these manage the building of any necessary configurations for the corresponding deployments.
+Adding an environment specific configuration looks likes this (NOTE - Helmfile will know which environment it is using based on its context):
 
-## How do I add a new environment variable?
-
-As mentioned above, you will need to make changes to the `.env` file to include them in the `ConfigMap` object. In addition, you need to set up the `kustomization.yaml` file to include the new environment variable in the `ConfigMap`. This would look something like this if you wanted to add the variable `FOO` with the value `BAR`:
-
-In a `.env` file add:
-
+'helmfile/overrides/yourenvironment.env'
 ```
-FOO=BAR
+YOUR_ADMIN_CONFIG_ENTRY: "yourenvironmentspecificvaluehere"
 ```
 
-and then in `kustomization.yaml` add:
-
-```yaml
-- name: FOO
-  objref:
-    kind: ConfigMap
-    name: application-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.FOO
-
+'helmfile/overrides/notify/admin.yaml.gotmpl'
+```
+YOUR_ADMIN_CONFIG_ENTRY_OVERRIDE:  "{{ .StateValues.YOUR_ADMIN_CONFIG_ENTRY }}"
 ```
 
-under the `vars:` key.
-
-You can now reference the variable in you other manifest files using `$(FOO)`.
-
-You also need to add the new variable in `env.example` so that we can run CI without using any actual live variables.
-
-The last thing you need to do is re-encrypt the `.env` file to make sure the variable gets saved. You can use the `make encrypt-staging` command to do this.
-
-## How are image tag sets?
-
-To adjust what images are used in the environments, you need to set them in the environment `kustomization.yaml` file:
-
-```yaml
-images:
-  - name: admin
-    newName: public.ecr.aws/cds-snc/notify-admin:latest
-  - name: api
-    newName: public.ecr.aws/cds-snc/notify-api:latest
-  - name: document-download-api
-    newName: public.ecr.aws/cds-snc/notify-document-download-api:latest
+* Secret configurations are set in [Terraform](https://github.com/cds-snc/notification-terraform) through a process involving 1password, terraform and AWS Secrets Manager.  If a secret has been added using the process outlined [here](https://github.com/cds-snc/notification-terraform/blob/main/docs/creatingSecrets.md), then you just have to declare or adjust a single line in the appropriate Helmfile overrides file in the secrets section. like so:
+```
+SECRET_NAME_FOR_ENV_PASSED_TO_CONTAINER: SECRET_NAME_READ_FROM_AWS_SECRETS_MANAGER 
 ```
 
-Will set the images in the base deployment to use `latest`.
-
-In production, we use set image hashes directly, take a look at [`env/production/kustomization.yaml`](env/production/kustomization.yaml).
+If you've updated a secret in the 1password "single source of truth" -- that change will be reflected in AWS Secrets Manager during the next terraform release, and can then subsequently be consumed by our manifests workflows outlined here.
 
 ## Connecting to the database
 
