@@ -7,6 +7,8 @@ Kubernetes manifest files for [notification.canada.ca](https://notification.cana
 This repository uses Helm and Helmfile to manage the deployments of all notify components along with any kubernetes tools and deployments that are used across our GC Notify kubernetes cluster. The  [`helmfile/overrides`](helmfile/overrides) folder contains our environment specific configurations (ie. dev, staging, production, etc.).  Read up on helmfile overrides here:
 [Helmfile Docs](https://helmfile.readthedocs.io/en/latest/)
 
+Please note that our API runs as a Lambda Function -- which doesn't reside in Kubernetes.  While they are different platforms, we have set up helm to manage the configurations for both the lambda and Kubernetes dynamically.  Any configurations made to our helmfile configuration will be reflected in our Lambda API.
+
 ## How are environment variables added and set?
 
 Environment variables for this repository are managed by Helmfile.  
