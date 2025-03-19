@@ -4,57 +4,12 @@ Kubernetes manifest files for [notification.canada.ca](https://notification.cana
 
 ## How does this repository work?
 
-This repository uses version 2.0.3 of [Kustomize](https://github.com/kubernetes-sigs/kustomize/tree/v2.0.3), which is baked into `kubectl` to apply different environment overlays (staging, production), on to an existing base configuration. As a result the `base` directory describes all the commonalities between all environments, while the [`env/staging`](env/staging) and [`env/production`](env/production) directories contain the environment specific configurations. These include:
-
-- Environment variables
-- Target group bindings between the AWS network infrastructure and the Kubernetes cluster
-- Replica count patches (ex. How many pods of each type run in each environment)
+This repository uses Helm and Helmfile to manage the deployments of all notify components along with any kubernetes tools and deployments that are used across our GC Notify kubernetes cluster. The  [`helmfile/overrides`](helmfile/overrides) folder contains our environment specific configurations (ie. dev, staging, production, etc.).  Read up on helmfile overrides here:
+[Helmfile Docs](https://helmfile.readthedocs.io/en/latest/)
 
 ## How are environment variables set?
 
-To set the variables for the API Lambda see [this](https://github.com/cds-snc/notification-terraform#awslambda-api)
-
-`Kustomize` can dynamically inject environment variables when it compiles the configuration. To do this it reads out the environment variables and creates a `ConfigMap` object using an `.env` file that is in the same directory as the overlay that is being called from (ex. `/env/staging/.env`). As it is bad practice to save environment variables to a Git repository, the `.env` is ignored, and instead saved in an encrypted envelope using AWS KMS as `.env.enc.aws` files.
-
-This means that before the overlay is applied, the file needs to be decrypted.
-
-### Decrypting environment variables
-
-You should leverage the appropriate commands in the Makefile:
-
-- the `make decrypt-staging` command that will decrypt environment variables in staging ;
-- the `make decrypt-production` command that will decrypt environment variables in production.
-
-```sh
-# You need to have the AWS credentials set up on your machine
-# under the profile name `notify-staging`.
-AWS_PROFILE=notify-staging make decrypt-staging
-# This creates a new decrypted file at env/staging/.env
-```
-
-### Encrypting variables in staging/production
-
-You should leverage the appropriate commands in the Makefile:
-- the `make encrypt-staging` command that will encrypt environment variables in staging ;
-
-```sh
-AWS_PROFILE=notify-staging make decrypt-staging
-# Change values in the decrypted file at env/staging/.env
-# Encrypt the decrypted file that you just edited
-AWS_PROFILE=notify-staging make encrypt-staging
-# Creates a new file at env/staging/.env.enc.aws which is safe to commit
-```
-
-- the `make encrypt-production` command that will encrypt environment variables in production.
-
-
-```sh
-AWS_PROFILE=notify-production make decrypt-production
-# Change values in the decrypted file at env/production/.env
-# Encrypt the decrypted file that you just edited
-AWS_PROFILE=notify-production make encrypt-production
-# Creates a new file at env/production/.env.enc.aws which is safe to commit
-```
+Environment variables for this repository are managed by Helmfile.  
 
 ## How do I add a new environment variable?
 
