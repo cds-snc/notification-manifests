@@ -75,10 +75,6 @@ jobs:
         run: |
           aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster
 
-      - name: Apply changes
-        run: |
-          ./scripts/applyKube.sh env/staging --kubeconfig=/home/runner/.kube/config
-
       - name: Bump version and push tag
         id: bump_and_push_tag
         uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # v4.6
