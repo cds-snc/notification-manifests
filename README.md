@@ -35,19 +35,8 @@ If you've updated a secret in the 1password "single source of truth" -- that cha
 
 ## Connecting to the database
 
-1. First shell into the `jump-box` container inside the Kubernetes cluster (note the `-848d9c6787-p4r2v` suffix will be different):
-```sh
-kubectl exec -n notification-canada-ca -it jump-box-848d9c6787-p4r2v -- /bin/sh 
-```
+1. Get the database connection URI from the AWS console under RDS
 
-2. Use `socat` to forward all traffic from the `jump-box`'s port 5430 to the `DB_HOST_NAME` port 5432. `DB_HOST_NAME` should be something like `notification-canada-ca-staging-cluster.cluster-....ca-central-1.rds.amazonaws.com `
-```sh
-socat TCP-LISTEN:5430,fork TCP:DB_HOST_NAME:5432
-```
+2. Connect to the appropriate VPN
 
-3. Last, on your local machine, map the `jump-box` remote port 5430 to your local port 5430 (note the `-848d9c6787-p4r2v` suffix will be different):
-```sh
-kubectl port-forward -n notification-canada-ca jump-box-848d9c6787-p4r2v 5430:5430 
-```
-
-4. You can now connect to the database on your local port 5430 using the username and password. Please do not forget to terminate the `socat` connection with `Ctrl-C` once you are done.
+3. Create a new connection to DBeaver with the appropriate connection string and credentials
