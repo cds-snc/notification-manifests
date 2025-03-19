@@ -10,7 +10,9 @@ This repository uses Helm and Helmfile to manage the deployments of all notify c
 ## How are environment variables added and set?
 
 Environment variables for this repository are managed by Helmfile.  
-* Non-secret configurations are set in the [`helmfile/overrides`](helmfile/overrides) folder where environment specific .env files contain the most basic environment specific configurations. Component specific helmfile overrides files are organized into folders with the [`helmfile/overrides`](helmfile/overrides) folder, and these manage the building of any necessary configurations for the corresponding deployments.
+
+### Non-secret configurations 
+are set in the [`helmfile/overrides`](helmfile/overrides) folder where environment specific .env files contain the most basic environment specific configurations. Component specific helmfile overrides files are organized into folders within the [`helmfile/overrides`](helmfile/overrides) folder, and these manage the building of any necessary configurations for their corresponding deployments.
 Adding an environment specific configuration looks likes this (NOTE - Helmfile will know which environment it is using based on its context):
 
 'helmfile/overrides/yourenvironment.env'
@@ -23,7 +25,8 @@ YOUR_ADMIN_CONFIG_ENTRY: "yourenvironmentspecificvaluehere"
 YOUR_ADMIN_CONFIG_ENTRY_OVERRIDE:  "{{ .StateValues.YOUR_ADMIN_CONFIG_ENTRY }}"
 ```
 
-* Secret configurations are set in [Terraform](https://github.com/cds-snc/notification-terraform) through a process involving 1password, terraform and AWS Secrets Manager.  If a secret has been added using the process outlined [here](https://github.com/cds-snc/notification-terraform/blob/main/docs/creatingSecrets.md), then you just have to declare or adjust a single line in the appropriate Helmfile overrides file in the secrets section. like so:
+### Secret configurations 
+are set in [Terraform](https://github.com/cds-snc/notification-terraform) through a process involving 1password, terraform and AWS Secrets Manager.  If a secret has been added using the process outlined [here](https://github.com/cds-snc/notification-terraform/blob/main/docs/creatingSecrets.md), then you just have to declare or adjust a single line in the appropriate Helmfile overrides file in the secrets section. like so:
 ```
 SECRET_NAME_FOR_ENV_PASSED_TO_CONTAINER: SECRET_NAME_READ_FROM_AWS_SECRETS_MANAGER 
 ```
