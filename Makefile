@@ -93,7 +93,9 @@ encrypt-scratch:
 	aws kms encrypt --key-id 7d2595b2-65ad-4093-b1df-b820b473d81c --plaintext fileb://.env.zip --output text --query CiphertextBlob --region ca-central-1 | base64 --decode > .env.zip.enc.aws	
 
 production-debug:
-	kubectl kustomize env/production
+	cd helmfile
+	source getContext.sh
+	helmfile -e production template
 
 staging:
 	kubectl apply -k env/staging --force
@@ -102,7 +104,9 @@ staging-clear:
 	kubectl delete -k env/staging --force
 
 staging-debug:
-	kubectl kustomize env/staging
+	cd helmfile
+	source getContext.sh
+	helmfile -e staging template
 
 env-vars:
 	@cat $(ENV_FILE) | xargs -0 -L1 | grep ":" | cut -f1 -d":" | sort | tr "\n" "|"
