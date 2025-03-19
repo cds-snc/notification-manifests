@@ -1,19 +1,13 @@
-name: Staging - Helmfile Apply 
+name: Staging - Database Upgrade
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Staging - Database Upgrade"]
-    types:
-      - completed
-    branches:
-      - main
   push:
     branches:
       - main
     paths:
       - "helmfile/**"
-      - ".github/workflows/helmfile_staging_apply.yaml"
+      - ".github/workflows/helmfile_staging_database_upgrade.yaml"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -22,7 +16,7 @@ env:
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
 
 jobs:
-  helmfile-apply:
+  database-upgrade-helm-sync:
     runs-on: ubuntu-latest
     steps:
 
@@ -88,44 +82,26 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
             
-      - name: Helmfile apply
+      - name: Helmfile Sync Database Upgrade
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment staging -l 'app!=notify-database' sync
+          helmfile --environment staging -l app=notify-database sync
+          IMAGE_TAG=$(helm get values notify-database -n notification-canada-ca -o json | jq -r '.image.tag')
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
           popd
 
-      - name: Save ENV vars and secrets to AWS Param Store
+      - name: Wait for Job Completion
+        env:
+          IMAGE_TAG: ${{ steps.helmfile_apply.outputs.image_tag }}
         run: |
-          # wait for the secrets and env vars to be available
-          sleep 20
-          source ./scripts/lambdaParamStoreUpdatesStaging.sh -g
-          echo DIFF=$DIFF
-          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
-
-      - name: Force api-lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: api-lambda
-
-      - name: Force heartbeat lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'  
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: heartbeat
-
-      - name: Force system_status to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: system_status
+          echo "Using image tag: ${IMAGE_TAG}"
+          kubectl wait --for=condition=complete job/notify-db-upgrade-${IMAGE_TAG} \
+            -n notification-canada-ca \
+            --timeout=400s
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
-          json='{"text":"<!here> Staging Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
+          json='{"text":"<!here> Staging Database Upgrade Initialization/Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

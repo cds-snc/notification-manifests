@@ -1,0 +1,71 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: notify-db-upgrade-{{ .Values.image.tag }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: notify-db-upgrade
+    tier: database
+    release: {{ .Release.Name }}
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 100
+  template:
+    metadata:
+      labels:
+        app: notify-db-upgrade
+        tier: database
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ .Values.serviceAccount.serviceAccountName }}
+      initContainers:
+        - name: init-postgres
+          image: alpine
+          command:
+            [
+              "sh",
+              "-c",
+              "until nslookup $POSTGRES_HOST; do echo waiting for postgres; sleep 2; done;",
+            ]
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: POSTGRES_HOST
+      containers:
+        - name: db-upgrade
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["poetry"]
+          args: ["run", "flask", "db", "upgrade"]
+          env:
+            # Common ENV Variables
+            {{- range $key, $val := .Values.api }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            # Secret ENV Variables
+            {{- range $key, $val := .Values.apiSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: {{ $key }}
+            {{- end }}
+            # Node-specific variables
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
+      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
