@@ -1,4 +1,4 @@
-name: Pond - Test 1
+name: Pond_Test_1
 
 on:
   workflow_dispatch:

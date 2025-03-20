@@ -1,9 +1,9 @@
-name: Pond - Test 2 
+name: Pond_Test_2 
 
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Pond - Test 1"]
+    workflows: ["Pond_Test_1"]
     types:
       - completed
 
