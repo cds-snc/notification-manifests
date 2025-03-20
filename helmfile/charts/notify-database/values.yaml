@@ -4,6 +4,8 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
+ttlSecondsAfterFinished: 34560
+
 serviceAccount:
   create: true
   serviceAccountName: "notify-api"
