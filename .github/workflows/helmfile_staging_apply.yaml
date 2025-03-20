@@ -92,14 +92,14 @@ jobs:
 
       - name: Helmfile apply
         id: helmfile_apply
-        if: ${{ success()}}
+        if: ${{ success() }}
         run: |
           pushd helmfile
           helmfile --environment staging -l 'app!=notify-database' sync
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
-        if: ${{ success()}}
+        if: ${{ success() }}
         run: |
           # wait for the secrets and env vars to be available
           sleep 20
