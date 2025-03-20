@@ -34,6 +34,6 @@ runs:
         IMAGE_TAG: ${{ steps.helmfile_apply.outputs.image_tag }}
       run: |
         echo "Using image tag: ${IMAGE_TAG}"
-        kubectl wait --for=condition=complete job/${{ inputs.app_label }}-db-upgrade-${IMAGE_TAG} \
+        kubectl wait --for=condition=complete job/notify-db-upgrade-${IMAGE_TAG} \
           -n ${{ inputs.namespace }} \
           --timeout=${{ inputs.timeout }}
