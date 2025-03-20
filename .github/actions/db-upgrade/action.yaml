@@ -7,6 +7,9 @@ inputs:
   namespace:
     description: "The Kubernetes namespace where the job runs (e.g., notification-canada-ca)."
     required: true
+  app_label:
+    description: "The app label to filter Helmfile resources (e.g., notify-database)."
+    required: true
   timeout:
     description: "Timeout for waiting for the job to complete (e.g., 400s)."
     required: false
