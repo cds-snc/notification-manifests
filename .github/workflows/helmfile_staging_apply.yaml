@@ -2,12 +2,6 @@ name: Staging - Helmfile Apply
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Staging - Database Upgrade"]
-    types:
-      - completed
-    branches:
-      - main
   push:
     branches:
       - main
@@ -87,15 +81,25 @@ jobs:
       - name: Load Context Variables
         run: |
             ./helmfile/getContext.sh -g
-            
+             
+      - name: Run Database Upgrade Helmfile Sync
+        uses: ./.github/actions/db-upgrade
+        with:
+          environment: "staging"
+          namespace: "notification-canada-ca"
+          app_label: "notify-database"
+          timeout: "400s"
+
       - name: Helmfile apply
         id: helmfile_apply
+        if: ${{ success()}}
         run: |
           pushd helmfile
           helmfile --environment staging -l 'app!=notify-database' sync
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
+        if: ${{ success()}}
         run: |
           # wait for the secrets and env vars to be available
           sleep 20
@@ -104,21 +108,21 @@ jobs:
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
 
       - name: Force api-lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
+        if: env.ENV_DIFF != '0' && ${{ success() }}
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: api-lambda
 
       - name: Force heartbeat lambda to redeploy on environment changes
-        if: env.ENV_DIFF != '0'  
+        if: env.ENV_DIFF != '0' && ${{ success() }} 
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
           function-name: heartbeat
 
       - name: Force system_status to redeploy on environment changes
-        if: env.ENV_DIFF != '0'
+        if: env.ENV_DIFF != '0' && ${{ success() }}
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
