@@ -2,12 +2,6 @@ name: Production - Helmfile Apply
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Production - Database Upgrade"]
-    types:
-      - completed
-    branches:
-      - main
   push:
     branches:
       - main
@@ -91,7 +85,16 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
 
+      - name: Run Database Upgrade Helmfile Sync
+        uses: ./.github/actions/db-upgrade
+        with:
+          environment: "production"
+          namespace: "notification-canada-ca"
+          app_label: "notify-database"
+          timeout: "400s"
+
       - name: Helmfile apply
+        if: ${{ success() }}
         id: helmfile_apply
         run: |
           pushd helmfile
@@ -99,6 +102,7 @@ jobs:
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
+        if: ${{ success() }}
         run: |
           # wait for the secrets and env vars to be available
           sleep 20
@@ -107,6 +111,7 @@ jobs:
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
   
       - name: Force api-lambda to redeploy on environment changes
+        if: ${{ success() }}
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
@@ -114,6 +119,7 @@ jobs:
           image-uri: $PRIVATE_ECR/$API_LAMBDA_IMAGE
 
       - name: Force heartbeat lambda to redeploy on environment changes
+        if: ${{ success() }}
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
@@ -121,6 +127,7 @@ jobs:
           image-uri: $PRIVATE_ECR/$HEARTBEAT_IMAGE
 
       - name: Force system_status to redeploy on environment changes
+        if: ${{ success() }}
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest

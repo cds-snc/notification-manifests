@@ -33,6 +33,7 @@ spec:
       terminationGracePeriodSeconds: 60
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if eq .Values.environment "production" }}
       initContainers:
         - name: init-postgres
           image: alpine
@@ -78,6 +79,7 @@ spec:
               "-c",
               "flask db upgrade || echo 'ERROR: database migration failed'",
             ]
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
