@@ -6,8 +6,6 @@ on:
     workflows: ["Staging - Database Upgrade"]
     types:
       - completed
-    branches:
-      - main
   push:
     branches:
       - main

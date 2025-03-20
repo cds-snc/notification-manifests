@@ -1,4 +1,4 @@
-name: Staging - Database Upgrade
+name: "Staging - Database Upgrade"
 
 on:
   workflow_dispatch:

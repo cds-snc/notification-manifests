@@ -1,0 +1,20 @@
+name: "Pond - Test 1"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - workflow-trigger-fix
+    paths:
+      - ".github/workflows/pond_test1.yaml"
+
+jobs:
+  test1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create ZIP bundle
+        run: |
+          echo "Job One Complete!"
