@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - workflow-trigger-fix
-    paths:
-      - ".github/workflows/pond_test1.yaml"
 
 jobs:
   test1:
@@ -17,4 +15,4 @@ jobs:
 
       - name: Create ZIP bundle
         run: |
-          echo "Job One Complete!"
+          echo "Job One Completed!"
