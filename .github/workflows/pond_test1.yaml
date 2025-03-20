@@ -17,4 +17,4 @@ jobs:
 
       - name: Create ZIP bundle
         run: |
-          echo "Job One Complete!"
+          echo "Job One Completed!"

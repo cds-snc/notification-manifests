@@ -3,7 +3,7 @@ name: Pond_Test_2
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Pond_Test_1"]
+    workflows: [Pond_Test_1]
     types:
       - completed
 
