@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   backoffLimit: 3
-  ttlSecondsAfterFinished: 34560
+  ttlSecondsAfterFinished: {{ .Values.ttlSecondsAfterFinished }}
   template:
     metadata:
       labels:
