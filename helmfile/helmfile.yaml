@@ -42,6 +42,16 @@ repositories:
   url: https://kubernetes-sigs.github.io/metrics-server/
 
 releases:
+  # Uses API overrides
+  - name: notify-database
+    namespace: notification-canada-ca
+    labels:
+      app: notify-database
+      tier: database
+      category: deliverable
+    chart: charts/notify-database
+    values:
+    - ./overrides/notify/api.yaml.gotmpl 
 
   - name: notify-documentation
     namespace: notification-canada-ca
@@ -279,8 +289,6 @@ releases:
     values:
     - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
 
-{{- if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
-
   - name: target-group-crds
     disableValidationOnInstall: true
     disableValidation: true 
@@ -302,7 +310,7 @@ releases:
       step: 3
     chart: eks/aws-load-balancer-controller
     values:
-    - ./overrides/system/aws-lb-controller.yaml.gotmpl
+    - ./overrides/system/aws-lb-controller.yaml.gotmpl    
  
   - name: metrics-server
     namespace: kube-system
@@ -313,5 +321,3 @@ releases:
       step: 1
     chart: metrics-server/metrics-server
     version: 3.12.2
-
-{{- end }}

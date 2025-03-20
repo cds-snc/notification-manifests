@@ -1,0 +1,39 @@
+name: "Database Upgrade Helmfile Sync"
+description: "Sync Helmfile for database upgrade and wait for the job to complete."
+inputs:
+  environment:
+    description: "The Helmfile environment to use (e.g., staging)."
+    required: true
+  namespace:
+    description: "The Kubernetes namespace where the job runs (e.g., notification-canada-ca)."
+    required: true
+  app_label:
+    description: "The app label to filter Helmfile resources (e.g., notify-database)."
+    required: true
+  timeout:
+    description: "Timeout for waiting for the job to complete (e.g., 400s)."
+    required: false
+    default: "400s"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Helmfile Sync Database Upgrade
+      id: helmfile_apply
+      shell: bash
+      run: |
+        pushd helmfile
+        helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} sync
+        IMAGE_TAG=$(helm get values ${{ inputs.app_label }} -n ${{ inputs.namespace }} -o json | jq -r '.image.tag')
+        echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        popd
+
+    - name: Wait for Job Completion
+      shell: bash
+      env:
+        IMAGE_TAG: ${{ steps.helmfile_apply.outputs.image_tag }}
+      run: |
+        echo "Using image tag: ${IMAGE_TAG}"
+        kubectl wait --for=condition=complete job/notify-db-upgrade-${IMAGE_TAG} \
+          -n ${{ inputs.namespace }} \
+          --timeout=${{ inputs.timeout }}

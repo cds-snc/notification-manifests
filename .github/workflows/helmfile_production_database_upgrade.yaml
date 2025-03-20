@@ -1,13 +1,7 @@
-name: Production - Helmfile Apply
+name: Production - Database Upgrade
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Production - Database Upgrade"]
-    types:
-      - completed
-    branches:
-      - main
   push:
     branches:
       - main
@@ -19,13 +13,9 @@ env:
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
-  PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:548e318
-  HEARTBEAT_IMAGE: heartbeat:d4082e9
-  SYSTEM_STATUS_IMAGE: system_status:feaaf98
 
 jobs:
-  helmfile-apply:
+  database-upgrade-helm-sync:
     runs-on: ubuntu-latest
     steps:
 
@@ -45,13 +35,13 @@ jobs:
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           # Fetches entire history, so we can analyze commits since last tag
-          fetch-depth: 0
+          fetch-depth: 0        
 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
         with:
           install-kubectl: yes
-          install-helm: yes       
+          install-helm: yes        
           helmfile-version: "v0.151.0"
           helm-s3-plugin-version: "v0.16.2"
 
@@ -60,22 +50,22 @@ jobs:
           sudo apt update
           sudo apt install -y openvpn openvpn-systemd-resolved
 
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb 
+
       - name: Setup Terraform tools
         uses: cds-snc/terraform-tools-setup@v1
         env: # In case you want to override default versions
           CONFTEST_VERSION: 0.30.0 
           TERRAFORM_VERSION: 1.9.5
           TERRAGRUNT_VERSION: 0.66.9
-          TF_SUMMARIZE_VERSION: 0.2.3                           
-
-      - name: Install 1Pass CLI
-        run: |
-          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
-          sudo dpkg -i 1pass.deb 
+          TF_SUMMARIZE_VERSION: 0.2.3                    
 
       - name: Retrieve VPN Config
         run: |
-          scripts/createVPNConfig.sh production 2> /dev/null   
+          scripts/createVPNConfig.sh production 2> /dev/null  
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
@@ -85,50 +75,32 @@ jobs:
 
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias production
+          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias production 
 
       - name: Load Context Variables
         run: |
             ./helmfile/getContext.sh -g
-
-      - name: Helmfile apply
+            
+      - name: Helmfile Sync Database Upgrade
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment production -l 'app!=notify-database' sync
+          helmfile --environment production -l app=notify-database sync
+          IMAGE_TAG=$(helm get values notify-database -n notification-canada-ca -o json | jq -r '.image.tag')
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
           popd
 
-      - name: Save ENV vars and secrets to AWS Param Store
+      - name: Wait for Job Completion
+        env:
+          IMAGE_TAG: ${{ steps.helmfile_apply.outputs.image_tag }}
         run: |
-          # wait for the secrets and env vars to be available
-          sleep 20
-          source ./scripts/lambdaParamStoreUpdatesProduction.sh -g
-          echo DIFF=$DIFF
-          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
-  
-      - name: Force api-lambda to redeploy on environment changes
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: api-lambda
-          image-uri: $PRIVATE_ECR/$API_LAMBDA_IMAGE
-
-      - name: Force heartbeat lambda to redeploy on environment changes
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: heartbeat
-          image-uri: $PRIVATE_ECR/$HEARTBEAT_IMAGE
-
-      - name: Force system_status to redeploy on environment changes
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: system_status
-          image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
+          echo "Using image tag: ${IMAGE_TAG}"
+          kubectl wait --for=condition=complete job/notify-db-upgrade-${IMAGE_TAG} \
+            -n notification-canada-ca \
+            --timeout=400s
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
-          json='{"text":"<!here> Production Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
+          json='{"text":"<!here> Production Database Upgrade Initialization/Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

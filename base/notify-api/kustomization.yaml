@@ -1,7 +1,0 @@
-resources:
-  - api-deployment.yaml
-  - api-service.yaml
-  - api-hpa.yaml
-  - api-pod-disruption-budget.yaml
-
-  
