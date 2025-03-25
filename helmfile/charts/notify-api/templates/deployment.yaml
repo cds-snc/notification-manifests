@@ -33,53 +33,6 @@ spec:
       terminationGracePeriodSeconds: 60
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if eq .Values.environment "production" }}
-      initContainers:
-        - name: init-postgres
-          image: alpine
-          command:
-            [
-              "sh",
-              "-c",
-              "until nslookup $POSTGRES_HOST; do echo waiting for postgres; sleep 2; done;",
-            ]
-          env:
-            - name: POSTGRES_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: POSTGRES_HOST   
-        - name: migrate-db
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          volumeMounts:
-            - name: secrets-store-inline
-              mountPath: "/mnt/secrets-store"
-              readOnly: true   
-          env:
-            # Includes common ENV Variables
-            {{- range $key, $val := .Values.api }}
-            - name: {{ $key }}
-              value: {{ $val | quote }}
-            {{- end }}
-            # Includes secret ENV Variables
-            {{- range $key, $val := .Values.apiSecrets }}
-            - name: {{ $key }}
-              valueFrom:
-                secretKeyRef:
-                  name: notify-api
-                  key: {{ $key }}
-            {{- end }}
-            - name: STATSD_HOST
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
-          command:
-            [
-              "sh",
-              "-c",
-              "flask db upgrade || echo 'ERROR: database migration failed'",
-            ]
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
