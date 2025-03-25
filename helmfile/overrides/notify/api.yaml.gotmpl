@@ -110,4 +110,3 @@ pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   minAvailable: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
 
-environment: "{{ .Environment.Name }}"
