@@ -139,3 +139,52 @@ jobs:
         run: |
           json='{"text":"<!here> Production Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
           curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+
+
+  clear-cache:
+    needs: helmfile-apply
+    uses: ./.github/workflows/clear-notify-cache.yaml
+    with:
+      environment: production
+      cache_clear_user_name: CACHE_CLEAR_USER
+      api_url: https://api.notification.canada.ca
+    secrets:
+      CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.PRODUCTION_CACHE_CLEAR_CLIENT_SECRET }}
+        
+
+  publish-deployment:
+    runs-on: ubuntu-latest
+    needs: helmfile-apply
+
+    steps:
+      
+      - name: Add deployment to New Relic
+        run: |
+          for application_id in 283469061 283468826 283468685; do
+            curl -X POST "https://api.newrelic.com/v2/applications/$application_id/deployments.json" \
+              -H "X-Api-Key:$NEW_RELIC_API_KEY" -i \
+              -H 'Content-Type: application/json' \
+              -d \
+            '{
+              "deployment": {
+                "revision": "'$GITHUB_SHA'"
+              }
+            }'
+          done
+        env:
+          NEW_RELIC_API_KEY: ${{ secrets.PRODUCTION_NEW_RELIC_API_KEY }}
+
+      - name: Report deployment to Sentinel
+        uses: cds-snc/sentinel-forward-data-action@main
+        with:
+          input_data: '{"product": "notify", "sha": "${{ github.sha }}", "version": "${{ env.TARGET_VERSION }}", "repository": "${{ github.repository }}", "environment": "production"}'
+          log_type: CDS_Product_Deployment_Data
+          log_analytics_workspace_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
+          log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
+
+
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json='{"text":"<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}      

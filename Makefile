@@ -98,10 +98,14 @@ production-debug:
 	helmfile -e production template
 
 staging:
-	kubectl apply -k env/staging --force
+	cd helmfile
+	source getContext.sh
+	helmfile -e staging sync
 
 staging-clear:
-	kubectl delete -k env/staging --force
+	cd helmfile
+	source getContext.sh
+	helmfile -e staging destroy
 
 staging-debug:
 	cd helmfile
