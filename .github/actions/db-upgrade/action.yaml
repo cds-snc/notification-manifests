@@ -25,15 +25,18 @@ runs:
         pushd helmfile
         helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} sync
         IMAGE_TAG=$(helm get values ${{ inputs.app_label }} -n ${{ inputs.namespace }} -o json | jq -r '.image.tag')
+        RELEASE_REVISION=$(helm list -n ${{ inputs.namespace }} -o json | jq -r '.[] | select(.name=="${{ inputs.app_label }}") | .revision')
         echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        echo "release_revision=${RELEASE_REVISION}" >> $GITHUB_OUTPUT
         popd
 
     - name: Wait for Job Completion
       shell: bash
       env:
         IMAGE_TAG: ${{ steps.helmfile_apply.outputs.image_tag }}
+        RELEASE_REVISION: ${{ steps.helmfile_apply.outputs.release_revision }}
       run: |
         echo "Using image tag: ${IMAGE_TAG}"
-        kubectl wait --for=condition=complete job/notify-db-upgrade-${IMAGE_TAG} \
+        kubectl wait --for=condition=complete job/notify-db-upgrade-${IMAGE_TAG}-${RELEASE_REVISION} \
           -n ${{ inputs.namespace }} \
           --timeout=${{ inputs.timeout }}
