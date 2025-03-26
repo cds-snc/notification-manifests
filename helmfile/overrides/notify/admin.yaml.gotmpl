@@ -33,6 +33,7 @@ admin:
   FF_CARETAKER: "{{ .StateValues.FF_CARETAKER }}"
   FRESH_DESK_ENABLED: "{{ .StateValues.FRESH_DESK_ENABLED }}"
   # NON-ENVIRONMENT SPECIFIC VARIABLES
+  AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
   NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
   CRM_ORG_LIST_URL: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
   FLASK_APP: "application.py"
