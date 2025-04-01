@@ -8,3 +8,6 @@ settings:
 nodeClass:
   amiSelectorTerms:
     - id: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
+
+nodeSelector:  
+  eks.amazonaws.com/capacityType: ON_DEMAND

@@ -118,6 +118,8 @@ releases:
       step: 2
     chart: oci://ghcr.io/deliveryhero/helm-charts/k8s-event-logger
     version: 1.1.8
+    values:
+      - ./overrides/system/k8s-event-logger.yaml.gotmpl
 
   - name: karpenter-crd
     namespace: karpenter
@@ -322,3 +324,5 @@ releases:
       step: 1
     chart: metrics-server/metrics-server
     version: 3.12.2
+    values:
+    - ./overrides/system/metrics-server.yaml.gotmpl
