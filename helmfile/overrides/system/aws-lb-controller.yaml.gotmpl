@@ -3,3 +3,6 @@ serviceAccount:
     create: true
     name: aws-load-balancer-controller
 enableCertManager: true
+
+nodeSelector:  
+  eks.amazonaws.com/capacityType: ON_DEMAND
