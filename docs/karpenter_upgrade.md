@@ -14,6 +14,9 @@
 
 3. Delete the CRDs
 ```kubectl delete crd $(kubectl get crd -n karpenter | grep karpenter | awk '{print $1}')```
+
+4. Set the karpenter versions to the correct version for the environment in helmfile.yaml
+4. Set the upgrade value to "true" in helmfile for the appropriate environment in the karpenter.yaml.gotmpl overrides
 4. Reapply the CRDs
 ```helmfile -e dev -l app=karpenter,tier=crd sync```
 5. Reapply the Karpenter Main
