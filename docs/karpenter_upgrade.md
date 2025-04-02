@@ -2,6 +2,8 @@
 
 ## Steps
 
+**Note: it may be necessary to manually remove the finalizers**
+
 1. Delete custom resources
 ```kubectl delete ec2nodeclasses.karpenter.k8s.aws $(kubectl get ec2nodeclasses.karpenter.k8s.aws | awk '{print $1}')```
 ```kubectl delete nodeclaims.karpenter.sh $(kubectl get nodeclaims.karpenter.sh | awk '{print $1}')```
