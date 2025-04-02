@@ -1,3 +1,5 @@
+{{ if .Values.upgrade }}
+
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
@@ -14,3 +16,23 @@ spec:
         karpenter.sh/discovery: "{{ .Values.settings.clusterName }}" # replace with your cluster name
   amiSelectorTerms:
     - alias: al2023@latest # Amazon Linux 2023
+
+{{ else }}
+
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: {{ .Values.nodeClass.name}}
+spec:
+  amiFamily: {{ .Values.nodeClass.amiFamily}}
+  role: {{ .Values.nodeClass.roleName }}
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: {{ .Values.settings.clusterName }}
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: {{ .Values.settings.clusterName }}
+  amiSelectorTerms:
+    {{- toYaml .Values.nodeClass.amiSelectorTerms | nindent 4 }}
+
+{{ end }} 
