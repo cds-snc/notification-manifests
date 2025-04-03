@@ -29,10 +29,10 @@ spec:
           resources:
             limits:
               cpu:  200m
-              memory: 200Mi
+              memory: 300Mi
             requests:
               cpu: 200m
-              memory: 200Mi
+              memory: 300Mi
           # Please don't change below envs
           env:
             - name: HOST_IP
