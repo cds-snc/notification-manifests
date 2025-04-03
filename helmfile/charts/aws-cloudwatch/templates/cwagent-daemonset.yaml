@@ -28,10 +28,10 @@ spec:
               protocol: UDP   
           resources:
             limits:
-              cpu:  200m
+              cpu:  300m
               memory: 200Mi
             requests:
-              cpu: 200m
+              cpu: 300m
               memory: 200Mi
           # Please don't change below envs
           env:
