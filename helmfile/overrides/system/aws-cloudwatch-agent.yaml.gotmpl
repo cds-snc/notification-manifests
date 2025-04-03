@@ -1,6 +1,6 @@
 clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
 
-{{ if eq .Environment.Name "staging" }}
+{{ if or (eq .Environment.Name "staging") (eq .Environment.Name "dev") }}
 image:
     tag: 1.300053.0b1046
 {{ end }}
