@@ -83,4 +83,4 @@ jobs:
           namespace: "notification-canada-ca"
           app_label: "notify-database"
           timeout: "400s"
-          db_args: "{run,flask,db,downgrade}"
+          db_args: "downgrade"

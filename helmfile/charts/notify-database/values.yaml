@@ -1,5 +1,5 @@
 database:
-  args: ["run", "flask", "db", "upgrade"]
+  args: "upgrade"
 
 image:
   repository: public.ecr.aws/cds-snc/notify-api

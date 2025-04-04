@@ -37,7 +37,7 @@ spec:
         - name: db-job
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["poetry"]
-          args: {{ .Values.database.args }}
+          args: ["run", "flask", "db", "{{ .Values.database.args }}"]
           env:
             # Common ENV Variables
             {{- range $key, $val := .Values.api }}
