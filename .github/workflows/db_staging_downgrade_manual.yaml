@@ -1,4 +1,4 @@
-name: Staging - Manual DB Upgrade
+name: Staging - Manual DB Downgrade
 
 on:
   workflow_dispatch:
@@ -76,10 +76,11 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
              
-      - name: Run Database Upgrade Helmfile Sync
+      - name: Run Database Downgrade Helmfile Sync
         uses: ./.github/actions/db-job
         with:
           environment: "staging"
           namespace: "notification-canada-ca"
           app_label: "notify-database"
           timeout: "400s"
+          db_args: "{run,flask,db,downgrade}"

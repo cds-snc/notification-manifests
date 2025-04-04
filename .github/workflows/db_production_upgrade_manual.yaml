@@ -77,7 +77,7 @@ jobs:
             ./helmfile/getContext.sh -g
 
       - name: Run Database Upgrade Helmfile Sync
-        uses: ./.github/actions/db-upgrade
+        uses: ./.github/actions/db-job
         with:
           environment: "production"
           namespace: "notification-canada-ca"
