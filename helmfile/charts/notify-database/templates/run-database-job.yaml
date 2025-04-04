@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: notify-db-job
+        app: notify-db-migration
         tier: database
     spec:
       restartPolicy: OnFailure
