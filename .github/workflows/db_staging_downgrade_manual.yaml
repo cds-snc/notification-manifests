@@ -77,7 +77,7 @@ jobs:
             ./helmfile/getContext.sh -g
              
       - name: Run Database Downgrade Helmfile Sync
-        uses: ./.github/actions/db-job
+        uses: ./.github/actions/db-migration
         with:
           environment: "staging"
           namespace: "notification-canada-ca"
