@@ -4,7 +4,7 @@ metadata:
   name: notify-db-job-{{ .Values.image.tag }}-{{ .Release.Revision }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: notify-db-job
+    app: notify-db-migration
     tier: database
     release: {{ .Release.Name }}
 spec:
