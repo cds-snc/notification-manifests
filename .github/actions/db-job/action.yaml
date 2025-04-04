@@ -15,7 +15,7 @@ inputs:
     required: false
     default: "400s"
   db_args:
-    description: "Additional arguments for the database job command."
+    description: "Additional arguments for the database migration command."
     required: false
     default: "upgrade"
 
