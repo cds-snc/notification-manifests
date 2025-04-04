@@ -1,5 +1,5 @@
 name: "Database Job Helmfile Sync"
-description: "Sync Helmfile for database upgrade and wait for the job to complete."
+description: "Sync Helmfile for database migration and wait for the job to complete."
 inputs:
   environment:
     description: "The Helmfile environment to use (e.g., staging)."
