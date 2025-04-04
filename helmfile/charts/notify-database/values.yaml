@@ -1,3 +1,6 @@
+database:
+  args: "upgrade"
+
 image:
   repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
