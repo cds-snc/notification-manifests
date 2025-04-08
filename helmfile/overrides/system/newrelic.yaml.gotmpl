@@ -1,5 +1,5 @@
 global:
-    licenseKey: 3458cc910a7504c0f9259dc343ca8f93FFFFNRAL
+    licenseKey: {{ requiredEnv "NEWRELIC_LICENSE_KEY" }}
     cluster: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
     priorityClassName: system-cluster-critical
 
