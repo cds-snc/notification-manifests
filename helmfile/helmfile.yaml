@@ -40,6 +40,8 @@ repositories:
   url: https://aws.github.io/eks-charts
 - name: metrics-server
   url: https://kubernetes-sigs.github.io/metrics-server/
+- name: newrelic
+  url: https://helm-charts.newrelic.com
 
 releases:
   # Uses API overrides
@@ -326,3 +328,25 @@ releases:
     version: 3.12.2
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
+
+  {{ if eq .Environment.Name "dev" }}
+  - name: newrelic
+    namespace: newrelic
+    labels:
+      app: newrelic
+      tier: backend
+      category: system
+      step: 1
+    chart: newrelic/nri-bundle
+    values:
+    - ./overrides/system/newrelic.yaml.gotmpl 
+
+  - name: newrelic-apm
+    namespace: newrelic
+    labels:
+      app: newrelic
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/newrelic-apm    
+  {{ end }}
