@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: notify-db-migration-{{ .Values.image.tag }}-{{ .Release.Revision }}
+  name: notify-db-migration-job-{{ .Values.image.tag }}-{{ .Release.Revision }}
   namespace: {{ .Release.Namespace }}
   labels:
     app: notify-db-migration
