@@ -1,3 +1,42 @@
+{{ if .Values.upgrade }}
+
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: {{ .Values.nodePool.name}}
+  annotations:
+    kubernetes.io/description: "NodePool for provisioning spot capacity"
+spec:
+  template:
+    spec:
+      requirements:
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: {{ .Values.nodePool.capacityTypes }}
+        - key: kubernetes.io/arch
+          operator: In
+          values: ["amd64"]
+        - key: kubernetes.io/os
+          operator: In
+          values: ["linux"]
+        - key: karpenter.k8s.aws/instance-category
+          operator: In
+          values: {{ .Values.nodePool.instanceCategories }}
+        - key: karpenter.k8s.aws/instance-generation
+          operator: Gt
+          values: ["2"]
+        - key: "karpenter.k8s.aws/instance-family"
+          operator: In
+          values: {{ .Values.nodePool.instanceFamily }}          
+        - key: "karpenter.k8s.aws/instance-cpu"
+          operator: In
+          values: {{ .Values.nodePool.instanceCPU }}
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: {{ .Values.nodeClass.name}}
+
+{{ else }}
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
 metadata:
@@ -130,3 +169,4 @@ spec:
   # to select. Higher weights indicate higher priority when comparing NodePools.
   # Specifying no weight is equivalent to specifying a weight of 0.
   weight: {{ .Values.nodePool.weight }}
+{{ end }}
