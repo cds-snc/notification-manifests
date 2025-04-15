@@ -116,7 +116,7 @@ nodes:
   generate-reports-static:
     name: generate-reports-static
     newRelicAppName: "notification-celery-generate-reports-static-dev"
-    scriptArg: "sh /app/scripts/run_celery_reports_tasks.sh"
+    scriptArg: "sh /app/scripts/run_celery_report_tasks.sh"
     deployment:
       deploymentEnabled: true
       terminationGracePeriodSeconds: 60
