@@ -27,7 +27,7 @@ runs:
       shell: bash
       run: |
         pushd helmfile
-        DB_ARGS="${{ inputs.db_args }}" helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} sync
+        helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} --state-values-set DB_ARGS="${{ inputs.db_args }}" sync
         IMAGE_TAG=$(helm get values ${{ inputs.app_label }} -n ${{ inputs.namespace }} -o json | jq -r '.image.tag')
         RELEASE_REVISION=$(helm list -n ${{ inputs.namespace }} -o json | jq -r '.[] | select(.name=="${{ inputs.app_label }}") | .revision')
         echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
