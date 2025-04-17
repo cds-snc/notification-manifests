@@ -1,4 +1,4 @@
-name: Dev - Manual DB Flask Command
+name: Dev - Manual DB Flask Commands
 
 on:
   workflow_dispatch:
