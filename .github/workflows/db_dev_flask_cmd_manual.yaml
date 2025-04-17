@@ -76,17 +76,17 @@ jobs:
 
       - name: Retrieve VPN Config
         run: |
-          scripts/createVPNConfig.sh staging 2> /dev/null  
+          scripts/createVPNConfig.sh dev 2> /dev/null  
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
         with:
-          config_file: /var/tmp/staging.ovpn
+          config_file: /var/tmp/dev.ovpn
           echo_config: false            
 
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging 
+          aws eks update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev 
 
       - name: Load Context Variables
         run: |
@@ -95,7 +95,7 @@ jobs:
       - name: Run Database Downgrade Helmfile Sync
         uses: ./.github/actions/db-migration
         with:
-          environment: "staging"
+          environment: "dev"
           namespace: "notification-canada-ca"
           app_label: "notify-database"
           timeout: "400s"
