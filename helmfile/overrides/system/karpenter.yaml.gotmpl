@@ -12,6 +12,6 @@ nodeClass:
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND
 
-{{ if eq .Environment.Name "dev" }}
+{{ if not (eq .Environment.Name "production") }}
 upgrade: true
 {{ end }}
