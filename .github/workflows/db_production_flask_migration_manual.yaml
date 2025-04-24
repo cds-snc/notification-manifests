@@ -1,7 +1,19 @@
-name: Production - Manual DB Upgrade
+name: Production - Manual DB Flask Command
 
 on:
   workflow_dispatch:
+    inputs:
+      password:
+        description: "Enter the password - can be found here: https://start.1password.com/open/i?a=BZ4RYZZICJEKNOF4Z6ASRX2XXI&v=ppnxsriom3alsxj4ogikyjxlzi&i=i5kfypu7grhf5lc2bu4mi4yque&h=cds-snc.1password.ca"
+        required: true
+        default: ""
+      flask_command:
+        description: "Select the Flask command to run"
+        required: true
+        type: choice
+        options:
+          - upgrade
+          - downgrade
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -10,7 +22,7 @@ env:
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   
 jobs:
-  helmfile-apply:
+  helmfile-database-job:
     runs-on: ubuntu-latest
     steps:
 
@@ -76,11 +88,12 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
 
-      - name: Run Database Upgrade Helmfile Sync
-        uses: ./.github/actions/db-upgrade
+      - name: Run Database Downgrade Helmfile Sync
+        uses: ./.github/actions/db-migration
         with:
           environment: "production"
           namespace: "notification-canada-ca"
           app_label: "notify-database"
           timeout: "400s"
+          db_args: "${{ inputs.flask_command }}"
 

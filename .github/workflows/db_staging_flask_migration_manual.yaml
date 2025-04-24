@@ -1,7 +1,15 @@
-name: Staging - Manual DB Upgrade
+name: Staging - Manual DB Flask Command
 
 on:
   workflow_dispatch:
+    inputs:
+      flask_command:
+        description: "Select the Flask command to run"
+        required: true
+        type: choice
+        options:
+          - upgrade
+          - downgrade
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -10,7 +18,7 @@ env:
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
 
 jobs:
-  helmfile-apply:
+  helmfile-database-job:
     runs-on: ubuntu-latest
     steps:
 
@@ -76,10 +84,11 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
              
-      - name: Run Database Upgrade Helmfile Sync
-        uses: ./.github/actions/db-upgrade
+      - name: Run Database Downgrade Helmfile Sync
+        uses: ./.github/actions/db-migration
         with:
           environment: "staging"
           namespace: "notification-canada-ca"
           app_label: "notify-database"
           timeout: "400s"
+          db_args: "${{ inputs.flask_command }}"

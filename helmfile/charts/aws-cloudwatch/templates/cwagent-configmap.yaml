@@ -8,7 +8,13 @@ data:
   cwagentconfig.json: |
     {	
       "agent":{	
-          "region":"ca-central-1"	
+          {{ if .Values.debug}}
+          "region": "ca-central-1",
+          "debug": true,
+          "aws_sdk_log_level": "LogDebug"
+          {{ else }}
+          "region": "ca-central-1"
+          {{ end }}
       },	
       "logs":{	
           "metrics_collected":{	

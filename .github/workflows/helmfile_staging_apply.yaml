@@ -83,7 +83,7 @@ jobs:
             ./helmfile/getContext.sh -g
              
       - name: Run Database Upgrade Helmfile Sync
-        uses: ./.github/actions/db-upgrade
+        uses: ./.github/actions/db-migration
         with:
           environment: "staging"
           namespace: "notification-canada-ca"
