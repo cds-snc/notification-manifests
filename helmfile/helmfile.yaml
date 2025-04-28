@@ -129,7 +129,7 @@ releases:
       category: system
       step: 0
     chart: oci://public.ecr.aws/karpenter/karpenter-crd
-    {{ if not (eq .Environment.Name "production") }}
+    {{ if eq .Environment.Name "dev" }}
     version: 1.3.2
     {{ else }}
     version: 0.36.1
@@ -143,7 +143,7 @@ releases:
       category: system
       step: 1
     chart: oci://public.ecr.aws/karpenter/karpenter
-    {{ if not (eq .Environment.Name "production") }}
+    {{ if eq .Environment.Name "dev" }}
     version: 1.3.2
     {{ else }}
     version: 0.36.1
