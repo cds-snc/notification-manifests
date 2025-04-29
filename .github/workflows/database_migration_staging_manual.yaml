@@ -1,4 +1,4 @@
-name: Staging - Manual DB Flask Command
+name: Staging - Database Migration Manual (Flask Commands)
 
 on:
   workflow_dispatch:

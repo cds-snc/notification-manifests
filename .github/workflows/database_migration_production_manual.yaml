@@ -1,10 +1,10 @@
-name: Production - Manual DB Flask Command
+name: Production - Database Migration Manual (Flask Commands)
 
 on:
   workflow_dispatch:
     inputs:
       password:
-        description: "Enter the password - can be found here: https://start.1password.com/open/i?a=BZ4RYZZICJEKNOF4Z6ASRX2XXI&v=ppnxsriom3alsxj4ogikyjxlzi&i=i5kfypu7grhf5lc2bu4mi4yque&h=cds-snc.1password.ca"
+        description: "Enter the password - [1Password link](https://start.1password.com/open/i?a=BZ4RYZZICJEKNOF4Z6ASRX2XXI&v=ppnxsriom3alsxj4ogikyjxlzi&i=i5kfypu7grhf5lc2bu4mi4yque&h=cds-snc.1password.ca)"
         required: true
         default: ""
       flask_command:
@@ -37,6 +37,13 @@ jobs:
           aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
+
+      - name: Validate Password
+        run: |
+          if [ "${{ inputs.password }}" != "${{ secrets.PRODUCTION_MANUAL_MIGRATION }}" ]; then
+            echo "Invalid password provided. Exiting."
+            exit 1
+          fi
 
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
