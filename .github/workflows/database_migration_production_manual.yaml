@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       password:
-        description: "Enter the password - can be found here: https://start.1password.com/open/i?a=BZ4RYZZICJEKNOF4Z6ASRX2XXI&v=ppnxsriom3alsxj4ogikyjxlzi&i=i5kfypu7grhf5lc2bu4mi4yque&h=cds-snc.1password.ca"
+        description: "Enter the password - [1Password link](https://start.1password.com/open/i?a=BZ4RYZZICJEKNOF4Z6ASRX2XXI&v=ppnxsriom3alsxj4ogikyjxlzi&i=i5kfypu7grhf5lc2bu4mi4yque&h=cds-snc.1password.ca)"
         required: true
         default: ""
       flask_command:
