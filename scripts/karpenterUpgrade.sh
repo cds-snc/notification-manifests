@@ -5,6 +5,11 @@
 # This should only be used if you can not smoothly upgrade with Helmfile.
 # It will delete all the existing CRDs and Karpenter resources
 # and then reapply the new CRDs and resources
+#
+# Make sure to update helmfile.yaml with the new version of Karpenter
+# and the new version of the CRDs before running this script.
+#
+# Usage: ./karpenterUpgrade.sh <environment>
 
 ENVIRONMENT=$1
 if [ -z "$ENVIRONMENT" ]; then
