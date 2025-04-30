@@ -104,3 +104,7 @@ secretProviderClass:
         objectName: INTERNAL_DNS_CERT_BASE64
       secretName: nginx
       type: kubernetes.io/tls
+
+dockerhub:
+  username: "changeme"
+  pat: "changeme"
