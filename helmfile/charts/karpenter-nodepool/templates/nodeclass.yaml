@@ -14,3 +14,8 @@ spec:
         karpenter.sh/discovery: "{{ .Values.settings.clusterName }}" # replace with your cluster name
   amiSelectorTerms:
     - alias: al2023@latest # Amazon Linux 2023
+  metadataOptions:
+    httpEndpoint: enabled
+    httpProtocolIPv6: disabled
+    httpPutResponseHopLimit: 2
+    httpTokens: required
