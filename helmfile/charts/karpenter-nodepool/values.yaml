@@ -22,6 +22,4 @@ nodePool:
 nodeClass:
   name: notify-karpenter
   roleName: eks-worker-role
-  amiFamily: AL2
-  amiSelectorTerms:
-    - id: "ami-02aa678d778b79aea"
+  amiId: ami-0c55b159cbfafe1f0
