@@ -31,7 +31,7 @@ image:
 
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
-  password: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
+  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
 
 serviceAccount:
   annotations:
