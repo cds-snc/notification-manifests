@@ -326,3 +326,17 @@ releases:
     version: 3.12.2
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
+
+{{ if not (eq .Environment.Name "production") }}
+  - name: nidhogg
+    namespace: kube-system
+    labels:
+      app: nidhogg
+      tier: backend
+      category: system
+      step: 1
+    chart: oci://ghcr.io/pelotech/charts/nidhogg
+    version: 0.6.6
+    values:
+    - ./overrides/system/nidhogg.yaml.gotmpl
+{{ end }}
