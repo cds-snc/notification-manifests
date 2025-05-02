@@ -29,6 +29,10 @@ spec:
         - key: "karpenter.k8s.aws/instance-cpu"
           operator: In
           values: {{ .Values.nodePool.instanceCPU }}
+      {{ with .Values.startupTaints}}
+      startupTaints:
+        {{ toYaml . | nindent 8}}
+      {{ end}}                                     
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
