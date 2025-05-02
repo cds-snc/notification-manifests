@@ -56,6 +56,13 @@ tolerations:
   - key: "nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent"
     operator: "Exists"
     effect: "NoSchedule"        
+  - key: "nidhogg.uswitch.com/amazon-cloudwatch.ebs-csi-node"
+    operator: "Exists"
+    effect: "NoSchedule"    
+  - key: "nidhogg.uswitch.com/amazon-cloudwatch.secrets-store-csi-driver"
+    operator: "Exists"
+    effect: "NoSchedule"        
+
 
 terminationGracePeriodSeconds: 10
 
