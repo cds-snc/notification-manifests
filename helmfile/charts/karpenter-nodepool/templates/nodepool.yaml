@@ -29,9 +29,10 @@ spec:
         - key: "karpenter.k8s.aws/instance-cpu"
           operator: In
           values: {{ .Values.nodePool.instanceCPU }}
+      {{ with .Values.startupTaints}}
       startupTaints:
-        - key: nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent
-          effect: NoSchedule
+        {{ toYaml . | nindent 8}}
+      {{ end}}                                     
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
