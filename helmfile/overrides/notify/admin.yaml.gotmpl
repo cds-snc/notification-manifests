@@ -63,6 +63,10 @@ adminSecrets:
 image:
   tag: "{{ .StateValues.ADMIN_DOCKER_TAG }}"
 
+dockerhub:
+  username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
+  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
+
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/admin-eks-role

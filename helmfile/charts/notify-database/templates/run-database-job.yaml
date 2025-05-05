@@ -1,10 +1,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: notify-db-upgrade-{{ .Values.image.tag }}-{{ .Release.Revision }}
+  name: notify-db-migration-job-{{ .Values.image.tag }}-{{ .Release.Revision }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: notify-db-upgrade
+    app: notify-db-migration
     tier: database
     release: {{ .Release.Name }}
 spec:
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: notify-db-upgrade
+        app: notify-db-migration
         tier: database
     spec:
       restartPolicy: OnFailure
@@ -34,10 +34,10 @@ spec:
                   name: notify-api
                   key: POSTGRES_HOST
       containers:
-        - name: db-upgrade
+        - name: db-migration
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["poetry"]
-          args: ["run", "flask", "db", "upgrade"]
+          args: ["run", "flask", "db", "{{ .Values.database.args }}"]
           env:
             # Common ENV Variables
             {{- range $key, $val := .Values.api }}

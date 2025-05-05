@@ -56,6 +56,10 @@ celerySecrets:
 image: 
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
 
+dockerhub:
+  username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
+  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
+
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/celery-eks-role

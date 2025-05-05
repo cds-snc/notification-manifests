@@ -4,3 +4,4 @@ image:
 serviceAccount:
   name: cloudwatch-agent
 clusterName: notification-canada-ca-dev-eks-cluster
+debug: false

@@ -84,8 +84,15 @@ apiSecrets:
   DOCUMENT_DOWNLOAD_API_KEY: MANIFEST_DOCUMENT_DOWNLOAD_API_KEY
   CACHE_CLEAR_CLIENT_SECRET: MANIFEST_CACHE_CLEAR_CLIENT_SECRET
 
+database:
+  args: {{ .StateValues.DB_ARGS }}
+
 image: 
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
+
+dockerhub:
+  username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
+  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
 
 serviceAccount:
   annotations:
