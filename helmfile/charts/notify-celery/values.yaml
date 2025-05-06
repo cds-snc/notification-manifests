@@ -130,9 +130,9 @@ nodes:
       priorityClassName: high-priority
       nodeSelector:
         eks.amazonaws.com/capacityType: ON_DEMAND
-      replicas: 2
+      replicas: 1
     pdb:
-      pdbEnabled: true
+      pdbEnabled: false
       minAvailable: 1
     autoscaling:
       hpaEnabled: false
