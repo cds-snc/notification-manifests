@@ -128,6 +128,13 @@ jobs:
           alias-name: latest
           function-name: system_status
 
+      - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
+        if: env.ENV_DIFF != '0' && ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: ses_to_sqs_email_callbacks
+
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
