@@ -1,5 +1,5 @@
 global:
-    licenseKey: {{ requiredEnv "NEWRELIC_LICENSE_KEY" }}
+    licenseKey: "{{ requiredEnv "MANIFEST_NEW_RELIC_LICENSE_KEY" }}"
     cluster: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
     priorityClassName: system-cluster-critical
 
