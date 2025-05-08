@@ -1,5 +1,5 @@
-name: "Database Upgrade Helmfile Sync"
-description: "Sync Helmfile for database upgrade and wait for the job to complete."
+name: "Database Job Helmfile Sync"
+description: "Sync Helmfile for database migration and wait for the job to complete."
 inputs:
   environment:
     description: "The Helmfile environment to use (e.g., staging)."
@@ -14,16 +14,20 @@ inputs:
     description: "Timeout for waiting for the job to complete (e.g., 400s)."
     required: false
     default: "400s"
+  db_args:
+    description: "Additional arguments for the database migration command."
+    required: false
+    default: "upgrade"
 
 runs:
   using: "composite"
   steps:
-    - name: Helmfile Sync Database Upgrade
+    - name: Helmfile Sync Database Job
       id: helmfile_apply
       shell: bash
       run: |
         pushd helmfile
-        helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} sync
+        helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} --state-values-set DB_ARGS="${{ inputs.db_args }}" sync
         IMAGE_TAG=$(helm get values ${{ inputs.app_label }} -n ${{ inputs.namespace }} -o json | jq -r '.image.tag')
         RELEASE_REVISION=$(helm list -n ${{ inputs.namespace }} -o json | jq -r '.[] | select(.name=="${{ inputs.app_label }}") | .revision')
         echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
@@ -37,6 +41,6 @@ runs:
         RELEASE_REVISION: ${{ steps.helmfile_apply.outputs.release_revision }}
       run: |
         echo "Using image tag: ${IMAGE_TAG}"
-        kubectl wait --for=condition=complete job/notify-db-upgrade-${IMAGE_TAG}-${RELEASE_REVISION} \
+        kubectl wait --for=condition=complete job/notify-db-migration-job-${IMAGE_TAG}-${RELEASE_REVISION} \
           -n ${{ inputs.namespace }} \
           --timeout=${{ inputs.timeout }}

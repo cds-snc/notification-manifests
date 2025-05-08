@@ -1,132 +1,35 @@
-apiVersion: karpenter.sh/v1beta1
+apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: {{ .Values.nodePool.name}}
+  annotations:
+    kubernetes.io/description: "NodePool for provisioning spot capacity"
 spec:
-  # Template section that describes how to template out NodeClaim resources that Karpenter will provision
-  # Karpenter will consider this template to be the minimum requirements needed to provision a Node using this NodePool
-  # It will overlay this NodePool with Pods that need to schedule to further constrain the NodeClaims
-  # Karpenter will provision to launch new Nodes for the cluster
   template:
-    metadata:
-      # Annotations are arbitrary key-values that are applied to all nodes
-      annotations:
-      {{- with .Values.nodePool.annotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
     spec:
-      # References the Cloud Provider's NodeClass resource, see your cloud provider specific documentation
-      nodeClassRef:
-        apiVersion: karpenter.k8s.aws/v1beta1
-        kind: EC2NodeClass
-        name: {{ .Values.nodeClass.name}}
-
-      {{ if .Values.nodePool.taints }}
-      # Provisioned nodes will have these taints
-      # Taints may prevent pods from scheduling if they are not tolerated by the pod.
-      taints:
-        {{- toYaml .Values.nodePool.taints | nindent 8 }}
-      {{ end }}
-      # Provisioned nodes will have these taints, but pods do not need to tolerate these taints to be provisioned by this
-      # NodePool. These taints are expected to be temporary and some other entity (e.g. a DaemonSet) is responsible for
-      # removing the taint after it has finished initializing the node.
-      {{ if .Values.nodePool.startupTaints }}
-      startupTaints:
-        {{- toYaml .Values.nodePool.startupTaints | nindent 8 }}
-      {{ end }}
-      # Requirements that constrain the parameters of provisioned nodes.
-      # These requirements are combined with pod.spec.topologySpreadConstraints, pod.spec.affinity.nodeAffinity, pod.spec.affinity.podAffinity, and pod.spec.nodeSelector rules.
-      # Operators { In, NotIn, Exists, DoesNotExist, Gt, and Lt } are supported.
-      # https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#operators
       requirements:
-        - key: "karpenter.k8s.aws/instance-category"
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: {{ .Values.nodePool.capacityTypes }}
+        - key: kubernetes.io/arch
+          operator: In
+          values: ["amd64"]
+        - key: kubernetes.io/os
+          operator: In
+          values: ["linux"]
+        - key: karpenter.k8s.aws/instance-category
           operator: In
           values: {{ .Values.nodePool.instanceCategories }}
+        - key: karpenter.k8s.aws/instance-generation
+          operator: Gt
+          values: ["2"]
         - key: "karpenter.k8s.aws/instance-family"
           operator: In
-          values: {{ .Values.nodePool.instanceFamily }}
+          values: {{ .Values.nodePool.instanceFamily }}          
         - key: "karpenter.k8s.aws/instance-cpu"
           operator: In
           values: {{ .Values.nodePool.instanceCPU }}
-        - key: "karpenter.k8s.aws/instance-hypervisor"
-          operator: In
-          values: ["nitro"]
-        - key: "karpenter.k8s.aws/instance-generation"
-          operator: Gt
-          values: ["2"]
-        - key: "topology.kubernetes.io/zone"
-          operator: In
-          values: {{ .Values.nodePool.zones }}
-        - key: "kubernetes.io/arch"
-          operator: In
-          values: ["amd64"]
-        - key: "karpenter.sh/capacity-type"
-          operator: In
-          values: {{ .Values.nodePool.capacityTypes }}
-
-      # # Karpenter provides the ability to specify a few additional Kubelet args.
-      # # These are all optional and provide support for additional customization and use cases.
-      # kubelet:
-      #   clusterDNS: ["10.0.1.100"]
-      #   systemReserved:
-      #     cpu: 100m
-      #     memory: 100Mi
-      #     ephemeral-storage: 1Gi
-      #   kubeReserved:
-      #     cpu: 200m
-      #     memory: 100Mi
-      #     ephemeral-storage: 3Gi
-      #   evictionHard:
-      #     memory.available: 5%
-      #     nodefs.available: 10%
-      #     nodefs.inodesFree: 10%
-      #   evictionSoft:
-      #     memory.available: 500Mi
-      #     nodefs.available: 15%
-      #     nodefs.inodesFree: 15%
-      #   evictionSoftGracePeriod:
-      #     memory.available: 1m
-      #     nodefs.available: 1m30s
-      #     nodefs.inodesFree: 2m
-      #   evictionMaxPodGracePeriod: 60
-      #   imageGCHighThresholdPercent: 85
-      #   imageGCLowThresholdPercent: 80
-      #   cpuCFSQuota: true
-      #   podsPerCore: 2
-      #   maxPods: 20
-
-  # Disruption section which describes the ways in which Karpenter can disrupt and replace Nodes
-  # Configuration in this section constrains how aggressive Karpenter can be with performing operations
-  # like rolling Nodes due to them hitting their maximum lifetime (expiry) or scaling down nodes to reduce cluster cost
-  disruption:
-    # Describes which types of Nodes Karpenter should consider for consolidation
-    # If using 'WhenUnderutilized', Karpenter will consider all nodes for consolidation and attempt to remove or replace Nodes when it discovers that the Node is underutilized and could be changed to reduce cost
-    # If using `WhenEmpty`, Karpenter will only consider nodes for consolidation that contain no workload pods
-    consolidationPolicy: {{ .Values.nodePool.disruption.consolidationPolicy }}
-
-    # The amount of time Karpenter should wait after discovering a consolidation decision
-    # This value can currently only be set when the consolidationPolicy is 'WhenEmpty'
-    # You can choose to disable consolidation entirely by setting the string value 'Never' here
-    consolidateAfter: {{ .Values.nodePool.disruption.consolidateAfter }}
-
-    # The amount of time a Node can live on the cluster before being removed
-    # Avoiding long-running Nodes helps to reduce security vulnerabilities as well as to reduce the chance of issues that can plague Nodes with long uptimes such as file fragmentation or memory leaks from system processes
-    # You can choose to disable expiration entirely by setting the string value 'Never' here
-    expireAfter: {{ .Values.nodePool.disruption.expireAfter }}
-
-    # Budgets control the speed Karpenter can scale down nodes.
-    # Karpenter will respect the minimum of the currently active budgets, and will round up
-    # when considering percentages. Duration and Schedule must be set together.
-    budgets:
-      {{- toYaml .Values.nodePool.disruption.budgets | nindent 6 }}
-
-  # Resource limits constrain the total size of the pool.
-  # Limits prevent Karpenter from creating new instances once the limit is exceeded.
-  limits:
-    cpu: {{ .Values.nodePool.limits.cpu }}
-    memory: {{ .Values.nodePool.limits.memory }}
-
-  # Priority given to the NodePool when the scheduler considers which NodePool
-  # to select. Higher weights indicate higher priority when comparing NodePools.
-  # Specifying no weight is equivalent to specifying a weight of 0.
-  weight: {{ .Values.nodePool.weight }}
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: {{ .Values.nodeClass.name}}

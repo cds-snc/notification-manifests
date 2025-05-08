@@ -131,7 +131,7 @@ releases:
       category: system
       step: 0
     chart: oci://public.ecr.aws/karpenter/karpenter-crd
-    version: 0.36.1
+    version: 1.3.2
 
   - name: karpenter
     namespace: karpenter
@@ -141,7 +141,7 @@ releases:
       category: system
       step: 1
     chart: oci://public.ecr.aws/karpenter/karpenter
-    version: 0.36.1
+    version: 1.3.2
     values:
     - ./overrides/system/karpenter.yaml.gotmpl
 

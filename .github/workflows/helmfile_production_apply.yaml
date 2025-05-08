@@ -14,7 +14,7 @@ env:
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:15d822e
+  API_LAMBDA_IMAGE: api-lambda:a2831c4
   HEARTBEAT_IMAGE: heartbeat:d4082e9
   SYSTEM_STATUS_IMAGE: system_status:feaaf98
 
@@ -86,7 +86,7 @@ jobs:
             ./helmfile/getContext.sh -g
 
       - name: Run Database Upgrade Helmfile Sync
-        uses: ./.github/actions/db-upgrade
+        uses: ./.github/actions/db-migration
         with:
           environment: "production"
           namespace: "notification-canada-ca"

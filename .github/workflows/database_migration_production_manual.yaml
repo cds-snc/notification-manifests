@@ -1,16 +1,28 @@
-name: Staging - Manual DB Upgrade
+name: Production - Database Migration Manual (Flask Commands)
 
 on:
   workflow_dispatch:
+    inputs:
+      password:
+        description: "Enter the password - [1Password link](https://start.1password.com/open/i?a=BZ4RYZZICJEKNOF4Z6ASRX2XXI&v=ppnxsriom3alsxj4ogikyjxlzi&i=i5kfypu7grhf5lc2bu4mi4yque&h=cds-snc.1password.ca)"
+        required: true
+        default: ""
+      flask_command:
+        description: "Select the Flask command to run"
+        required: true
+        type: choice
+        options:
+          - upgrade
+          - downgrade
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
-  STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
-
+  PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
+  
 jobs:
-  helmfile-apply:
+  helmfile-database-job:
     runs-on: ubuntu-latest
     steps:
 
@@ -22,21 +34,28 @@ jobs:
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
         id: awsconfig
         with:
-          aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
+
+      - name: Validate Password
+        run: |
+          if [ "${{ inputs.password }}" != "${{ secrets.PRODUCTION_MANUAL_MIGRATION }}" ]; then
+            echo "Invalid password provided. Exiting."
+            exit 1
+          fi
 
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           # Fetches entire history, so we can analyze commits since last tag
-          fetch-depth: 0        
+          fetch-depth: 0
 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
         with:
           install-kubectl: yes
-          install-helm: yes        
+          install-helm: yes       
           helmfile-version: "v0.151.0"
           helm-s3-plugin-version: "v0.16.2"
 
@@ -45,41 +64,43 @@ jobs:
           sudo apt update
           sudo apt install -y openvpn openvpn-systemd-resolved
 
-      - name: Install 1Pass CLI
-        run: |
-          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
-          sudo dpkg -i 1pass.deb 
-
       - name: Setup Terraform tools
         uses: cds-snc/terraform-tools-setup@v1
         env: # In case you want to override default versions
           CONFTEST_VERSION: 0.30.0 
           TERRAFORM_VERSION: 1.9.5
           TERRAGRUNT_VERSION: 0.66.9
-          TF_SUMMARIZE_VERSION: 0.2.3                    
+          TF_SUMMARIZE_VERSION: 0.2.3                           
+
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb 
 
       - name: Retrieve VPN Config
         run: |
-          scripts/createVPNConfig.sh staging 2> /dev/null  
+          scripts/createVPNConfig.sh production 2> /dev/null   
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
         with:
-          config_file: /var/tmp/staging.ovpn
+          config_file: /var/tmp/production.ovpn
           echo_config: false            
 
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging 
+          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias production
 
       - name: Load Context Variables
         run: |
             ./helmfile/getContext.sh -g
-             
-      - name: Run Database Upgrade Helmfile Sync
-        uses: ./.github/actions/db-upgrade
+
+      - name: Run Database ${{ inputs.flask_command }} Helmfile Sync
+        uses: ./.github/actions/db-migration
         with:
-          environment: "staging"
+          environment: "production"
           namespace: "notification-canada-ca"
           app_label: "notify-database"
           timeout: "400s"
+          db_args: "${{ inputs.flask_command }}"
+

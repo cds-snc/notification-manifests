@@ -1,5 +1,6 @@
 settings:
   clusterName: notification-canada-ca-dev-eks-cluster
+ugprade: false
 nodePool:
   name: notify-karpenter
   annotations: {}

@@ -5,9 +5,5 @@ serviceAccount:
 settings:
   clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
 
-nodeClass:
-  amiSelectorTerms:
-    - id: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
-
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND

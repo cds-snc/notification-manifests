@@ -111,7 +111,33 @@ nodes:
     autoscaling:
       hpaEnabled: false
     service:
-      serviceEnabled: true      
+      serviceEnabled: true
+  # CELERY FOR CREATING REPORTS
+  generate-reports-static:
+    name: generate-reports-static
+    newRelicAppName: "notification-celery-generate-reports-static-dev"
+    scriptArg: "sh /app/scripts/run_celery_report_tasks.sh"
+    deployment:
+      deploymentEnabled: true
+      terminationGracePeriodSeconds: 60
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "400Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+      priorityClassName: high-priority
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+      replicas: 1
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
+    autoscaling:
+      hpaEnabled: false
+    service:
+      serviceEnabled: true
   # SCALABLE CONFIGS
   # CELERY FOR CORE TASKS
   core-tasks-scalable:
@@ -297,3 +323,7 @@ secretProviderClass:
           objectName: INTERNAL_DNS_CERT_BASE64
       secretName: nginx
       type: kubernetes.io/tls
+
+dockerhub:
+  username: "changeme"
+  pat: "changeme"
