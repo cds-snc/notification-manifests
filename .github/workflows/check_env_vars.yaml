@@ -17,7 +17,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
       - id: set-matrix
         run: echo "::set-output name=matrix::$(ls helmfile/overrides/*.env | grep -v $PRODUCTION_ENV_VAR_FILE | jq -R -s -c 'split("\n")[:-1]')"
 
