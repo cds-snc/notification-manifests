@@ -7,6 +7,7 @@ admin:
   ASSET_DOMAIN: "assets.{{ requiredEnv "BASE_DOMAIN" }}"
   BULK_SEND_AWS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-bulk-send"
   CSV_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
+  REPORTS_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-reports"
   IP_GEOLOCATE_SERVICE: "http://ipv4-geolocate.{{ .Release.Namespace }}.svc.cluster.local:8080"
   API_HOST_NAME: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
   ADMIN_BASE_URL: "{{ requiredEnv "BASE_DOMAIN" }}"
@@ -64,7 +65,7 @@ image:
 
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
-  password: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
+  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
 
 serviceAccount:
   annotations:
