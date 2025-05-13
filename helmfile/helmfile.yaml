@@ -329,7 +329,7 @@ releases:
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
 
-  {{ if ne .Environment.Name "production" }}
+  {{ if eq .Environment.Name "dev" }}
   - name: newrelic
     namespace: newrelic
     disableValidationOnInstall: true
