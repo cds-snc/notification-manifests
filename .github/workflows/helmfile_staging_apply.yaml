@@ -90,12 +90,20 @@ jobs:
           app_label: "notify-database"
           timeout: "400s"
 
+      - name: Helmfile apply CRDs
+        id: helmfile_apply
+        if: ${{ success() }}
+        run: |
+          pushd helmfile
+          helmfile --environment staging -l 'tier=crd' sync
+          popd
+
       - name: Helmfile apply
         id: helmfile_apply
         if: ${{ success() }}
         run: |
           pushd helmfile
-          helmfile --environment staging -l 'app!=notify-database' sync
+          helmfile --environment staging -l 'app!=notify-database,tier!=crd' sync
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
