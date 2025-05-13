@@ -93,12 +93,20 @@ jobs:
           app_label: "notify-database"
           timeout: "400s"
 
+      - name: Helmfile apply CRDs
+        id: helmfile_apply
+        if: ${{ success() }}
+        run: |
+          pushd helmfile
+          helmfile --environment production -l 'tier=crd' sync
+          popd          
+
       - name: Helmfile apply
         if: ${{ success() }}
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment production -l 'app!=notify-database' sync
+          helmfile --environment production -l 'app!=notify-database,tier!=crd' sync
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
@@ -187,4 +195,4 @@ jobs:
         if: ${{ failure() }}
         run: |
           json='{"text":"<!here> CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
-          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}      
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}

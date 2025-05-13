@@ -299,7 +299,7 @@ releases:
     disableValidation: true 
     labels:
       app: crds
-      tier: backend
+      tier: crd
       category: system
       step: 0
     chart: charts/crds
@@ -336,7 +336,7 @@ releases:
     disableValidation: true 
     labels:
       app: newrelic
-      tier: backend
+      tier: crd
       category: system
       step: 1
     chart: newrelic/nri-bundle
