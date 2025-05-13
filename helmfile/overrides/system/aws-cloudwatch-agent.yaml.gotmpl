@@ -5,3 +5,16 @@ image:
     tag: 1.300053.0b1046
 debug: true
 {{ end }}
+tolerations:
+  - key: "nidhogg.uswitch.com/amazon-cloudwatch.fb-agent-fluent-bit"
+    operator: "Exists"
+    effect: "NoSchedule"    
+  - key: "nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent"
+    operator: "Exists"
+    effect: "NoSchedule"        
+  - key: "nidhogg.uswitch.com/amazon-cloudwatch.ebs-csi-node"
+    operator: "Exists"
+    effect: "NoSchedule"    
+  - key: "nidhogg.uswitch.com/amazon-cloudwatch.secrets-store-csi-driver"
+    operator: "Exists"
+    effect: "NoSchedule"        

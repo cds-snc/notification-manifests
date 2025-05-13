@@ -1,0 +1,13 @@
+configuration:
+  daemonsets:
+    - name: aws-cloudwatch-agent
+      namespace: amazon-cloudwatch
+    - name: ebs-csi-node
+      namespace: kube-system
+    - name: fb-agent-fluent-bit
+      namespace: amazon-cloudwatch
+    - name: secrets-store-csi-driver
+      namespace: kube-system
+
+  nodeSelector:
+  - "karpenter.sh/capacity-type in (spot)"

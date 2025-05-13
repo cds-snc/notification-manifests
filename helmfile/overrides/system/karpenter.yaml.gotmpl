@@ -8,5 +8,15 @@ settings:
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND
 
+startupTaints:
+  - key: nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent
+    effect: NoSchedule
+  - key: nidhogg.uswitch.com/amazon-cloudwatch.ebs-csi-node
+    effect: NoSchedule
+  - key: nidhogg.uswitch.com/amazon-cloudwatch.fb-agent-fluent-bit
+    effect: NoSchedule
+  - key: nidhogg.uswitch.com/amazon-cloudwatch.secrets-store-csi-driver
+    effect: NoSchedule   
 nodeClass:
   amiId: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
+

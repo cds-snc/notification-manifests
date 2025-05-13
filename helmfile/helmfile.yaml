@@ -329,7 +329,21 @@ releases:
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
 
-  {{ if ne .Environment.Name "production" }}
+{{ if not (eq .Environment.Name "production") }}
+  - name: nidhogg
+    namespace: kube-system
+    labels:
+      app: nidhogg
+      tier: backend
+      category: system
+      step: 1
+    chart: oci://ghcr.io/pelotech/charts/nidhogg
+    version: 0.6.6
+    values:
+    - ./overrides/system/nidhogg.yaml.gotmpl
+{{ end }}
+
+{{ if not (eq .Environment.Name "production") }}
   - name: newrelic
     namespace: newrelic
     disableValidationOnInstall: true
@@ -353,4 +367,4 @@ releases:
       category: system
       step: 2
     chart: charts/newrelic-apm    
-  {{ end }}
+{{ end }}
