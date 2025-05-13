@@ -94,7 +94,7 @@ jobs:
           timeout: "400s"
 
       - name: Helmfile apply CRDs
-        id: helmfile_apply
+        id: helmfile_apply_crd
         if: ${{ success() }}
         run: |
           pushd helmfile
