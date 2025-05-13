@@ -40,6 +40,8 @@ repositories:
   url: https://aws.github.io/eks-charts
 - name: metrics-server
   url: https://kubernetes-sigs.github.io/metrics-server/
+- name: newrelic
+  url: https://helm-charts.newrelic.com
 
 releases:
   # Uses API overrides
@@ -297,7 +299,7 @@ releases:
     disableValidation: true 
     labels:
       app: crds
-      tier: backend
+      tier: crd
       category: system
       step: 0
     chart: charts/crds
@@ -339,4 +341,30 @@ releases:
     version: 0.6.6
     values:
     - ./overrides/system/nidhogg.yaml.gotmpl
+{{ end }}
+
+{{ if not (eq .Environment.Name "production") }}
+  - name: newrelic
+    namespace: newrelic
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: newrelic
+      tier: crd
+      category: system
+      step: 1
+    chart: newrelic/nri-bundle
+    values:
+    - ./overrides/system/newrelic.yaml.gotmpl 
+
+  - name: newrelic-apm
+    namespace: newrelic
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: newrelic
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/newrelic-apm    
 {{ end }}
