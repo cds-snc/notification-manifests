@@ -1,0 +1,36 @@
+global:
+    licenseKey: "{{ requiredEnv "MANIFEST_NEW_RELIC_LICENSE_KEY" }}"
+    cluster: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
+    priorityClassName: system-cluster-critical
+
+newrelic-infrastructure:
+    priviliged: true
+    ksm:
+        config:
+            selector: "app.kubernetes.io/name=kube-state-metrics"
+
+kube-state-metrics:
+    enabled: false
+
+kubeEvents:
+    enabled: true
+
+newrelic-prometheus-agent:
+    enabled: true
+    lowDataMode: true
+    config:
+        kubernetes:
+            integrations_filter:
+                enabled: false
+
+logging:
+    enabled: true
+
+newrelic-logging:
+    lowDataMode: true
+
+k8s-agents-operator:
+    enabled: true
+
+nri-metadata-injection:
+    enabled: true
