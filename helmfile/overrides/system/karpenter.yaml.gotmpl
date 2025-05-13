@@ -17,3 +17,6 @@ startupTaints:
     effect: NoSchedule
   - key: nidhogg.uswitch.com/amazon-cloudwatch.secrets-store-csi-driver
     effect: NoSchedule   
+nodeClass:
+  amiId: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
+
