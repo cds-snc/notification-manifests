@@ -88,6 +88,9 @@ database:
   args: {{ .StateValues.DB_ARGS }}
 
 image: 
+  {{ if eq .Environment.Name "staging" }}
+  repository: {{ requiredEnv "AWS_ACCOUNT_ID" }}.dkr.ecr.ca-central-1.amazonaws.com/notify/api
+  {{ end }}
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
 
 dockerhub:
