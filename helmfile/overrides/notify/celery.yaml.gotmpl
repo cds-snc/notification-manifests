@@ -54,11 +54,7 @@ celerySecrets:
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
 
 image: 
-  {{ if eq .Environment.Name "staging" }}
-  repository: {{ requiredEnv "AWS_ACCOUNT_ID" }}.dkr.ecr.ca-central-1.amazonaws.com/notify/api
-  {{ end }}
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
-
 
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
