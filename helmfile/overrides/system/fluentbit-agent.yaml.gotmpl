@@ -38,6 +38,9 @@ resources:
     cpu: 100m
     memory: 100Mi
 
+imagePullSecrets: 
+  - name: image-pull-secret
+
 tolerations:
   - key: "node-role.kubernetes.io/master"
     operator: "Exists"
