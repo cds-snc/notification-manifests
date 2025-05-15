@@ -167,7 +167,7 @@ nodes:
       maxReplicas: {{ if eq .Environment.Name "production" }} 10 {{ else if eq .Environment.Name "staging" }} 10 {{ else }} 10 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
-      scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}\
+      scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 60 {{ end }}
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
