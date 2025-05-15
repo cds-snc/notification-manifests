@@ -37,3 +37,9 @@ spec:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: {{ .Values.nodeClass.name}}
+      disruption:
+        consolidationPolicy: WhenEmpty
+        consolidateAfter: 30m
+        expireAfter: 24h
+        budgets:
+          - nodes: 10%

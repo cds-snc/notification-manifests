@@ -4,7 +4,9 @@ serviceAccount:
                                 
 settings:
   clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
-
+  {{ if eq .Environment.Name "staging" }}
+  spotToSpotConsolidation: true
+  {{ end }}
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND
 
