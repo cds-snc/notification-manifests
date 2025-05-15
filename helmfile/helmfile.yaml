@@ -356,7 +356,7 @@ releases:
     - ./overrides/system/nidhogg.yaml.gotmpl
 {{ end }}
 
-{{ if eq .Environment.Name "dev" }}
+{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
   - name: newrelic
     namespace: newrelic
     disableValidationOnInstall: true
