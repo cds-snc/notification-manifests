@@ -255,6 +255,19 @@ releases:
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
+  - name: image-pull-secrets
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: image-pull-secrets
+      tier: secrets
+      category: system
+      step: 1
+    chart: charts/image-pull-secrets
+    values:
+    - ./overrides/system/image-pull-secrets.yaml.gotmpl
+
   - name: fb-agent
     namespace: amazon-cloudwatch
     disableValidationOnInstall: true
@@ -343,7 +356,7 @@ releases:
     - ./overrides/system/nidhogg.yaml.gotmpl
 {{ end }}
 
-{{ if not (eq .Environment.Name "production") }}
+{{ if eq .Environment.Name "dev" }}
   - name: newrelic
     namespace: newrelic
     disableValidationOnInstall: true
