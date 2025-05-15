@@ -6,6 +6,12 @@ metadata:
     kubernetes.io/description: "NodePool for provisioning spot capacity"
 spec:
   template:
+    disruption:
+      consolidationPolicy: WhenEmpty
+      consolidateAfter: 30m
+      expireAfter: 24h
+      budgets:
+        - nodes: 10%
     spec:
       requirements:
         - key: karpenter.sh/capacity-type
@@ -37,9 +43,3 @@ spec:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: {{ .Values.nodeClass.name}}
-      disruption:
-        consolidationPolicy: WhenEmpty
-        consolidateAfter: 30m
-        expireAfter: 24h
-        budgets:
-          - nodes: 10%
