@@ -40,6 +40,6 @@ spec:
       disruption:
         consolidationPolicy: WhenEmpty
         consolidateAfter: 30m
-        expireAfter: 720h
+        expireAfter: 24h
         budgets:
           - nodes: 10%
