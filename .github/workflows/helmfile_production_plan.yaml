@@ -82,7 +82,7 @@ jobs:
         id: helmfile_diff
         run: |
           pushd helmfile
-          helmfile --environment production -l 'app!=notify-database' diff >> helm_diff.txt
+          helmfile --environment production -l 'app!=notify-database' diff --context 2 >> helm_diff.txt
           LENGTH=$(wc -m helm_diff.txt | awk '{print $1}')
           if (( $LENGTH < 65000 )); then
               PAYLOAD=$(cat helm_diff.txt)
