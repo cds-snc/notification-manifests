@@ -263,7 +263,7 @@ releases:
       app: image-pull-secrets
       tier: secrets
       category: system
-      step: 1
+      step: 2
     chart: charts/image-pull-secrets
     values:
     - ./overrides/system/image-pull-secrets.yaml.gotmpl
