@@ -23,9 +23,7 @@ startupTaints:
 nodeClass:
   amiId: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
 
-{{ if ne .Environment.Name "production" }}
 nodePool:
   instanceCategories: "['m', 'r', 'c']"
   instanceFamily: "['m7i', 'r7i', 'c7i']"
   instanceCPU: "['4']"
-{{ end }}
