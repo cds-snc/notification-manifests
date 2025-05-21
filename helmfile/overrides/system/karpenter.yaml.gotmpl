@@ -10,7 +10,6 @@ settings:
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND
 
-{{ if ne .Environment.Name "production" }}
 startupTaints:
   - key: nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent
     effect: NoSchedule
@@ -20,7 +19,7 @@ startupTaints:
     effect: NoSchedule
   - key: nidhogg.uswitch.com/amazon-cloudwatch.secrets-store-csi-driver
     effect: NoSchedule   
-{{ end }}
+
 nodeClass:
   amiId: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
 
