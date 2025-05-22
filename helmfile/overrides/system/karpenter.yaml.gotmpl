@@ -4,13 +4,11 @@ serviceAccount:
                                 
 settings:
   clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
-  {{ if eq .Environment.Name "staging" }}
   spotToSpotConsolidation: true
-  {{ end }}
+
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND
 
-{{ if ne .Environment.Name "production" }}
 startupTaints:
   - key: nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent
     effect: NoSchedule
@@ -20,13 +18,11 @@ startupTaints:
     effect: NoSchedule
   - key: nidhogg.uswitch.com/amazon-cloudwatch.secrets-store-csi-driver
     effect: NoSchedule   
-{{ end }}
+
 nodeClass:
   amiId: {{ requiredEnv "EKS_KARPENTER_AMI_ID" }}
 
-{{ if ne .Environment.Name "production" }}
 nodePool:
   instanceCategories: "['m', 'r', 'c']"
   instanceFamily: "['m7i', 'r7i', 'c7i']"
   instanceCPU: "['4']"
-{{ end }}

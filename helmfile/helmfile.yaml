@@ -342,7 +342,6 @@ releases:
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
 
-{{ if not (eq .Environment.Name "production") }}
   - name: nidhogg
     namespace: kube-system
     labels:
@@ -354,7 +353,6 @@ releases:
     version: 0.6.6
     values:
     - ./overrides/system/nidhogg.yaml.gotmpl
-{{ end }}
 
 {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
   - name: newrelic
