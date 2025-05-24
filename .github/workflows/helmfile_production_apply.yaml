@@ -42,7 +42,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@03233e1cd9b19b2ba320e431f7bcc0618db4248d # v2.0.0
+        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
         with:
           install-kubectl: yes
           install-helm: yes       
