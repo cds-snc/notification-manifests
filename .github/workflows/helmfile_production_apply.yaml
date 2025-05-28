@@ -17,6 +17,7 @@ env:
   API_LAMBDA_IMAGE: api-lambda:c229a76
   HEARTBEAT_IMAGE: heartbeat:d4082e9
   SYSTEM_STATUS_IMAGE: system_status:feaaf98
+  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:6f187fe
 
 jobs:
   helmfile-apply:
@@ -134,6 +135,14 @@ jobs:
           alias-name: latest
           function-name: system_status
           image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
+
+      - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
+        if: ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: ses_to_sqs_email_callbacks
+          image-uri: $PRIVATE_ECR/$SES_TO_SQS_EMAIL_CALLBACKS_IMAGE
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
