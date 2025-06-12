@@ -6,6 +6,12 @@ metadata:
     kubernetes.io/description: "NodePool for provisioning spot capacity"
 spec:
   template:
+    disruption:
+      consolidationPolicy: WhenEmpty
+      consolidateAfter: 30m
+      expireAfter: 24h
+      budgets:
+        - nodes: 10%
     spec:
       requirements:
         - key: karpenter.sh/capacity-type
@@ -29,6 +35,10 @@ spec:
         - key: "karpenter.k8s.aws/instance-cpu"
           operator: In
           values: {{ .Values.nodePool.instanceCPU }}
+      {{ with .Values.startupTaints}}
+      startupTaints:
+        {{ toYaml . | nindent 8}}
+      {{ end}}                                     
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass

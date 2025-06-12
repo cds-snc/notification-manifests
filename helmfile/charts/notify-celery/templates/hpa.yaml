@@ -18,7 +18,7 @@ spec:
     type: Resource
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: 0
+      stabilizationWindowSeconds: {{ $node.autoscaling.stabilizationWindowSeconds }}
       policies:
       - type: Pods
         value: {{ $node.autoscaling.scaleUpPodsValue }}

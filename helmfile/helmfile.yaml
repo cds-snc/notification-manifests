@@ -40,6 +40,8 @@ repositories:
   url: https://aws.github.io/eks-charts
 - name: metrics-server
   url: https://kubernetes-sigs.github.io/metrics-server/
+- name: newrelic
+  url: https://helm-charts.newrelic.com
 
 releases:
   # Uses API overrides
@@ -253,6 +255,19 @@ releases:
     values:
     - ./overrides/system/ipv4-geolocate.yaml.gotmpl
 
+  - name: image-pull-secrets
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: image-pull-secrets
+      tier: secrets
+      category: system
+      step: 2
+    chart: charts/image-pull-secrets
+    values:
+    - ./overrides/system/image-pull-secrets.yaml.gotmpl
+
   - name: fb-agent
     namespace: amazon-cloudwatch
     disableValidationOnInstall: true
@@ -297,7 +312,7 @@ releases:
     disableValidation: true 
     labels:
       app: crds
-      tier: backend
+      tier: crd
       category: system
       step: 0
     chart: charts/crds
@@ -326,3 +341,41 @@ releases:
     version: 3.12.2
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
+
+  - name: nidhogg
+    namespace: kube-system
+    labels:
+      app: nidhogg
+      tier: backend
+      category: system
+      step: 1
+    chart: oci://ghcr.io/pelotech/charts/nidhogg
+    version: 0.6.6
+    values:
+    - ./overrides/system/nidhogg.yaml.gotmpl
+
+{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
+  - name: newrelic
+    namespace: newrelic
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: newrelic
+      tier: crd
+      category: system
+      step: 1
+    chart: newrelic/nri-bundle
+    values:
+    - ./overrides/system/newrelic.yaml.gotmpl 
+
+  - name: newrelic-apm
+    namespace: newrelic
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: newrelic
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/newrelic-apm    
+{{ end }}

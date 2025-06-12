@@ -23,6 +23,7 @@
 - [ ] Admin
 - [ ] Documentation
 - [ ] Document download API
+- [ ] notification-lambdas
 
 ## Checklist if releasing new version
 
@@ -33,6 +34,7 @@
   - [ ] [admin](https://gallery.ecr.aws/v6b8u5o6/notify-admin)
   - [ ] [documentation](https://gallery.ecr.aws/v6b8u5o6/notify-documentation)
   - [ ] [document download API](https://gallery.ecr.aws/v6b8u5o6/notify-document-download-api)
+  - [ ] notification-lambdas ([heartbeat](https://ca-central-1.console.aws.amazon.com/ecr/repositories/private/296255494825/notify/heartbeat?region=ca-central-1), [ses_to_sqs_email_callbacks](https://ca-central-1.console.aws.amazon.com/ecr/repositories/private/296255494825/notify/ses_to_sqs_email_callbacks?region=ca-central-1), [system-status](https://ca-central-1.console.aws.amazon.com/ecr/repositories/private/296255494825/notify/system_status?region=ca-central-1))
 
 ## Checklist if making changes to Kubernetes
 

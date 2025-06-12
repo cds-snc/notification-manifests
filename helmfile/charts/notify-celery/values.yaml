@@ -132,8 +132,8 @@ nodes:
         eks.amazonaws.com/capacityType: ON_DEMAND
       replicas: 1
     pdb:
-      pdbEnabled: true
-      minAvailable: 2
+      pdbEnabled: false
+      minAvailable: 1
     autoscaling:
       hpaEnabled: false
     service:

@@ -91,11 +91,12 @@ jobs:
           timeout: "400s"
 
       - name: Helmfile apply
-        id: helmfile_apply
         if: ${{ success() }}
+        id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment staging -l 'app!=notify-database' sync
+          helmfile --environment staging -l 'tier=crd' apply
+          helmfile --environment staging -l 'app!=notify-database,tier!=crd' apply
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
@@ -127,6 +128,13 @@ jobs:
         with:
           alias-name: latest
           function-name: system_status
+
+      - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
+        if: env.ENV_DIFF != '0' && ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: ses_to_sqs_email_callbacks
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}

@@ -95,7 +95,7 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
 
-      - name: Run Database Downgrade Helmfile Sync
+      - name: Run Database ${{ inputs.flask_command }} Helmfile Sync
         uses: ./.github/actions/db-migration
         with:
           environment: "production"

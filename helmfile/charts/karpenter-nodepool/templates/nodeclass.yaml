@@ -12,8 +12,9 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         karpenter.sh/discovery: "{{ .Values.settings.clusterName }}" # replace with your cluster name
+  amiFamily: AL2023
   amiSelectorTerms:
-    - alias: al2023@latest # Amazon Linux 2023
+    - id: {{ .Values.nodeClass.amiId }}
   metadataOptions:
     httpEndpoint: enabled
     httpProtocolIPv6: disabled
