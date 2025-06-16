@@ -15,9 +15,9 @@ env:
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
   API_LAMBDA_IMAGE: api-lambda:c82006d
-  HEARTBEAT_IMAGE: heartbeat:0b48492
-  SYSTEM_STATUS_IMAGE: system_status:0b48492
-  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:0b48492
+  HEARTBEAT_IMAGE: heartbeat:b66e0f5
+  SYSTEM_STATUS_IMAGE: system_status:b66e0f5
+  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:b66e0f5
 
 jobs:
   helmfile-apply:
