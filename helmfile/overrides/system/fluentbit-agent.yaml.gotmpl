@@ -89,7 +89,6 @@ config:
         storage.backlog.mem_limit 5M
 
     @INCLUDE celery-log.conf
-    @INCLUDE notify-log.conf
     @INCLUDE dataplane-log.conf
     @INCLUDE host-log.conf
 
@@ -107,28 +106,6 @@ config:
         Refresh_Interval    10
         Rotate_Wait         30
         storage.type        filesystem
-        Read_from_Head      ${READ_FROM_HEAD}
-
-    [INPUT]
-        Name                tail
-        Tag                 application.*
-        Path                /var/log/containers/fluent-bit*
-        multiline.parser    docker, cri
-        DB                  /var/fluent-bit/state/flb_log.db
-        Mem_Buf_Limit       5MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
-        Read_from_Head      ${READ_FROM_HEAD}
-
-    [INPUT]
-        Name                tail
-        Tag                 application.*
-        Path                /var/log/containers/cloudwatch-agent*
-        multiline.parser    docker, cri
-        DB                  /var/fluent-bit/state/flb_cwagent.db
-        Mem_Buf_Limit       5MB
-        Skip_Long_Lines     On
-        Refresh_Interval    10
         Read_from_Head      ${READ_FROM_HEAD}
 
   filters: |
@@ -151,65 +128,13 @@ config:
     [OUTPUT]
         Name cloudwatch_logs
         Match application.*
-        region ${AWS_REGION} 
+        region ${AWS_REGION}
         log_stream_prefix fallback-stream
         log_group_name /aws/containerinsights/${CLUSTER_NAME}/application
         log_stream_template $kubernetes['container_name']
         auto_create_group on
 
   extraFiles:
-    notify-log.conf: |
-      [INPUT]
-          Name                tail
-          Tag                 application.*
-          Exclude_Path        /var/log/containers/cloudwatch-agent*, /var/log/containers/fluent-bit*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*, /var/log/containers/notify-celery*
-          Path                /var/log/containers/*.log
-          multiline.parser    docker, cri
-          DB                  /var/fluent-bit/state/flb_container.db
-          Mem_Buf_Limit       50MB
-          Skip_Long_Lines     Off
-          Refresh_Interval    10
-          Rotate_Wait         30
-          storage.type        filesystem
-          Read_from_Head      ${READ_FROM_HEAD}
-
-      [INPUT]
-          Name                tail
-          Tag                 application.*
-          Path                /var/log/containers/fluent-bit*
-          multiline.parser    docker, cri
-          DB                  /var/fluent-bit/state/flb_log.db
-          Mem_Buf_Limit       5MB
-          Skip_Long_Lines     On
-          Refresh_Interval    10
-          Read_from_Head      ${READ_FROM_HEAD}
-
-      [INPUT]
-          Name                tail
-          Tag                 application.*
-          Path                /var/log/containers/cloudwatch-agent*
-          multiline.parser    docker, cri
-          DB                  /var/fluent-bit/state/flb_cwagent.db
-          Mem_Buf_Limit       5MB
-          Skip_Long_Lines     On
-          Refresh_Interval    10
-          Read_from_Head      ${READ_FROM_HEAD}
-
-      [FILTER]
-          Name                kubernetes
-          Match               application.*
-          Kube_URL            https://kubernetes.default.svc:443
-          Kube_Tag_Prefix     application.var.log.containers.
-          Merge_Log           On
-          Merge_Log_Key       log_processed
-          K8S-Logging.Parser  On
-          K8S-Logging.Exclude Off
-          Labels              On
-          Annotations         On
-          Use_Kubelet         On
-          Kubelet_Port        10250
-          Buffer_Size         0
-
     celery-log.conf: |
       [INPUT]
           Name                tail
@@ -396,7 +321,6 @@ volumeMounts:
     mountPath: /var/log/dmesg
     readOnly: true
 
-# This supports either a structured array or a templatable string
 initContainers:
   - name: wait-for-init
     image: busybox:1.28
