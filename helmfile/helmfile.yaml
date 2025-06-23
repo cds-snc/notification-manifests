@@ -42,6 +42,10 @@ repositories:
   url: https://kubernetes-sigs.github.io/metrics-server/
 - name: newrelic
   url: https://helm-charts.newrelic.com
+- name: signoz
+  url: https://charts.signoz.io
+- name: opentelemetry
+  url: https://open-telemetry.github.io/opentelemetry-helm-charts
 
 releases:
   # Uses API overrides
@@ -378,4 +382,40 @@ releases:
       category: system
       step: 2
     chart: charts/newrelic-apm    
+
+  - name: opentelemetry-operator
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: opentelemetry-operator
+      tier: apm
+      category: system
+      step: 2
+    chart: opentelemetry/opentelemetry-operator
+    values:
+    - ./overrides/system/opentelemetry.yaml.gotmpl 
+
+  - name: signoz
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz
+      tier: apm
+      category: system
+      step: 2
+    chart: signoz/signoz 
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl 
+
+  - name: signoz-k8s
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-k8s
+      tier: apm
+      category: system
+      step: 2
+    chart: signoz/k8s-infra 
+    values:
+    - ./overrides/system/signoz-k8s.yaml.gotmpl 
 {{ end }}

@@ -83,7 +83,7 @@ spec:
             httpGet:
               path: /_status?simple=true
               port: 6012
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
             periodSeconds: 3
             timeoutSeconds: 1
             successThreshold: 3

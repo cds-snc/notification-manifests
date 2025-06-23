@@ -1,6 +1,9 @@
 image: 
   tag: "{{ .StateValues.DOCUMENTATION_DOCKER_TAG }}"
 
+annotations:
+  instrumentation.opentelemetry.io/inject-python: "true"
+  
 targetGroupBinding:
   enabled: true
   targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}

@@ -97,6 +97,7 @@ dockerhub:
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/api-eks-role
+    instrumentation.opentelemetry.io/inject-python: "true"
 
 targetGroupBinding:
   enabled: true
