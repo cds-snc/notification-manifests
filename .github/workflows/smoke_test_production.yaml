@@ -54,7 +54,7 @@ jobs:
       - name: Install requirements
         run: poetry install
 
-      - name: Run smoke tests on staging
+      - name: Run smoke tests on production
         env:
           SMOKE_ADMIN_CLIENT_SECRET: ${{ secrets.PRODUCTION_SMOKE_ADMIN_CLIENT_SECRET}}
           SMOKE_API_KEY: ${{ secrets.PRODUCTION_SMOKE_API_KEY}}
