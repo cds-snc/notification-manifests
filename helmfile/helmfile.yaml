@@ -418,4 +418,15 @@ releases:
     chart: signoz/k8s-infra 
     values:
     - ./overrides/system/signoz-k8s.yaml.gotmpl 
+
+  - name: signoz-telemetry
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-telemetry
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/signoz-telemetry
+
 {{ end }}

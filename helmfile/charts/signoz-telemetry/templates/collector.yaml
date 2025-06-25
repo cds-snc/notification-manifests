@@ -1,0 +1,35 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: signoz
+spec:
+  mode: sidecar
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          http:
+          grpc:
+    processors:
+      batch:
+      resource/env:
+        attributes:
+        - key: deployment.environment
+          value: staging
+          action: upsert
+    exporters:
+      debug:
+      otlp:
+        endpoint: http://signoz-otel-collector.signoz.svc.cluster.local:4317
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch, resource/env]
+          exporters: [debug, otlp]
+        metrics:
+          receivers: [otlp]
+          processors: [batch, resource/env]
+          exporters: [debug, otlp]
