@@ -49,12 +49,13 @@ celerySecrets:
   NEW_RELIC_ACCOUNT_ID: MANIFEST_NEW_RELIC_ACCOUNT_ID
   NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
   REDIS_URL: MANIFEST_REDIS_URL
-  REDIS_PUBLISH_URL: MANIFEST_REDIS_PUBLISH_URL
+  CACHE_OPS_URL: MANIFEST_CACHE_OPS_URL
   # POSTGRES_HOST is used by the init script to verify the database is up
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
 
 image: 
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
+  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/api-lambda
 
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
