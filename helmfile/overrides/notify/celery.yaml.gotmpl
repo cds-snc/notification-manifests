@@ -55,7 +55,6 @@ celerySecrets:
 
 image: 
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
-  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/api-lambda
 
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
