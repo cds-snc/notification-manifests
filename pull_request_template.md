@@ -21,25 +21,6 @@ None.
 
 > ⚠ If boxes cannot be checked off before merging the PR, they should be moved to the "Release Instructions" section with appropriate steps required to verify before release. For example, changes to celery code may require tests on staging to verify that performance has not been affected.
 
-## Before merging this PR
-
-Read code suggestions left by the
-[cds-ai-codereviewer](https://github.com/cds-snc/cds-ai-codereviewer/) bot. Address
-valid suggestions and shortly write down reasons to not address others. To help
-with the classification of the comments, please use these reactions on each of the
-comments made by the AI review:
-
-| Classification      | Reaction | Emoticon |
-|---------------------|----------|----------|
-| Useful              | +1       | 👍        |
-| Noisy               | eyes     | 👀        |
-| Hallucination       | confused | 😕        |
-| Wrong but teachable | rocket   | 🚀        |
-| Wrong and incorrect | -1       | 👎        |
-
-The classifications will be extracted and summarized into an analysis of how helpful
-or not the AI code review really is.
-
 ## After merging this PR
 
 * [ ] I have verified that the tests / deployment actions succeeded
