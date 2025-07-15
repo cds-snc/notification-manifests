@@ -49,7 +49,7 @@ spec:
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: notify-api
+                  name: {{ $.Values.secretProviderClass.secretname }}
                   key: {{ $key }}
             {{- end }}
             # Node-specific variables

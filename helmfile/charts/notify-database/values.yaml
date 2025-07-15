@@ -15,3 +15,23 @@ serviceAccount:
 
 nodeSelector:
   eks.amazonaws.com/capacityType: ON_DEMAND
+
+secretProviderClass:
+  secretname: notify-database-secrets
+  enabled: true
+  provider: aws
+  parameters:
+    objects: |
+      - objectName: INTERNAL_DNS_KEY_BASE64
+        objectType: "secretsmanager"
+      - objectName: INTERNAL_DNS_CERT_BASE64
+        objectType: "secretsmanager"
+
+  secretObjects:
+    - data:
+        - key: tls.key
+          objectName: INTERNAL_DNS_KEY_BASE64
+        - key: tls.crt
+          objectName: INTERNAL_DNS_CERT_BASE64
+      secretName: nginx
+      type: kubernetes.io/tls
