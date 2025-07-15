@@ -17,7 +17,7 @@ nodeSelector:
   eks.amazonaws.com/capacityType: ON_DEMAND
 
 secretProviderClass:
-  secretname: notify-database
+  secretname: notify-database-secrets
   enabled: true
   provider: aws
   parameters:
