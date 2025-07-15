@@ -14,9 +14,10 @@ env:
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:7eb37ea
-  HEARTBEAT_IMAGE: heartbeat:d4082e9
-  SYSTEM_STATUS_IMAGE: system_status:feaaf98
+  API_LAMBDA_IMAGE: api-lambda:48fe83c
+  HEARTBEAT_IMAGE: heartbeat:7974348
+  SYSTEM_STATUS_IMAGE: system_status:7974348
+  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:7974348
 
 jobs:
   helmfile-apply:
@@ -93,20 +94,13 @@ jobs:
           app_label: "notify-database"
           timeout: "400s"
 
-      - name: Helmfile apply CRDs
-        id: helmfile_apply_crd
-        if: ${{ success() }}
-        run: |
-          pushd helmfile
-          helmfile --environment production -l 'tier=crd' sync
-          popd          
-
       - name: Helmfile apply
         if: ${{ success() }}
         id: helmfile_apply
         run: |
           pushd helmfile
-          helmfile --environment production -l 'app!=notify-database,tier!=crd' sync
+          helmfile --environment production -l 'tier=crd' apply
+          helmfile --environment production -l 'app!=notify-database,tier!=crd' apply
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
@@ -141,6 +135,14 @@ jobs:
           alias-name: latest
           function-name: system_status
           image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
+
+      - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
+        if: ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: ses_to_sqs_email_callbacks
+          image-uri: $PRIVATE_ECR/$SES_TO_SQS_EMAIL_CALLBACKS_IMAGE
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}

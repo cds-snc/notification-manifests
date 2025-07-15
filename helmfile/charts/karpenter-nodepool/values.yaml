@@ -11,7 +11,7 @@ nodePool:
   capacityTypes: ["spot"]
   disruption:
     consolidationPolicy: WhenEmpty
-    consolidateAfter: 30s
+    consolidateAfter: 30m
     expireAfter: 720h
     budgets:
       - nodes: 10%

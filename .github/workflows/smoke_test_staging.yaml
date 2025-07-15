@@ -49,8 +49,8 @@ jobs:
 
       - name: Run smoke tests on staging
         env:
-          SMOKE_ADMIN_CLIENT_SECRET: ${{ secrets.SMOKE_ADMIN_CLIENT_SECRET}}
-          SMOKE_API_KEY: ${{ secrets.SMOKE_API_KEY}}
+          SMOKE_ADMIN_CLIENT_SECRET: ${{ secrets.STAGING_SMOKE_ADMIN_CLIENT_SECRET}}
+          SMOKE_API_KEY: ${{ secrets.STAGING_SMOKE_API_KEY}}
           SMOKE_AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID}}
           SMOKE_AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY}}
           SMOKE_API_HOST_NAME: https://api.staging.notification.cdssandbox.xyz
@@ -60,7 +60,7 @@ jobs:
           SMOKE_SMS_TO: 16135550123
           SMOKE_SERVICE_ID: f316aa6b-38dd-4d9e-83f8-b6ee3e1d428f
           SMOKE_SMS_TEMPLATE_ID: d8234b4d-4def-4ad6-aafe-526a24ee5f19
-          SMOKE_USER_ID: e5584221-2384-46d3-8184-c5449da10bc1 #Ben Larabie
+          SMOKE_USER_ID: e5584221-2384-46d3-8184-c5449da10bc1
           SMOKE_POLL_TIMEOUT: 450
         run: poetry run make smoke-test
       - name: Notify Slack channel if this job failed
