@@ -39,7 +39,9 @@ getValue()
       echo "Fetching Secret $VALUE"
       export $VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region $AWS_REGION)      
     else
-      echo "$VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region $AWS_REGION)" >> "$GITHUB_ENV"
+      SECRET_VALUE=$(aws secretsmanager get-secret-value --secret-id $VALUE --query SecretString --output text --region $AWS_REGION)
+      echo "::add-mask::$SECRET_VALUE"
+      echo "$VALUE=$SECRET_VALUE" >> "$GITHUB_ENV"
     fi
 }
 
