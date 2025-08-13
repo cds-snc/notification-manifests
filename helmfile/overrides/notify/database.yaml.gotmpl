@@ -1,0 +1,37 @@
+database:
+  args: "upgrade"
+
+image:
+  repository: public.ecr.aws/cds-snc/notify-api
+  pullPolicy: Always
+  tag: "latest"
+
+dockerhub:
+  username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
+  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
+
+ttlSecondsAfterFinished: 34560
+
+service:
+  enabled: false
+
+serviceAccount:
+  create: true
+  serviceAccountName: "notify-database"
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-database
+
+nodeSelector:
+  eks.amazonaws.com/capacityType: ON_DEMAND
+
+secretProviderClass:
+  secretname: notify-database
+  enabled: true
+  provider: aws
+
+# Define the specific secrets needed for database operations
+dbSecrets:
+  POSTGRES_HOST: MANIFEST_POSTGRES_HOST
+  SQLALCHEMY_DATABASE_URI: MANIFEST_SQLALCHEMY_DATABASE_URI
+  SECRET_KEY: MANIFEST_SECRET_KEY
+  DANGEROUS_SALT: MANIFEST_DANGEROUS_SALT

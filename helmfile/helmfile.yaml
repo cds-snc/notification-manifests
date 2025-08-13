@@ -44,7 +44,7 @@ repositories:
   url: https://helm-charts.newrelic.com
 
 releases:
-  # Uses API overrides
+  # Uses database-specific overrides
   - name: notify-database
     namespace: notification-canada-ca
     labels:
@@ -54,7 +54,7 @@ releases:
       step: 4
     chart: charts/notify-database
     values:
-    - ./overrides/notify/api.yaml.gotmpl 
+    - ./overrides/notify/database.yaml.gotmpl 
 
   - name: notify-documentation
     namespace: notification-canada-ca
