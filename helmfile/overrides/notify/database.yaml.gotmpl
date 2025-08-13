@@ -1,10 +1,8 @@
 database:
   args: "upgrade"
 
-image:
-  repository: public.ecr.aws/cds-snc/notify-api
-  pullPolicy: Always
-  tag: "latest"
+image: 
+  tag: "{{ .StateValues.API_DOCKER_TAG }}"
 
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
