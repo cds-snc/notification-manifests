@@ -40,7 +40,7 @@ spec:
           args: ["run", "flask", "db", "{{ .Values.database.args }}"]
           env:
             # Common ENV Variables
-            {{- range $key, $val := .Values.api }}
+            {{- range $key, $val := .Values.db }}
             - name: {{ $key }}
               value: {{ $val | quote }}
             {{- end }}
