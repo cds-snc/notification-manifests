@@ -357,6 +357,7 @@ releases:
 {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
   - name: newrelic
     namespace: newrelic
+    installed: false
     disableValidationOnInstall: true
     disableValidation: true 
     labels:
@@ -370,6 +371,7 @@ releases:
 
   - name: newrelic-apm
     namespace: newrelic
+    installed: false
     disableValidationOnInstall: true
     disableValidation: true 
     labels:
