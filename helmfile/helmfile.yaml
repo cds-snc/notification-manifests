@@ -48,7 +48,7 @@ repositories:
   url: https://open-telemetry.github.io/opentelemetry-helm-charts
 
 releases:
-  # Uses API overrides
+  # Uses database-specific overrides
   - name: notify-database
     namespace: notification-canada-ca
     labels:
@@ -58,7 +58,7 @@ releases:
       step: 4
     chart: charts/notify-database
     values:
-    - ./overrides/notify/api.yaml.gotmpl 
+    - ./overrides/notify/database.yaml.gotmpl 
 
   - name: notify-documentation
     namespace: notification-canada-ca
@@ -361,6 +361,7 @@ releases:
 {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
   - name: newrelic
     namespace: newrelic
+    installed: false
     disableValidationOnInstall: true
     disableValidation: true 
     labels:
@@ -374,6 +375,7 @@ releases:
 
   - name: newrelic-apm
     namespace: newrelic
+    installed: false
     disableValidationOnInstall: true
     disableValidation: true 
     labels:

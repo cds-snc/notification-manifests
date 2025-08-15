@@ -24,7 +24,7 @@ jobs:
           repository: cds-snc/notification-api
 
       - name: Set up Python
-        uses: actions/setup-python@b64ffcaf5b410884ad320a9cfac8866006a109aa # v4.8.0
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4.9.1
         with:
           python-version: "3.12"
 
@@ -32,7 +32,7 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Get packages from cache
-        uses: actions/cache@0c907a75c2c80ebcb7f088228285e798b750cf8f # v4.2.1
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.local
           key: poetry-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
@@ -49,8 +49,8 @@ jobs:
 
       - name: Run smoke tests on staging
         env:
-          SMOKE_ADMIN_CLIENT_SECRET: ${{ secrets.SMOKE_ADMIN_CLIENT_SECRET}}
-          SMOKE_API_KEY: ${{ secrets.SMOKE_API_KEY}}
+          SMOKE_ADMIN_CLIENT_SECRET: ${{ secrets.STAGING_SMOKE_ADMIN_CLIENT_SECRET}}
+          SMOKE_API_KEY: ${{ secrets.STAGING_SMOKE_API_KEY}}
           SMOKE_AWS_ACCESS_KEY_ID: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID}}
           SMOKE_AWS_SECRET_ACCESS_KEY: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY}}
           SMOKE_API_HOST_NAME: https://api.staging.notification.cdssandbox.xyz
@@ -60,7 +60,7 @@ jobs:
           SMOKE_SMS_TO: 16135550123
           SMOKE_SERVICE_ID: f316aa6b-38dd-4d9e-83f8-b6ee3e1d428f
           SMOKE_SMS_TEMPLATE_ID: d8234b4d-4def-4ad6-aafe-526a24ee5f19
-          SMOKE_USER_ID: e5584221-2384-46d3-8184-c5449da10bc1 #Ben Larabie
+          SMOKE_USER_ID: e5584221-2384-46d3-8184-c5449da10bc1
           SMOKE_POLL_TIMEOUT: 450
         run: poetry run make smoke-test
       - name: Notify Slack channel if this job failed
