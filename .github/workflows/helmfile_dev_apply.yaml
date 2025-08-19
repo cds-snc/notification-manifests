@@ -1,0 +1,193 @@
+name: Dev - Helmfile Apply 
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "helmfile/**"
+      - ".github/workflows/helmfile_dev_apply.yaml"
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
+  DEV_AWS_ACCOUNT: ${{ secrets.DEV_AWS_ACCOUNT_ID }}
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV }}
+
+jobs:
+  helmfile-apply:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Inject token authentication
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
+        id: awsconfig
+        with:
+          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          # Fetches entire history, so we can analyze commits since last tag
+          fetch-depth: 0        
+
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
+        with:
+          install-kubectl: yes
+          install-helm: yes        
+          helmfile-version: "v0.151.0"
+          helm-s3-plugin-version: "v0.16.2"
+
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb 
+
+      - name: Setup Terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
+        env: # In case you want to override default versions
+          CONFTEST_VERSION: 0.30.0 
+          TERRAFORM_VERSION: 1.9.5
+          TERRAGRUNT_VERSION: 0.66.9
+          TF_SUMMARIZE_VERSION: 0.2.3                    
+
+      - name: Retrieve VPN Config
+        run: |
+          scripts/createVPNConfig.sh dev 2> /dev/null  
+
+      - name: Connect to VPN
+        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
+        with:
+          config_file: /var/tmp/dev.ovpn
+          echo_config: false            
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev 
+
+      - name: Load Context Variables
+        run: |
+            ./helmfile/getContext.sh -g
+             
+      - name: Run Database Upgrade Helmfile Sync
+        uses: ./.github/actions/db-migration
+        with:
+          environment: "dev"
+          namespace: "notification-canada-ca"
+          app_label: "notify-database"
+          timeout: "400s"
+
+      - name: Helmfile apply
+        if: ${{ success() }}
+        id: helmfile_apply
+        run: |
+          pushd helmfile
+          helmfile --environment dev -l 'tier=crd' apply
+          helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply
+          popd
+
+      - name: Save ENV vars and secrets to AWS Param Store
+        if: ${{ success() }}
+        run: |
+          # wait for the secrets and env vars to be available
+          sleep 20
+          source ./scripts/lambdaParamStoreUpdatesDev.sh -g
+          echo DIFF=$DIFF
+          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
+
+      - name: Force api-lambda to redeploy on environment changes
+        if: env.ENV_DIFF != '0' && ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: api-lambda
+
+      - name: Force heartbeat lambda to redeploy on environment changes
+        if: env.ENV_DIFF != '0' && ${{ success() }} 
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: heartbeat
+
+      - name: Force system_status to redeploy on environment changes
+        if: env.ENV_DIFF != '0' && ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: system_status
+
+      - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
+        if: env.ENV_DIFF != '0' && ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: ses_to_sqs_email_callbacks
+
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json='{"text":"<!here> Dev Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+
+  clear-cache:
+    needs: helmfile-apply
+    uses: ./.github/workflows/clear-notify-cache.yaml
+    with:
+      environment: dev
+      cache_clear_user_name: CACHE_CLEAR_USER
+      api_url: https://api.dev.notification.cdssandbox.xyz
+    secrets:
+      CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.DEV_CACHE_CLEAR_CLIENT_SECRET }}
+
+  publish-deployment:
+    runs-on: ubuntu-latest
+    needs: helmfile-apply
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          # Fetches entire history, so we can analyze commits since last tag
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
+        with:
+          aws-access-key-id: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Bump version and push tag
+        id: bump_and_push_tag
+        uses: mathieudutour/github-tag-action@bcb832838e1612ff92089d914bccc0fd39458223 # v4.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+          tag_prefix: dev-
+
+      - name: Report deployment to Sentinel
+        uses: cds-snc/sentinel-forward-data-action@main
+        with:
+          input_data: '{"product": "notify", "sha": "${{ github.sha }}", "version": "${{ steps.bump_and_push_tag.outputs.new_tag }}", "repository": "${{ github.repository }}", "environment": "dev"}'
+          log_type: CDS_Product_Deployment_Data
+          log_analytics_workspace_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
+          log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
+
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json='{"text":"<!here> Manifests Merge To Dev CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
