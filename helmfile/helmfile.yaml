@@ -131,7 +131,7 @@ releases:
       category: system
       step: 0
     chart: oci://public.ecr.aws/karpenter/karpenter-crd
-    version: 1.3.2
+    version: 1.6.2
 
   - name: karpenter
     namespace: karpenter
@@ -141,7 +141,7 @@ releases:
       category: system
       step: 1
     chart: oci://public.ecr.aws/karpenter/karpenter
-    version: 1.3.2
+    version: 1.6.2
     values:
     - ./overrides/system/karpenter.yaml.gotmpl
 
@@ -176,7 +176,7 @@ releases:
       category: system
       step: 1
     chart: secrets-store-csi-driver/secrets-store-csi-driver
-    version: 1.4.1
+    version: 1.5.3
     values:
     - ./overrides/system/secrets-csi.yaml.gotmpl
 
@@ -200,7 +200,7 @@ releases:
       category: system
       step: 2
     chart: prometheus-community/kube-state-metrics
-    version: 5.18.1
+    version: 5.37.0
     values:
     - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
@@ -278,7 +278,7 @@ releases:
       category: tools
       step: 1
     chart: fluent/fluent-bit
-    version: 0.48.5
+    version: 0.52.0
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
 
@@ -290,7 +290,7 @@ releases:
       category: system
       step: 2
     chart: jetstack/cert-manager
-    version: v1.17.0
+    version: v1.18.2
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
@@ -338,7 +338,7 @@ releases:
       category: system
       step: 1
     chart: metrics-server/metrics-server
-    version: 3.12.2
+    version: 3.13.0
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
 
@@ -350,7 +350,7 @@ releases:
       category: system
       step: 1
     chart: oci://ghcr.io/pelotech/charts/nidhogg
-    version: 0.6.6
+    version: 0.7.0
     values:
     - ./overrides/system/nidhogg.yaml.gotmpl
 
