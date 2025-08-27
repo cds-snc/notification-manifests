@@ -4,9 +4,12 @@ documentDownload:
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"  
   AWS_XRAY_SDK_ENABLED: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
   DEBUG: "{{ .StateValues.DEBUG }}"
+  NEW_RELIC_ENABLED: "{{ .StateValues.NEW_RELIC_ENABLED }}"
   NEW_RELIC_APP_NAME: "notification-dd-api-{{ .Environment.Name }}"
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
+  # THESE NEXT TWO MIRROR EACH OTHER AT ALL TIMES
   NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+  NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
   NEW_RELIC_IGNORE_STARTUP_ERRORS: "{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"
   NEW_RELIC_ENVIRONMENT: "{{ .Environment.Name }}"
   NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
@@ -15,6 +18,7 @@ documentDownload:
   SCAN_FILES_DOCUMENTS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download-scan-files"
   EXTRA_MIME_TYPES: "{{ .StateValues.EXTRA_MIME_TYPES }}"
   # NON-ENVIRONMENT SPECIFIC VARIABLES
+  NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS: "true"
   AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
   HTTP_SCHEME: "https"
   NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"

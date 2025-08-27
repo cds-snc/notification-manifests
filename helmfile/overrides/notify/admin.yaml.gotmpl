@@ -19,9 +19,12 @@ admin:
   HC_FR_SERVICE_ID: "{{ .StateValues.HC_FR_SERVICE_ID }}"
   REDIS_ENABLED: "{{ .StateValues.REDIS_ENABLED }}"
   SHOW_STYLE_GUIDE: "{{ .StateValues.SHOW_STYLEGUIDE }}"
+  NEW_RELIC_ENABLED: "{{ .StateValues.NEW_RELIC_ENABLED }}"
   NEW_RELIC_APP_NAME: "notification-admin-{{ .Environment.Name }}"
   NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
+  # THESE NEXT TWO MIRROR EACH OTHER AT ALL TIMES
   NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+  NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
   NEW_RELIC_IGNORE_STARTUP_ERRORS: "{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"
   NEW_RELIC_ENVIRONMENT: "{{ .Environment.Name }}"
   FF_SALESFORCE_CONTACT: "{{ .StateValues.FF_SALESFORCE_CONTACT }}"
@@ -35,6 +38,7 @@ admin:
   FRESH_DESK_ENABLED: "{{ .StateValues.FRESH_DESK_ENABLED }}"
   # NON-ENVIRONMENT SPECIFIC VARIABLES
   AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
+  NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS: "true"
   NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
   CRM_ORG_LIST_URL: "https://raw.githubusercontent.com/cds-snc/gc-organisations/main/data/all.json"
   FLASK_APP: "application.py"
