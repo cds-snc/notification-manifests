@@ -17,7 +17,8 @@ api:
   # THESE NEXT TWO MIRROR EACH OTHER AT ALL TIMES
   NEW_RELIC_MONITOR_MODE: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"{{ else }}"false"{{ end }}
   NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"{{ else }}"false"{{ end }}
-  NEW_RELIC_IGNORE_STARTUP_ERRORS: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"{{ else }}"false"{{ end }}
+  NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"true"{{ else }}"false"{{ end }}
+  NEW_RELIC_IGNORE_STARTUP_ERRORS: "{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"
   NEW_RELIC_ENVIRONMENT: "{{ .Environment.Name }}"
   ALLOW_HTML_SERVICE_IDS: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
   AWS_XRAY_SDK_ENABLED: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
@@ -37,7 +38,6 @@ api:
   ZENDESK_SELL_API_URL: "https://cds-snc.zendesk.com"
   REDIS_ENABLED: "1"
   NOTIFICATION_QUEUE_PREFIX: "eks-notification-canada-ca"
-  NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"true"{{ else }}"false"{{ end }}
   NEW_RELIC_CONFIG_FILE: "/app/newrelic.ini"
   HELM_TEST_API: "HELM-IS-RADICAL!-API"
   FLASK_APP: "application.py"

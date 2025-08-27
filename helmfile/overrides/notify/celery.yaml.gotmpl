@@ -19,7 +19,8 @@ celeryCommon:
   # THESE NEXT TWO MIRROR EACH OTHER AT ALL TIMES
   NEW_RELIC_MONITOR_MODE: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"{{ else }}"false"{{ end }}
   NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"{{ else }}"false"{{ end }}
-  NEW_RELIC_IGNORE_STARTUP_ERRORS: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"{{ else }}"false"{{ end }}
+  NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"true"{{ else }}"false"{{ end }}
+  NEW_RELIC_IGNORE_STARTUP_ERRORS: "{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"
   NEW_RELIC_ENVIRONMENT: "{{ .Environment.Name }}"
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
   AWS_XRAY_SDK_ENABLED: {{ .StateValues.AWS_XRAY_SDK_ENABLED }}
@@ -30,7 +31,6 @@ celeryCommon:
   AWS_PINPOINT_DEFAULT_POOL_ID: {{ requiredEnv "PINPOINT_DEFAULT_POOL_ID" }}
   REPORTS_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-reports"
   # NON-ENVIRONMENT SPECIFIC VARIABLES
-  NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS: {{ if eq .StateValues.NEW_RELIC_ENABLED "true" }}"true"{{ else }}"false"{{ end }}
   AWS_PINPOINT_REGION: "us-west-2"
   NOTIFICATION_QUEUE_PREFIX: "eks-notification-canada-ca"
   AWS_US_TOLL_FREE_NUMBER: "+18449261787"
