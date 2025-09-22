@@ -431,4 +431,15 @@ releases:
       step: 2
     chart: charts/signoz-telemetry
 
+  - name: otel-demo
+    namespace: opentelemetry-demo
+    labels:
+      app: otel-demo
+      tier: apm
+      category: system
+      step: 2
+    chart: opentelemetry/opentelemetry-demo
+    values:
+    - ./overrides/system/otel-demo.yaml.gotmpl
+
 {{ end }}
