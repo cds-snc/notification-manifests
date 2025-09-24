@@ -3,3 +3,56 @@ global:
 
 clickhouse:
   installCustomStorageClass: true
+
+signoz:
+  env:
+    signoz_emailing_enabled: true
+    signoz_emailing_smtp_from: "ben.larabie@cds-snc.ca"
+    signoz_emailing_smtp_address: email-smtp.ca-central-1.amazonaws.com:587
+    signoz_emailing_smtp_auth_username: 
+      valueFrom:
+       secretKeyRef:
+         name: signoz
+         key: SIGNOZ_EMAIL_SMTP_AUTH_USERNAME
+    signoz_emailing_smtp_auth_password: 
+      valueFrom:
+       secretKeyRef:
+         name: signoz
+         key: SIGNOZ_EMAIL_SMTP_AUTH_PASSWORD
+
+  ingress:
+    annotations: {}
+    className: "nginx"
+    enabled: true
+    hosts:
+        - host: signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+              port: 8080
+    tls: []
+  serviceAccount: 
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/signoz-eks-role
+  
+  additionalVolumes:
+    - name: secrets-store
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: signoz
+  
+  additionalVolumeMounts:
+    - name: secrets-store
+      mountPath: /mnt/secrets-store
+      readOnly: true
+
+secretProviderClass:
+  name: signoz
+  secretname: signoz
+  enabled: true
+  provider: aws
+  secrets: 
+    SIGNOZ_EMAIL_SMTP_AUTH_USERNAME: MANIFEST_SIGNOZ_SMTP_USERNAME
+    SIGNOZ_EMAIL_SMTP_AUTH_PASSWORD: MANIFEST_SIGNOZ_SMTP_PASSWORD

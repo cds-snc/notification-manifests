@@ -442,4 +442,15 @@ releases:
     values:
     - ./overrides/system/otel-demo.yaml.gotmpl
 
+  - name: signoz-secret
+    namespace: signoz
+    labels:
+      app: signoz
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/notify-secrets
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl
+
 {{ end }}
