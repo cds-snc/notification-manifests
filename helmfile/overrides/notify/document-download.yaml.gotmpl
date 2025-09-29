@@ -26,8 +26,15 @@ documentDownloadSecrets:
   NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
   AUTH_TOKENS: MANIFEST_DOCUMENT_DOWNLOAD_API_KEY
 
+podAnnotations:
+    instrumentation.opentelemetry.io/inject-python: "true"
+    instrumentation.opentelemetry.io/otel-python-platform: "musl"
+    sidecar.opentelemetry.io/inject: "true"
+
+
 image: 
   tag: "{{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG }}"
+  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/document-download-api
 
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}

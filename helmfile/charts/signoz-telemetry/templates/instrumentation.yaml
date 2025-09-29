@@ -9,11 +9,41 @@ spec:
     - b3
   sampler:
     type: parentbased_always_on
+  resource:
+    addK8sUIDAttributes: false
   java:
     image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:latest
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "100m"
+        memory: "128Mi"
   nodejs:
     image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-nodejs:latest
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "100m"
+        memory: "128Mi"
   python:
     image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-python:latest
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "100m"
+        memory: "128Mi"
   dotnet:
     image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-dotnet:latest
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "100m"
+        memory: "128Mi"

@@ -54,8 +54,14 @@ celerySecrets:
   # POSTGRES_HOST is used by the init script to verify the database is up
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
 
+podAnnotations:
+    instrumentation.opentelemetry.io/inject-python: "true"
+    instrumentation.opentelemetry.io/otel-python-platform: "musl"
+    sidecar.opentelemetry.io/inject: "true"
+
 image: 
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
+  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/api
 
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}

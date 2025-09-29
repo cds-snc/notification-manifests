@@ -220,6 +220,15 @@ releases:
     values:
     - ./overrides/tools/blazer.yaml.gotmpl
 
+  - name: nginx-otel-config
+    namespace: nginx
+    labels:
+      app: nginx-otel-config
+      tier: main
+      category: system
+      step: 3
+    chart: charts/nginx-otel-config
+
   - name: ingress
     namespace: nginx
     disableValidationOnInstall: true

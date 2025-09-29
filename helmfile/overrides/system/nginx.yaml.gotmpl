@@ -3,6 +3,26 @@ controller:
     tag: 3.4.2
   service:
     type: ClusterIP
+  extraContainers:
+    - name: otel-collector
+      image: otel/opentelemetry-collector-contrib:0.88.0
+      ports:
+        - containerPort: 8888  # metrics port
+        - containerPort: 8889  # prometheus metrics port
+      env:
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "service.name=nginx-ingress,service.version=3.4.2,deployment.environment={{ .Environment.Name }}"
+      volumeMounts:
+        - name: otel-collector-config
+          mountPath: /etc/otelcol-contrib
+          readOnly: true
+      resources:
+        limits:
+          memory: 128Mi
+          cpu: 100m
+        requests:
+          memory: 64Mi
+          cpu: 50m
   wildcardTLS:
     secret: {{.Release.Namespace}}/nginx
   defaultTLS:
@@ -17,6 +37,9 @@ controller:
         readOnly: true
         volumeAttributes:
           secretProviderClass: "nginx"
+    - name: otel-collector-config
+      configMap:
+        name: nginx-otel-collector-config
   volumeMounts:
           - name: secrets-store-inline
             mountPath: "/mnt/secrets-store"
@@ -45,3 +68,5 @@ secretProviderClass:
 targetGroupBinding:
   enabled: true
   targetGroupARN: {{ requiredEnv "NGINX_TARGET_GROUP_ARN" }}
+
+
