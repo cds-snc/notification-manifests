@@ -367,7 +367,9 @@ releases:
     values:
     - ./overrides/system/nidhogg.yaml.gotmpl
 
-{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
+{{ if or (eq .Environment.Name "dev") }}
+
+# Disabled New Relic!
   - name: newrelic
     namespace: newrelic
     installed: false
@@ -394,6 +396,29 @@ releases:
       step: 2
     chart: charts/newrelic-apm    
 
+  - name: signoz
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz
+      tier: apm
+      category: system
+      step: 2
+    chart: signoz/signoz 
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl
+
+  - name: signoz-secret
+    namespace: signoz
+    labels:
+      app: signoz
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/notify-secrets
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl
+
   - name: opentelemetry-operator
     namespace: signoz
     disableValidationOnInstall: true
@@ -405,18 +430,6 @@ releases:
     chart: opentelemetry/opentelemetry-operator
     values:
     - ./overrides/system/opentelemetry.yaml.gotmpl 
-
-  - name: signoz
-    namespace: signoz
-    disableValidationOnInstall: true
-    labels:
-      app: signoz
-      tier: apm
-      category: system
-      step: 2
-    chart: signoz/signoz 
-    values:
-    - ./overrides/system/signoz.yaml.gotmpl 
 
   - name: signoz-k8s
     namespace: signoz
@@ -438,10 +451,12 @@ releases:
       tier: apm
       category: system
       step: 2
-    chart: charts/signoz-telemetry
+    chart: charts/signoz-telemetry 
 
+  # Otel demo doesn't need to be on.
   - name: otel-demo
     namespace: opentelemetry-demo
+    installed: false
     labels:
       app: otel-demo
       tier: apm
@@ -450,16 +465,5 @@ releases:
     chart: opentelemetry/opentelemetry-demo
     values:
     - ./overrides/system/otel-demo.yaml.gotmpl
-
-  - name: signoz-secret
-    namespace: signoz
-    labels:
-      app: signoz
-      tier: apm
-      category: system
-      step: 2
-    chart: charts/notify-secrets
-    values:
-    - ./overrides/system/signoz.yaml.gotmpl
 
 {{ end }}
