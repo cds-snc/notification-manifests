@@ -16,10 +16,10 @@ terragrunt init -upgrade
 ENDPOINT_ID=$(terragrunt output --raw gha_vpn_id)
 CERT=$(terragrunt output --raw gha_vpn_certificate)
 KEY=$(terragrunt output --raw gha_vpn_key)
-aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id $ENDPOINT_ID --output text > ~/projects/temp/$ENVIRONMENT.ovpn
+aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id $ENDPOINT_ID --output text > /var/tmp/$ENVIRONMENT.ovpn
 echo "<cert>
 $CERT
-</cert>" >> ~/projects/temp/$ENVIRONMENT.ovpn
+</cert>" >> /var/tmp/$ENVIRONMENT.ovpn
 echo "<key>
 $KEY
-</key>" >> ~/projects/temp/$ENVIRONMENT.ovpn
+</key>" >> /var/tmp/$ENVIRONMENT.ovpn
