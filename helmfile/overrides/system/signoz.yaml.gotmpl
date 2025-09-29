@@ -7,7 +7,7 @@ clickhouse:
 signoz:
   env:
     signoz_emailing_enabled: true
-    signoz_emailing_smtp_from: "ben.larabie@cds-snc.ca"
+    signoz_emailing_smtp_from: "noreply@{{ requiredEnv "BASE_DOMAIN" }}"
     signoz_emailing_smtp_address: email-smtp.ca-central-1.amazonaws.com:587
     signoz_emailing_smtp_auth_username: 
       valueFrom:

@@ -77,7 +77,6 @@ dockerhub:
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/celery-eks-role
-    instrumentation.opentelemetry.io/inject-python: "true"
 
 nodes:
   sms-dedicated-static:
