@@ -426,7 +426,7 @@ releases:
       app: opentelemetry-operator
       tier: apm
       category: system
-      step: 2
+      step: 3
     chart: opentelemetry/opentelemetry-operator
     values:
     - ./overrides/system/opentelemetry.yaml.gotmpl 
@@ -438,7 +438,7 @@ releases:
       app: signoz-k8s
       tier: apm
       category: system
-      step: 2
+      step: 3
     chart: signoz/k8s-infra 
     values:
     - ./overrides/system/signoz-k8s.yaml.gotmpl 
@@ -450,7 +450,7 @@ releases:
       app: signoz-telemetry
       tier: apm
       category: system
-      step: 2
+      step: 4
     chart: charts/signoz-telemetry 
 
   # Otel demo doesn't need to be on.
@@ -461,7 +461,7 @@ releases:
       app: otel-demo
       tier: apm
       category: system
-      step: 2
+      step: 5
     chart: opentelemetry/opentelemetry-demo
     values:
     - ./overrides/system/otel-demo.yaml.gotmpl
