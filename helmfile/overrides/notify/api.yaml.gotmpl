@@ -90,16 +90,19 @@ apiSecrets:
 
 image: 
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
-  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/api
 
-dockerhub:
-  username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
-  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
+{{ if eq .Environment.Name "dev" }}  
+  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/api
 
 podAnnotations:
     instrumentation.opentelemetry.io/inject-python: "true"
     instrumentation.opentelemetry.io/otel-python-platform: "musl"
     sidecar.opentelemetry.io/inject: "true"
+{{ end }}
+
+dockerhub:
+  username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
+  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
 
 serviceAccount:
   annotations:
