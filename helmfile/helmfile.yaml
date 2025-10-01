@@ -42,6 +42,10 @@ repositories:
   url: https://kubernetes-sigs.github.io/metrics-server/
 - name: newrelic
   url: https://helm-charts.newrelic.com
+- name: signoz
+  url: https://charts.signoz.io
+- name: opentelemetry
+  url: https://open-telemetry.github.io/opentelemetry-helm-charts
 
 releases:
   # Uses database-specific overrides
@@ -354,7 +358,9 @@ releases:
     values:
     - ./overrides/system/nidhogg.yaml.gotmpl
 
-{{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }}
+{{ if or (eq .Environment.Name "dev") }}
+
+# Disabled New Relic!
   - name: newrelic
     namespace: newrelic
     installed: false
@@ -380,4 +386,75 @@ releases:
       category: system
       step: 2
     chart: charts/newrelic-apm    
+
+  - name: signoz
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz
+      tier: apm
+      category: system
+      step: 2
+    chart: signoz/signoz 
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl
+
+  - name: signoz-secret
+    namespace: signoz
+    labels:
+      app: signoz
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/notify-secrets
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl
+
+  - name: opentelemetry-operator
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: opentelemetry-operator
+      tier: apm
+      category: system
+      step: 3
+    chart: opentelemetry/opentelemetry-operator
+    values:
+    - ./overrides/system/opentelemetry.yaml.gotmpl 
+
+  - name: signoz-k8s
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-k8s
+      tier: apm
+      category: system
+      step: 3
+    chart: signoz/k8s-infra 
+    values:
+    - ./overrides/system/signoz-k8s.yaml.gotmpl 
+
+  - name: signoz-telemetry
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-telemetry
+      tier: apm
+      category: system
+      step: 4
+    chart: charts/signoz-telemetry 
+
+  # Otel demo doesn't need to be on.
+  - name: otel-demo
+    namespace: opentelemetry-demo
+    installed: false
+    labels:
+      app: otel-demo
+      tier: apm
+      category: system
+      step: 5
+    chart: opentelemetry/opentelemetry-demo
+    values:
+    - ./overrides/system/otel-demo.yaml.gotmpl
+
 {{ end }}

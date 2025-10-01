@@ -32,6 +32,16 @@ documentDownloadSecrets:
 image: 
   tag: "{{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG }}"
 
+{{ if eq .Environment.Name "dev" }}
+  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/document-download
+
+podAnnotations:
+    instrumentation.opentelemetry.io/inject-python: "true"
+    instrumentation.opentelemetry.io/otel-python-platform: "musl"
+    sidecar.opentelemetry.io/inject: "true"
+
+{{ end }}
+
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
   pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}

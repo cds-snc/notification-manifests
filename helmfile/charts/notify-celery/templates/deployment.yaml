@@ -21,6 +21,10 @@ spec:
     type: {{ .Values.updateStrategy.type }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app: {{ include "celery.fullname" . }}-{{ $node.name }}
     spec:

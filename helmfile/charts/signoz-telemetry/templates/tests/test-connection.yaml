@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "signoz-telemetry.fullname" . }}-test-connection"
+  labels:
+    {{- include "signoz-telemetry.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "signoz-telemetry.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

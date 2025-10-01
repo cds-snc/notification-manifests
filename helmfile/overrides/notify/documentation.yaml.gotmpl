@@ -5,6 +5,12 @@ targetGroupBinding:
   enabled: true
   targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}
 
+{{ if eq .Environment.Name "dev" }}
+podAnnotations:
+  instrumentation.opentelemetry.io/inject-nodejs: "true"
+  sidecar.opentelemetry.io/inject: "true"
+{{ end }}
+
 pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   minAvailable: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
