@@ -123,7 +123,7 @@ releases:
       category: monitoring
       step: 2
     chart: oci://ghcr.io/deliveryhero/helm-charts/k8s-event-logger
-    version: 1.1.8
+    version: 1.1.9
     values:
       - ./overrides/system/k8s-event-logger.yaml.gotmpl
 
@@ -192,7 +192,7 @@ releases:
       category: system
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 0.3.5
+    version: 0.3.11
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
@@ -216,7 +216,7 @@ releases:
       category: tools
       step: 3
     chart: stakater/application
-    version: 2.3.2
+    version: 2.3.4
     values:
     - ./overrides/tools/blazer.yaml.gotmpl
 
@@ -243,7 +243,7 @@ releases:
       category: tools
       step: 1
     chart: okgolove/aws-xray
-    version: 4.0.8
+    version: 4.0.12
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
 
