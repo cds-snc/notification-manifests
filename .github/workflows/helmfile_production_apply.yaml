@@ -14,7 +14,7 @@ env:
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:329829f
+  API_LAMBDA_IMAGE: api-lambda:25f8fd6
   HEARTBEAT_IMAGE: heartbeat:7974348
   SYSTEM_STATUS_IMAGE: system_status:7974348
   SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:7974348
