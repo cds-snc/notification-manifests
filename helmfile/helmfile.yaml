@@ -46,6 +46,8 @@ repositories:
   url: https://charts.signoz.io
 - name: opentelemetry
   url: https://open-telemetry.github.io/opentelemetry-helm-charts
+- name: vmware-tanzu
+  url: https://vmware-tanzu.github.io/helm-charts
 
 releases:
   # Uses database-specific overrides
@@ -319,7 +321,7 @@ releases:
       tier: crd
       category: system
       step: 0
-    chart: charts/crds
+    chart: charts/targetgroup-crds
 
   - name: aws-lb-controller
     namespace: kube-system
@@ -359,6 +361,50 @@ releases:
     - ./overrides/system/nidhogg.yaml.gotmpl
 
 {{ if or (eq .Environment.Name "dev") }}
+
+  - name: velero
+    namespace: velero
+    disableValidationOnInstall: true
+    labels:
+      app: velero
+      tier: backup
+      category: system
+      step: 3
+    chart: vmware-tanzu/velero
+    values:
+    - ./overrides/system/velero.yaml.gotmpl 
+
+  - name: volume-snapshot-crds
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: crds
+      tier: crd
+      category: system
+      step: 0
+    chart: charts/volume-snapshot-crds
+
+  - name: volume-snapshot-class
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: volume-snapshot-class
+      tier: backend
+      category: system
+      step: 2
+    chart: charts/volume-snapshot-class
+
+  - name: snapshot-controller
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: snapshot-controller
+      tier: backend
+      category: system
+      step: 2
+    chart: charts/snapshot-controller
+
 
 # Disabled New Relic!
   - name: newrelic

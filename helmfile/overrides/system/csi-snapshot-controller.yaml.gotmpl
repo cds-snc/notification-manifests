@@ -1,0 +1,23 @@
+# CSI Snapshot Controller configuration
+# Required for Velero volume snapshots with CSI drivers
+
+replicaCount: 2
+
+image:
+  repository: registry.k8s.io/sig-storage/snapshot-controller
+  tag: v8.0.1
+  pullPolicy: IfNotPresent
+
+args:
+  - --v=5
+  - --leader-election=true
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 50Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+priorityClassName: system-cluster-critical
