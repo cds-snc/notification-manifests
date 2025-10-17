@@ -6,10 +6,10 @@ targetGroupBinding:
   targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}
 
 {{ if eq .Environment.Name "dev" }}
-podAnnotations:
-  instrumentation.opentelemetry.io/inject-nodejs: "true"
-  sidecar.opentelemetry.io/inject: "true"
-{{ end }}
+#podAnnotations:
+#  instrumentation.opentelemetry.io/inject-nodejs: "true"
+#  sidecar.opentelemetry.io/inject: "true"
+#{{ end }}
 
 pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
