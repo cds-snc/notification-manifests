@@ -321,7 +321,7 @@ releases:
       tier: crd
       category: system
       step: 0
-    chart: charts/crds
+    chart: charts/targetgroup-crds
 
   - name: aws-lb-controller
     namespace: kube-system
@@ -373,6 +373,16 @@ releases:
     chart: vmware-tanzu/velero
     values:
     - ./overrides/system/velero.yaml.gotmpl 
+
+  - name: volume-snapshot-crds
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: crds
+      tier: crd
+      category: system
+      step: 0
+    chart: charts/volume-snapshot-crds
 
   - name: volume-snapshot-class
     disableValidationOnInstall: true
