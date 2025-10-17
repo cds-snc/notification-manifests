@@ -1,0 +1,6 @@
+apiVersion: v2
+name: volume-snapshot-class
+description: VolumeSnapshotClass for AWS EBS CSI driver
+type: application
+version: 1.0.0
+appVersion: "1.0"

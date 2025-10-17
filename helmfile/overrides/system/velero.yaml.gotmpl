@@ -1,0 +1,52 @@
+initContainers:
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.9.0  # check for latest version
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+
+configuration:
+  features: "EnableCSI" 
+  uploaderType: kopia
+  defaultVolumeSnapshotLocations:
+    aws: default
+  backupStorageLocation:
+    - name: aws-s3
+      provider: "aws"
+      bucket: "notification-canada-ca-dev-eks-cluster-velero-backups"
+      prefix: "notify-backups"  # optional, organizes backups in a folder
+      default: true
+      accessMode: ReadWrite
+      config:
+        region: {{ requiredEnv "AWS_REGION"}}
+  volumeSnapshotLocation:
+    - name: default
+      provider: aws
+      config:
+        region: {{ requiredEnv "AWS_REGION"}}
+
+snapshotsEnabled: true
+
+serviceAccount:
+  server:
+    create: true
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID"}}:role/notification-canada-ca-dev-eks-cluster-velero-role
+
+credentials:
+  useSecret: false
+
+deployNodeAgent: true  # For pod volume backups
+
+nodeAgent:
+  podVolumePath: /var/lib/kubelet/pods
+  privileged: false
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+cleanUpCRDs: true
