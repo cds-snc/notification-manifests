@@ -13,7 +13,7 @@ configuration:
   backupStorageLocation:
     - name: aws-s3
       provider: "aws"
-      bucket: "notification-canada-ca-dev-eks-cluster-velero-backups"
+      bucket: "notification-canada-ca-{{ .Environment.Name }}-eks-cluster-velero-backups"
       prefix: "notify-backups"  # optional, organizes backups in a folder
       default: true
       accessMode: ReadWrite
