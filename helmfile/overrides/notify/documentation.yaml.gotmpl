@@ -6,9 +6,9 @@ targetGroupBinding:
   targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}
 
 {{ if eq .Environment.Name "dev" }}
-podAnnotations:
-  instrumentation.opentelemetry.io/inject-nodejs: "true"
-  sidecar.opentelemetry.io/inject: "true"
+#podAnnotations:
+#  instrumentation.opentelemetry.io/inject-nodejs: "true"
+#  sidecar.opentelemetry.io/inject: "true"
 {{ end }}
 
 pdb:
