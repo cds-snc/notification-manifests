@@ -14,12 +14,11 @@ celeryCommon:
   NOTIFY_EMAIL_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
   NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
   REDIS_ENABLED: "{{ .StateValues.REDIS_ENABLED }}"
-  NEW_RELIC_ENABLED: "{{ .StateValues.NEW_RELIC_ENABLED }}"
-  NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "{{ .StateValues.NEW_RELIC_ENABLED }}"
-  NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_ENABLED }}"
-  NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS: "{{ .StateValues.NEW_RELIC_ENABLED }}"
-  NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS: "{{ .StateValues.NEW_RELIC_ENABLED }}"
-  NEW_RELIC_IGNORE_STARTUP_ERRORS: "true"
+  NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "{{ .StateValues.NEW_RELIC_DISTRIBUTED_TRACING_ENABLED }}"
+  NEW_RELIC_MONITOR_MODE: "{{ .StateValues.NEW_RELIC_MONITOR_MODE }}"
+  NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS: "{{ .StateValues.NEW_RELIC_EXTENSION_SEND_FUNCTION_LOGS }}"
+  NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS: "{{ .StateValues.NEW_RELIC_EXTENSION_SEND_EXTENSION_LOGS }}"
+  NEW_RELIC_IGNORE_STARTUP_ERRORS: "{{ .StateValues.NEW_RELIC_IGNORE_STARTUP_ERRORS }}"
   NEW_RELIC_ENVIRONMENT: "{{ .Environment.Name }}"
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
   AWS_XRAY_SDK_ENABLED: {{ .StateValues.AWS_XRAY_SDK_ENABLED }}
@@ -48,6 +47,7 @@ celerySecrets:
   SENDGRID_API_KEY: MANIFEST_SENDGRID_API_KEY
   SQLALCHEMY_DATABASE_URI: MANIFEST_SQLALCHEMY_DATABASE_URI
   SQLALCHEMY_DATABASE_READER_URI: MANIFEST_SQLALCHEMY_DATABASE_READER_URI
+  ENABLE_NEW_RELIC: MANIFEST_ENABLE_NEW_RELIC
   NEW_RELIC_LICENSE_KEY: MANIFEST_NEW_RELIC_LICENSE_KEY
   NEW_RELIC_ACCOUNT_ID: MANIFEST_NEW_RELIC_ACCOUNT_ID
   NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
@@ -84,13 +84,13 @@ nodes:
       deploymentBeatEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
       replicas: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
-    newRelicAppName: "notification-celery-sms-dedicated-static-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-sms-dedicated-static-{{ .Environment.Name }}"
   beat:
     deployment:
       deploymentBeatEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
       replicas: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
-    newRelicAppName: "notification-celery-beat-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-beat-{{ .Environment.Name }}"
   core-tasks-static:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -106,7 +106,7 @@ nodes:
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-    newRelicAppName: "notification-celery-core-tasks-static-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-core-tasks-static-{{ .Environment.Name }}"
   email-send-static:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -122,7 +122,7 @@ nodes:
     pdb:  
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-    newRelicAppName: "notification-celery-email-send-static-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-email-send-static-{{ .Environment.Name }}"
   sms-send-static:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -138,7 +138,7 @@ nodes:
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-    newRelicAppName: "notification-celery-sms-send-static-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-sms-send-static-{{ .Environment.Name }}"
   core-tasks-scalable:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -162,7 +162,7 @@ nodes:
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-    newRelicAppName: "notification-celery-core-tasks-scalable-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-core-tasks-scalable-{{ .Environment.Name }}"
   delivery-receipts-scalable:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -186,7 +186,7 @@ nodes:
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-    newRelicAppName: "notification-celery-delivery-receipts-scalable-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-delivery-receipts-scalable-{{ .Environment.Name }}"
   scalable-email:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -210,7 +210,7 @@ nodes:
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-    newRelicAppName: "notification-celery-email-send-scalable-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-email-send-scalable-{{ .Environment.Name }}"
   scalable-sms:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -234,4 +234,4 @@ nodes:
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-    newRelicAppName: "notification-celery-sms-send-scalable-{{ .Environment.Name }}"
+    newRelicAppName: "notification-k8s-celery-sms-send-scalable-{{ .Environment.Name }}"
