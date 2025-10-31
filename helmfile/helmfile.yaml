@@ -206,7 +206,7 @@ releases:
       category: system
       step: 2
     chart: prometheus-community/kube-state-metrics
-    version: 5.18.1
+    version: 6.3.0
     values:
     - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
