@@ -1,6 +1,6 @@
 image:
   repository: public.ecr.aws/cloudwatch-agent/cloudwatch-agent
-  tag: 1.300026.3b189
+  tag: 1.300061.0b1289
 serviceAccount:
   name: cloudwatch-agent
 clusterName: notification-canada-ca-dev-eks-cluster
