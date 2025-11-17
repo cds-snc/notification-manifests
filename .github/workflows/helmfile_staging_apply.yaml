@@ -142,11 +142,11 @@ jobs:
           alias-name: latest
           function-name: ses_to_sqs_email_callbacks
 
-      # - name: Notify Slack channel if this job failed
-      #   if: ${{ failure() }}
-      #   run: |
-      #     json='{"text":"<!here> Staging Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
-      #     curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json='{"text":"<!here> Staging Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
 
   clear-cache:
     needs: helmfile-apply
@@ -191,9 +191,9 @@ jobs:
           log_analytics_workspace_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
           log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
 
-      # - name: Notify Slack channel if this job failed
-      #   if: ${{ failure() }}
-      #   run: |
-      #     json='{"text":"<!here> Manifests Merge To Staging CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
-      #     curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json='{"text":"<!here> Manifests Merge To Staging CI is failing in <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
+          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
     
