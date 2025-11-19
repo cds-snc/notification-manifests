@@ -27,6 +27,7 @@ params=$(printf '%s' "$params_buffer" | sed '/^$/d' | sort -u)
 aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .previous.env
 aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value "$params" --tier "Intelligent-Tiering" --overwrite
 aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .new.env
-DIFF=$(diff -B .new.env .previous.env | wc -l | tr -d ' ')
+DIFF_OUTPUT=$(diff -B .new.env .previous.env || true)
+DIFF=$(printf '%s' "$DIFF_OUTPUT" | wc -l | tr -d ' ')
 echo "DIFF=$DIFF"
 export DIFF
