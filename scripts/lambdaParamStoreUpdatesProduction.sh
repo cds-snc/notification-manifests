@@ -1,20 +1,29 @@
 #!/bin/bash
 
+set -euo pipefail
+
 NAMESPACE="notification-canada-ca"
+params_buffer=""
+
 get_env_and_secrets() {
-local DEPLOYMENT_NAME=$1
-local SECRET_NAME=${2:-$DEPLOYMENT_NAME}
-env_vars=$(kubectl get deployment $DEPLOYMENT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[*].env[*]}')
-secrets=$(kubectl get secret $SECRET_NAME -n $NAMESPACE -o jsonpath='{.data}' | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
-for env_var in $(echo "$env_vars" | jq -r 'select(.value != null and .value != "") | .name + "=" + .value'); do
-    params="$params\n$env_var"
-done
-params="$params\n$secrets"
+    local deployment_name=$1
+    local secret_name=${2:-$deployment_name}
+
+    while IFS= read -r env_var; do
+        [[ -n "$env_var" ]] && params_buffer+="$env_var"$'\n'
+    done < <(kubectl get deployment "$deployment_name" -n "$NAMESPACE" -o jsonpath='{.spec.template.spec.containers[*].env[*]}' \
+        | jq -r 'select(.value != null and .value != "") | .name + "=" + .value')
+
+    while IFS= read -r secret_var; do
+        [[ -n "$secret_var" ]] && params_buffer+="$secret_var"$'\n'
+    done < <(kubectl get secret "$secret_name" -n "$NAMESPACE" -o jsonpath='{.data}' \
+        | jq -r 'to_entries[] | "\(.key)=\(.value | @base64d)"')
 }
-params=""
+
 # API
+params_buffer=""
 get_env_and_secrets "notify-api"
-params=$(echo -e "$params" | sort -u)
+params=$(printf '%s' "$params_buffer" | sed '/^$/d' | sort -u)
 aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .previous.env
 aws ssm put-parameter --region ca-central-1 --name ENVIRONMENT_VARIABLES --type SecureString --key-id alias/aws/ssm --value "$params" --tier "Intelligent-Tiering" --overwrite
 aws ssm get-parameters --region ca-central-1 --with-decryption --names ENVIRONMENT_VARIABLES --query 'Parameters[*].Value' --output text > .new.env
