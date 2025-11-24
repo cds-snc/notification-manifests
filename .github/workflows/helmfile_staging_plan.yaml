@@ -23,8 +23,8 @@ jobs:
       - name: Configure credentials to Notify using OIDC
         uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
         with:
-          role-to-assume: arn:aws:iam::${{env.ACCOUNT_ID}}:role/notification-manifests-apply
-          role-session-name: NotifyManifestsApply
+          role-to-assume: arn:aws:iam::${{env.ACCOUNT_ID}}:role/notification-manifests-helmfile-diff
+          role-session-name: NotifyManifestsHelmfileDiff
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
