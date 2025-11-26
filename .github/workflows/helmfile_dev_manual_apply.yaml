@@ -1,5 +1,5 @@
 
-name: Dev - Helmfile Manual Apply
+name: Dev - Helmfile 'main' Branch Manual Apply
 
 on:
   workflow_dispatch:
@@ -29,10 +29,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
-      - name: Checkout
+      - name: Checkout main branch
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
-          fetch-depth: 0        
+          ref: main
+          fetch-depth: 0
 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
