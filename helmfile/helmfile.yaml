@@ -360,10 +360,9 @@ releases:
     values:
     - ./overrides/system/nidhogg.yaml.gotmpl
 
-{{ if or (eq .Environment.Name "dev") }}
-
   - name: velero
     namespace: velero
+    version: 11.1.1
     disableValidationOnInstall: true
     labels:
       app: velero
@@ -405,6 +404,7 @@ releases:
       step: 2
     chart: charts/snapshot-controller
 
+{{ if or (eq .Environment.Name "dev") }}
 
 # Disabled New Relic!
   - name: newrelic
