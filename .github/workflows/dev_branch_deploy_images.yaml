@@ -78,9 +78,13 @@ jobs:
           DB_ARGS="upgrade"
 
           pushd helmfile
-          helmfile --environment "$ENVIRONMENT" -l app="$APP_LABEL" --state-values-set DB_ARGS="$DB_ARGS" sync
+          helmfile --environment "$ENVIRONMENT" -l app="$APP_LABEL" \
+            --state-values-set DB_ARGS="$DB_ARGS" \
+            apply -- \
+            --set image.repository="${REGISTRY}/notify-database" \
+            --set image.tag="latest"
 
-          IMAGE_TAG=$(helm get values "$APP_LABEL" -n "$NAMESPACE" -o json | jq -r '.image.tag')
+          IMAGE_TAG="latest"
           RELEASE_REVISION=$(helm list -n "$NAMESPACE" -o json | jq -r ".[] | select(.name==\"$APP_LABEL\") | .revision")
 
           echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
