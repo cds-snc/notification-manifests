@@ -36,7 +36,7 @@ serviceAccount:
   server:
     create: true
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID"}}:role/notification-canada-ca-dev-eks-cluster-velero-role
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID"}}:role/notification-canada-ca-{{ .Environment.Name }}-eks-cluster-velero-role
 
 credentials:
   useSecret: false
