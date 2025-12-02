@@ -10,6 +10,7 @@ env:
   DEV_AWS_ACCOUNT: ${{ secrets.DEV_AWS_ACCOUNT_ID }}
   ACCOUNT_ID: ${{ secrets.DEV_AWS_ACCOUNT_ID }}
   AWS_DEFAULT_REGION: ca-central-1
+  REGISTRY: ${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
 
 permissions:
   id-token: write
@@ -78,13 +79,41 @@ jobs:
       - name: Helmfile apply for dev images
         run: |
           pushd helmfile
-          helmfile --environment dev -l 'tier=crd' apply
-          helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply
+          helmfile --environment dev -l 'tier=crd' apply -- \
+            --set image.repository="${REGISTRY}/api" \
+            --set image.tag="latest"
+          helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply -- \
+            --set image.repository="${REGISTRY}/api" \
+            --set image.tag="latest"
           popd
 
-      # Optionally, force lambda to pick up latest dev image tag if needed
-      # - name: Force api-lambda-dev to redeploy
-      #   uses: ./.github/actions/update-lambda-function
-      #   with:
-      #     alias-name: latest
-      #     function-name: api-lambda-dev
+      - name: Deploy api-lambda from latest image tag
+        run: |
+          set -euo pipefail
+          IMAGE_NAME="api-lambda"
+          # Find the latest image tag for api-lambda in the dev ECR repo
+          LATEST_TAG=$(aws ecr describe-images \
+            --repository-name "notify/${IMAGE_NAME}" \
+            --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' \
+            --output text)
+
+          if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "None" ]; then
+            echo "No image tag found in ECR for $IMAGE_NAME" >&2
+            exit 1
+          fi
+
+          IMAGE_URI="$REGISTRY/${IMAGE_NAME}:$LATEST_TAG"
+          echo "Deploying api-lambda with image: $IMAGE_URI" >&2
+
+          aws lambda update-function-code \
+            --function-name api-lambda-dev \
+            --image-uri "$IMAGE_URI" > /dev/null 2>&1
+
+          aws lambda wait function-updated --function-name api-lambda-dev
+          VERSION="$(aws lambda publish-version --function-name api-lambda-dev | jq -r '.Version')"
+
+          aws lambda update-alias \
+            --function-name api-lambda-dev \
+            --name latest \
+            --function-version "$VERSION" > /dev/null 2>&1
+
