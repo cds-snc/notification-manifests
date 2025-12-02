@@ -129,6 +129,15 @@ jobs:
             --set image.tag="latest"
           popd
 
+      - name: Save ENV vars and secrets to AWS Param Store
+        if: ${{ success() }}
+        run: |
+          # wait for the secrets and env vars to be available
+          sleep 20
+          source ./scripts/lambdaParamStoreUpdatesDev.sh -g
+          echo DIFF=$DIFF
+          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
+
       - name: Deploy api-lambda from latest image tag
         run: |
           set -euo pipefail
@@ -158,4 +167,5 @@ jobs:
             --function-name api-lambda-dev \
             --name latest \
             --function-version "$VERSION" > /dev/null 2>&1
+
 
