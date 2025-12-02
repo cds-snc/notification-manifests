@@ -69,21 +69,59 @@ jobs:
           ./helmfile/getContext.sh -g
 
       - name: Run Database Upgrade Helmfile Sync
-        uses: ./.github/actions/db-migration
-        with:
-          environment: "dev"
-          namespace: "notification-canada-ca"
-          app_label: "notify-database"
-          timeout: "400s"
+        id: db_migration
+        run: |
+          set -euo pipefail
+          ENVIRONMENT="dev"
+          NAMESPACE="notification-canada-ca"
+          APP_LABEL="notify-database"
+          DB_ARGS="upgrade"
 
-      - name: Helmfile apply for dev images
+          pushd helmfile
+          helmfile --environment "$ENVIRONMENT" -l app="$APP_LABEL" --state-values-set DB_ARGS="$DB_ARGS" sync
+
+          IMAGE_TAG=$(helm get values "$APP_LABEL" -n "$NAMESPACE" -o json | jq -r '.image.tag')
+          RELEASE_REVISION=$(helm list -n "$NAMESPACE" -o json | jq -r ".[] | select(.name==\"$APP_LABEL\") | .revision")
+
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "release_revision=${RELEASE_REVISION}" >> "$GITHUB_OUTPUT"
+          popd
+
+      - name: Wait for Database Migration Job Completion
+        env:
+          IMAGE_TAG: ${{ steps.db_migration.outputs.image_tag }}
+          RELEASE_REVISION: ${{ steps.db_migration.outputs.release_revision }}
+        run: |
+          set -euo pipefail
+          NAMESPACE="notification-canada-ca"
+          TIMEOUT="400s"
+
+          echo "Using image tag: ${IMAGE_TAG}"
+          echo "Using release revision: ${RELEASE_REVISION}"
+
+          kubectl wait --for=condition=complete "job/notify-db-migration-job-${IMAGE_TAG}-${RELEASE_REVISION}" \
+            -n "$NAMESPACE" \
+            --timeout="$TIMEOUT"
+
+      - name: Helmfile apply for all other releases
         run: |
           pushd helmfile
-          helmfile --environment dev -l 'tier=crd' apply -- \
-            --set image.repository="${REGISTRY}/api" \
-            --set image.tag="latest"
-          helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply -- \
-            --set image.repository="${REGISTRY}/api" \
+          helmfile --environment dev -l 'tier=crd' apply
+          helmfile --environment dev -l 'app!=notify-database,app!=notify-api,app!=notify-admin,app!=notify-document-download,tier!=crd' apply
+          popd
+
+      - name: Helmfile apply for dev images (api, admin, document-download)
+        strategy:
+          fail-fast: false
+          matrix:
+            app:
+              - api
+              - admin
+              - document-download
+        run: |
+          pushd helmfile
+          helmfile --environment dev -l "app=notify-${{ matrix.app }}" apply -- \
+            --set image.repository="${REGISTRY}/${{ matrix.app }}" \
             --set image.tag="latest"
           popd
 
