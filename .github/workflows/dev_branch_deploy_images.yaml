@@ -116,7 +116,6 @@ jobs:
 
       - name: Helmfile apply for dev images (api, admin, document-download)
         strategy:
-          fail-fast: false
           matrix:
             app:
               - api
