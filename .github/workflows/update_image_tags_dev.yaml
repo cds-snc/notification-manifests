@@ -6,10 +6,10 @@ on:
       - update-docker-image-dev
 
 jobs:
+
   update-image:
     runs-on: ubuntu-latest
     steps:
-
       - name: Obtain a Notify PR Bot GitHub App Installation Access Token
         run: |
           TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.PR_BOT_GITHUB_TOKEN }})"
@@ -82,8 +82,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
-      - name: Trigger Helmfile Dev Apply
-        uses: ./.github/workflows/deploy_dev.yaml
-        with:
-          docker_tag: ${{ github.event.client_payload.docker_tag }}
-          
+  deploy-dev:
+    needs: update-image
+    uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@xmas-code-freeze-workflow
+    with:
+      docker_tag: ${{ github.event.client_payload.docker_tag }}
+
