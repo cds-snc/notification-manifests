@@ -1,9 +1,18 @@
-name: Dev - Helmfile 'main' Branch Manual Apply
+name: Dev - Helmfile Apply All and Deploy API Lambda
 
 on:
+  workflow_call:
+    inputs:
+      docker_tag:
+        description: 'Docker tag to deploy'
+        required: false
+        type: string
   workflow_dispatch:
-
-# This workflow is intended for manual execution only (via the GitHub Actions UI)
+    inputs:
+      docker_tag:
+        description: 'Docker tag to deploy'
+        required: false
+        type: string
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,11 +43,11 @@ jobs:
           role-session-name: NotifyManifestsApply
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-      - name: Checkout main branch
+      - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
-          ref: main
-          fetch-depth: 0
+          # Fetches entire history, so we can analyze commits since last tag
+          fetch-depth: 0        
 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
@@ -60,7 +69,7 @@ jobs:
 
       - name: Setup Terraform tools
         uses: cds-snc/terraform-tools-setup@v1
-        env:
+        env: # In case you want to override default versions
           CONFTEST_VERSION: 0.30.0 
           TERRAFORM_VERSION: 1.9.5
           TERRAGRUNT_VERSION: 0.66.9
@@ -68,13 +77,13 @@ jobs:
 
       - name: Retrieve VPN Config
         run: |
-          scripts/createVPNConfig.sh dev 2> /dev/null  
+          scripts/createVPNConfig.sh dev 2> /dev/null
 
       - name: Connect to VPN
         uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
         with:
           config_file: /var/tmp/dev.ovpn
-          echo_config: false            
+          echo_config: false
 
       - name: Configure kubeconfig
         run: |
@@ -101,12 +110,46 @@ jobs:
           helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply
           popd
 
-  clear-cache:
-    needs: helmfile-apply
-    uses: ./.github/workflows/clear-notify-cache.yaml
-    with:
-      environment: dev
-      cache_clear_user_name: CACHE_CLEAR_USER
-      api_url: https://api.dev.notification.cdssandbox.xyz
-    secrets:
-      CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.DEV_CACHE_CLEAR_CLIENT_SECRET }}
+      - name: Save ENV vars and secrets to AWS Param Store
+        if: ${{ success() }}
+        run: |
+          # wait for the secrets and env vars to be available
+          sleep 20
+          source ./scripts/lambdaParamStoreUpdatesDev.sh -g
+          echo DIFF=$DIFF
+          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
+
+      - name: Login to Dev ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
+
+      - name: Deploy api-lambda from dev ECR
+        if: ${{ success() }}
+        run: |
+          DEV_REGISTRY=${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+          DOCKER_TAG="${{ inputs.docker_tag }}"
+          # Use 'latest' if no docker tag provided
+          if [ -z "$DOCKER_TAG" ]; then
+            DOCKER_TAG="latest"
+          fi
+          
+          aws lambda update-function-code \
+            --function-name api-lambda \
+            --image-uri $DEV_REGISTRY/api-lambda:${DOCKER_TAG} > /dev/null 2>&1
+
+      - name: Publish lambda version and update alias
+        if: ${{ success() }}
+        run: |
+          aws lambda wait function-updated --function-name api-lambda
+          VERSION="$(aws lambda publish-version --function-name api-lambda | jq -r '.Version')"
+   
+          aws lambda update-alias \
+            --function-name api-lambda \
+            --name latest \
+            --function-version "$VERSION" > /dev/null 2>&1
+
+      - name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}
+
+
