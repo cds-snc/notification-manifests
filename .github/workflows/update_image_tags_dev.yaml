@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
         with:
           token: ${{ env.GITHUB_TOKEN }}
-          ref: dev
+          ref: main
 
       - name: Setup git config
         run: |
@@ -40,7 +40,7 @@ jobs:
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
         with:
-          route: PUT /repos/:repository/branches/dev/protection
+          route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
           required_status_checks: | 
             null
@@ -59,13 +59,13 @@ jobs:
         run: |
           git add helmfile/overrides/dev.env
           git commit -m "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
-          git push
+          git push origin main
 
       - name: Branch protection ON
         if: always()
         uses: octokit/request-action@v2.x
         with:
-          route: PUT /repos/:repository/branches/dev/protection
+          route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
           required_status_checks: | 
             strict: true
