@@ -84,7 +84,7 @@ jobs:
 
   deploy-dev:
     needs: update-image
-    uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@xmas-code-freeze-workflow
+    uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@main
     with:
       docker_tag: ${{ github.event.client_payload.docker_tag }}
 
