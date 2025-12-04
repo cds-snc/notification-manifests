@@ -83,7 +83,7 @@ jobs:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
       - name: Trigger Helmfile Dev Apply
-        uses: ./.github/workflows/helmfile_and_lambda_dev_apply.yaml
+        uses: ./.github/workflows/deploy_dev.yaml
         with:
           docker_tag: ${{ github.event.client_payload.docker_tag }}
           

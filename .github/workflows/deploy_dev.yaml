@@ -1,4 +1,4 @@
-name: Dev - Helmfile Apply
+name: Dev - Helmfile Apply All and Deploy API Lambda
 
 on:
   workflow_call:
