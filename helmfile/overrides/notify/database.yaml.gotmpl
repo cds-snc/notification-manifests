@@ -92,6 +92,7 @@ database:
   args: {{ .StateValues.DB_ARGS }}
 
 image: 
+  repository: "{{ .StateValues.IMAGE_REGISTRY }}api"
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
 
 dockerhub:

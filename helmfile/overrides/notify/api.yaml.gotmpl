@@ -92,11 +92,10 @@ apiSecrets:
 
 
 image: 
+  repository: "{{ .StateValues.IMAGE_REGISTRY }}api"
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
 
-{{ if eq .Environment.Name "dev" }}  
-#  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/api
-
+{{ if eq .Environment.Name "dev" }}
 #podAnnotations:
 #    instrumentation.opentelemetry.io/inject-python: "true"
 #    instrumentation.opentelemetry.io/otel-python-platform: "musl"
