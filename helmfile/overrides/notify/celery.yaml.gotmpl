@@ -58,7 +58,7 @@ celerySecrets:
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
 
 image: 
-  repository: "{{ .StateValues.IMAGE_REGISTRY }}api"
+  repository: "{{ .StateValues.API_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
 
 {{ if eq .Environment.Name "dev" }}

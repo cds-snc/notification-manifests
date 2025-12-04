@@ -65,7 +65,7 @@ adminSecrets:
   MIXPANEL_PROJECT_TOKEN: MANIFEST_MIXPANEL_PROJECT_TOKEN
 
 image:
-  repository: "{{ .StateValues.IMAGE_REGISTRY }}admin"
+  repository: "{{ .StateValues.ADMIN_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.ADMIN_DOCKER_TAG }}"
 
 {{ if eq .Environment.Name "dev" }}

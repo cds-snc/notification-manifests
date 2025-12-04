@@ -30,7 +30,7 @@ documentDownloadSecrets:
   AUTH_TOKENS: MANIFEST_DOCUMENT_DOWNLOAD_API_KEY
 
 image: 
-  repository: "{{ .StateValues.IMAGE_REGISTRY }}document-download-api"
+  repository: "{{ .StateValues.DOCUMENT_DOWNLOAD_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG }}"
 
 {{ if eq .Environment.Name "dev" }}
