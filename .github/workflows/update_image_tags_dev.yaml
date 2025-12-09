@@ -4,6 +4,14 @@ on:
   repository_dispatch:
     types:
       - update-docker-image-dev
+  push:
+    branches:
+      - workflow-chatter
+
+env:
+  # Dummy payload for testing on push
+  COMPONENT: ${{ github.event.client_payload.component || 'API' }}
+  DOCKER_TAG: ${{ github.event.client_payload.docker_tag || '7de57b2' }}
 
 jobs:
 
@@ -34,7 +42,7 @@ jobs:
       - name: Update the docker tag in dev.env
         run: |
           echo "Updating docker tag in dev.env"
-          sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/dev.env
+          sed -i 's/^${{ env.COMPONENT }}_DOCKER_TAG:.*/${{ env.COMPONENT }}_DOCKER_TAG: "'"${{ env.DOCKER_TAG }}"'"/' helmfile/overrides/dev.env
           cat helmfile/overrides/dev.env
 
       - name: Branch protection OFF
@@ -58,7 +66,7 @@ jobs:
       - name: Commit
         run: |
           git add helmfile/overrides/dev.env
-          git commit -m "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
+          git commit -m "Update ${{ env.COMPONENT }} docker image tag to ${{ env.DOCKER_TAG }}"
           git push origin main
 
       - name: Branch protection ON
@@ -90,6 +98,6 @@ jobs:
       pull-requests: write
     uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@main
     with:
-      docker_tag: ${{ github.event.client_payload.docker_tag }}
+      docker_tag: ${{ env.DOCKER_TAG }}
     secrets: inherit
 
