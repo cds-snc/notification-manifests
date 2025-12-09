@@ -30,16 +30,14 @@ documentDownloadSecrets:
   AUTH_TOKENS: MANIFEST_DOCUMENT_DOWNLOAD_API_KEY
 
 image: 
+  repository: "{{ .StateValues.DOCUMENT_DOWNLOAD_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.DOCUMENT_DOWNLOAD_DOCKER_TAG }}"
 
 {{ if eq .Environment.Name "dev" }}
-#  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/document-download
-
 #podAnnotations:
 #    instrumentation.opentelemetry.io/inject-python: "true"
 #    instrumentation.opentelemetry.io/otel-python-platform: "musl"
 #    sidecar.opentelemetry.io/inject: "true"
-
 {{ end }}
 
 dockerhub:

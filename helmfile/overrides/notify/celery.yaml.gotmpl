@@ -58,16 +58,14 @@ celerySecrets:
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
 
 image: 
+  repository: "{{ .StateValues.API_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
 
 {{ if eq .Environment.Name "dev" }}
-#  repository: 800095993820.dkr.ecr.ca-central-1.amazonaws.com/notify/api
-
 #podAnnotations:
 #    instrumentation.opentelemetry.io/inject-python: "true"
 #    instrumentation.opentelemetry.io/otel-python-platform: "musl"
 #    sidecar.opentelemetry.io/inject: "true"
-
 {{ end }}
 
 dockerhub:
