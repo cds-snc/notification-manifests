@@ -1,13 +1,14 @@
 name: Update Docker Image for Manifests in Dev
 
+
 on:
   repository_dispatch:
     types:
       - update-docker-image-dev
 
-permissions:
-  id-token: write
-  contents: write
+env:
+  COMPONENT: ${{ github.event.client_payload.component }}
+  DOCKER_TAG: ${{ github.event.client_payload.docker_tag }}
 
 jobs:
 
@@ -38,7 +39,7 @@ jobs:
       - name: Update the docker tag in dev.env
         run: |
           echo "Updating docker tag in dev.env"
-          sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/dev.env
+          sed -i 's/^${{ env.COMPONENT }}_DOCKER_TAG:.*/${{ env.COMPONENT }}_DOCKER_TAG: "'"${{ env.DOCKER_TAG }}"'"/' helmfile/overrides/dev.env
           cat helmfile/overrides/dev.env
 
       - name: Branch protection OFF
@@ -62,7 +63,7 @@ jobs:
       - name: Commit
         run: |
           git add helmfile/overrides/dev.env
-          git commit -m "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
+          git commit -m "Update ${{ env.COMPONENT }} docker image tag to ${{ env.DOCKER_TAG }}"
           git push origin main
 
       - name: Branch protection ON
@@ -88,6 +89,10 @@ jobs:
 
   deploy-dev:
     needs: update-image
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
     uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@main
     with:
       docker_tag: ${{ github.event.client_payload.docker_tag }}
