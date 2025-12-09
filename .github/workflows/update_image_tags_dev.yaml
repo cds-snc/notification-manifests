@@ -1,17 +1,14 @@
 name: Update Docker Image for Manifests in Dev
 
+
 on:
   repository_dispatch:
     types:
       - update-docker-image-dev
-  push:
-    branches:
-      - workflow-chatter
 
 env:
-  # Dummy payload for testing on push
-  COMPONENT: ${{ github.event.client_payload.component || 'API' }}
-  DOCKER_TAG: ${{ github.event.client_payload.docker_tag || '7de57b2' }}
+  COMPONENT: ${{ github.event.client_payload.component }}
+  DOCKER_TAG: ${{ github.event.client_payload.docker_tag }}
 
 jobs:
 
@@ -98,6 +95,6 @@ jobs:
       pull-requests: write
     uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@main
     with:
-      docker_tag: ${{ github.event.client_payload.docker_tag || '7de57b2' }}
+      docker_tag: ${{ github.event.client_payload.docker_tag }}
     secrets: inherit
 
