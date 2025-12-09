@@ -5,6 +5,10 @@ on:
     types:
       - update-docker-image-dev
 
+permissions:
+  id-token: write
+  contents: write
+
 jobs:
 
   update-image:
@@ -87,4 +91,5 @@ jobs:
     uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@main
     with:
       docker_tag: ${{ github.event.client_payload.docker_tag }}
+    secrets: inherit
 
