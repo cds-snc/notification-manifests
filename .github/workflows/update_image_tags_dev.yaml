@@ -98,6 +98,6 @@ jobs:
       pull-requests: write
     uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@main
     with:
-      docker_tag: ${{ env.DOCKER_TAG }}
+      docker_tag: ${{ github.event.client_payload.docker_tag || '7de57b2' }}
     secrets: inherit
 
