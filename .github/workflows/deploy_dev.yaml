@@ -24,6 +24,9 @@ jobs:
   helmfile-apply:
     runs-on: ubuntu-latest
     steps:
+      - name: Fetch full git history
+        run: |
+          git fetch --no-tags --prune --unshallow || git fetch --all
 
       - name: Detect API image tag change and set env
         id: api_tag_check
