@@ -96,5 +96,6 @@ jobs:
     uses: cds-snc/notification-manifests/.github/workflows/deploy_dev.yaml@main
     with:
       docker_tag: ${{ github.event.client_payload.docker_tag }}
+      deploy_lambda: ${{ github.event.client_payload.component == 'API' }}
     secrets: inherit
 
