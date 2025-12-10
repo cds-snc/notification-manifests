@@ -45,50 +45,50 @@ jobs:
           sed -i 's/^${{ env.COMPONENT }}_DOCKER_TAG:.*/${{ env.COMPONENT }}_DOCKER_TAG: "'"${{ env.DOCKER_TAG }}"'"/' helmfile/overrides/dev.env
           cat helmfile/overrides/dev.env
 
-      - name: Branch protection OFF
-        uses: octokit/request-action@v2.x
-        with:
-          route: PUT /repos/:repository/branches/main/protection
-          repository: ${{ github.repository }}
-          required_status_checks: | 
-            null
-          required_linear_history: |
-            null
-          enforce_admins: |
-            null
-          required_pull_request_reviews: |
-            null
-          restrictions: | 
-            null 
-        env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+      # - name: Branch protection OFF
+      #   uses: octokit/request-action@v2.x
+      #   with:
+      #     route: PUT /repos/:repository/branches/main/protection
+      #     repository: ${{ github.repository }}
+      #     required_status_checks: | 
+      #       null
+      #     required_linear_history: |
+      #       null
+      #     enforce_admins: |
+      #       null
+      #     required_pull_request_reviews: |
+      #       null
+      #     restrictions: | 
+      #       null 
+      #   env:
+      #     GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
-      - name: Commit
-        run: |
-          git add helmfile/overrides/dev.env
-          git commit -m "Update ${{ env.COMPONENT }} docker image tag to ${{ env.DOCKER_TAG }}"
-          git push origin main
+      # - name: Commit
+      #   run: |
+      #     git add helmfile/overrides/dev.env
+      #     git commit -m "Update ${{ env.COMPONENT }} docker image tag to ${{ env.DOCKER_TAG }}"
+      #     git push origin main
 
-      - name: Branch protection ON
-        if: always()
-        uses: octokit/request-action@v2.x
-        with:
-          route: PUT /repos/:repository/branches/main/protection
-          repository: ${{ github.repository }}
-          required_status_checks: | 
-            strict: true
-            checks:
-              - context: helmfile-diff
-          required_linear_history: |
-            true
-          enforce_admins: |
-            true
-          required_pull_request_reviews: |
-            required_approving_review_count: 1
-          restrictions: | 
-            null 
-        env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+      # - name: Branch protection ON
+      #   if: always()
+      #   uses: octokit/request-action@v2.x
+      #   with:
+      #     route: PUT /repos/:repository/branches/main/protection
+      #     repository: ${{ github.repository }}
+      #     required_status_checks: | 
+      #       strict: true
+      #       checks:
+      #         - context: helmfile-diff
+      #     required_linear_history: |
+      #       true
+      #     enforce_admins: |
+      #       true
+      #     required_pull_request_reviews: |
+      #       required_approving_review_count: 1
+      #     restrictions: | 
+      #       null 
+      #   env:
+      #     GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
   deploy-dev:
     needs: update-image
