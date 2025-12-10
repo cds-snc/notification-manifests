@@ -34,6 +34,7 @@ jobs:
         run: |
           git fetch --all --prune --no-tags
 
+      # --- API tag change detection ---
       - name: Detect API image tag change and set env
         id: api_tag_check
         run: |
@@ -52,6 +53,8 @@ jobs:
           if git diff --name-only "$BEFORE_SHA" "$AFTER_SHA" | grep -q "$FILE"; then
             # Check if the value changed
             OLD_TAG=$(git show "$BEFORE_SHA:$FILE" 2>/dev/null | grep -E '^API_DOCKER_TAG=' | cut -d'=' -f2- | tr -d '\r' || true)
+            echo "Old API_DOCKER_TAG: $OLD_TAG"
+            echo "New API_DOCKER_TAG: $API_TAG"
             if [ "$API_TAG" != "$OLD_TAG" ]; then
               echo "API_UPDATED=true" >> $GITHUB_ENV
             else
@@ -60,6 +63,7 @@ jobs:
           else
             echo "API_UPDATED=false" >> $GITHUB_ENV
           fi
+      # --- End API tag change detection ---
 
       # - name: Inject token authentication
       #   run: |
@@ -80,12 +84,6 @@ jobs:
 
       # - name: Setup helmfile
       #   uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
-      #   with:
-      #     install-kubectl: yes
-      #     install-helm: yes        
-      #     helmfile-version: "v0.151.0"
-      #     helm-s3-plugin-version: "v0.16.2"
-
       # - name: Install OpenVPN
       #   run: |
       #     sudo apt update
