@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'dev.env'
+      - 'helmfile/overrides/dev.env'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -24,15 +24,6 @@ jobs:
   helmfile-apply:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: main
-      - name: Ensure latest main
-        run: |
-          git fetch origin main
-          git reset --hard origin/main
 
       - name: Inject token authentication
         run: |
@@ -113,7 +104,7 @@ jobs:
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
-        if: ${{ inputs.deploy_lambda && success() }}
+        if: ${{ success() }}
         run: |
           # wait for the secrets and env vars to be available
           sleep 20
@@ -121,44 +112,20 @@ jobs:
           echo DIFF=$DIFF
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
 
-      - name: Read API image tag from dev.env
-        if: ${{ inputs.deploy_lambda && success() }}
-        run: |
-          set -eu
-          FILE_PATH=helmfile/overrides/dev.env
-          API_TAG=""
-          if [ -f "$FILE_PATH" ]; then
-            API_TAG=$(grep -E '^API_DOCKER_TAG=' "$FILE_PATH" | cut -d'=' -f2- | tr -d '\r' || true)
-          fi
-          if [ -n "$API_TAG" ]; then
-            echo "API_DOCKER_TAG=$API_TAG" >> $GITHUB_ENV
-          fi
-
       - name: Login to Dev ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
 
       - name: Deploy api-lambda from dev ECR
-        if: ${{ inputs.deploy_lambda && success() }}
-        env:
-          API_DOCKER_TAG: ${{ env.API_DOCKER_TAG }}
+        if: ${{ success() }}
         run: |
           DEV_REGISTRY=${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-          DOCKER_TAG="${{ inputs.docker_tag }}"
-          # Prefer supplied workflow input, then value from dev.env (API_DOCKER_TAG), otherwise 'latest'
-          if [ -z "$DOCKER_TAG" ]; then
-            if [ -n "${API_DOCKER_TAG:-}" ]; then
-              DOCKER_TAG="${API_DOCKER_TAG}"
-            else
-              DOCKER_TAG="latest"
-            fi
-          fi
           aws lambda update-function-code \
             --function-name api-lambda \
-            --image-uri $DEV_REGISTRY/api-lambda:${DOCKER_TAG} > /dev/null 2>&1
+            --image-uri $DEV_REGISTRY/api-lambda:latest > /dev/null 2>&1
 
       - name: Publish lambda version and update alias
-        if: ${{ inputs.deploy_lambda && success() }}
+        if: ${{ success() }}
         run: |
           aws lambda wait function-updated --function-name api-lambda
           VERSION="$(aws lambda publish-version --function-name api-lambda | jq -r '.Version')"
