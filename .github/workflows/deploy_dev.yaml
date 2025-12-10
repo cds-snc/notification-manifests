@@ -24,6 +24,12 @@ jobs:
   helmfile-apply:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Fetch full git history
         run: |
           git fetch --no-tags --prune --unshallow || git fetch --all
@@ -33,6 +39,8 @@ jobs:
         run: |
           set -eu
           FILE=helmfile/overrides/dev.env
+          BEFORE_SHA="${{ github.event.before }}"
+          AFTER_SHA="${{ github.event.after }}"
           # Get the current value
           API_TAG=""
           if [ -f "$FILE" ]; then
@@ -41,9 +49,9 @@ jobs:
           echo "API_TAG=$API_TAG" >> $GITHUB_ENV
 
           # Check if API_DOCKER_TAG changed in this push
-          if git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -q "$FILE"; then
+          if git diff --name-only "$BEFORE_SHA" "$AFTER_SHA" | grep -q "$FILE"; then
             # Check if the value changed
-            OLD_TAG=$(git show ${{ github.event.before }}:$FILE 2>/dev/null | grep -E '^API_DOCKER_TAG=' | cut -d'=' -f2- | tr -d '\r' || true)
+            OLD_TAG=$(git show "$BEFORE_SHA:$FILE" 2>/dev/null | grep -E '^API_DOCKER_TAG=' | cut -d'=' -f2- | tr -d '\r' || true)
             if [ "$API_TAG" != "$OLD_TAG" ]; then
               echo "API_UPDATED=true" >> $GITHUB_ENV
             else
