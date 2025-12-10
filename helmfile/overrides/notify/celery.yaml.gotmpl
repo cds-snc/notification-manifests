@@ -213,7 +213,7 @@ nodes:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
-      replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
+      replicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
@@ -223,8 +223,8 @@ nodes:
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
     autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
-      maxReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
+      minReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
+      maxReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
