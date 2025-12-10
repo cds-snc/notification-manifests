@@ -1,26 +1,11 @@
 name: Dev - Helmfile Apply All and Deploy API Lambda
 
 on:
-  workflow_call:
-    inputs:
-      docker_tag:
-        description: 'Docker tag to deploy'
-        required: false
-        type: string
-      deploy_lambda:
-        description: 'Whether to deploy the lambda function'
-        required: false
-        type: boolean
-  workflow_dispatch:
-    inputs:
-      docker_tag:
-        description: 'Docker tag to deploy'
-        required: false
-        type: string
-      deploy_lambda:
-        description: 'Whether to deploy the lambda function'
-        required: false
-        type: boolean
+  push:
+    branches:
+      - main
+    paths:
+      - 'dev.env'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -136,18 +121,37 @@ jobs:
           echo DIFF=$DIFF
           echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
 
+      - name: Read API image tag from dev.env
+        if: ${{ inputs.deploy_lambda && success() }}
+        run: |
+          set -eu
+          FILE_PATH=helmfile/overrides/dev.env
+          API_TAG=""
+          if [ -f "$FILE_PATH" ]; then
+            API_TAG=$(grep -E '^API_DOCKER_TAG=' "$FILE_PATH" | cut -d'=' -f2- | tr -d '\r' || true)
+          fi
+          if [ -n "$API_TAG" ]; then
+            echo "API_DOCKER_TAG=$API_TAG" >> $GITHUB_ENV
+          fi
+
       - name: Login to Dev ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
 
       - name: Deploy api-lambda from dev ECR
         if: ${{ inputs.deploy_lambda && success() }}
+        env:
+          API_DOCKER_TAG: ${{ env.API_DOCKER_TAG }}
         run: |
           DEV_REGISTRY=${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
           DOCKER_TAG="${{ inputs.docker_tag }}"
-          # Use 'latest' if no docker tag provided
+          # Prefer supplied workflow input, then value from dev.env (API_DOCKER_TAG), otherwise 'latest'
           if [ -z "$DOCKER_TAG" ]; then
-            DOCKER_TAG="latest"
+            if [ -n "${API_DOCKER_TAG:-}" ]; then
+              DOCKER_TAG="${API_DOCKER_TAG}"
+            else
+              DOCKER_TAG="latest"
+            fi
           fi
           aws lambda update-function-code \
             --function-name api-lambda \
