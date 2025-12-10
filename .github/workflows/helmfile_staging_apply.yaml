@@ -8,6 +8,10 @@ on:
     paths:
       - "helmfile/**"
       - ".github/workflows/helmfile_staging_apply.yaml"
+      
+concurrency:
+  group: helmfile-staging-apply
+  cancel-in-progress: false
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
