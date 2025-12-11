@@ -145,7 +145,7 @@ jobs:
           aws lambda update-alias \
             --function-name api-lambda \
             --name latest \
-            --function-version "$VERSION" > /dev/null 2>&1
+            --function-version "$VERSION"
 
       - name: Logout of Amazon ECR
         if: always()
