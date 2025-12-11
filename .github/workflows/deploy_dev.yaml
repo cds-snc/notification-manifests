@@ -135,8 +135,7 @@ jobs:
           echo "Deploying api-lambda with tag: ${{ env.DEV_API_DOCKER_TAG }}"
           aws lambda update-function-code \
             --function-name api-lambda \
-            --image-uri $DEV_REGISTRY/api-lambda:${{ env.DEV_API_DOCKER_TAG }} \
-            --description $(date -u +"%Y-%m-%dT%H:%M:%SZ") > /dev/null 2>&1
+            --image-uri $DEV_REGISTRY/api-lambda:${{ env.DEV_API_DOCKER_TAG }} > /dev/null 2>&1
 
       - name: Publish lambda version and update alias
         if: ${{ success() }}
