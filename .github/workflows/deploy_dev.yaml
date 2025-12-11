@@ -1,26 +1,11 @@
 name: Dev - Helmfile Apply All and Deploy API Lambda
 
 on:
-  workflow_call:
-    inputs:
-      docker_tag:
-        description: 'Docker tag to deploy'
-        required: false
-        type: string
-      deploy_lambda:
-        description: 'Whether to deploy the lambda function'
-        required: false
-        type: boolean
-  workflow_dispatch:
-    inputs:
-      docker_tag:
-        description: 'Docker tag to deploy'
-        required: false
-        type: string
-      deploy_lambda:
-        description: 'Whether to deploy the lambda function'
-        required: false
-        type: boolean
+  push:
+    branches:
+      - main
+    paths:
+      - 'helmfile/overrides/dev.env'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -39,15 +24,6 @@ jobs:
   helmfile-apply:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: main
-      - name: Ensure latest main
-        run: |
-          git fetch origin main
-          git reset --hard origin/main
 
       - name: Inject token authentication
         run: |
@@ -65,6 +41,18 @@ jobs:
         with:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0        
+
+      - name: Read API Docker tag from dev.env
+        run: |
+          FILE=helmfile/overrides/dev.env
+          if [ -f "$FILE" ]; then
+            API_TAG=$(grep -E '^API_DOCKER_TAG:' "$FILE" | sed 's/API_DOCKER_TAG: *"\([^"]*\)".*/\1/' | tr -d '\r')
+            echo "DEV_API_DOCKER_TAG=$API_TAG" >> $GITHUB_ENV
+            echo "DEV_API_DOCKER_TAG: $API_TAG"
+          else
+            echo "Error: $FILE not found"
+            exit 1
+          fi
 
       - name: Setup helmfile
         uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
@@ -128,7 +116,7 @@ jobs:
           popd
 
       - name: Save ENV vars and secrets to AWS Param Store
-        if: ${{ inputs.deploy_lambda && success() }}
+        if: ${{ success() }}
         run: |
           # wait for the secrets and env vars to be available
           sleep 20
@@ -141,20 +129,16 @@ jobs:
         uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
 
       - name: Deploy api-lambda from dev ECR
-        if: ${{ inputs.deploy_lambda && success() }}
+        if: ${{ success() }}
         run: |
           DEV_REGISTRY=${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-          DOCKER_TAG="${{ inputs.docker_tag }}"
-          # Use 'latest' if no docker tag provided
-          if [ -z "$DOCKER_TAG" ]; then
-            DOCKER_TAG="latest"
-          fi
+          echo "Deploying api-lambda with tag: ${{ env.DEV_API_DOCKER_TAG }}"
           aws lambda update-function-code \
             --function-name api-lambda \
-            --image-uri $DEV_REGISTRY/api-lambda:${DOCKER_TAG} > /dev/null 2>&1
+            --image-uri $DEV_REGISTRY/api-lambda:${{ env.DEV_API_DOCKER_TAG }} > /dev/null 2>&1
 
       - name: Publish lambda version and update alias
-        if: ${{ inputs.deploy_lambda && success() }}
+        if: ${{ success() }}
         run: |
           aws lambda wait function-updated --function-name api-lambda
           VERSION="$(aws lambda publish-version --function-name api-lambda | jq -r '.Version')"
