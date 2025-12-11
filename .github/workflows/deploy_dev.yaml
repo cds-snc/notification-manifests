@@ -3,9 +3,9 @@ name: Dev - Helmfile Apply All and Deploy API Lambda
 on:
   push:
     branches:
-      - main
-    paths:
-      - 'helmfile/overrides/dev.env'
+      - deploy-workflow-fix
+    # paths:
+    #   - 'helmfile/overrides/dev.env'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,12 +29,12 @@ jobs:
         run: |
           git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
-      - name: Configure credentials to Notify using OIDC
-        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
-        with:
-          role-to-assume: arn:aws:iam::${{env.ACCOUNT_ID}}:role/notification-manifests-k8s-lambda-apply-main-branch
-          role-session-name: NotifyManifestsApply
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      # - name: Configure credentials to Notify using OIDC
+      #   uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+      #   with:
+      #     role-to-assume: arn:aws:iam::${{env.ACCOUNT_ID}}:role/notification-manifests-k8s-lambda-apply-main-branch
+      #     role-session-name: NotifyManifestsApply
+      #     aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
@@ -42,100 +42,112 @@ jobs:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0        
 
-      - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
-        with:
-          install-kubectl: yes
-          install-helm: yes        
-          helmfile-version: "v0.151.0"
-          helm-s3-plugin-version: "v0.16.2"
-
-      - name: Install OpenVPN
+      - name: Read API Docker tag from dev.env
         run: |
-          sudo apt update
-          sudo apt install -y openvpn openvpn-systemd-resolved
+          FILE=helmfile/overrides/dev.env
+          if [ -f "$FILE" ]; then
+            API_TAG=$(grep -E '^API_DOCKER_TAG:' "$FILE" | sed 's/API_DOCKER_TAG: *"\([^"]*\)".*/\1/' | tr -d '\r')
+            echo "DEV_API_DOCKER_TAG=$API_TAG" >> $GITHUB_ENV
+            echo "DEV_API_DOCKER_TAG: $API_TAG"
+          else
+            echo "Error: $FILE not found"
+            exit 1
+          fi
 
-      - name: Install 1Pass CLI
-        run: |
-          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
-          sudo dpkg -i 1pass.deb 
+      # - name: Setup helmfile
+      #   uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
+      #   with:
+      #     install-kubectl: yes
+      #     install-helm: yes        
+      #     helmfile-version: "v0.151.0"
+      #     helm-s3-plugin-version: "v0.16.2"
 
-      - name: Setup Terraform tools
-        uses: cds-snc/terraform-tools-setup@v1
-        env: # In case you want to override default versions
-          CONFTEST_VERSION: 0.30.0 
-          TERRAFORM_VERSION: 1.9.5
-          TERRAGRUNT_VERSION: 0.66.9
-          TF_SUMMARIZE_VERSION: 0.2.3                    
+      # - name: Install OpenVPN
+      #   run: |
+      #     sudo apt update
+      #     sudo apt install -y openvpn openvpn-systemd-resolved
 
-      - name: Retrieve VPN Config
-        run: |
-          scripts/createVPNConfig.sh dev 2> /dev/null
+      # - name: Install 1Pass CLI
+      #   run: |
+      #     curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+      #     sudo dpkg -i 1pass.deb 
 
-      - name: Connect to VPN
-        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
-        with:
-          config_file: /var/tmp/dev.ovpn
-          echo_config: false
+      # - name: Setup Terraform tools
+      #   uses: cds-snc/terraform-tools-setup@v1
+      #   env: # In case you want to override default versions
+      #     CONFTEST_VERSION: 0.30.0 
+      #     TERRAFORM_VERSION: 1.9.5
+      #     TERRAGRUNT_VERSION: 0.66.9
+      #     TF_SUMMARIZE_VERSION: 0.2.3                    
 
-      - name: Configure kubeconfig
-        run: |
-          aws eks update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev 
+      # - name: Retrieve VPN Config
+      #   run: |
+      #     scripts/createVPNConfig.sh dev 2> /dev/null
 
-      - name: Load Context Variables
-        run: |
-            ./helmfile/getContext.sh -g
+      # - name: Connect to VPN
+      #   uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
+      #   with:
+      #     config_file: /var/tmp/dev.ovpn
+      #     echo_config: false
+
+      # - name: Configure kubeconfig
+      #   run: |
+      #     aws eks update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev 
+
+      # - name: Load Context Variables
+      #   run: |
+      #       ./helmfile/getContext.sh -g
              
-      - name: Run Database Upgrade Helmfile Sync
-        uses: ./.github/actions/db-migration
-        with:
-          environment: "dev"
-          namespace: "notification-canada-ca"
-          app_label: "notify-database"
-          timeout: "400s"
+      # - name: Run Database Upgrade Helmfile Sync
+      #   uses: ./.github/actions/db-migration
+      #   with:
+      #     environment: "dev"
+      #     namespace: "notification-canada-ca"
+      #     app_label: "notify-database"
+      #     timeout: "400s"
 
-      - name: Helmfile apply
-        if: ${{ success() }}
-        id: helmfile_apply
-        run: |
-          pushd helmfile
-          helmfile --environment dev -l 'tier=crd' apply
-          helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply
-          popd
+      # - name: Helmfile apply
+      #   if: ${{ success() }}
+      #   id: helmfile_apply
+      #   run: |
+      #     pushd helmfile
+      #     helmfile --environment dev -l 'tier=crd' apply
+      #     helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply
+      #     popd
 
-      - name: Save ENV vars and secrets to AWS Param Store
-        if: ${{ success() }}
-        run: |
-          # wait for the secrets and env vars to be available
-          sleep 20
-          source ./scripts/lambdaParamStoreUpdatesDev.sh -g
-          echo DIFF=$DIFF
-          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
+      # - name: Save ENV vars and secrets to AWS Param Store
+      #   if: ${{ success() }}
+      #   run: |
+      #     # wait for the secrets and env vars to be available
+      #     sleep 20
+      #     source ./scripts/lambdaParamStoreUpdatesDev.sh -g
+      #     echo DIFF=$DIFF
+      #     echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
 
-      - name: Login to Dev ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
+      # - name: Login to Dev ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
 
-      - name: Deploy api-lambda from dev ECR
-        if: ${{ success() }}
-        run: |
-          DEV_REGISTRY=${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-          aws lambda update-function-code \
-            --function-name api-lambda \
-            --image-uri $DEV_REGISTRY/api-lambda:latest > /dev/null 2>&1
+      # - name: Deploy api-lambda from dev ECR
+      #   if: ${{ success() }}
+      #   run: |
+      #     DEV_REGISTRY=${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+      #     aws lambda update-function-code \
+      #       --function-name api-lambda \
+      #       --image-uri $DEV_REGISTRY/api-lambda:latest > /dev/null 2>&1
 
-      - name: Publish lambda version and update alias
-        if: ${{ success() }}
-        run: |
-          aws lambda wait function-updated --function-name api-lambda
-          VERSION="$(aws lambda publish-version --function-name api-lambda | jq -r '.Version')"
-          aws lambda update-alias \
-            --function-name api-lambda \
-            --name latest \
-            --function-version "$VERSION" > /dev/null 2>&1
+      # - name: Publish lambda version and update alias
+      #   if: ${{ success() }}
+      #   run: |
+      #     aws lambda wait function-updated --function-name api-lambda
+      #     VERSION="$(aws lambda publish-version --function-name api-lambda | jq -r '.Version')"
+      #     aws lambda update-alias \
+      #       --function-name api-lambda \
+      #       --name latest \
+      #       --function-version "$VERSION" > /dev/null 2>&1
 
-      - name: Logout of Amazon ECR
-        if: always()
-        run: docker logout ${{ steps.login-ecr.outputs.registry }}
+      # - name: Logout of Amazon ECR
+      #   if: always()
+      #   run: docker logout ${{ steps.login-ecr.outputs.registry }}
 
 
