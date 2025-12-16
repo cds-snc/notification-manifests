@@ -48,6 +48,8 @@ repositories:
   url: https://open-telemetry.github.io/opentelemetry-helm-charts
 - name: vmware-tanzu
   url: https://vmware-tanzu.github.io/helm-charts
+- name: falco
+  url: https://falcosecurity.github.io/charts
 
 releases:
   # Uses database-specific overrides
@@ -405,6 +407,29 @@ releases:
     chart: charts/snapshot-controller
 
 {{ if or (eq .Environment.Name "dev") }}
+
+  - name: falco
+    namespace: falco
+    installed: true
+    labels:
+      app: falco
+      tier: full
+      category: security
+      step: 2
+    chart: falco/falco
+    values:
+    - ./overrides/system/falco.yaml.gotmpl
+
+  - name: falco-secret
+    namespace: falco
+    labels:
+      app: falco
+      tier: secret
+      category: security
+      step: 2
+    chart: charts/notify-secrets
+    values:
+    - ./overrides/system/falco.yaml.gotmpl
 
 # Disabled New Relic!
   - name: newrelic
