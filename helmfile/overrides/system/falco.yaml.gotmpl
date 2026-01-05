@@ -1,0 +1,34 @@
+falcosidekick:
+  enabled: true
+  webui:
+    enabled: true
+    existingSecret: falco-config-secrets
+    redis:
+      storageClass: gp2
+  config:
+    existingSecret: falco-config-secrets
+    aws:
+      rolearn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/falco-sidekick-eks-role
+      useirsa: true
+    slack:
+      minimumpriority: notice
+  extraVolumes:
+    - name: secrets-store
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: falco
+  extraVolumeMounts:
+    - name: secrets-store
+      mountPath: "/mnt/secrets-store"
+      readOnly: true
+
+secretProviderClass:
+  name: falco
+  secretname: falco-config-secrets
+  enabled: true
+  provider: aws
+  secrets: 
+    FALCOSIDEKICK_UI_USER: MANIFEST_FALCO_CREDENTIALS
+    SLACK_WEBHOOKURL: MANIFEST_FALCO_SLACK_WEBHOOK_URL
