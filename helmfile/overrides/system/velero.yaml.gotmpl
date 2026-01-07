@@ -5,6 +5,8 @@ initContainers:
       - mountPath: /target
         name: plugins
 
+priorityClassName: system-cluster-critical
+
 kubectl:
   image:
     repository: public.ecr.aws/bitnami/kubectl
@@ -46,6 +48,7 @@ deployNodeAgent: true  # For pod volume backups
 nodeAgent:
   podVolumePath: /var/lib/kubelet/pods
   privileged: false
+  priorityClassName: system-cluster-critical
   resources:
     requests:
       cpu: 500m
