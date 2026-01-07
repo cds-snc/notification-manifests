@@ -4,7 +4,7 @@ metadata:
   name: cloudwatch-agent-role
 rules:
   - apiGroups: [""]
-    resources: ["pods", "nodes", "endpoints"]
+    resources: ["pods", "nodes", "endpoints", "services"]
     verbs: ["list", "watch"]
   - apiGroups: ["discovery.k8s.io"]
     resources: ["endpointslices"]
