@@ -40,11 +40,11 @@ spec:
             [
               "sh",
               "-c",
-              "until nc -z -w 2 $API_HOST_NAME 443; do echo waiting for api; sleep 2; done"
+              "URL=\"$API_HOST_NAME\"; HOST=$(echo $URL | sed -E 's#^https?://##' | cut -d: -f1); PORT=$(echo $URL | grep -oE ':[0-9]+$' | tr -d ':'); if [ -z \"$PORT\" ]; then if echo $URL | grep -q '^https://'; then PORT=443; else PORT=80; fi; fi; until nc -z -w 2 $HOST $PORT; do echo waiting for api; sleep 2; done"
             ]
           env:
             - name: API_HOST_NAME
-              value: {{ .Values.admin.API_HOST_NAME | replace "https://" "" }}            
+              value: {{ .Values.admin.API_HOST_NAME | quote }}            
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
