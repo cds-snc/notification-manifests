@@ -433,7 +433,7 @@ releases:
 
 {{ end }}
 
-{{ if or (eq .Environment.Name "dev") }}
+{{ if eq .Environment.Name "dev" }}
 
 # Disabled New Relic!
   - name: newrelic
