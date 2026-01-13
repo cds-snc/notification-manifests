@@ -406,7 +406,7 @@ releases:
       step: 2
     chart: charts/snapshot-controller
 
-{{ if or (eq .Environment.Name "dev") }}
+{{ if ne .Environment.Name "production" }}
 
   - name: falco
     namespace: falco
@@ -430,6 +430,10 @@ releases:
     chart: charts/notify-secrets
     values:
     - ./overrides/system/falco.yaml.gotmpl
+
+{{ end }}
+
+{{ if eq .Environment.Name "dev" }}
 
 # Disabled New Relic!
   - name: newrelic
