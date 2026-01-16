@@ -1,0 +1,36 @@
+{{- range $key, $node := .Values.nodes }}
+{{- if $node.deployment.deploymentEnabled }}
+{{- $vpaConfig := default $.Values.defaultVerticalPodAutoscaler $node.verticalPodAutoscaler }}
+{{- if $vpaConfig.enabled }}
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: notify-celery-{{ $node.name }}
+  labels:
+    app: notify-celery-{{ $node.name }}
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: notify-celery-{{ $node.name }}
+  updatePolicy:
+    updateMode: {{ $vpaConfig.updateMode | quote }}
+  resourcePolicy:
+    containerPolicies:
+    - containerName: notify-celery
+      {{- if $vpaConfig.controlledResources }}
+      controlledResources:
+        {{- toYaml $vpaConfig.controlledResources | nindent 8 }}
+      {{- end }}
+      {{- if $vpaConfig.minAllowed }}
+      minAllowed:
+        {{- toYaml $vpaConfig.minAllowed | nindent 8 }}
+      {{- end }}
+      {{- if $vpaConfig.maxAllowed }}
+      maxAllowed:
+        {{- toYaml $vpaConfig.maxAllowed | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

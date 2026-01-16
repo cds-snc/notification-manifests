@@ -22,3 +22,8 @@ requests:
 limits:
   cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
   memory: {{ if eq .Environment.Name "production" }} "100Mi" {{ else if eq .Environment.Name "staging" }} "100Mi" {{ else }} "100Mi" {{ end }}
+
+{{ if ne .Environment.Name "production" }}
+verticalPodAutoscaler:
+  enabled: true
+{{ end }}

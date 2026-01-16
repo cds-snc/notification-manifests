@@ -1,0 +1,21 @@
+# Goldilocks configuration
+# Provides VPA recommendations dashboard
+
+# VPA is already installed separately, so disable the bundled VPA
+vpa:
+  enabled: false
+
+dashboard:
+  enabled: true
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 80
+
+controller:
+  enabled: true
+  rbac:
+    create: true
+
+# Optionally enable for specific namespaces only
+# By default, monitors all namespaces labeled with goldilocks.fairwinds.com/enabled=true

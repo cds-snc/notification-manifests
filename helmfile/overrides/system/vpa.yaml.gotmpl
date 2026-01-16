@@ -1,0 +1,42 @@
+recommender:
+  enabled: true
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 500Mi
+    limits:
+      cpu: 200m
+      memory: 1000Mi
+
+updater:
+  enabled: true
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 500Mi
+    limits:
+      cpu: 200m
+      memory: 1000Mi
+
+admissionController:
+  enabled: true
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 200Mi
+    limits:
+      cpu: 200m
+      memory: 500Mi
+
+# Configure metrics retention and recommendation intervals
+# Adjust these based on your cluster size and workload patterns
+metrics:
+  retention:
+    prometheus: 8d
+
+# CRD installation
+crds:
+  install: true

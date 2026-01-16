@@ -19,6 +19,15 @@ environments:
 helmDefaults:
   kubeContext: {{ .Environment.Name }}
 
+### Ugly but this is required to get goldilocks to read the correct namespace labels
+hooks:
+  - events: ["prepare"]
+    showlogs: false
+    command: "sh"
+    args: 
+      - "-c"
+      - "kubectl create namespace notification-canada-ca --dry-run=client -o yaml | kubectl apply -f - && kubectl label namespace notification-canada-ca goldilocks.fairwinds.com/enabled=true --overwrite"
+
 repositories:
 - name: secrets-store-csi-driver
   url: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
@@ -40,6 +49,8 @@ repositories:
   url: https://aws.github.io/eks-charts
 - name: metrics-server
   url: https://kubernetes-sigs.github.io/metrics-server/
+- name: fairwinds-stable
+  url: https://charts.fairwinds.com/stable
 - name: newrelic
   url: https://helm-charts.newrelic.com
 - name: signoz
@@ -66,6 +77,8 @@ releases:
 
   - name: notify-documentation
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-documentation
       tier: frontend
@@ -77,6 +90,8 @@ releases:
 
   - name: notify-api
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-api
       tier: backend
@@ -88,6 +103,8 @@ releases:
 
   - name: notify-admin
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-admin
       tier: fronteend
@@ -99,6 +116,8 @@ releases:
 
   - name: notify-document-download
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-document-download
       tier: backend
@@ -110,6 +129,8 @@ releases:
 
   - name: notify-celery
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-celery
       tier: backend
@@ -430,6 +451,30 @@ releases:
     chart: charts/notify-secrets
     values:
     - ./overrides/system/falco.yaml.gotmpl
+
+  - name: vpa
+    namespace: kube-system
+    labels:
+      app: vpa
+      tier: backend
+      category: system
+      step: 1
+    chart: fairwinds-stable/vpa
+    version: 4.10.1
+    values:
+    - ./overrides/system/vpa.yaml.gotmpl
+
+  - name: goldilocks
+    namespace: goldilocks
+    labels:
+      app: goldilocks
+      tier: backend
+      category: system
+      step: 2
+    chart: fairwinds-stable/goldilocks
+    version: 10.2.0
+    values:
+    - ./overrides/system/goldilocks.yaml.gotmpl
 
 {{ end }}
 

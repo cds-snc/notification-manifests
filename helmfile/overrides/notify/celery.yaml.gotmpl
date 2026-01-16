@@ -72,6 +72,12 @@ dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
   pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
 
+{{ if ne .Environment.Name "production" }}
+defaultVerticalPodAutoscaler:
+  enabled: true
+{{ end }}
+
+
 serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/celery-eks-role

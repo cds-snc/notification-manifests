@@ -324,6 +324,23 @@ secretProviderClass:
       secretName: nginx
       type: kubernetes.io/tls
 
+# Default VPA configuration for all celery nodes
+# Can be overridden per-node by adding verticalPodAutoscaler config to each node
+defaultVerticalPodAutoscaler:
+  enabled: false
+  # updateMode: Off (recommendations only), Initial (on pod creation), Auto (automatic updates)
+  # Use "Off" or "Initial" when HPA is enabled to avoid conflicts
+  updateMode: "Off"
+  controlledResources:
+    - cpu
+    - memory
+  minAllowed:
+    cpu: "50m"
+    memory: "256Mi"
+  maxAllowed:
+    cpu: "1000m"
+    memory: "2Gi"
+
 dockerhub:
   username: "changeme"
   pat: "changeme"
