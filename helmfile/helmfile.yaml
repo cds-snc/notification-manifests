@@ -77,6 +77,8 @@ releases:
 
   - name: notify-documentation
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-documentation
       tier: frontend
@@ -88,6 +90,8 @@ releases:
 
   - name: notify-api
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-api
       tier: backend
@@ -99,6 +103,8 @@ releases:
 
   - name: notify-admin
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-admin
       tier: fronteend
@@ -110,6 +116,8 @@ releases:
 
   - name: notify-document-download
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-document-download
       tier: backend
@@ -121,6 +129,8 @@ releases:
 
   - name: notify-celery
     namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
     labels:
       app: notify-celery
       tier: backend
