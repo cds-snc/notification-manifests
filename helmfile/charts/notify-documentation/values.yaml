@@ -80,6 +80,20 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
 
+verticalPodAutoscaler:
+  enabled: false
+  # updateMode: Off (recommendations only), Initial (on pod creation), Auto (automatic updates)
+  updateMode: "Off"
+  controlledResources:
+    - cpu
+    - memory
+  minAllowed:
+    cpu: "25m"
+    memory: "25Mi"
+  maxAllowed:
+    cpu: "500m"
+    memory: "256Mi"
+
 resources: {}
 volumes: []
 volumeMounts: []

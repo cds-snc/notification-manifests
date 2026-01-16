@@ -63,6 +63,21 @@ autoscaling:
   maxReplicas: 4
   targetCPUUtilizationPercentage: 35
 
+verticalPodAutoscaler:
+  enabled: false
+  # updateMode: Off (recommendations only), Initial (on pod creation), Auto (automatic updates)
+  # Use "Off" or "Initial" when HPA is enabled to avoid conflicts
+  updateMode: "Off"
+  controlledResources:
+    - cpu
+    - memory
+  minAllowed:
+    cpu: "50m"
+    memory: "128Mi"
+  maxAllowed:
+    cpu: "1000m"
+    memory: "1Gi"
+
 targetGroupBinding:
   enabled: false
   targetGroupARN: ""
