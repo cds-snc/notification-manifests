@@ -15,7 +15,7 @@ dashboard:
     enabled: true
     ingressClassName: nginx
     hosts:
-      - host: goldilocks.{{ requiredEnv "INTERNAL_DNS_FQDN"}}
+      - host: goldilocks.{{ requiredEnv "INTERNAL_DNS_FQDN" }}
         paths:
           - path: /
             type: Prefix
