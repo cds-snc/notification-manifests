@@ -8,7 +8,7 @@ falcosidekick:
       ingressClassName: nginx
       annotations: {}
       hosts:
-        - host: falco.{{ requiredEnv "INTERNAL_DNS_FQDN"}}
+        - host: falco.{{ requiredEnv "INTERNAL_DNS_FQDN" }}
           paths:
             - path: /
     redis:
