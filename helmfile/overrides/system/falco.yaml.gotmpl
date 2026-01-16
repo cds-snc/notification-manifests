@@ -3,6 +3,14 @@ falcosidekick:
   webui:
     enabled: true
     existingSecret: falco-config-secrets
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations: {}
+      hosts:
+        - host: falco.{{ requiredEnv "INTERNAL_DNS_FQDN"}}
+          paths:
+            - path: /
     redis:
       storageClass: gp2
   config:
