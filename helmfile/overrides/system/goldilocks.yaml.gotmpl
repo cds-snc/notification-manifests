@@ -11,6 +11,14 @@ dashboard:
   service:
     type: ClusterIP
     port: 80
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - host: goldilocks.{{ requiredEnv "INTERNAL_DNS_FQDN" }}
+        paths:
+          - path: /
+            type: Prefix
 
 controller:
   enabled: true
