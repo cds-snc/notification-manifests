@@ -120,12 +120,12 @@ resources:
     memory: {{ if eq .Environment.Name "production" }} "700Mi" {{ else if eq .Environment.Name "staging" }} "700Mi" {{ else }} "1000Mi" {{ end }}
   limits:
     cpu: {{ if eq .Environment.Name "production" }} "1200m" {{ else if eq .Environment.Name "staging" }} "1200m" {{ else }} "1200m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "1000Mi" {{ else if eq .Environment.Name "staging" }} "1000Mi" {{ else }} "1200Mi" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "900Mi" {{ else if eq .Environment.Name "staging" }} "1000Mi" {{ else }} "1200Mi" {{ end }}
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 4 {{ else if eq .Environment.Name "staging" }} 4 {{ else }} 2 {{ end }}
-  maxReplicas: {{ if eq .Environment.Name "production" }} 4 {{ else if eq .Environment.Name "staging" }} 4 {{ else }} 2 {{ end }}
+  minReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 4 {{ else }} 2 {{ end }}
+  maxReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 4 {{ else }} 2 {{ end }}
   targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
 
 pdb:
