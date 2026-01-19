@@ -2,6 +2,7 @@ api:
   #ENVIRONMENT SPECIFIC VARIABLES
   NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
   ADMIN_BASE_DOMAIN: "https://{{ requiredEnv "BASE_DOMAIN" }}"
+  ADMIN_BASE_URL: "https://{{ requiredEnv "BASE_DOMAIN" }}"
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
   CSV_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
   BASE_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
