@@ -52,7 +52,7 @@ repositories:
 - name: fairwinds-stable
   url: https://charts.fairwinds.com/stable
 - name: newrelic
-  url: https://helm-charts.newrelic.com
+  url: https://newrelic.github.io/helm-charts/
 - name: signoz
   url: https://charts.signoz.io
 - name: opentelemetry
