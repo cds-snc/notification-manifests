@@ -427,8 +427,6 @@ releases:
       step: 2
     chart: charts/snapshot-controller
 
-{{ if ne .Environment.Name "production" }}
-
   - name: falco
     namespace: falco
     installed: true
