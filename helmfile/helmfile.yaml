@@ -221,6 +221,18 @@ releases:
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
+  - name: reloader
+    namespace: kube-system
+    labels:
+      app: reloader
+      tier: full
+      category: system
+      step: 1
+    chart: stakater/reloader
+    version: 2.2.7
+    values:
+    - ./overrides/system/reloader.yaml.gotmpl
+
   - name: kube-state-metrics
     namespace: kube-system
     labels:
