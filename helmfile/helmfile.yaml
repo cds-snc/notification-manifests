@@ -476,8 +476,6 @@ releases:
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
 
-{{ end }}
-
 {{ if eq .Environment.Name "dev" }}
 
 # Disabled New Relic!
