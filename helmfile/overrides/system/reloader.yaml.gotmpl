@@ -1,0 +1,31 @@
+reloader:
+  # Watches ConfigMaps and Secrets and triggers rolling upgrades when they change
+  watchGlobally: true
+  
+  # Enable auto-reloading for all resources
+  autoReloadAll: true
+  
+  # Log level (can be: panic, fatal, error, warn, info, debug, trace)
+  logLevel: info
+  
+  # Resources to watch
+  # By default watches both ConfigMaps and Secrets
+  reloadOnCreate: true
+  
+  # Custom annotations to use (defaults work well)
+  # reloader.stakater.com/auto: "true" - enables auto-reloading for a deployment
+  # reloader.stakater.com/search: "true" - enables deep search in mounted volumes
+  
+  # Resource limits
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
