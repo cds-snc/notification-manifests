@@ -1,0 +1,20 @@
+name: Helmfile Production Apply Success
+
+on:
+  workflow_run:
+    workflows:
+      - "Production - Helmfile Apply"
+    types:
+      - completed
+
+permissions: {}
+
+jobs:
+  notify-on-success:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Notify Slack on Success
+        run: |
+          json='{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":":white_check_mark: Manifests release complete ✅ <${{ github.event.workflow_run.html_url }}|${{ github.event.workflow_run.name }}>"}}]}'
+          curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
