@@ -439,8 +439,6 @@ releases:
       step: 2
     chart: charts/snapshot-controller
 
-{{ if ne .Environment.Name "production" }}
-
   - name: falco
     namespace: falco
     installed: true
@@ -487,8 +485,6 @@ releases:
     version: 10.2.0
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
-
-{{ end }}
 
 {{ if eq .Environment.Name "dev" }}
 
