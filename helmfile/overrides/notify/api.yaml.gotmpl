@@ -125,8 +125,8 @@ resources:
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 4 {{ else if eq .Environment.Name "staging" }} 4 {{ else }} 2 {{ end }}
-  maxReplicas: {{ if eq .Environment.Name "production" }} 4 {{ else if eq .Environment.Name "staging" }} 4 {{ else }} 2 {{ end }}
+  minReplicas: {{ if eq .Environment.Name "production" }} 4 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 2 {{ end }}
+  maxReplicas: {{ if eq .Environment.Name "production" }} 4 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 2 {{ end }}
   targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
 
 pdb:
