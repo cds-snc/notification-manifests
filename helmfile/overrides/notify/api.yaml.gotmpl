@@ -31,7 +31,11 @@ api:
   FIDO2_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
   # NON-ENVIRONMENT SPECIFIC VARIABLES
   AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
+  {{ if eq .Environment.Name "production" }}
   SQLALCHEMY_POOL_SIZE: "256"
+  {{ else }}
+  SQLALCHEMY_POOL_SIZE: "1024"
+  {{ end }}
   ZENDESK_API_URL: "https://api.getbase.com"
   ZENDESK_SELL_API_URL: "https://cds-snc.zendesk.com"
   REDIS_ENABLED: "1"
