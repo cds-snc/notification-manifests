@@ -68,11 +68,12 @@ image:
   repository: "{{ .StateValues.ADMIN_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.ADMIN_DOCKER_TAG }}"
 
+podAnnotations:
+  reloader.stakater.com/auto: "true"
 {{ if eq .Environment.Name "dev" }}
-#podAnnotations:
-#    instrumentation.opentelemetry.io/inject-python: "true"
-#    instrumentation.opentelemetry.io/otel-python-platform: "musl"
-#    sidecar.opentelemetry.io/inject: "true"
+#  instrumentation.opentelemetry.io/inject-python: "true"
+#  instrumentation.opentelemetry.io/otel-python-platform: "musl"
+#  sidecar.opentelemetry.io/inject: "true"
 {{ end }}
 
 dockerhub:
