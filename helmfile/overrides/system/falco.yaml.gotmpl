@@ -19,7 +19,7 @@ falcosidekick:
       rolearn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/falco-sidekick-eks-role
       useirsa: true
     slack:
-      minimumpriority: critical
+      minimumpriority: warning
   extraVolumes:
     - name: secrets-store
       csi:
