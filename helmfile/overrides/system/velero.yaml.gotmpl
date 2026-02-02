@@ -58,3 +58,13 @@ nodeAgent:
       memory: 1Gi
 
 cleanUpCRDs: true
+
+schedules:
+  nightly-full-cluster:
+    schedule: "0 0 * * *"
+    template:
+      includedNamespaces:
+        - "*"
+      includeClusterResources: true
+      snapshotVolumes: true
+      ttl: 240h0m0s
