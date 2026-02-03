@@ -55,6 +55,13 @@ data:
                 },
                 {"source_labels": ["job", "resource"],
                   "label_matcher": ".*kube-state-metrics.*",
+                  "dimensions": [["ClusterName","namespace", "daemonset"]],
+                  "metric_selectors": [
+                  "^kube_daemonset_.*"
+                  ]
+                },
+                {"source_labels": ["job", "resource"],
+                  "label_matcher": ".*kube-state-metrics.*",
                   "dimensions": [["ClusterName","namespace", "pod"]],
                   "metric_selectors": [
                   "^kube_pod_.*"
