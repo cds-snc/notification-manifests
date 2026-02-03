@@ -23,18 +23,33 @@ data:
           insecure_skip_verify: true
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
         relabel_configs:
-        - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
-          action: keep
-          regex: kubernetes;https
-        - action: replace
-          source_labels:
-          - __meta_kubernetes_namespace
-          target_label: Namespace
-        - action: replace
-          source_labels:
-          - __meta_kubernetes_service_name
-          target_label: Service
+          - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: kubernetes;https
+          - action: replace
+            source_labels:
+              - __meta_kubernetes_namespace
+            target_label: Namespace
+          - action: replace
+            source_labels:
+              - __meta_kubernetes_service_name
+            target_label: Service
       - job_name: 'kube-state-metrics'
         static_configs:
           - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
+        metric_relabel_configs:
+        # Keep both deployment and daemonset metrics
+          - source_labels: [__name__]
+            regex: '(kube_deployment_status_replicas.*|kube_daemonset_status.*)'
+            action: keep
+        # Relabel for CloudWatch dimensions
+          - source_labels: [namespace]
+            target_label: Namespace
+            action: replace
+          - source_labels: [deployment]
+            target_label: deployment
+            action: replace
+          - source_labels: [daemonset]
+            target_label: daemonset
+            action: replace
 
