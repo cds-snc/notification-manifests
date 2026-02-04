@@ -72,19 +72,18 @@ spec:
               path: /_status?simple=true
               port: 6011
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
-            periodSeconds: 3
-            timeoutSeconds: 1
-            successThreshold: 3
-            failureThreshold: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            successThreshold: 2
+            failureThreshold: 12   # ~60s before NotReady
           livenessProbe:
             httpGet:
               path: "/_status?simple=true"
               port: 6011
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
-            periodSeconds: 3
-            timeoutSeconds: 1
+            periodSeconds: 10
+            timeoutSeconds: 2
             successThreshold: 1
-            failureThreshold: 3
+            failureThreshold: 6    # ~60s before restart
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{ if .Values.secretProviderClass.enabled}}    
