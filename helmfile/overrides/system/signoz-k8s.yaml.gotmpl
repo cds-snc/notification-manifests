@@ -2,7 +2,7 @@ global:
   cloud: aws
   clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
   deploymentEnvironment: {{ .Environment.Name }}
-  storageClass: gp2
+  storageClass: notify
 otelCollectorEndpoint: signoz-otel-collector:4317
 otelInsecure: true
 presets:
