@@ -486,34 +486,7 @@ releases:
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
 
-{{ if eq .Environment.Name "dev" }}
-
-# Disabled New Relic!
-  - name: newrelic
-    namespace: newrelic
-    installed: false
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: newrelic
-      tier: crd
-      category: system
-      step: 1
-    chart: newrelic/nri-bundle
-    values:
-    - ./overrides/system/newrelic.yaml.gotmpl 
-
-  - name: newrelic-apm
-    namespace: newrelic
-    installed: false
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: newrelic
-      tier: apm
-      category: system
-      step: 2
-    chart: charts/newrelic-apm    
+{{ if ne .Environment.Name "production" }}
 
   - name: signoz
     namespace: signoz
@@ -571,6 +544,36 @@ releases:
       category: system
       step: 4
     chart: charts/signoz-telemetry 
+{{ end }}
+
+{{ if eq .Environment.Name "dev" }}
+
+# Disabled New Relic!
+  - name: newrelic
+    namespace: newrelic
+    installed: false
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: newrelic
+      tier: crd
+      category: system
+      step: 1
+    chart: newrelic/nri-bundle
+    values:
+    - ./overrides/system/newrelic.yaml.gotmpl 
+
+  - name: newrelic-apm
+    namespace: newrelic
+    installed: false
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: newrelic
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/newrelic-apm    
 
   # Otel demo doesn't need to be on.
   - name: otel-demo
