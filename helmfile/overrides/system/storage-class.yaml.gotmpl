@@ -2,7 +2,7 @@ storageClasses:
   - name: notify
     defaultClass: true
     annotations: {}
-    provisioner: kubernetes.io/aws-ebs
+    provisioner: ebs.csi.aws.com
     reclaimPolicy: Retain
     volumeBindingMode: WaitForFirstConsumer
     allowVolumeExpansion: true
