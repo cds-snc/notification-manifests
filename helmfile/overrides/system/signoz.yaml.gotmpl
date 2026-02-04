@@ -1,10 +1,22 @@
 global:
-  storageClass: gp2
+  storageClass: notify
 
 clickhouse:
   installCustomStorageClass: true
+  layout:
+    shardsCount: 1
+    replicasCount: 2
+  persistence:
+    storageClass: notify
+    size: 1Ti
+  zookeeper:
+    persistence:
+      size: 10Gi
 
 signoz:
+  replicaCount: 2
+  persistence:
+    size: 10Gi
   env:
     signoz_emailing_enabled: true
     signoz_emailing_smtp_from: "noreply@{{ requiredEnv "BASE_DOMAIN" }}"
