@@ -549,7 +549,7 @@ releases:
     - ./overrides/system/signoz-k8s.yaml.gotmpl 
 
   - name: signoz-telemetry
-    namespace: notification-canada-ca
+    namespace: signoz
     disableValidationOnInstall: true
     labels:
       app: signoz-telemetry
