@@ -124,7 +124,7 @@ resources:
     memory: {{ if eq .Environment.Name "production" }} "700Mi" {{ else if eq .Environment.Name "staging" }} "700Mi" {{ else }} "1000Mi" {{ end }}
   limits:
     cpu: {{ if eq .Environment.Name "production" }} "1200m" {{ else if eq .Environment.Name "staging" }} "1200m" {{ else }} "1200m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "1200Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "1200Mi" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "1200Mi" {{ else if eq .Environment.Name "staging" }} "1200Mi" {{ else }} "1200Mi" {{ end }}
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
