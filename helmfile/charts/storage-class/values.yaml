@@ -1,0 +1,13 @@
+storageClasses:
+  - name: gp3
+    defaultClass: true
+    annotations: {}
+    provisioner: ebs.csi.aws.com
+    reclaimPolicy: Delete
+    volumeBindingMode: WaitForFirstConsumer
+    allowVolumeExpansion: true
+    parameters:
+      type: gp3
+      encrypted: "true"
+      fsType: ext4
+    mountOptions: []

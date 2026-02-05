@@ -1,6 +1,8 @@
 reloader:
   # Watches ConfigMaps and Secrets and triggers rolling upgrades when they change
   watchGlobally: true
+
+  ignoreNamespaces: "signoz"
   
   # Enable auto-reloading for all resources
   autoReloadAll: true

@@ -370,6 +370,19 @@ releases:
     chart: eks/aws-load-balancer-controller
     values:
     - ./overrides/system/aws-lb-controller.yaml.gotmpl    
+
+  - name: storage-class
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: storage-class
+      tier: backend
+      category: system
+      step: 0
+    chart: charts/storage-class
+    values:
+    - ./overrides/system/storage-class.yaml.gotmpl
  
   - name: metrics-server
     namespace: kube-system
@@ -486,7 +499,7 @@ releases:
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
 
-{{ if ne .Environment.Name "production" }}
+{{ if eq .Environment.Name "dev" }}
 
   - name: signoz
     namespace: signoz
