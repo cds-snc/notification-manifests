@@ -5,7 +5,7 @@ clickhouse:
   installCustomStorageClass: true
   layout:
     shardsCount: 1
-    replicasCount: 2
+    replicasCount: 1
   persistence:
     storageClass: notify
     size: 1Ti
@@ -14,7 +14,7 @@ clickhouse:
       size: 10Gi
 
 signoz:
-  replicaCount: 2
+  replicaCount: 1
   persistence:
     size: 10Gi
   env:
@@ -60,6 +60,15 @@ signoz:
       mountPath: /mnt/secrets-store
       readOnly: true
 
+postgresql:
+  enabled: true
+  auth:
+    username: signoz
+    database: signoz
+    existingSecret: signoz
+    secretKeys:
+      userPasswordKey: SIGNOZ_POSTGRES_PASSWORD
+
 secretProviderClass:
   name: signoz
   secretname: signoz
@@ -68,3 +77,4 @@ secretProviderClass:
   secrets: 
     SIGNOZ_EMAIL_SMTP_AUTH_USERNAME: MANIFEST_SIGNOZ_SMTP_USERNAME
     SIGNOZ_EMAIL_SMTP_AUTH_PASSWORD: MANIFEST_SIGNOZ_SMTP_PASSWORD
+    SIGNOZ_POSTGRES_PASSWORD: MANIFEST_SIGNOZ_POSTGRES_PASSWORD
