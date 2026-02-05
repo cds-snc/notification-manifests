@@ -504,6 +504,7 @@ releases:
   - name: signoz
     namespace: signoz
     disableValidationOnInstall: true
+    wait: false
     labels:
       app: signoz
       tier: apm
