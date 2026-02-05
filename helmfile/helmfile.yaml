@@ -499,7 +499,7 @@ releases:
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
 
-{{ if eq .Environment.Name "dev" }}
+{{ if ne .Environment.Name "production" }}
 
   - name: signoz
     namespace: signoz
@@ -549,7 +549,7 @@ releases:
     - ./overrides/system/signoz-k8s.yaml.gotmpl 
 
   - name: signoz-telemetry
-    namespace: signoz
+    namespace: notification-canada-ca
     disableValidationOnInstall: true
     labels:
       app: signoz-telemetry
