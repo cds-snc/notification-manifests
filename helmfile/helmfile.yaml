@@ -499,7 +499,7 @@ releases:
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
 
-{{ if ne .Environment.Name "production" }}
+{{ if eq .Environment.Name "dev" }}
 
   - name: signoz
     namespace: signoz
