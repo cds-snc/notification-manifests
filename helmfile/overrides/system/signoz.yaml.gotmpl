@@ -2,6 +2,7 @@ priorityClassName: system-node-critical
 
 global:
   storageClass: notify
+  clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
 
 clickhouse:
   installCustomStorageClass: true
@@ -16,10 +17,11 @@ clickhouse:
       size: 10Gi
 
 signoz:
-  replicaCount: 2
+  replicaCount: 1
   persistence:
     size: 10Gi
   env:
+    signoz_sqlstore_provider: postgres
     signoz_emailing_enabled: true
     signoz_emailing_smtp_from: "noreply@{{ requiredEnv "BASE_DOMAIN" }}"
     signoz_emailing_smtp_address: email-smtp.ca-central-1.amazonaws.com:587
@@ -33,6 +35,11 @@ signoz:
        secretKeyRef:
          name: signoz
          key: SIGNOZ_EMAIL_SMTP_AUTH_PASSWORD
+    signoz_postgres_password:
+      valueFrom:
+        secretKeyRef:
+          name: signoz
+          key: SIGNOZ_POSTGRES_PASSWORD
 
   ingress:
     annotations: {}
@@ -64,12 +71,9 @@ signoz:
 
 postgresql:
   enabled: true
-  auth:
-    username: signoz
-    database: signoz
-    existingSecret: signoz
-    secretKeys:
-      userPasswordKey: SIGNOZ_POSTGRES_PASSWORD
+  persistence:
+    mountPath: /signoz/postgresql
+    dataDir: /signoz/postgresql/data
 
 secretProviderClass:
   name: signoz
