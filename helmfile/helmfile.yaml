@@ -61,8 +61,6 @@ repositories:
   url: https://vmware-tanzu.github.io/helm-charts
 - name: falco
   url: https://falcosecurity.github.io/charts
-- name: bitnami
-  url: https://charts.bitnami.com/bitnami
 
 releases:
   # Uses database-specific overrides
@@ -509,7 +507,7 @@ releases:
     disableValidationOnInstall: true
     labels:
       app: signoz
-      tier: front
+      tier: full
       category: system
       step: 2
     chart: signoz/signoz 
