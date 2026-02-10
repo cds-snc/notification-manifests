@@ -503,10 +503,11 @@ releases:
 
   - name: signoz
     namespace: signoz
+    version: 0.110.0
     disableValidationOnInstall: true
     labels:
       app: signoz
-      tier: apm
+      tier: full
       category: system
       step: 2
     chart: signoz/signoz 
@@ -515,6 +516,7 @@ releases:
 
   - name: signoz-secret
     namespace: signoz
+    version: 0.110.0
     labels:
       app: signoz
       tier: apm
