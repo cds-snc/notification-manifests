@@ -12,7 +12,7 @@ git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notific
 op read op://$VAULT/"TERRAFORM_SECRETS_$ENVIRONMENT"/notesPlain > /var/tmp/notification-terraform/aws/$ENVIRONMENT.tfvars   
 cd /var/tmp/notification-terraform/env/$ENVIRONMENT/eks
 export INFRASTRUCTURE_VERSION=$(cat ../../../.github/workflows/infrastructure_version.txt)
-terragrunt init -upgrade
+terragrunt init -reconfigure -upgrade
 ENDPOINT_ID=$(terragrunt output --raw gha_vpn_id)
 CERT=$(terragrunt output --raw gha_vpn_certificate)
 KEY=$(terragrunt output --raw gha_vpn_key)
