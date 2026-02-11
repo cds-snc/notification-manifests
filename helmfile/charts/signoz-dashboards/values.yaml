@@ -1,0 +1,32 @@
+# SigNoz connection settings
+signoz:
+  # URL of the SigNoz API endpoint
+  url: "http://signoz:8080"
+  # Namespace where SigNoz is deployed
+  namespace: signoz
+
+# Job configuration
+job:
+  image:
+    repository: alpine/curl
+    tag: latest
+    pullPolicy: IfNotPresent
+  
+  # Annotations for the job (useful for ArgoCD hooks)
+  annotations: {}
+  
+  # Restart policy for the job
+  restartPolicy: OnFailure
+  
+  # Backoff limit
+  backoffLimit: 3
+  
+  # TTL seconds after finished (cleanup old jobs)
+  ttlSecondsAfterFinished: 300
+
+# List of dashboards to import
+# Each entry is a filename (without path) from the dashboards/ directory
+# Files should be placed in charts/signoz-dashboards/dashboards/
+dashboards: []
+  # - k8s-node-overview.json
+  # - k8s-pod-metrics.json

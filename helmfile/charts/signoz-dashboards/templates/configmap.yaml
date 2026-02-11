@@ -1,0 +1,17 @@
+{{- if .Values.dashboards }}
+{{- range .Values.dashboards }}
+{{- $filename := . }}
+{{- $name := $filename | trimSuffix ".json" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "signoz-dashboards.fullname" $ }}-{{ $name }}
+  labels:
+    {{- include "signoz-dashboards.labels" $ | nindent 4 }}
+    dashboard: {{ $name }}
+data:
+  dashboard.json: |
+{{ $.Files.Get (printf "dashboards/%s" $filename) | indent 4 }}
+{{- end }}
+{{- end }}

@@ -559,6 +559,18 @@ releases:
       category: system
       step: 4
     chart: charts/signoz-telemetry 
+
+  - name: signoz-dashboards
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-dashboards
+      tier: apm
+      category: system
+      step: 5
+    chart: charts/signoz-dashboards
+    values:
+    - ./overrides/system/signoz-dashboards.yaml
 {{ end }}
 
 {{ if eq .Environment.Name "dev" }}
