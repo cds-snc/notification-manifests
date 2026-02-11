@@ -37,12 +37,6 @@ spec:
         - |
           set -e
           
-          # Install jq if not available
-          if ! command -v jq >/dev/null 2>&1; then
-            echo "Installing jq..."
-            apk add --no-cache jq
-          fi
-          
           echo "Waiting for SigNoz to be ready..."
           max_retries=30
           retry=0
