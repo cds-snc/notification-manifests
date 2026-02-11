@@ -8,7 +8,7 @@ signoz:
 # Job configuration
 job:
   image:
-    repository: alpine/curl
+    repository: dwdraju/alpine-curl-jq
     tag: latest
     pullPolicy: IfNotPresent
   
