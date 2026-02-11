@@ -1,0 +1,130 @@
+{{- if .Values.dashboards }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "signoz-dashboards.fullname" . }}-import-{{ now | date "20060102-150405" }}
+  labels:
+    {{- include "signoz-dashboards.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+    {{- with .Values.job.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        {{- include "signoz-dashboards.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: {{ .Values.job.restartPolicy }}
+      containers:
+      - name: import-dashboards
+        image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag }}"
+        imagePullPolicy: {{ .Values.job.image.pullPolicy }}
+        env:
+        - name: SIGNOZ_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: signoz
+              key: SIGNOZ_DASHBOARD_API_KEY
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          
+          # Install jq if not available
+          if ! command -v jq >/dev/null 2>&1; then
+            echo "Installing jq..."
+            apk add --no-cache jq
+          fi
+          
+          echo "Waiting for SigNoz to be ready..."
+          max_retries=30
+          retry=0
+          
+          until curl -f -s {{ .Values.signoz.url }}/api/v1/health > /dev/null 2>&1; do
+            retry=$((retry + 1))
+            if [ $retry -eq $max_retries ]; then
+              echo "ERROR: SigNoz not ready after $max_retries attempts"
+              exit 1
+            fi
+            echo "Waiting for SigNoz... (attempt $retry/$max_retries)"
+            sleep 10
+          done
+          
+          echo "SigNoz is ready. Importing dashboards..."
+          
+          # Verify API key is loaded (show only first 10 chars for security)
+          if [ -z "$SIGNOZ_API_KEY" ]; then
+            echo "ERROR: SIGNOZ_API_KEY environment variable is empty!"
+            exit 1
+          fi
+          echo "API key loaded: ${SIGNOZ_API_KEY:0:10}..."
+          
+          {{- range .Values.dashboards }}
+          {{- $name := . | trimSuffix ".json" }}
+          echo "Importing dashboard: {{ $name }}"
+          
+          # Read dashboard JSON from mounted ConfigMap
+          DASHBOARD_JSON=$(cat /dashboards/{{ $name }}/dashboard.json)
+          
+          # Extract dashboard UUID from JSON using jq
+          DASHBOARD_UUID=$(echo "$DASHBOARD_JSON" | jq -r '.uuid')
+          echo "Dashboard UUID: $DASHBOARD_UUID"
+          
+          # Check if dashboard already exists by UUID
+          check_response=$(curl -s -w "\n%{http_code}" \
+            -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
+            {{ $.Values.signoz.url }}/api/v1/dashboards/$DASHBOARD_UUID)
+          
+          check_code=$(echo "$check_response" | tail -n1)
+          
+          if [ "$check_code" = "200" ]; then
+            echo "Dashboard already exists - updating..."
+            response=$(curl -s -w "\n%{http_code}" -X PUT \
+              -H "Content-Type: application/json" \
+              -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
+              -d "$DASHBOARD_JSON" \
+              {{ $.Values.signoz.url }}/api/v1/dashboards/$DASHBOARD_UUID)
+          else
+            echo "Dashboard does not exist - creating..."
+            response=$(curl -s -w "\n%{http_code}" -X POST \
+              -H "Content-Type: application/json" \
+              -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
+              -d "$DASHBOARD_JSON" \
+              {{ $.Values.signoz.url }}/api/v1/dashboards)
+          fi
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | head -n-1)
+          
+          if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
+            echo "✓ Successfully imported dashboard: {{ $name }}"
+          else
+            echo "✗ Failed to import dashboard: {{ $name }} (HTTP $http_code)"
+            echo "Response: $body"
+            # Continue with other dashboards instead of failing
+          fi
+          {{- end }}
+          
+          echo "Dashboard import complete!"
+        volumeMounts:
+        {{- range .Values.dashboards }}
+        {{- $name := . | trimSuffix ".json" }}
+        - name: dashboard-{{ $name }}
+          mountPath: /dashboards/{{ $name }}
+          readOnly: true
+        {{- end }}
+      volumes:
+      {{- range .Values.dashboards }}
+      {{- $name := . | trimSuffix ".json" }}
+      - name: dashboard-{{ $name }}
+        configMap:
+          name: {{ include "signoz-dashboards.fullname" $ }}-{{ $name }}
+      {{- end }}
+{{- end }}

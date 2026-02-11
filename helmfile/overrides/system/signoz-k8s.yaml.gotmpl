@@ -15,3 +15,68 @@ presets:
     detectors:
       - eks
       - system
+  # Configure kubelet metrics collection to include all available metrics
+  kubeletMetrics:
+    metrics:
+      # Enable all node metrics
+      k8s.node.network.io:
+        enabled: true
+      k8s.node.network.errors:
+        enabled: true
+      # Enable all container metrics
+      container.cpu.time:
+        enabled: true
+      container.memory.available:
+        enabled: true
+      container.memory.major_page_faults:
+        enabled: true
+      container.memory.page_faults:
+        enabled: true
+      container.memory.rss:
+        enabled: true
+      container.memory.usage:
+        enabled: true
+      container.memory.working_set:
+        enabled: true
+      container.filesystem.available:
+        enabled: true
+      container.filesystem.capacity:
+        enabled: true
+      container.filesystem.usage:
+        enabled: true
+      # Enable all pod metrics
+      k8s.pod.cpu.time:
+        enabled: true
+      k8s.pod.filesystem.available:
+        enabled: true
+      k8s.pod.filesystem.capacity:
+        enabled: true
+      k8s.pod.filesystem.usage:
+        enabled: true
+      k8s.pod.memory.available:
+        enabled: true
+      k8s.pod.memory.major_page_faults:
+        enabled: true
+      k8s.pod.memory.page_faults:
+        enabled: true
+      k8s.pod.memory.rss:
+        enabled: true
+      k8s.pod.memory.usage:
+        enabled: true
+      k8s.pod.memory.working_set:
+        enabled: true
+      k8s.pod.network.errors:
+        enabled: true
+      k8s.pod.network.io:
+        enabled: true
+      # Enable all volume metrics
+      k8s.volume.available:
+        enabled: true
+      k8s.volume.capacity:
+        enabled: true
+      k8s.volume.inodes:
+        enabled: true
+      k8s.volume.inodes.free:
+        enabled: true
+      k8s.volume.inodes.used:
+        enabled: true

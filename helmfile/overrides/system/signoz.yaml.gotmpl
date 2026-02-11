@@ -13,6 +13,8 @@ clickhouse:
     storageClass: notify
     size: 1Ti
   zookeeper:
+    # ZooKeeper needs minimum 3 replicas for quorum/HA
+    replicaCount: 3
     persistence:
       size: 10Gi
 
@@ -69,8 +71,17 @@ signoz:
       mountPath: /mnt/secrets-store
       readOnly: true
 
+schemaMigrator:
+  # Enable replication for ClickHouse tables to support HA with multiple replicas
+  enableReplication: true
+
+otelCollector:
+  # Run multiple OtelCollector replicas for HA
+  replicaCount: 2
+
 postgresql:
   enabled: true
+  replicaCount: 1
   persistence:
     mountPath: /signoz/postgresql
     dataDir: /signoz/postgresql/data
@@ -84,3 +95,4 @@ secretProviderClass:
     SIGNOZ_EMAIL_SMTP_AUTH_USERNAME: MANIFEST_SIGNOZ_SMTP_USERNAME
     SIGNOZ_EMAIL_SMTP_AUTH_PASSWORD: MANIFEST_SIGNOZ_SMTP_PASSWORD
     SIGNOZ_POSTGRES_PASSWORD: MANIFEST_SIGNOZ_POSTGRES_PASSWORD
+    SIGNOZ_DASHBOARD_API_KEY: MANIFEST_SIGNOZ_DASHBOARD_API_KEY

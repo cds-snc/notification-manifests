@@ -1,0 +1,15 @@
+signoz:
+  url: "http://signoz:8080"
+  namespace: signoz
+
+dashboards:
+  # Files should be placed in: charts/signoz-dashboards/dashboards/
+  - k8s-cluster-metrics-overall.json
+  - k8s-events.json
+  - k8s-host-metrics.json
+  - k8s-node-metrics-detailed.json
+  - k8s-node-metrics-overall.json
+  - k8s-pod-metrics-detailed.json
+  - k8s-pod-metrics-overall.json
+  - k8s-pvc-metrics.json
+
