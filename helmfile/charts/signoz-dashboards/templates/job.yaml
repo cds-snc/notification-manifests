@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "signoz-dashboards.fullname" . }}-import
+  name: {{ include "signoz-dashboards.fullname" . }}-import-{{ now | date "20060102-150405" }}
   labels:
     {{- include "signoz-dashboards.labels" . | nindent 4 }}
   annotations:
