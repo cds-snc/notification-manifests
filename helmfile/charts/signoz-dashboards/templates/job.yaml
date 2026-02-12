@@ -71,20 +71,22 @@ spec:
           DASHBOARD_UUID=$(echo "$DASHBOARD_JSON" | jq -r '.uuid')
           echo "Dashboard UUID: $DASHBOARD_UUID"
           
-          # Check if dashboard already exists by UUID
-          check_response=$(curl -s -w "\n%{http_code}" \
+          # Get all dashboards and find matching UUID in data.uuid field
+          all_dashboards=$(curl -s \
             -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
-            {{ $.Values.signoz.url }}/api/v1/dashboards/$DASHBOARD_UUID)
+            {{ $.Values.signoz.url }}/api/v1/dashboards)
           
-          check_code=$(echo "$check_response" | tail -n1)
+          # Find the dashboard ID by matching the inner data.uuid field
+          DASHBOARD_ID=$(echo "$all_dashboards" | jq -r --arg uuid "$DASHBOARD_UUID" \
+            '.data[] | select(.data.uuid == $uuid) | .id')
           
-          if [ "$check_code" = "200" ]; then
-            echo "Dashboard already exists - updating..."
+          if [ -n "$DASHBOARD_ID" ]; then
+            echo "Dashboard already exists (ID: $DASHBOARD_ID) - updating..."
             response=$(curl -s -w "\n%{http_code}" -X PUT \
               -H "Content-Type: application/json" \
               -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
               -d "$DASHBOARD_JSON" \
-              {{ $.Values.signoz.url }}/api/v1/dashboards/$DASHBOARD_UUID)
+              {{ $.Values.signoz.url }}/api/v1/dashboards/$DASHBOARD_ID)
           else
             echo "Dashboard does not exist - creating..."
             response=$(curl -s -w "\n%{http_code}" -X POST \
