@@ -48,6 +48,7 @@ admin:
   FF_USE_BILLABLE_UNITS: "{{ .StateValues.FF_USE_BILLABLE_UNITS }}"
 {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
   # OpenTelemetry configuration
+  ENABLE_NEW_RELIC: "false"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
   OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
   OTEL_SERVICE_NAME: "notification-admin"
@@ -63,7 +64,9 @@ adminSecrets:
   DEBUG_KEY: MANIFEST_DEBUG_KEY
   REDIS_URL: MANIFEST_REDIS_URL
   CACHE_OPS_URL: MANIFEST_CACHE_OPS_URL
+  {{ if eq .StateValues.FF_ENABLE_OTEL "false"}}
   ENABLE_NEW_RELIC: MANIFEST_ENABLE_NEW_RELIC
+  {{ end }}
   NEW_RELIC_LICENSE_KEY: MANIFEST_NEW_RELIC_LICENSE_KEY
   NEW_RELIC_ACCOUNT_ID: MANIFEST_NEW_RELIC_ACCOUNT_ID
   NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
