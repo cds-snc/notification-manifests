@@ -61,7 +61,7 @@ api:
   FF_ENABLE_OTEL: "true"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
   OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
-  OTEL_SERVICE_NAME: "notification-admin"
+  OTEL_SERVICE_NAME: "notification-api"
   OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
 {{ end }}
 
