@@ -12,11 +12,25 @@ clickhouse:
   persistence:
     storageClass: notify
     size: 1Ti
+  nodeSelector:
+    workload-type: signoz
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: signoz
+      effect: NoSchedule
   zookeeper:
     # ZooKeeper needs minimum 3 replicas for quorum/HA
     replicaCount: 3
     persistence:
       size: 10Gi
+    nodeSelector:
+      workload-type: signoz
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: signoz
+        effect: NoSchedule
 
 signoz:
   replicaCount: 2
@@ -70,14 +84,35 @@ signoz:
     - name: secrets-store
       mountPath: /mnt/secrets-store
       readOnly: true
+  nodeSelector:
+    workload-type: signoz
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: signoz
+      effect: NoSchedule
 
 schemaMigrator:
   # Enable replication for ClickHouse tables to support HA with multiple replicas
   enableReplication: true
+  nodeSelector:
+    workload-type: signoz
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: signoz
+      effect: NoSchedule
 
 otelCollector:
   # Run multiple OtelCollector replicas for HA
   replicaCount: 2
+  nodeSelector:
+    workload-type: signoz
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: signoz
+      effect: NoSchedule
 
 postgresql:
   enabled: true
@@ -85,6 +120,13 @@ postgresql:
   persistence:
     mountPath: /signoz/postgresql
     dataDir: /signoz/postgresql/data
+  nodeSelector:
+    workload-type: signoz
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: signoz
+      effect: NoSchedule
 
 secretProviderClass:
   name: signoz
