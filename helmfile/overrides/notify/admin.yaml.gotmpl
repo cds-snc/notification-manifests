@@ -49,6 +49,7 @@ admin:
 {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
   # OpenTelemetry configuration
   ENABLE_NEW_RELIC: "false"
+  FF_ENABLE_OTEL: "true"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
   OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
   OTEL_SERVICE_NAME: "notification-admin"
