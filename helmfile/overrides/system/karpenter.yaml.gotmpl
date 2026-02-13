@@ -26,3 +26,5 @@ nodePool:
   instanceCategories: "['m', 'r', 'c']"
   instanceFamily: "['m7i', 'r7i', 'c7i']"
   instanceCPU: "['4']"
+  # Exclude signoz workload - it runs on dedicated EKS managed node group
+  excludeWorkloadTypeLabel: true
