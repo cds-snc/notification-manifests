@@ -19,8 +19,6 @@ clickhouse:
       operator: Equal
       value: signoz
       effect: NoSchedule
-  # Spread ClickHouse replicas across different nodes for HA
-
   zookeeper:
     # ZooKeeper needs minimum 3 replicas for quorum/HA
     replicaCount: 3
