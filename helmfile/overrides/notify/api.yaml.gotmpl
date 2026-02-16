@@ -55,6 +55,15 @@ api:
   AIRTABLE_NEWSLETTER_BASE_ID: "appCP2c4xvXxQOfhN"
   GUNICORN_WORKERS: "{{ .StateValues.GUNICORN_WORKERS }}"
   GUNICORN_WORKER_CONNECTIONS: "{{ .StateValues.GUNICORN_WORKER_CONNECTIONS }}"
+{{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
+  # OpenTelemetry configuration
+  ENABLE_NEW_RELIC: "false"
+  FF_ENABLE_OTEL: "true"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+  OTEL_SERVICE_NAME: "notification-api"
+  OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
+{{ end }}
 
 apiSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
@@ -82,7 +91,9 @@ apiSecrets:
   # POSTGRES_HOST is used by the init script to verify the database is up
   POSTGRES_HOST: MANIFEST_POSTGRES_HOST
   SRE_CLIENT_SECRET: MANIFEST_SRE_CLIENT_SECRET
+  {{ if eq .StateValues.FF_ENABLE_OTEL "false"}}
   ENABLE_NEW_RELIC: MANIFEST_ENABLE_NEW_RELIC
+  {{ end }}
   NEW_RELIC_LICENSE_KEY: MANIFEST_NEW_RELIC_LICENSE_KEY
   NEW_RELIC_ACCOUNT_ID: MANIFEST_NEW_RELIC_ACCOUNT_ID
   NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
@@ -100,12 +111,10 @@ image:
 
 podAnnotations:
   reloader.stakater.com/auto: "true"
-{{ if eq .Environment.Name "dev" }}
-#  instrumentation.opentelemetry.io/inject-python: "true"
-#  instrumentation.opentelemetry.io/otel-python-platform: "musl"
-#  sidecar.opentelemetry.io/inject: "true"
+{{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
+  instrumentation.opentelemetry.io/inject-python: "signoz/signoz-instrumentation"
+  instrumentation.opentelemetry.io/otel-python-platform: "musl"
 {{ end }}
-
 dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
   pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}

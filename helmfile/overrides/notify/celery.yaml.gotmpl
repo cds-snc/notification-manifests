@@ -39,6 +39,15 @@ celeryCommon:
   CELERY_CONCURRENCY: "4"
   FF_CLOUDWATCH_METRICS_ENABLED: "True"
   CELERY_DELIVER_SMS_RATE_LIMIT: "{{ .StateValues.CELERY_DELIVER_SMS_RATE_LIMIT }}"
+  {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
+  # OpenTelemetry configuration
+  ENABLE_NEW_RELIC: "false"
+  FF_ENABLE_OTEL: "true"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+  OTEL_SERVICE_NAME: "notification-celery"
+  OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
+{{ end }}
 
 celerySecrets: 
   #SECRET_NAME_FOR_ENV_PASSED_TO_CONTAINER: SECRET_NAME_READ_FROM_AWS_SECRETS_MANAGER 
@@ -48,7 +57,9 @@ celerySecrets:
   SENDGRID_API_KEY: MANIFEST_SENDGRID_API_KEY
   SQLALCHEMY_DATABASE_URI: MANIFEST_SQLALCHEMY_DATABASE_URI
   SQLALCHEMY_DATABASE_READER_URI: MANIFEST_SQLALCHEMY_DATABASE_READER_URI
+  {{ if eq .StateValues.FF_ENABLE_OTEL "false"}}
   ENABLE_NEW_RELIC: MANIFEST_ENABLE_NEW_RELIC
+  {{ end }}
   NEW_RELIC_LICENSE_KEY: MANIFEST_NEW_RELIC_LICENSE_KEY
   NEW_RELIC_ACCOUNT_ID: MANIFEST_NEW_RELIC_ACCOUNT_ID
   NEW_RELIC_API_KEY: MANIFEST_NEW_RELIC_API_KEY
@@ -64,10 +75,9 @@ image:
 
 podAnnotations:
   reloader.stakater.com/auto: "true"
-{{ if eq .Environment.Name "dev" }}
-#  instrumentation.opentelemetry.io/inject-python: "true"
-#  instrumentation.opentelemetry.io/otel-python-platform: "musl"
-#  sidecar.opentelemetry.io/inject: "true"
+{{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
+  instrumentation.opentelemetry.io/inject-python: "signoz/signoz-instrumentation"
+  instrumentation.opentelemetry.io/otel-python-platform: "musl"
 {{ end }}
 
 dockerhub:
