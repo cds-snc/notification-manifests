@@ -49,6 +49,9 @@ nodeAgent:
   podVolumePath: /var/lib/kubelet/pods
   privileged: false
   priorityClassName: system-cluster-critical
+  # Allow node agent to run on all nodes, including dedicated SigNoz nodes
+  tolerations:
+    - operator: Exists
   resources:
     requests:
       cpu: 500m
