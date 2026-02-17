@@ -12,6 +12,9 @@ clickhouse:
   persistence:
     storageClass: notify
     size: 1Ti
+  # Add MergeTree setting to allow more broken parts during restore
+  settings:
+    merge_tree/max_suspicious_broken_parts: "200"
   nodeSelector:
     workload-type: signoz
   tolerations:
@@ -19,6 +22,15 @@ clickhouse:
       operator: Equal
       value: signoz
       effect: NoSchedule
+  # Require ClickHouse replicas on different nodes for HA
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: clickhouse
+              app.kubernetes.io/instance: signoz
+          topologyKey: kubernetes.io/hostname
   zookeeper:
     # ZooKeeper needs minimum 3 replicas for quorum/HA
     replicaCount: 3
