@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure credentials to Notify using OIDC
-        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
         with:
           role-to-assume: arn:aws:iam::${{env.ACCOUNT_ID}}:role/notification-manifests-helmfile-diff
           role-session-name: NotifyManifestsHelmfileDiff
@@ -32,7 +32,7 @@ jobs:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0
       - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
+        uses: mamezou-tech/setup-helmfile@c04e83ec7650bf2ec910864bcb409479cf56d8e6 # v2.2.0
         with:
           install-kubectl: yes
           install-helm: yes
@@ -50,7 +50,7 @@ jobs:
           sudo dpkg -i 1pass.deb 
 
       - name: Setup Terraform tools
-        uses: cds-snc/terraform-tools-setup@v1
+        uses: cds-snc/terraform-tools-setup@5a19984bcb888600ad646e0caf5c6f4d0a54c165 # v1.2.0
         env: # In case you want to override default versions
           CONFTEST_VERSION: 0.30.0 
           TERRAFORM_VERSION: 1.9.5
