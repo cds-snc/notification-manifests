@@ -109,3 +109,26 @@ otelAgent:
           receivers:
             - otlp
             - filelog/celery
+
+otelDeployment:
+  config:
+    receivers:
+      prometheus/cloudwatch_exporter:
+        config:
+          global:
+            scrape_interval: 60s
+            scrape_timeout: 15s
+          scrape_configs:
+            - job_name: prometheus-cloudwatch-exporter
+              static_configs:
+                - targets:
+                    - prometheus-cloudwatch-exporter.signoz.svc.cluster.local:9106
+    service:
+      pipelines:
+        metrics/cloudwatch:
+          receivers:
+            - prometheus/cloudwatch_exporter
+          processors:
+            - batch
+          exporters:
+            - otlp

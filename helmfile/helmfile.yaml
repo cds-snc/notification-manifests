@@ -571,6 +571,21 @@ releases:
     chart: charts/signoz-dashboards
     values:
     - ./overrides/system/signoz-dashboards.yaml
+
+  - name: prometheus-cloudwatch-exporter
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: prometheus-cloudwatch
+      tier: apm
+      category: system
+      step: 5
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-cloudwatch-exporter
+    version: 0.28.1
+    values:
+    - ./overrides/system/prometheus-cloudwatch-exporter.yaml.gotmpl
+
+
 {{ end }}
 
 {{ if eq .Environment.Name "dev" }}
