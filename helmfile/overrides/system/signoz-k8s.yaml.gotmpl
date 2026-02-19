@@ -11,6 +11,10 @@ presets:
     enabled: true
   loggingExporter:
     enabled: false
+  logsCollection:
+    blacklist:
+      additionalExclude:
+        - /var/log/pods/notification-canada-ca_notify-celery*_*/*/*.log
   resourceDetection:
     detectors:
       - eks
@@ -80,3 +84,28 @@ presets:
         enabled: true
       k8s.volume.inodes.used:
         enabled: true
+
+otelAgent:
+  config:
+    receivers:
+      filelog/celery:
+        include:
+          - /var/log/pods/notification-canada-ca_notify-celery*_*/*/*.log
+        start_at: end
+        include_file_path: true
+        include_file_name: false
+        operators:
+          - id: container-parser
+            type: container
+          - id: recombine-celery-multiline
+            type: recombine
+            combine_field: body
+            source_identifier: attributes["log.file.path"]
+            is_first_entry: 'body matches "^(User information:|\\[[0-9]{4}-[0-9]{2}-[0-9]{2}|\\s*-{14}\\s+celery@)"'
+            force_flush_period: 2s
+    service:
+      pipelines:
+        logs:
+          receivers:
+            - otlp
+            - filelog/celery
