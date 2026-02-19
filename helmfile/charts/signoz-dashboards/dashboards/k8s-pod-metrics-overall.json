@@ -48,6 +48,7 @@
   ],
   "title": "Kubernetes Pod Metrics - Overall",
   "uploadedGrafana": false,
+  "uuid": "019c5246-124b-7c5a-a4f9-56c7d4a345f8",
   "variables": {
     "05610c74-c8f3-495b-a7dc-8ec6e64f8bdb": {
       "allSelected": true,
@@ -70,6 +71,7 @@
       "customValue": "",
       "description": "The k8s namespace name",
       "id": "3c276fb0-b95b-42f8-b209-9953dd46d62c",
+      "key": "3c276fb0-b95b-42f8-b209-9953dd46d62c",
       "modificationUUID": "0923a01a-7e96-406b-ba9e-1a8c3610e65b",
       "multiSelect": false,
       "name": "k8s.namespace.name",
@@ -95,6 +97,24 @@
       "sort": "DISABLED",
       "textboxValue": "",
       "type": "QUERY"
+    },
+    "d2a99dc4-782d-487e-a851-afd543e0d8cc": {
+      "allSelected": false,
+      "customValue": "",
+      "defaultValue": "",
+      "description": "",
+      "dynamicVariablesAttribute": "k8s.deployment.name",
+      "dynamicVariablesSource": "All telemetry",
+      "id": "d2a99dc4-782d-487e-a851-afd543e0d8cc",
+      "modificationUUID": "71f1c876-e53a-43b6-8b9c-3acf60334337",
+      "multiSelect": false,
+      "name": "k8s.deployment.name",
+      "order": 3,
+      "queryValue": "",
+      "showALLOption": true,
+      "sort": "DISABLED",
+      "textboxValue": "",
+      "type": "DYNAMIC"
     }
   },
   "version": "v5",
@@ -103,10 +123,17 @@
       "bucketCount": 30,
       "bucketWidth": 0,
       "columnUnits": {},
+      "contextLinks": {
+        "linksData": []
+      },
+      "customLegendColors": {},
+      "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
       "id": "e16d581d-1da9-49ff-9c3b-1bb51c2f7730",
+      "isLogScale": false,
       "isStacked": false,
+      "legendPosition": "bottom",
       "mergeAllActiveQueries": false,
       "nullZeroValues": "zero",
       "opacity": "1",
@@ -128,27 +155,27 @@
               "disabled": false,
               "expression": "A",
               "filter": {
-                "expression": "(k8s.cluster.name = $k8s.cluster.name AND k8s.node.name IN $k8s.node.name AND k8s.namespace.name IN $k8s.namespace.name)"
+                "expression": "(k8s.cluster.name = $k8s.cluster.name AND k8s.node.name IN $k8s.node.name AND k8s.namespace.name IN $k8s.namespace.name AND k8s.deployment.name IN $k8s.deployment.name )"
               },
               "functions": [],
               "groupBy": [
                 {
                   "dataType": "string",
-                  "id": "k8s.node.name--string--tag--false",
+                  "id": "k8s.node.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.node.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.pod.name--string--tag--false",
+                  "id": "k8s.pod.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.pod.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.namespace.name--string--tag--false",
+                  "id": "k8s.namespace.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.namespace.name",
                   "type": "tag"
@@ -161,6 +188,7 @@
               "limit": null,
               "orderBy": [],
               "queryName": "A",
+              "source": "",
               "stepInterval": 60
             }
           ],
@@ -174,7 +202,7 @@
             "query": ""
           }
         ],
-        "id": "8bc531e9-41fc-4989-9e45-75691903aafe",
+        "id": "766f580e-2598-47b6-81e4-cfbc61fa8a38",
         "promql": [
           {
             "disabled": false,
@@ -183,7 +211,8 @@
             "query": ""
           }
         ],
-        "queryType": "builder"
+        "queryType": "builder",
+        "unit": ""
       },
       "selectedLogFields": [],
       "selectedTracesFields": [],
@@ -199,10 +228,17 @@
       "bucketCount": 30,
       "bucketWidth": 0,
       "columnUnits": {},
+      "contextLinks": {
+        "linksData": []
+      },
+      "customLegendColors": {},
+      "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
       "id": "1406e6b6-0c99-46d4-9782-530f6e7e053a",
+      "isLogScale": false,
       "isStacked": false,
+      "legendPosition": "bottom",
       "mergeAllActiveQueries": false,
       "nullZeroValues": "zero",
       "opacity": "1",
@@ -224,27 +260,27 @@
               "disabled": true,
               "expression": "A",
               "filter": {
-                "expression": "(k8s.cluster.name = $k8s.cluster.name AND k8s.node.name IN $k8s.node.name AND k8s.namespace.name IN $k8s.namespace.name)"
+                "expression": "(k8s.cluster.name = $k8s.cluster.name AND k8s.node.name IN $k8s.node.name AND k8s.namespace.name IN $k8s.namespace.name AND k8s.deployment.name IN $k8s.deployment.name )"
               },
               "functions": [],
               "groupBy": [
                 {
                   "dataType": "string",
-                  "id": "k8s.node.name--string--tag--false",
+                  "id": "k8s.node.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.node.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.namespace.name--string--tag--false",
+                  "id": "k8s.namespace.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.namespace.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.pod.name--string--tag--false",
+                  "id": "k8s.pod.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.pod.name",
                   "type": "tag"
@@ -257,6 +293,7 @@
               "limit": null,
               "orderBy": [],
               "queryName": "A",
+              "source": "",
               "stepInterval": 60
             },
             {
@@ -279,21 +316,21 @@
               "groupBy": [
                 {
                   "dataType": "string",
-                  "id": "k8s.node.name--string--tag--false",
+                  "id": "k8s.node.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.node.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.namespace.name--string--tag--false",
+                  "id": "k8s.namespace.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.namespace.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.pod.name--string--tag--false",
+                  "id": "k8s.pod.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.pod.name",
                   "type": "tag"
@@ -306,6 +343,7 @@
               "limit": null,
               "orderBy": [],
               "queryName": "B",
+              "source": "",
               "stepInterval": 60
             }
           ],
@@ -326,7 +364,7 @@
             "query": ""
           }
         ],
-        "id": "16908d4e-1565-4847-8d87-01ebb8fc494a",
+        "id": "4aa19d5c-2c3a-49b3-a998-d3eccac22bba",
         "promql": [
           {
             "disabled": false,
@@ -335,7 +373,8 @@
             "query": ""
           }
         ],
-        "queryType": "builder"
+        "queryType": "builder",
+        "unit": ""
       },
       "selectedLogFields": [],
       "selectedTracesFields": [],
@@ -351,10 +390,17 @@
       "bucketCount": 30,
       "bucketWidth": 0,
       "columnUnits": {},
+      "contextLinks": {
+        "linksData": []
+      },
+      "customLegendColors": {},
+      "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
       "id": "18c1653b-f826-460d-9302-90bc6d3f5e52",
+      "isLogScale": false,
       "isStacked": false,
+      "legendPosition": "bottom",
       "mergeAllActiveQueries": false,
       "nullZeroValues": "zero",
       "opacity": "1",
@@ -376,27 +422,27 @@
               "disabled": false,
               "expression": "A",
               "filter": {
-                "expression": "(k8s.cluster.name = $k8s.cluster.name AND k8s.node.name IN $k8s.node.name AND k8s.namespace.name IN $k8s.namespace.name)"
+                "expression": "(k8s.cluster.name = $k8s.cluster.name AND k8s.node.name IN $k8s.node.name AND k8s.namespace.name IN $k8s.namespace.name AND k8s.deployment.name IN $k8s.deployment.name )"
               },
               "functions": [],
               "groupBy": [
                 {
                   "dataType": "string",
-                  "id": "k8s.node.name--string--tag--false",
+                  "id": "k8s.node.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.node.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.namespace.name--string--tag--false",
+                  "id": "k8s.namespace.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.namespace.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.pod.name--string--tag--false",
+                  "id": "k8s.pod.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.pod.name",
                   "type": "tag"
@@ -409,6 +455,7 @@
               "limit": null,
               "orderBy": [],
               "queryName": "A",
+              "source": "",
               "stepInterval": 60
             }
           ],
@@ -422,7 +469,7 @@
             "query": ""
           }
         ],
-        "id": "103626b5-910c-4262-88ed-0a136d0a0f0f",
+        "id": "4a5f49b7-bf1b-4193-a851-5f1895366e9f",
         "promql": [
           {
             "disabled": false,
@@ -431,7 +478,8 @@
             "query": ""
           }
         ],
-        "queryType": "builder"
+        "queryType": "builder",
+        "unit": ""
       },
       "selectedLogFields": [],
       "selectedTracesFields": [],
@@ -447,10 +495,17 @@
       "bucketCount": 30,
       "bucketWidth": 0,
       "columnUnits": {},
+      "contextLinks": {
+        "linksData": []
+      },
+      "customLegendColors": {},
+      "decimalPrecision": 2,
       "description": "",
       "fillSpans": false,
       "id": "a2cd4e4a-0b81-4a85-937f-48ca5c9f183b",
+      "isLogScale": false,
       "isStacked": false,
+      "legendPosition": "bottom",
       "mergeAllActiveQueries": false,
       "nullZeroValues": "zero",
       "opacity": "1",
@@ -472,41 +527,41 @@
               "disabled": false,
               "expression": "A",
               "filter": {
-                "expression": "(k8s.cluster.name = $k8s.cluster.name AND k8s.node.name IN $k8s.node.name AND k8s.namespace.name IN $k8s.namespace.name)"
+                "expression": "(k8s.cluster.name = $k8s.cluster.name AND k8s.node.name IN $k8s.node.name AND k8s.namespace.name IN $k8s.namespace.name AND k8s.deployment.name IN $k8s.deployment.name )"
               },
               "functions": [],
               "groupBy": [
                 {
                   "dataType": "string",
-                  "id": "interface--string--tag--false",
+                  "id": "interface--string--tag",
                   "isColumn": false,
                   "key": "interface",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "direction--string--tag--false",
+                  "id": "direction--string--tag",
                   "isColumn": false,
                   "key": "direction",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.node.name--string--tag--false",
+                  "id": "k8s.node.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.node.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.namespace.name--string--tag--false",
+                  "id": "k8s.namespace.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.namespace.name",
                   "type": "tag"
                 },
                 {
                   "dataType": "string",
-                  "id": "k8s.pod.name--string--tag--false",
+                  "id": "k8s.pod.name--string--tag",
                   "isColumn": false,
                   "key": "k8s.pod.name",
                   "type": "tag"
@@ -519,6 +574,7 @@
               "limit": null,
               "orderBy": [],
               "queryName": "A",
+              "source": "",
               "stepInterval": 60
             }
           ],
@@ -532,7 +588,7 @@
             "query": ""
           }
         ],
-        "id": "4b255d6d-4cde-474d-8866-f4418583c18b",
+        "id": "dcd4d53f-f070-44bb-9a2f-16e8af44c561",
         "promql": [
           {
             "disabled": false,
@@ -541,7 +597,8 @@
             "query": ""
           }
         ],
-        "queryType": "builder"
+        "queryType": "builder",
+        "unit": ""
       },
       "selectedLogFields": [],
       "selectedTracesFields": [],
@@ -553,6 +610,5 @@
       "title": "Pod network IO",
       "yAxisUnit": "bytes"
     }
-  ],
-  "uuid": "019c4d26-32ae-74f5-935a-708bd0512582"
+  ]
 }
