@@ -64,6 +64,7 @@ api:
   OTEL_SERVICE_NAME: "notification-api"
   OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
 {{ end }}
+  FF_USE_PINPOINT_FOR_DEDICATED: "{{ .StateValues.FF_USE_PINPOINT_FOR_DEDICATED }}"
 
 apiSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
