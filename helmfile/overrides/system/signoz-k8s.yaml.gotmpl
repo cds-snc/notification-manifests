@@ -19,6 +19,11 @@ presets:
     detectors:
       - eks
       - system
+  prometheus:
+    enabled: true
+    annotationsPrefix: signoz.io
+    namespaceScoped: false
+    namespaces: []
   # Configure kubelet metrics collection to include all available metrics
   kubeletMetrics:
     metrics:
@@ -111,8 +116,51 @@ otelAgent:
             - filelog/celery
 
 otelDeployment:
+  replicaCount: 1
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/signoz-prometheus-cloudwatch-exporter-eks-role
   config:
     receivers:
+      awscloudwatch/rds_postgres_logs:
+        region: ca-central-1
+        logs:
+          poll_interval: 1m
+          groups:
+            named:
+              /aws/rds/cluster/notification-canada-ca-{{ .Environment.Name }}-cluster/postgresql: {}
+      awscloudwatch/elasticache_redis_logs:
+        region: ca-central-1
+        logs:
+          poll_interval: 1m
+          groups:
+            autodiscover:
+              prefix: /aws/elasticache/
+              limit: 100
+      awscloudwatch/lambda_logs:
+        region: ca-central-1
+        logs:
+          poll_interval: 1m
+          groups:
+            autodiscover:
+              prefix: /aws/lambda/
+              limit: 200
+      awscloudwatch/sns_logs:
+        region: ca-central-1
+        logs:
+          poll_interval: 1m
+          groups:
+            autodiscover:
+              prefix: sns/ca-central-1
+              limit: 200
+      awscloudwatch/all_logs:
+        region: ca-central-1
+        logs:
+          poll_interval: 1m
+          groups:
+            autodiscover:
+              prefix: ""
+              limit: 500
       prometheus/cloudwatch_exporter:
         config:
           global:
@@ -123,8 +171,115 @@ otelDeployment:
               static_configs:
                 - targets:
                     - prometheus-cloudwatch-exporter.signoz.svc.cluster.local:9106
+    processors:
+      transform/add_source_rds_postgres:
+        error_mode: ignore
+        log_statements:
+          - context: log
+            statements:
+              - set(resource.attributes["source"], "rds_postgres")
+      transform/add_source_elasticache_redis:
+        error_mode: ignore
+        log_statements:
+          - context: log
+            statements:
+              - set(resource.attributes["source"], "elasticache_redis")
+      transform/set_lambda_source_from_log_group:
+        error_mode: ignore
+        log_statements:
+          - context: log
+            statements:
+              - set(attributes["source"], attributes["aws.cloudwatch.log_group_name"]) where attributes["aws.cloudwatch.log_group_name"] != nil
+              - set(attributes["source"], resource.attributes["aws.cloudwatch.log_group_name"]) where attributes["source"] == nil and resource.attributes["aws.cloudwatch.log_group_name"] != nil
+              - set(attributes["source"], attributes["cloudwatch.log.group.name"]) where attributes["source"] == nil and attributes["cloudwatch.log.group.name"] != nil
+              - set(attributes["source"], resource.attributes["cloudwatch.log.group.name"]) where attributes["source"] == nil and resource.attributes["cloudwatch.log.group.name"] != nil
+              - replace_pattern(attributes["source"], "^/aws/lambda/", "") where attributes["source"] != nil
+              - set(resource.attributes["source"], attributes["source"]) where attributes["source"] != nil
+              - delete_key(attributes, "source") where attributes["source"] != nil
+      transform/add_source_sns:
+        error_mode: ignore
+        log_statements:
+          - context: log
+            statements:
+              - set(resource.attributes["source"], "sns")
+      filter/exclude_explicit_cloudwatch_groups:
+        error_mode: ignore
+        logs:
+          log_record:
+            - attributes["aws.cloudwatch.log_group_name"] == "/aws/rds/cluster/notification-canada-ca-{{ .Environment.Name }}-cluster/postgresql"
+            - resource.attributes["aws.cloudwatch.log_group_name"] == "/aws/rds/cluster/notification-canada-ca-{{ .Environment.Name }}-cluster/postgresql"
+            - IsMatch(attributes["aws.cloudwatch.log_group_name"], "^/aws/elasticache/")
+            - IsMatch(resource.attributes["aws.cloudwatch.log_group_name"], "^/aws/elasticache/")
+            - IsMatch(attributes["aws.cloudwatch.log_group_name"], "^/aws/lambda/")
+            - IsMatch(resource.attributes["aws.cloudwatch.log_group_name"], "^/aws/lambda/")
+            - IsMatch(attributes["aws.cloudwatch.log_group_name"], "^sns/ca-central-1")
+            - IsMatch(resource.attributes["aws.cloudwatch.log_group_name"], "^sns/ca-central-1")
+            - attributes["aws.cloudwatch.log_group_name"] == "/aws/containerinsights/notification-canada-ca-dev-eks-cluster/application"
+            - resource.attributes["aws.cloudwatch.log_group_name"] == "/aws/containerinsights/notification-canada-ca-dev-eks-cluster/application"
+            - attributes["cloudwatch.log.group.name"] == "/aws/rds/cluster/notification-canada-ca-{{ .Environment.Name }}-cluster/postgresql"
+            - resource.attributes["cloudwatch.log.group.name"] == "/aws/rds/cluster/notification-canada-ca-{{ .Environment.Name }}-cluster/postgresql"
+            - IsMatch(attributes["cloudwatch.log.group.name"], "^/aws/elasticache/")
+            - IsMatch(resource.attributes["cloudwatch.log.group.name"], "^/aws/elasticache/")
+            - IsMatch(attributes["cloudwatch.log.group.name"], "^/aws/lambda/")
+            - IsMatch(resource.attributes["cloudwatch.log.group.name"], "^/aws/lambda/")
+            - IsMatch(attributes["cloudwatch.log.group.name"], "^sns/ca-central-1")
+            - IsMatch(resource.attributes["cloudwatch.log.group.name"], "^sns/ca-central-1")
+            - attributes["cloudwatch.log.group.name"] == "/aws/containerinsights/notification-canada-ca-dev-eks-cluster/application"
+            - resource.attributes["cloudwatch.log.group.name"] == "/aws/containerinsights/notification-canada-ca-dev-eks-cluster/application"
+      transform/set_cloudwatch_source_from_log_group:
+        error_mode: ignore
+        log_statements:
+          - context: log
+            statements:
+              - set(attributes["source"], attributes["aws.cloudwatch.log_group_name"]) where attributes["aws.cloudwatch.log_group_name"] != nil
+              - set(attributes["source"], resource.attributes["aws.cloudwatch.log_group_name"]) where attributes["source"] == nil and resource.attributes["aws.cloudwatch.log_group_name"] != nil
+              - set(attributes["source"], attributes["cloudwatch.log.group.name"]) where attributes["source"] == nil and attributes["cloudwatch.log.group.name"] != nil
+              - set(attributes["source"], resource.attributes["cloudwatch.log.group.name"]) where attributes["source"] == nil and resource.attributes["cloudwatch.log.group.name"] != nil
+              - set(resource.attributes["source"], attributes["source"]) where attributes["source"] != nil
+              - delete_key(attributes, "source") where attributes["source"] != nil
     service:
       pipelines:
+        logs/rds_postgres:
+          receivers:
+            - awscloudwatch/rds_postgres_logs
+          processors:
+            - transform/add_source_rds_postgres
+            - batch
+          exporters:
+            - otlp
+        logs/elasticache_redis:
+          receivers:
+            - awscloudwatch/elasticache_redis_logs
+          processors:
+            - transform/add_source_elasticache_redis
+            - batch
+          exporters:
+            - otlp
+        logs/aws_lambda:
+          receivers:
+            - awscloudwatch/lambda_logs
+          processors:
+            - transform/set_lambda_source_from_log_group
+            - batch
+          exporters:
+            - otlp
+        logs/sns:
+          receivers:
+            - awscloudwatch/sns_logs
+          processors:
+            - transform/add_source_sns
+            - batch
+          exporters:
+            - otlp
+        logs/cloudwatch_all:
+          receivers:
+            - awscloudwatch/all_logs
+          processors:
+            - filter/exclude_explicit_cloudwatch_groups
+            - transform/set_cloudwatch_source_from_log_group
+            - batch
+          exporters:
+            - otlp
         metrics/cloudwatch:
           receivers:
             - prometheus/cloudwatch_exporter

@@ -64,11 +64,10 @@ spec:
           {{- $name := . | trimSuffix ".json" }}
           echo "Importing dashboard: {{ $name }}"
           
-          # Read dashboard JSON from mounted ConfigMap
-          DASHBOARD_JSON=$(cat /dashboards/{{ $name }}/dashboard.json)
+          DASHBOARD_FILE="/dashboards/{{ $name }}/dashboard.json"
           
           # Extract dashboard UUID from JSON using jq
-          DASHBOARD_UUID=$(echo "$DASHBOARD_JSON" | jq -r '.uuid')
+          DASHBOARD_UUID=$(jq -r '.uuid' "$DASHBOARD_FILE")
           echo "Dashboard UUID: $DASHBOARD_UUID"
           
           # Get all dashboards and find matching UUID in data.uuid field
@@ -85,14 +84,14 @@ spec:
             response=$(curl -s -w "\n%{http_code}" -X PUT \
               -H "Content-Type: application/json" \
               -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
-              -d "$DASHBOARD_JSON" \
+              --data-binary "@$DASHBOARD_FILE" \
               {{ $.Values.signoz.url }}/api/v1/dashboards/$DASHBOARD_ID)
           else
             echo "Dashboard does not exist - creating..."
             response=$(curl -s -w "\n%{http_code}" -X POST \
               -H "Content-Type: application/json" \
               -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
-              -d "$DASHBOARD_JSON" \
+              --data-binary "@$DASHBOARD_FILE" \
               {{ $.Values.signoz.url }}/api/v1/dashboards)
           fi
           
