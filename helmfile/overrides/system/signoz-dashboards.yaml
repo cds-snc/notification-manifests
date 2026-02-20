@@ -12,4 +12,8 @@ dashboards:
   - k8s-pod-metrics-detailed.json
   - k8s-pod-metrics-overall.json
   - k8s-pvc-metrics.json
+  - aws-elasticache-redis.json
+  - aws-rds-postgres.json
+  - clickhouse-overview.json
+  - lambda-api.json
 
