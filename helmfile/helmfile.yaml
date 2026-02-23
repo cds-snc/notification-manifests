@@ -26,7 +26,7 @@ hooks:
     command: "sh"
     args: 
       - "-c"
-      - "kubectl create namespace notification-canada-ca --dry-run=client -o yaml | kubectl apply -f - && kubectl label namespace notification-canada-ca goldilocks.fairwinds.com/enabled=true --overwrite"
+      - "kubectl create namespace notification-canada-ca --dry-run=client -o yaml | kubectl apply -f - && kubectl label namespace notification-canada-ca goldilocks.fairwinds.com/enabled=true --overwrite && kubectl label namespace notification-canada-ca elbv2.k8s.aws/pod-readiness-gate-inject=enabled --overwrite"
 
 repositories:
 - name: secrets-store-csi-driver

@@ -115,7 +115,7 @@ autoscaling:
 
 pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minAvailable: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
+  minAvailable: {{ if or (eq .Environment.Name "production") (eq .Environment.Name "staging") }} "75%" {{ else }} 1 {{ end }}
 
 {{ if ne .Environment.Name "production" }}
 verticalPodAutoscaler:

@@ -22,6 +22,12 @@ updateStrategy:
 
 priorityClassName: high-priority
 
+terminationGracePeriodSeconds: 120
+
+lifecycle:
+  preStop:
+    sleepSeconds: 25
+
 readinessProbe:
   httpGet:
     path: "/_status?simple=true"
@@ -87,7 +93,7 @@ verticalPodAutoscaler:
 
 pdb:
   enabled: true
-  minAvailable: 1
+  minAvailable: "75%"
 
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND
