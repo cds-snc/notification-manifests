@@ -26,7 +26,7 @@ terminationGracePeriodSeconds: 120
 
 lifecycle:
   preStop:
-    sleepSeconds: 25
+    sleepSeconds: 90
 
 readinessProbe:
   httpGet:
@@ -93,7 +93,7 @@ verticalPodAutoscaler:
 
 pdb:
   enabled: true
-  minAvailable: "75%"
+  minAvailable: 2
 
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND
