@@ -1,0 +1,593 @@
+{
+  "status": "success",
+  "data": {
+    "createdByName": "Ben Larabie",
+    "id": "019c761b-1f2f-74df-836b-c59d73aafc52",
+    "createdAt": "2026-02-19T13:33:34.895314Z",
+    "updatedAt": "0001-01-01T00:00:00Z",
+    "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+    "updatedBy": "",
+    "orgId": "00000000-0000-0000-0000-000000000000",
+    "version": 1,
+    "elementType": "log_pipelines",
+    "deployStatus": "dirty",
+    "deploySequence": 0,
+    "deployResult": "",
+    "lastHash": "",
+    "config": "{}",
+    "pipelines": [
+      {
+        "createdBy": "ben.larabie@cds-snc.ca",
+        "updatedBy": "",
+        "createdAt": "2026-02-23T15:56:27.328457Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "id": "019c8b37-5d40-76fb-9a54-54e9d96d6709",
+        "orderId": 1,
+        "enabled": true,
+        "name": "Notify Admin Requests",
+        "alias": "bentest",
+        "description": "",
+        "filter": {
+          "op": "AND",
+          "items": [
+            {
+              "key": {
+                "key": "k8s.deployment.name",
+                "dataType": "string",
+                "type": "resource",
+                "isColumn": false,
+                "isJSON": false
+              },
+              "value": "notify-admin",
+              "op": "="
+            },
+            {
+              "key": {
+                "key": "body",
+                "dataType": "string",
+                "type": "",
+                "isColumn": true,
+                "isJSON": false
+              },
+              "value": "^\\d{1,3}(?:\\.\\d{1,3}){3}\\s+-\\s+-\\s+\\[\\d{2}\\/[A-Za-z]{3}\\/\\d{4}:\\d{2}:\\d{2}:\\d{2}\\s+[+-]\\d{4}\\]\\s+\"[A-Z]+\\s+\\S+\\s+HTTP\\/\\d\\.\\d\"\\s+\\d{3}\\s+\\d+\\s+\"[^\"]*\"\\s+\"[^\"]*\"\\s*$",
+              "op": "regex"
+            }
+          ]
+        },
+        "config": [
+          {
+            "type": "regex_parser",
+            "id": "e573a576-b59d-4ca6-b9ae-c84977024e47",
+            "on_error": "send",
+            "orderId": 1,
+            "enabled": true,
+            "name": "Notify Admin Request Regex",
+            "parse_to": "attributes",
+            "regex": "^(?<client_ip>\\S+)\\s+(?<ident>\\S+)\\s+(?<auth_user>\\S+)\\s+\\[(?<timestamp>[^\\]]+)\\]\\s+\"(?<method>[A-Z]+)\\s+(?<request_uri>[^ ]+)\\s+HTTP\\/(?<http_version>[0-9.]+)\"\\s+(?<status>\\d{3})\\s+(?<bytes>\\d+)\\s+\"(?<referer>[^\"]*)\"\\s+\"(?<user_agent>[^\"]*)\"\\s*$",
+            "parse_from": "body"
+          }
+        ]
+      },
+      {
+        "createdBy": "ben.larabie@cds-snc.ca",
+        "updatedBy": "",
+        "createdAt": "2026-02-23T15:56:27.330682Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "id": "019c8b37-5d42-7a69-a176-8fbb406a0502",
+        "orderId": 2,
+        "enabled": true,
+        "name": "Notify Admin JSON",
+        "alias": "NotifyAdminJSON",
+        "description": "",
+        "filter": {
+          "op": "AND",
+          "items": [
+            {
+              "key": {
+                "key": "k8s.deployment.name",
+                "dataType": "string",
+                "type": "resource",
+                "isColumn": false,
+                "isJSON": false
+              },
+              "value": "notify-admin",
+              "op": "="
+            },
+            {
+              "key": {
+                "key": "body",
+                "dataType": "string",
+                "type": "",
+                "isColumn": true,
+                "isJSON": false
+              },
+              "value": "^{",
+              "op": "regex"
+            }
+          ]
+        },
+        "config": [
+          {
+            "type": "json_parser",
+            "id": "3abd011b-14bb-4b61-9639-0fb28867ad41",
+            "output": "c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5",
+            "orderId": 1,
+            "enabled": true,
+            "name": "Notify Admin JSON Parser",
+            "parse_to": "attributes",
+            "parse_from": "body"
+          },
+          {
+            "type": "regex_parser",
+            "id": "c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5",
+            "output": "d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1",
+            "on_error": "send",
+            "orderId": 2,
+            "enabled": true,
+            "name": "Notify Admin Time Taken Parser",
+            "parse_to": "attributes",
+            "regex": "Request details:\\s*time_taken:\\s*(?<time_taken>\\d+(?:\\.\\d+)?)ms",
+            "parse_from": "body"
+          },
+          {
+            "type": "regex_parser",
+            "id": "d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1",
+            "output": "caf7f4ab-b10b-4b78-961c-59b8dc28bddb",
+            "on_error": "send",
+            "orderId": 3,
+            "enabled": true,
+            "name": "Notify admin full path parser",
+            "parse_to": "attributes",
+            "regex": "full_path:\\s*'(?P<full_path>[^']+)'",
+            "parse_from": "body"
+          },
+          {
+            "type": "regex_parser",
+            "id": "caf7f4ab-b10b-4b78-961c-59b8dc28bddb",
+            "on_error": "send",
+            "orderId": 4,
+            "enabled": true,
+            "name": "Notify admin endpoint parser",
+            "parse_to": "attributes",
+            "regex": "endpoint:\\s*'(?P<endpoint>[^']+)'",
+            "parse_from": "body"
+          }
+        ]
+      },
+      {
+        "createdBy": "ben.larabie@cds-snc.ca",
+        "updatedBy": "",
+        "createdAt": "2026-02-23T15:56:27.332572Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "id": "019c8b37-5d44-78bb-b548-fa51ee8c5bfa",
+        "orderId": 3,
+        "enabled": true,
+        "name": "Notify API Requests",
+        "alias": "NotifyAPIRequests",
+        "description": "",
+        "filter": {
+          "op": "AND",
+          "items": [
+            {
+              "key": {
+                "key": "k8s.deployment.name",
+                "dataType": "string",
+                "type": "resource",
+                "isColumn": false,
+                "isJSON": false
+              },
+              "value": "notify-api",
+              "op": "="
+            },
+            {
+              "key": {
+                "key": "body",
+                "dataType": "string",
+                "type": "",
+                "isColumn": true,
+                "isJSON": false
+              },
+              "value": "^\\d{1,3}(?:\\.\\d{1,3}){3}\\s+-\\s+-\\s+\\[\\d{2}\\/[A-Za-z]{3}\\/\\d{4}:\\d{2}:\\d{2}:\\d{2}\\s+[+-]\\d{4}\\]\\s+\"[A-Z]+\\s+\\S+\\s+HTTP\\/\\d\\.\\d\"\\s+\\d{3}\\s+\\d+\\s+\"[^\"]*\"\\s+\"[^\"]*\"\\s*$",
+              "op": "regex"
+            }
+          ]
+        },
+        "config": [
+          {
+            "type": "regex_parser",
+            "id": "ed836072-df90-4813-a7aa-80d41545ce85",
+            "on_error": "send",
+            "orderId": 1,
+            "enabled": true,
+            "name": "Notify API Requests Regex",
+            "parse_to": "attributes",
+            "regex": "^(?<client_ip>\\S+)\\s+(?<ident>\\S+)\\s+(?<auth_user>\\S+)\\s+\\[(?<timestamp>[^\\]]+)\\]\\s+\"(?<method>[A-Z]+)\\s+(?<request_uri>[^ ]+)\\s+HTTP\\/(?<http_version>[0-9.]+)\"\\s+(?<status>\\d{3})\\s+(?<bytes>\\d+)\\s+\"(?<referer>[^\"]*)\"\\s+\"(?<user_agent>[^\"]*)\"\\s*$",
+            "parse_from": "body"
+          }
+        ]
+      },
+      {
+        "createdBy": "ben.larabie@cds-snc.ca",
+        "updatedBy": "",
+        "createdAt": "2026-02-23T15:56:27.3344Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "id": "019c8b37-5d46-761d-ab17-f433001325b8",
+        "orderId": 4,
+        "enabled": true,
+        "name": "Notify API Json",
+        "alias": "NotifyAPIJson",
+        "description": "",
+        "filter": {
+          "op": "AND",
+          "items": [
+            {
+              "key": {
+                "key": "k8s.deployment.name",
+                "dataType": "string",
+                "type": "resource",
+                "isColumn": false,
+                "isJSON": false
+              },
+              "value": "notify-api",
+              "op": "="
+            },
+            {
+              "key": {
+                "key": "body",
+                "dataType": "string",
+                "type": "",
+                "isColumn": true,
+                "isJSON": false
+              },
+              "value": "^{",
+              "op": "regex"
+            }
+          ]
+        },
+        "config": [
+          {
+            "type": "json_parser",
+            "id": "11c1517e-0079-4e31-975a-b220e66c9fdc",
+            "orderId": 1,
+            "enabled": true,
+            "name": "Notify API Json",
+            "parse_to": "attributes",
+            "parse_from": "body"
+          }
+        ]
+      },
+      {
+        "createdBy": "ben.larabie@cds-snc.ca",
+        "updatedBy": "",
+        "createdAt": "2026-02-23T15:56:27.336065Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "id": "019c8b37-5d48-70fd-b4f9-8bd806d42256",
+        "orderId": 5,
+        "enabled": true,
+        "name": "Notify Celery Logs",
+        "alias": "NotifyCeleryLogs",
+        "description": "",
+        "filter": {
+          "op": "AND",
+          "items": [
+            {
+              "key": {
+                "key": "k8s.deployment.name",
+                "dataType": "string",
+                "type": "resource",
+                "isColumn": false,
+                "isJSON": false
+              },
+              "value": "notify-celery",
+              "op": "contains"
+            },
+            {
+              "key": {
+                "key": "body",
+                "dataType": "string",
+                "type": "",
+                "isColumn": true,
+                "isJSON": false
+              },
+              "value": "^\\[\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2},\\d{3}:\\s+[A-Z]+\\/[^\\]]+\\]\\s+.+$",
+              "op": "regex"
+            }
+          ]
+        },
+        "config": [
+          {
+            "type": "regex_parser",
+            "id": "245fe9ee-5265-47f0-8930-6a4f8362a50a",
+            "on_error": "send",
+            "orderId": 1,
+            "enabled": true,
+            "name": "Celery Regex Parser",
+            "parse_to": "attributes",
+            "regex": "^\\[(?<timestamp>\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2},\\d{3}):\\s+(?<levelname>[A-Z]+)\\/(?<worker>[^\\]]+)\\]\\s+(?<message>.*)$",
+            "parse_from": "body"
+          }
+        ]
+      },
+      {
+        "createdBy": "ben.larabie@cds-snc.ca",
+        "updatedBy": "",
+        "createdAt": "2026-02-23T15:56:27.337518Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "id": "019c8b37-5d49-77e8-ac49-276fc44d9b39",
+        "orderId": 6,
+        "enabled": true,
+        "name": "K8s Deployments",
+        "alias": "K8sDeployments",
+        "description": "",
+        "filter": {
+          "op": "AND",
+          "items": [
+            {
+              "key": {
+                "key": "k8s.deployment.name",
+                "dataType": "string",
+                "type": "resource",
+                "isColumn": false,
+                "isJSON": false
+              },
+              "value": "",
+              "op": "exists"
+            }
+          ]
+        },
+        "config": [
+          {
+            "type": "copy",
+            "id": "1060a0ec-1ea3-486e-9108-23ed8117d63e",
+            "orderId": 1,
+            "enabled": true,
+            "name": "Deployment To Source",
+            "from": "resource[\"k8s.deployment.name\"]",
+            "to": "attributes.source"
+          }
+        ]
+      },
+      {
+        "createdBy": "ben.larabie@cds-snc.ca",
+        "updatedBy": "",
+        "createdAt": "2026-02-23T15:56:27.339127Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "id": "019c8b37-5d4b-71f2-9737-eea827bc866b",
+        "orderId": 7,
+        "enabled": true,
+        "name": "K8s Statefulsets",
+        "alias": "K8sStatefulsets",
+        "description": "",
+        "filter": {
+          "op": "AND",
+          "items": [
+            {
+              "key": {
+                "key": "k8s.statefulset.name",
+                "dataType": "string",
+                "type": "resource",
+                "isColumn": false,
+                "isJSON": false
+              },
+              "value": "",
+              "op": "exists"
+            }
+          ]
+        },
+        "config": [
+          {
+            "type": "copy",
+            "id": "6a4accd2-bf3a-44b5-ba0a-a136cec47096",
+            "orderId": 1,
+            "enabled": true,
+            "name": "Stateful Sets Names",
+            "from": "resource[\"k8s.statefulset.name\"]",
+            "to": "attributes.source"
+          }
+        ]
+      },
+      {
+        "createdBy": "ben.larabie@cds-snc.ca",
+        "updatedBy": "",
+        "createdAt": "2026-02-23T15:56:27.340645Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "id": "019c8b37-5d4c-79d7-8db3-44e69ff0d583",
+        "orderId": 8,
+        "enabled": true,
+        "name": "K8s Daemonsets",
+        "alias": "K8sDaemonsets",
+        "description": "",
+        "filter": {
+          "op": "AND",
+          "items": [
+            {
+              "key": {
+                "key": "k8s.daemonset.name",
+                "dataType": "string",
+                "type": "resource",
+                "isColumn": false,
+                "isJSON": false
+              },
+              "value": "",
+              "op": "exists"
+            }
+          ]
+        },
+        "config": [
+          {
+            "type": "copy",
+            "id": "832061fa-4008-479b-9b38-866871af6b5b",
+            "orderId": 1,
+            "enabled": true,
+            "name": "K8s Daemonset to Source",
+            "from": "resource[\"k8s.daemonset.name\"]",
+            "to": "attributes.source"
+          }
+        ]
+      }
+    ],
+    "history": [
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c8b37-5d4d-7e1a-9527-f6bbcb1f9403",
+        "createdAt": "2026-02-23T15:56:27.341922Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 30,
+        "elementType": "log_pipelines",
+        "deployStatus": "deployed",
+        "deploySequence": 0,
+        "deployResult": "Deployment was successful",
+        "lastHash": "019c4dfb-9385-71e1-9dd6-9f04d15891dc{log_pipelines}:30",
+        "config": "[{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:56:27.328457Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b37-5d40-76fb-9a54-54e9d96d6709\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Requests\",\"alias\":\"bentest\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"e573a576-b59d-4ca6-b9ae-c84977024e47\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Request Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:56:27.330682Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b37-5d42-7a69-a176-8fbb406a0502\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin JSON\",\"alias\":\"NotifyAdminJSON\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"3abd011b-14bb-4b61-9639-0fb28867ad41\",\"output\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin JSON Parser\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"output\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"on_error\":\"send\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin Time Taken Parser\",\"parse_to\":\"attributes\",\"regex\":\"Request details:\\\\s*time_taken:\\\\s*(?\\u003ctime_taken\\u003e\\\\d+(?:\\\\.\\\\d+)?)ms\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"output\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify admin full path parser\",\"parse_to\":\"attributes\",\"regex\":\"full_path:\\\\s*'(?P\\u003cfull_path\\u003e[^']+)'\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify admin endpoint parser\",\"parse_to\":\"attributes\",\"regex\":\"endpoint:\\\\s*'(?P\\u003cendpoint\\u003e[^']+)'\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:56:27.332572Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b37-5d44-78bb-b548-fa51ee8c5bfa\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify API Requests\",\"alias\":\"NotifyAPIRequests\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"ed836072-df90-4813-a7aa-80d41545ce85\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Requests Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:56:27.3344Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b37-5d46-761d-ab17-f433001325b8\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify API Json\",\"alias\":\"NotifyAPIJson\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"11c1517e-0079-4e31-975a-b220e66c9fdc\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Json\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:56:27.336065Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b37-5d48-70fd-b4f9-8bd806d42256\",\"orderId\":5,\"enabled\":true,\"name\":\"Notify Celery Logs\",\"alias\":\"NotifyCeleryLogs\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-celery\",\"op\":\"contains\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\[\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}:\\\\s+[A-Z]+\\\\/[^\\\\]]+\\\\]\\\\s+.+$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"245fe9ee-5265-47f0-8930-6a4f8362a50a\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Celery Regex Parser\",\"parse_to\":\"attributes\",\"regex\":\"^\\\\[(?\\u003ctimestamp\\u003e\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}):\\\\s+(?\\u003clevelname\\u003e[A-Z]+)\\\\/(?\\u003cworker\\u003e[^\\\\]]+)\\\\]\\\\s+(?\\u003cmessage\\u003e.*)$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:56:27.337518Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b37-5d49-77e8-ac49-276fc44d9b39\",\"orderId\":6,\"enabled\":true,\"name\":\"K8s Deployments\",\"alias\":\"K8sDeployments\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"\",\"op\":\"exists\"}]},\"config\":[{\"type\":\"copy\",\"id\":\"1060a0ec-1ea3-486e-9108-23ed8117d63e\",\"orderId\":1,\"enabled\":true,\"name\":\"Deployment To Source\",\"from\":\"resource[\\\"k8s.deployment.name\\\"]\",\"to\":\"attributes.source\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:56:27.339127Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b37-5d4b-71f2-9737-eea827bc866b\",\"orderId\":7,\"enabled\":true,\"name\":\"K8s Statefulsets\",\"alias\":\"K8sStatefulsets\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.statefulset.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"\",\"op\":\"exists\"}]},\"config\":[{\"type\":\"copy\",\"id\":\"6a4accd2-bf3a-44b5-ba0a-a136cec47096\",\"orderId\":1,\"enabled\":true,\"name\":\"Stateful Sets Names\",\"from\":\"resource[\\\"k8s.statefulset.name\\\"]\",\"to\":\"attributes.source\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:56:27.340645Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b37-5d4c-79d7-8db3-44e69ff0d583\",\"orderId\":8,\"enabled\":true,\"name\":\"K8s Daemonsets\",\"alias\":\"K8sDaemonsets\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.daemonset.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"\",\"op\":\"exists\"}]},\"config\":[{\"type\":\"copy\",\"id\":\"832061fa-4008-479b-9b38-866871af6b5b\",\"orderId\":1,\"enabled\":true,\"name\":\"K8s Daemonset to Source\",\"from\":\"resource[\\\"k8s.daemonset.name\\\"]\",\"to\":\"attributes.source\"}]}]"
+      },
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c8b36-8530-7cf3-ac70-987975440dca",
+        "createdAt": "2026-02-23T15:55:32.016845Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 29,
+        "elementType": "log_pipelines",
+        "deployStatus": "deployed",
+        "deploySequence": 0,
+        "deployResult": "Deployment was successful",
+        "lastHash": "019c4dfb-9385-71e1-9dd6-9f04d15891dc{log_pipelines}:29",
+        "config": "[{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:55:31.980183Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b36-850c-72cb-902c-d572a83aad25\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Requests\",\"alias\":\"bentest\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"e573a576-b59d-4ca6-b9ae-c84977024e47\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Request Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:55:31.990011Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b36-8516-702c-8d72-53ef33932c9d\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin JSON\",\"alias\":\"NotifyAdminJSON\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"3abd011b-14bb-4b61-9639-0fb28867ad41\",\"output\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin JSON Parser\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"output\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"on_error\":\"send\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin Time Taken Parser\",\"parse_to\":\"attributes\",\"regex\":\"Request details:\\\\s*time_taken:\\\\s*(?\\u003ctime_taken\\u003e\\\\d+(?:\\\\.\\\\d+)?)ms\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"output\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify admin full path parser\",\"parse_to\":\"attributes\",\"regex\":\"full_path:\\\\s*'(?P\\u003cfull_path\\u003e[^']+)'\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify admin endpoint parser\",\"parse_to\":\"attributes\",\"regex\":\"endpoint:\\\\s*'(?P\\u003cendpoint\\u003e[^']+)'\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:55:31.996249Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b36-851c-73cc-92a7-6645495a40ed\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify API Requests\",\"alias\":\"NotifyAPIRequests\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"ed836072-df90-4813-a7aa-80d41545ce85\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Requests Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:55:32.00252Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b36-8522-77f0-85af-f67b6c79689a\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify API Json\",\"alias\":\"NotifyAPIJson\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"11c1517e-0079-4e31-975a-b220e66c9fdc\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Json\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:55:32.007609Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b36-8527-794b-86fe-97bf851851c1\",\"orderId\":5,\"enabled\":true,\"name\":\"Notify Celery Logs\",\"alias\":\"NotifyCeleryLogs\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-celery\",\"op\":\"contains\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\[\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}:\\\\s+[A-Z]+\\\\/[^\\\\]]+\\\\]\\\\s+.+$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"245fe9ee-5265-47f0-8930-6a4f8362a50a\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Celery Regex Parser\",\"parse_to\":\"attributes\",\"regex\":\"^\\\\[(?\\u003ctimestamp\\u003e\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}):\\\\s+(?\\u003clevelname\\u003e[A-Z]+)\\\\/(?\\u003cworker\\u003e[^\\\\]]+)\\\\]\\\\s+(?\\u003cmessage\\u003e.*)$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:55:32.010306Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b36-852a-74ad-86b0-fc00e900ebc8\",\"orderId\":6,\"enabled\":true,\"name\":\"K8s Deployments\",\"alias\":\"K8sDeployments\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"\",\"op\":\"exists\"}]},\"config\":[{\"type\":\"copy\",\"id\":\"1060a0ec-1ea3-486e-9108-23ed8117d63e\",\"orderId\":1,\"enabled\":true,\"name\":\"Deployment To Source\",\"from\":\"resource[\\\"k8s.deployment.name\\\"]\",\"to\":\"attributes.source\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:55:32.012886Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b36-852c-7d85-b7e2-95f926d204d1\",\"orderId\":7,\"enabled\":true,\"name\":\"K8s Statefulsets\",\"alias\":\"K8sStatefulsets\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.statefulset.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"\",\"op\":\"exists\"}]},\"config\":[{\"type\":\"copy\",\"id\":\"6a4accd2-bf3a-44b5-ba0a-a136cec47096\",\"orderId\":1,\"enabled\":true,\"name\":\"Stateful Sets Names\",\"from\":\"resource[\\\"k8s.statefulset.name\\\"]\",\"to\":\"attributes.source\"}]}]"
+      },
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c8b34-4925-72c1-bd28-f5c127b2c4b6",
+        "createdAt": "2026-02-23T15:53:05.573178Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 28,
+        "elementType": "log_pipelines",
+        "deployStatus": "deployed",
+        "deploySequence": 0,
+        "deployResult": "Deployment was successful",
+        "lastHash": "019c4dfb-9385-71e1-9dd6-9f04d15891dc{log_pipelines}:28",
+        "config": "[{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:53:05.558449Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b34-4916-76dc-95c4-e673550e717b\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Requests\",\"alias\":\"bentest\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"e573a576-b59d-4ca6-b9ae-c84977024e47\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Request Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:53:05.563667Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b34-491b-7a2e-b7c1-6d19a39efbd7\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin JSON\",\"alias\":\"NotifyAdminJSON\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"3abd011b-14bb-4b61-9639-0fb28867ad41\",\"output\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin JSON Parser\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"output\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"on_error\":\"send\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin Time Taken Parser\",\"parse_to\":\"attributes\",\"regex\":\"Request details:\\\\s*time_taken:\\\\s*(?\\u003ctime_taken\\u003e\\\\d+(?:\\\\.\\\\d+)?)ms\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"output\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify admin full path parser\",\"parse_to\":\"attributes\",\"regex\":\"full_path:\\\\s*'(?P\\u003cfull_path\\u003e[^']+)'\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify admin endpoint parser\",\"parse_to\":\"attributes\",\"regex\":\"endpoint:\\\\s*'(?P\\u003cendpoint\\u003e[^']+)'\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:53:05.56567Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b34-491d-7a39-8d7b-262ea418e686\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify API Requests\",\"alias\":\"NotifyAPIRequests\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"ed836072-df90-4813-a7aa-80d41545ce85\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Requests Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:53:05.568124Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b34-4920-71e3-9daa-9e0cf8673c83\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify API Json\",\"alias\":\"NotifyAPIJson\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"11c1517e-0079-4e31-975a-b220e66c9fdc\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Json\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:53:05.569999Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b34-4921-7f3e-aab2-68dd71a8ef18\",\"orderId\":5,\"enabled\":true,\"name\":\"Notify Celery Logs\",\"alias\":\"NotifyCeleryLogs\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-celery\",\"op\":\"contains\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\[\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}:\\\\s+[A-Z]+\\\\/[^\\\\]]+\\\\]\\\\s+.+$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"245fe9ee-5265-47f0-8930-6a4f8362a50a\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Celery Regex Parser\",\"parse_to\":\"attributes\",\"regex\":\"^\\\\[(?\\u003ctimestamp\\u003e\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}):\\\\s+(?\\u003clevelname\\u003e[A-Z]+)\\\\/(?\\u003cworker\\u003e[^\\\\]]+)\\\\]\\\\s+(?\\u003cmessage\\u003e.*)$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T15:53:05.571651Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8b34-4923-79f1-9531-79c40cd24e1a\",\"orderId\":6,\"enabled\":true,\"name\":\"K8s Deployments\",\"alias\":\"K8sDeployments\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"\",\"op\":\"exists\"}]},\"config\":[{\"type\":\"copy\",\"id\":\"1060a0ec-1ea3-486e-9108-23ed8117d63e\",\"orderId\":1,\"enabled\":true,\"name\":\"Deployment To Source\",\"from\":\"resource[\\\"k8s.deployment.name\\\"]\",\"to\":\"attributes.source\"}]}]"
+      },
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c8ac4-b2ef-78bd-af4d-6cf503b2d5f5",
+        "createdAt": "2026-02-23T13:51:12.623569Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 27,
+        "elementType": "log_pipelines",
+        "deployStatus": "deployed",
+        "deploySequence": 0,
+        "deployResult": "Deployment was successful",
+        "lastHash": "019c4dfb-9385-71e1-9dd6-9f04d15891dc{log_pipelines}:27",
+        "config": "[{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T13:51:12.611074Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8ac4-b2e3-7123-b045-6d6ddbf90ec1\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Requests\",\"alias\":\"bentest\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"e573a576-b59d-4ca6-b9ae-c84977024e47\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Request Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T13:51:12.615398Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8ac4-b2e7-7614-986d-43ecfbaa8392\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin JSON\",\"alias\":\"NotifyAdminJSON\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"3abd011b-14bb-4b61-9639-0fb28867ad41\",\"output\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin JSON Parser\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"output\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"on_error\":\"send\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin Time Taken Parser\",\"parse_to\":\"attributes\",\"regex\":\"Request details:\\\\s*time_taken:\\\\s*(?\\u003ctime_taken\\u003e\\\\d+(?:\\\\.\\\\d+)?)ms\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"output\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify admin full path parser\",\"parse_to\":\"attributes\",\"regex\":\"full_path:\\\\s*'(?P\\u003cfull_path\\u003e[^']+)'\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify admin endpoint parser\",\"parse_to\":\"attributes\",\"regex\":\"endpoint:\\\\s*'(?P\\u003cendpoint\\u003e[^']+)'\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T13:51:12.618264Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8ac4-b2ea-7408-b16c-c330dd7c060b\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify API Requests\",\"alias\":\"NotifyAPIRequests\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"ed836072-df90-4813-a7aa-80d41545ce85\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Requests Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T13:51:12.619954Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8ac4-b2eb-7e8f-8b1f-514e0902ad04\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify API Json\",\"alias\":\"NotifyAPIJson\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"11c1517e-0079-4e31-975a-b220e66c9fdc\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Json\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-23T13:51:12.621705Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c8ac4-b2ed-7ac4-964e-f15bdf299305\",\"orderId\":5,\"enabled\":true,\"name\":\"Notify Celery Logs\",\"alias\":\"NotifyCeleryLogs\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-celery\",\"op\":\"contains\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\[\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}:\\\\s+[A-Z]+\\\\/[^\\\\]]+\\\\]\\\\s+.+$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"245fe9ee-5265-47f0-8930-6a4f8362a50a\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Celery Regex Parser\",\"parse_to\":\"attributes\",\"regex\":\"^\\\\[(?\\u003ctimestamp\\u003e\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}):\\\\s+(?\\u003clevelname\\u003e[A-Z]+)\\\\/(?\\u003cworker\\u003e[^\\\\]]+)\\\\]\\\\s+(?\\u003cmessage\\u003e.*)$\",\"parse_from\":\"body\"}]}]"
+      },
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c8ac4-847d-7820-b9a8-e8fafb2abec9",
+        "createdAt": "2026-02-23T13:51:00.73353Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 26,
+        "elementType": "log_pipelines",
+        "deployStatus": "dirty",
+        "deploySequence": 0,
+        "deployResult": "",
+        "lastHash": "",
+        "config": "{}"
+      },
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c8ac4-1df4-7bf3-bcc1-5c2b65570d53",
+        "createdAt": "2026-02-23T13:50:34.484781Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 25,
+        "elementType": "log_pipelines",
+        "deployStatus": "dirty",
+        "deploySequence": 0,
+        "deployResult": "",
+        "lastHash": "",
+        "config": "{}"
+      },
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c8ac2-4ce2-7afe-860a-75db9bfeb3f1",
+        "createdAt": "2026-02-23T13:48:35.426718Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 24,
+        "elementType": "log_pipelines",
+        "deployStatus": "dirty",
+        "deploySequence": 0,
+        "deployResult": "",
+        "lastHash": "",
+        "config": "{}"
+      },
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c8ac1-dd19-75de-be89-1b1b76b3984e",
+        "createdAt": "2026-02-23T13:48:06.809382Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 23,
+        "elementType": "log_pipelines",
+        "deployStatus": "dirty",
+        "deploySequence": 0,
+        "deployResult": "",
+        "lastHash": "",
+        "config": "{}"
+      },
+      {
+        "createdByName": "Andrew Leith",
+        "id": "019c7756-9686-7411-a533-a59409b3ffa7",
+        "createdAt": "2026-02-19T19:18:09.286264Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c5218-80e1-7532-b772-803007f24426",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 22,
+        "elementType": "log_pipelines",
+        "deployStatus": "unknown",
+        "deploySequence": 0,
+        "deployResult": "Deployment has started",
+        "lastHash": "019c4dfb-9385-71e1-9dd6-9f04d15891dc{log_pipelines}:22",
+        "config": "[{\"createdBy\":\"andrew.leith@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:18:09.276644Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c7756-967c-79d5-aae4-5488b72e3f29\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Requests\",\"alias\":\"bentest\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"e573a576-b59d-4ca6-b9ae-c84977024e47\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Request Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"andrew.leith@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:18:09.279351Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c7756-967f-755e-8bcc-d25306b7c85b\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin JSON\",\"alias\":\"NotifyAdminJSON\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"3abd011b-14bb-4b61-9639-0fb28867ad41\",\"output\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin JSON Parser\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"output\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"on_error\":\"send\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin Time Taken Parser\",\"parse_to\":\"attributes\",\"regex\":\"Request details:\\\\s*time_taken:\\\\s*(?\\u003ctime_taken\\u003e\\\\d+(?:\\\\.\\\\d+)?)ms\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"d25b3097-e01f-4d9d-bdf9-6d7a56ab26d1\",\"output\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify admin full path parser\",\"parse_to\":\"attributes\",\"regex\":\"full_path:\\\\s*'(?P\\u003cfull_path\\u003e[^']+)'\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"caf7f4ab-b10b-4b78-961c-59b8dc28bddb\",\"on_error\":\"send\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify admin endpoint parser\",\"parse_to\":\"attributes\",\"regex\":\"endpoint:\\\\s*'(?P\\u003cendpoint\\u003e[^']+)'\",\"parse_from\":\"body\"}]},{\"createdBy\":\"andrew.leith@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:18:09.281084Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c7756-9681-714a-bf2f-8272eb863224\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify API Requests\",\"alias\":\"NotifyAPIRequests\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"ed836072-df90-4813-a7aa-80d41545ce85\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Requests Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"andrew.leith@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:18:09.282869Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c7756-9682-7d44-998f-cc2650df2a62\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify API Json\",\"alias\":\"NotifyAPIJson\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"11c1517e-0079-4e31-975a-b220e66c9fdc\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Json\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"}]},{\"createdBy\":\"andrew.leith@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:18:09.28453Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c7756-9684-7819-be4b-9b4a5675b2a0\",\"orderId\":5,\"enabled\":true,\"name\":\"Notify Celery Logs\",\"alias\":\"NotifyCeleryLogs\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-celery\",\"op\":\"contains\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\[\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}:\\\\s+[A-Z]+\\\\/[^\\\\]]+\\\\]\\\\s+.+$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"245fe9ee-5265-47f0-8930-6a4f8362a50a\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Celery Regex Parser\",\"parse_to\":\"attributes\",\"regex\":\"^\\\\[(?\\u003ctimestamp\\u003e\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}):\\\\s+(?\\u003clevelname\\u003e[A-Z]+)\\\\/(?\\u003cworker\\u003e[^\\\\]]+)\\\\]\\\\s+(?\\u003cmessage\\u003e.*)$\",\"parse_from\":\"body\"}]}]"
+      },
+      {
+        "createdByName": "Ben Larabie",
+        "id": "019c774a-1866-799b-87f9-02b608e10034",
+        "createdAt": "2026-02-19T19:04:30.566627Z",
+        "updatedAt": "0001-01-01T00:00:00Z",
+        "createdBy": "019c4dfb-9385-71eb-b8f1-ba5d6effa09b",
+        "updatedBy": "",
+        "orgId": "00000000-0000-0000-0000-000000000000",
+        "version": 21,
+        "elementType": "log_pipelines",
+        "deployStatus": "deployed",
+        "deploySequence": 0,
+        "deployResult": "Deployment was successful",
+        "lastHash": "019c4dfb-9385-71e1-9dd6-9f04d15891dc{log_pipelines}:21",
+        "config": "[{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:04:30.556781Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c774a-185c-7bed-9dcc-9c2dee99edc3\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Requests\",\"alias\":\"bentest\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"e573a576-b59d-4ca6-b9ae-c84977024e47\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin Request Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:04:30.558973Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c774a-185e-7ed9-8d87-bcad5a714bd8\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin JSON\",\"alias\":\"NotifyAdminJSON\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-admin\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"3abd011b-14bb-4b61-9639-0fb28867ad41\",\"output\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify Admin JSON Parser\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"},{\"type\":\"regex_parser\",\"id\":\"c2f9e085-ea71-44c6-83dc-0c94f6e2c5b5\",\"on_error\":\"send\",\"orderId\":2,\"enabled\":true,\"name\":\"Notify Admin Time Taken Parser\",\"parse_to\":\"attributes\",\"regex\":\"Request details:\\\\s*time_taken:\\\\s*(?\\u003ctime_taken\\u003e\\\\d+(?:\\\\.\\\\d+)?)ms\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:04:30.560641Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c774a-1860-79cb-a77b-7df9ae164502\",\"orderId\":3,\"enabled\":true,\"name\":\"Notify API Requests\",\"alias\":\"NotifyAPIRequests\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\d{1,3}(?:\\\\.\\\\d{1,3}){3}\\\\s+-\\\\s+-\\\\s+\\\\[\\\\d{2}\\\\/[A-Za-z]{3}\\\\/\\\\d{4}:\\\\d{2}:\\\\d{2}:\\\\d{2}\\\\s+[+-]\\\\d{4}\\\\]\\\\s+\\\"[A-Z]+\\\\s+\\\\S+\\\\s+HTTP\\\\/\\\\d\\\\.\\\\d\\\"\\\\s+\\\\d{3}\\\\s+\\\\d+\\\\s+\\\"[^\\\"]*\\\"\\\\s+\\\"[^\\\"]*\\\"\\\\s*$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"ed836072-df90-4813-a7aa-80d41545ce85\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Requests Regex\",\"parse_to\":\"attributes\",\"regex\":\"^(?\\u003cclient_ip\\u003e\\\\S+)\\\\s+(?\\u003cident\\u003e\\\\S+)\\\\s+(?\\u003cauth_user\\u003e\\\\S+)\\\\s+\\\\[(?\\u003ctimestamp\\u003e[^\\\\]]+)\\\\]\\\\s+\\\"(?\\u003cmethod\\u003e[A-Z]+)\\\\s+(?\\u003crequest_uri\\u003e[^ ]+)\\\\s+HTTP\\\\/(?\\u003chttp_version\\u003e[0-9.]+)\\\"\\\\s+(?\\u003cstatus\\u003e\\\\d{3})\\\\s+(?\\u003cbytes\\u003e\\\\d+)\\\\s+\\\"(?\\u003creferer\\u003e[^\\\"]*)\\\"\\\\s+\\\"(?\\u003cuser_agent\\u003e[^\\\"]*)\\\"\\\\s*$\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:04:30.562276Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c774a-1862-7436-87cd-daaffe18906e\",\"orderId\":4,\"enabled\":true,\"name\":\"Notify API Json\",\"alias\":\"NotifyAPIJson\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-api\",\"op\":\"=\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^{\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"json_parser\",\"id\":\"11c1517e-0079-4e31-975a-b220e66c9fdc\",\"orderId\":1,\"enabled\":true,\"name\":\"Notify API Json\",\"parse_to\":\"attributes\",\"parse_from\":\"body\"}]},{\"createdBy\":\"ben.larabie@cds-snc.ca\",\"updatedBy\":\"\",\"createdAt\":\"2026-02-19T19:04:30.564513Z\",\"updatedAt\":\"0001-01-01T00:00:00Z\",\"id\":\"019c774a-1864-77d6-9937-948abb95a02c\",\"orderId\":5,\"enabled\":true,\"name\":\"Notify Celery Logs\",\"alias\":\"NotifyCeleryLogs\",\"description\":\"\",\"filter\":{\"op\":\"AND\",\"items\":[{\"key\":{\"key\":\"k8s.deployment.name\",\"dataType\":\"string\",\"type\":\"resource\",\"isColumn\":false,\"isJSON\":false},\"value\":\"notify-celery\",\"op\":\"contains\"},{\"key\":{\"key\":\"body\",\"dataType\":\"string\",\"type\":\"\",\"isColumn\":true,\"isJSON\":false},\"value\":\"^\\\\[\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}:\\\\s+[A-Z]+\\\\/[^\\\\]]+\\\\]\\\\s+.+$\",\"op\":\"regex\"}]},\"config\":[{\"type\":\"regex_parser\",\"id\":\"245fe9ee-5265-47f0-8930-6a4f8362a50a\",\"on_error\":\"send\",\"orderId\":1,\"enabled\":true,\"name\":\"Celery Regex Parser\",\"parse_to\":\"attributes\",\"regex\":\"^\\\\[(?\\u003ctimestamp\\u003e\\\\d{4}-\\\\d{2}-\\\\d{2}\\\\s+\\\\d{2}:\\\\d{2}:\\\\d{2},\\\\d{3}):\\\\s+(?\\u003clevelname\\u003e[A-Z]+)\\\\/(?\\u003cworker\\u003e[^\\\\]]+)\\\\]\\\\s+(?\\u003cmessage\\u003e.*)$\",\"parse_from\":\"body\"}]}]"
+      }
+    ],
+    "latestHistoryVersion": 30
+  }
+}

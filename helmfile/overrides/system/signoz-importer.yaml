@@ -3,7 +3,7 @@ signoz:
   namespace: signoz
 
 dashboards:
-  # Files should be placed in: charts/signoz-dashboards/dashboards/
+  # Files should be placed in: charts/signoz-importer/dashboards/
   - k8s-cluster-metrics-overall.json
   - k8s-events.json
   - k8s-host-metrics.json
@@ -17,3 +17,7 @@ dashboards:
   - clickhouse-overview.json
   - lambda-api.json
 
+pipelines:
+  # File should be placed in: charts/signoz-importer/pipelines/
+  enabled: true
+  file: pipelines.json

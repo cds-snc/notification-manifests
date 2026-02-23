@@ -8,12 +8,12 @@ Manage SigNoz dashboards as code using Helm.
 
 1. **Export your dashboards from SigNoz UI**
    - Go to Dashboard → Settings → Export
-   - Save the JSON file to `charts/signoz-dashboards/dashboards/` directory
-   - Example: `charts/signoz-dashboards/dashboards/k8s-node-overview.json`
+   - Save the JSON file to `charts/signoz-importer/dashboards/` directory
+   - Example: `charts/signoz-importer/dashboards/k8s-node-overview.json`
 
 2. **Configure the values file**
    
-   In `overrides/system/signoz-dashboards.yaml`:
+   In `overrides/system/signoz-importer.yaml`:
    
    ```yaml
    dashboards:
