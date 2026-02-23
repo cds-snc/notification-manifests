@@ -9,7 +9,7 @@ admin:
   CSV_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
   REPORTS_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-reports"
   IP_GEOLOCATE_SERVICE: "http://ipv4-geolocate.{{ .Release.Namespace }}.svc.cluster.local:8080"
-  API_HOST_NAME: "https://api.notification.canada.ca"
+  API_HOST_NAME: "https://api.{{ requiredEnv "BASE_DOMAIN" }}"
   ADMIN_BASE_URL: "{{ requiredEnv "BASE_DOMAIN" }}"
   ALLOW_DEBUG_ROUTE: "{{ .StateValues.ALLOW_DEBUG_ROUTE }}"
   BULK_SEND_TEST_SERVICE_ID: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
