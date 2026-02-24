@@ -130,16 +130,16 @@ targetGroupBinding:
 
 resources:
   requests:
-    cpu: {{ if eq .Environment.Name "production" }} "250m" {{ else if eq .Environment.Name "staging" }} "250m" {{ else }} "250m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "700Mi" {{ else if eq .Environment.Name "staging" }} "700Mi" {{ else }} "1000Mi" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "250m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "400Mi" {{ else if eq .Environment.Name "staging" }} "400Mi" {{ else }} "1000Mi" {{ end }}
   limits:
-    cpu: {{ if eq .Environment.Name "production" }} "2000m" {{ else if eq .Environment.Name "staging" }} "2000m" {{ else }} "1200m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "2000Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "1200Mi" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "200m" {{ else if eq .Environment.Name "staging" }} "200m" {{ else }} "1200m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "600Mi" {{ else if eq .Environment.Name "staging" }} "600Mi" {{ else }} "1200Mi" {{ end }}
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 2 {{ end }}
-  maxReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 2 {{ end }}
+  minReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 2 {{ end }}
+  maxReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 2 {{ end }}
   targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
 
 pdb:
