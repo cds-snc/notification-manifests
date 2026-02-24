@@ -146,6 +146,11 @@ pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   minAvailable: 2
 
+readinessProbe:
+  initialDelaySeconds: 120
+livenessProbe:
+  initialDelaySeconds: 120
+
 {{ if ne .Environment.Name "production" }}
 verticalPodAutoscaler:
   enabled: true
