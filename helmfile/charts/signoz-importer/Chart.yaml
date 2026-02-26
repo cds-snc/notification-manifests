@@ -1,5 +1,5 @@
 apiVersion: v2
-name: signoz-dashboards
+name: signoz-importer
 description: Manage SigNoz dashboards as code
 type: application
 version: 1.0.0
