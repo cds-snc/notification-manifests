@@ -8,7 +8,7 @@ clickhouse:
   installCustomStorageClass: true
   layout:
     shardsCount: 1
-    replicasCount: 2
+    replicasCount: 1
   persistence:
     storageClass: notify
     size: 1Ti
@@ -45,7 +45,7 @@ clickhouse:
         effect: NoSchedule
 
 signoz:
-  replicaCount: 2
+  replicaCount: 1
   persistence:
     size: 10Gi
   env:
