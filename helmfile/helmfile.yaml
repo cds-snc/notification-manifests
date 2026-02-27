@@ -205,7 +205,7 @@ releases:
       category: system
       step: 1
     chart: secrets-store-csi-driver/secrets-store-csi-driver
-    version: 1.4.1
+    version: 1.5.5
     values:
     - ./overrides/system/secrets-csi.yaml.gotmpl
 
@@ -241,7 +241,7 @@ releases:
       category: system
       step: 2
     chart: prometheus-community/kube-state-metrics
-    version: 6.3.0
+    version: 6.4.2
     values:
     - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
@@ -319,7 +319,7 @@ releases:
       category: tools
       step: 1
     chart: fluent/fluent-bit
-    version: 0.48.5
+    version: 0.55.0
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
 
@@ -331,7 +331,7 @@ releases:
       category: system
       step: 2
     chart: jetstack/cert-manager
-    version: v1.17.0
+    version: v1.19.3
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
@@ -392,7 +392,7 @@ releases:
       category: system
       step: 1
     chart: metrics-server/metrics-server
-    version: 3.12.2
+    version: 3.13.0
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
 
@@ -410,7 +410,7 @@ releases:
 
   - name: velero
     namespace: velero
-    version: 11.1.1
+    version: 11.3.2
     disableValidationOnInstall: true
     labels:
       app: velero
@@ -503,7 +503,7 @@ releases:
 
   - name: signoz
     namespace: signoz
-    version: 0.110.0
+    version: 0.112.0
     disableValidationOnInstall: true
     labels:
       app: signoz
