@@ -48,6 +48,7 @@ celeryCommon:
   OTEL_SERVICE_NAME: "notification-celery"
   OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
 {{ end }}
+  FF_USE_PINPOINT_FOR_DEDICATED: "{{ .StateValues.FF_USE_PINPOINT_FOR_DEDICATED }}"
 
 celerySecrets: 
   #SECRET_NAME_FOR_ENV_PASSED_TO_CONTAINER: SECRET_NAME_READ_FROM_AWS_SECRETS_MANAGER 
