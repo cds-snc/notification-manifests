@@ -1,14 +1,11 @@
 api:
   #ENVIRONMENT SPECIFIC VARIABLES
-  GUNICORN_WORKER_CLASS: "gthread"
-  GUNICORN_WORKERS: "8"
-  GUNICORN_WORKER_CONNECTIONS: "128"
-  GUNICORN_PRELOAD_APP: "true"
-  GUNICORN_MAX_REQUESTS: "1000"
-  GUNICORN_MAX_REQUESTS_JITTER: "250"
-  SQLALCHEMY_POOL_SIZE: "16"
-  OTEL_REQUEST_METRICS_ENABLED: "true"
-  SQLALCHEMY_DEBUG_POOL_LOGGING: "true"
+  GUNICORN_WORKER_CLASS: "{{ .StateValues.GUNICORN_WORKER_CLASS }}"
+  GUNICORN_WORKERS: "{{ .StateValues.GUNICORN_WORKERS }}"
+  GUNICORN_WORKER_CONNECTIONS: "{{ .StateValues.GUNICORN_WORKER_CONNECTIONS }}"
+  GUNICORN_PRELOAD_APP: "{{ .StateValues.GUNICORN_PRELOAD_APP }}"
+  SQLALCHEMY_POOL_SIZE: "{{ .StateValues.SQLALCHEMY_POOL_SIZE }}"
+  SQLALCHEMY_DEBUG_POOL_LOGGING: "{{ .StateValues.SQLALCHEMY_DEBUG_POOL_LOGGING }}"
   NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
   ADMIN_BASE_URL: "https://{{ requiredEnv "BASE_DOMAIN" }}"
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
@@ -69,6 +66,7 @@ api:
   OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
   OTEL_SERVICE_NAME: "notification-api"
   OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
+  OTEL_REQUEST_METRICS_ENABLED: "{{ .StateValues.OTEL_REQUEST_METRICS_ENABLED }}"
 {{ end }}
   FF_USE_PINPOINT_FOR_DEDICATED: "{{ .StateValues.FF_USE_PINPOINT_FOR_DEDICATED }}"
 
@@ -136,24 +134,21 @@ targetGroupBinding:
 
 resources:
   requests:
-    cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "500m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "400Mi" {{ else if eq .Environment.Name "staging" }} "400Mi" {{ else }} "1000Mi" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "500m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "400Mi" {{ else if eq .Environment.Name "staging" }} "1000Mi" {{ else }} "1000Mi" {{ end }}
   limits:
-    cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "1000m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "2000Mi" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "1000m" {{ else }} "1000m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "2000Mi" {{ end }}
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 24 {{ end }}
-  maxReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 24 {{ end }}
+  minReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 24 {{ end }}
+  maxReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 24 {{ end }}
   targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
 
 pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   minAvailable: 2
-
-nodeSelector:
-  karpenter.sh/capacity-type: spot
 
 affinity: {}
 
@@ -163,6 +158,9 @@ livenessProbe:
   initialDelaySeconds: 60
 
 {{ if ne .Environment.Name "production" }}
+nodeSelector:
+  karpenter.sh/capacity-type: spot
+  
 verticalPodAutoscaler:
   enabled: true
 {{ end }}
