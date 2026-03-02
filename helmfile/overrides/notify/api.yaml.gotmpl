@@ -1,5 +1,14 @@
 api:
   #ENVIRONMENT SPECIFIC VARIABLES
+  GUNICORN_WORKER_CLASS: "gthread"
+  GUNICORN_WORKERS: "8"
+  GUNICORN_WORKER_CONNECTIONS: "128"
+  GUNICORN_PRELOAD_APP: "true"
+  GUNICORN_MAX_REQUESTS: "1000"
+  GUNICORN_MAX_REQUESTS_JITTER: "250"
+  SQLALCHEMY_POOL_SIZE: "16"
+  OTEL_REQUEST_METRICS_ENABLED: "true"
+  SQLALCHEMY_DEBUG_POOL_LOGGING: "true"
   NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
   ADMIN_BASE_URL: "https://{{ requiredEnv "BASE_DOMAIN" }}"
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
@@ -31,7 +40,6 @@ api:
   FIDO2_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
   # NON-ENVIRONMENT SPECIFIC VARIABLES
   AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
-  SQLALCHEMY_POOL_SIZE: "256"
   ZENDESK_API_URL: "https://api.getbase.com"
   ZENDESK_SELL_API_URL: "https://cds-snc.zendesk.com"
   REDIS_ENABLED: "1"
@@ -53,8 +61,6 @@ api:
   FF_USE_BILLABLE_UNITS: "{{ .StateValues.FF_USE_BILLABLE_UNITS }}"
   AIRTABLE_NEWSLETTER_TABLE_NAME: "{{ .StateValues.AIRTABLE_NEWSLETTER_TABLE_NAME }}"
   AIRTABLE_NEWSLETTER_BASE_ID: "appCP2c4xvXxQOfhN"
-  GUNICORN_WORKERS: "{{ .StateValues.GUNICORN_WORKERS }}"
-  GUNICORN_WORKER_CONNECTIONS: "{{ .StateValues.GUNICORN_WORKER_CONNECTIONS }}"
 {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
   # OpenTelemetry configuration
   ENABLE_NEW_RELIC: "false"
@@ -130,26 +136,31 @@ targetGroupBinding:
 
 resources:
   requests:
-    cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "250m" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "500m" {{ end }}
     memory: {{ if eq .Environment.Name "production" }} "400Mi" {{ else if eq .Environment.Name "staging" }} "400Mi" {{ else }} "1000Mi" {{ end }}
   limits:
-    cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "500m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "1000m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "2000Mi" {{ end }}
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 2 {{ end }}
-  maxReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 2 {{ end }}
+  minReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 24 {{ end }}
+  maxReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 24 {{ end }}
   targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
 
 pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   minAvailable: 2
 
+nodeSelector:
+  karpenter.sh/capacity-type: spot
+
+affinity: {}
+
 readinessProbe:
-  initialDelaySeconds: 120
+  initialDelaySeconds: 60
 livenessProbe:
-  initialDelaySeconds: 120
+  initialDelaySeconds: 60
 
 {{ if ne .Environment.Name "production" }}
 verticalPodAutoscaler:
