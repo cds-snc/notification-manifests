@@ -49,6 +49,7 @@ signoz:
   persistence:
     size: 10Gi
   env:
+    signoz_alertmanager_signoz_external__url: "https://signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}"
     signoz_sqlstore_provider: postgres
     signoz_emailing_enabled: true
     signoz_emailing_smtp_from: "noreply@{{ requiredEnv "BASE_DOMAIN" }}"
