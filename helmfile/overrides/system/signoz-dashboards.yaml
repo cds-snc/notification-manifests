@@ -16,4 +16,5 @@ dashboards:
   - aws-rds-postgres.json
   - clickhouse-overview.json
   - lambda-api.json
+  - k8s-api.json
 
