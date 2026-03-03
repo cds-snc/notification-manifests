@@ -1,70 +1,25 @@
 {
-  "description": "Notification API worker and request diagnostics (OTEL metrics)",
+  "description": "Notification API request, worker, and DB pool diagnostics (OTEL metrics)",
   "layout": [
-    {
-      "h": 6,
-      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a001",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "h": 6,
-      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a002",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 6,
-      "y": 0
-    },
-    {
-      "h": 6,
-      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a003",
-      "moved": false,
-      "static": false,
-      "w": 12,
-      "x": 0,
-      "y": 6
-    },
-    {
-      "h": 7,
-      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a004",
-      "moved": false,
-      "static": false,
-      "w": 12,
-      "x": 0,
-      "y": 12
-    },
-    {
-      "h": 7,
-      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a005",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 0,
-      "y": 19
-    },
-    {
-      "h": 7,
-      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a006",
-      "moved": false,
-      "static": false,
-      "w": 6,
-      "x": 6,
-      "y": 19
-    }
+    { "h": 6, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a001", "moved": false, "static": false, "w": 6, "x": 0, "y": 0 },
+    { "h": 6, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a002", "moved": false, "static": false, "w": 6, "x": 6, "y": 0 },
+    { "h": 6, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a003", "moved": false, "static": false, "w": 12, "x": 0, "y": 6 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a004", "moved": false, "static": false, "w": 12, "x": 0, "y": 12 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a005", "moved": false, "static": false, "w": 6, "x": 0, "y": 19 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a006", "moved": false, "static": false, "w": 6, "x": 6, "y": 19 },
+    { "h": 6, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a007", "moved": false, "static": false, "w": 6, "x": 0, "y": 26 },
+    { "h": 6, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a008", "moved": false, "static": false, "w": 6, "x": 6, "y": 26 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a009", "moved": false, "static": false, "w": 12, "x": 0, "y": 32 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a010", "moved": false, "static": false, "w": 6, "x": 0, "y": 39 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a011", "moved": false, "static": false, "w": 6, "x": 6, "y": 39 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a012", "moved": false, "static": false, "w": 12, "x": 0, "y": 46 }
   ],
   "name": "",
   "panelMap": {},
-  "tags": [
-    "notification-api",
-    "otel",
-    "gunicorn"
-  ],
-  "title": "Notification API Worker Concurrency",
+  "tags": ["notification-api", "otel", "gunicorn", "signoz"],
+  "title": "Notification API OTEL Diagnostics",
   "uploadedGrafana": false,
+  "uuid": "019cb422-51a6-7b71-a631-0c64a63e9fd6",
   "variables": {},
   "version": "v5",
   "widgets": [
@@ -79,22 +34,12 @@
         "builder": {
           "queryData": [
             {
-              "aggregations": [
-                {
-                  "metricName": "notify_api_requests_total",
-                  "reduceTo": "sum",
-                  "spaceAggregation": "sum",
-                  "temporality": null,
-                  "timeAggregation": "rate"
-                }
-              ],
+              "aggregations": [{ "metricName": "notify_api_requests_total", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
               "dataSource": "metrics",
               "disabled": false,
               "expression": "A",
               "groupBy": [],
-              "having": {
-                "expression": ""
-              },
+              "having": { "expression": "" },
               "legend": "RPS",
               "limit": null,
               "orderBy": [],
@@ -104,23 +49,9 @@
           ],
           "queryFormulas": []
         },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1001",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-001",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
         "queryType": "builder"
       },
       "thresholds": [],
@@ -129,7 +60,7 @@
       "yAxisUnit": "none"
     },
     {
-      "description": "Current in-flight request count (sum across workers)",
+      "description": "Current in-flight request count summed across workers",
       "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a002",
       "isStacked": false,
       "nullZeroValues": "zero",
@@ -139,22 +70,12 @@
         "builder": {
           "queryData": [
             {
-              "aggregations": [
-                {
-                  "metricName": "notify_api_worker_inflight_requests",
-                  "reduceTo": "avg",
-                  "spaceAggregation": "sum",
-                  "temporality": null,
-                  "timeAggregation": "avg"
-                }
-              ],
+              "aggregations": [{ "metricName": "notify_api_worker_inflight_requests", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
               "dataSource": "metrics",
               "disabled": false,
               "expression": "A",
               "groupBy": [],
-              "having": {
-                "expression": ""
-              },
+              "having": { "expression": "" },
               "legend": "in_flight_total",
               "limit": null,
               "orderBy": [],
@@ -164,23 +85,9 @@
           ],
           "queryFormulas": []
         },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1002",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-002",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
         "queryType": "builder"
       },
       "thresholds": [],
@@ -199,31 +106,12 @@
         "builder": {
           "queryData": [
             {
-              "aggregations": [
-                {
-                  "metricName": "notify_api_worker_inflight_requests",
-                  "reduceTo": "avg",
-                  "spaceAggregation": "sum",
-                  "temporality": null,
-                  "timeAggregation": "avg"
-                }
-              ],
+              "aggregations": [{ "metricName": "notify_api_worker_inflight_requests", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
               "dataSource": "metrics",
               "disabled": false,
               "expression": "A",
-              "groupBy": [
-                {
-                  "dataType": "string",
-                  "id": "worker_pid--string--tag--false",
-                  "isColumn": false,
-                  "isJSON": false,
-                  "key": "worker_pid",
-                  "type": "tag"
-                }
-              ],
-              "having": {
-                "expression": ""
-              },
+              "groupBy": [{ "dataType": "string", "id": "worker_pid--string--tag--false", "isColumn": false, "isJSON": false, "key": "worker_pid", "type": "tag" }],
+              "having": { "expression": "" },
               "legend": "worker {{worker_pid}}",
               "limit": null,
               "orderBy": [],
@@ -233,23 +121,9 @@
           ],
           "queryFormulas": []
         },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1003",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-003",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
         "queryType": "builder"
       },
       "thresholds": [],
@@ -268,31 +142,12 @@
         "builder": {
           "queryData": [
             {
-              "aggregations": [
-                {
-                  "metricName": "notify_api_requests_total",
-                  "reduceTo": "sum",
-                  "spaceAggregation": "sum",
-                  "temporality": null,
-                  "timeAggregation": "rate"
-                }
-              ],
+              "aggregations": [{ "metricName": "notify_api_requests_total", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
               "dataSource": "metrics",
               "disabled": false,
               "expression": "A",
-              "groupBy": [
-                {
-                  "dataType": "string",
-                  "id": "endpoint--string--tag--false",
-                  "isColumn": false,
-                  "isJSON": false,
-                  "key": "endpoint",
-                  "type": "tag"
-                }
-              ],
-              "having": {
-                "expression": ""
-              },
+              "groupBy": [{ "dataType": "string", "id": "endpoint--string--tag--false", "isColumn": false, "isJSON": false, "key": "endpoint", "type": "tag" }],
+              "having": { "expression": "" },
               "legend": "{{endpoint}}",
               "limit": 20,
               "orderBy": [],
@@ -302,23 +157,9 @@
           ],
           "queryFormulas": []
         },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1004",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-004",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
         "queryType": "builder"
       },
       "thresholds": [],
@@ -327,7 +168,7 @@
       "yAxisUnit": "none"
     },
     {
-      "description": "App request duration (from Flask before_request to after_request)",
+      "description": "App request duration from Flask before_request to after_request",
       "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a005",
       "isStacked": false,
       "nullZeroValues": "zero",
@@ -337,22 +178,12 @@
         "builder": {
           "queryData": [
             {
-              "aggregations": [
-                {
-                  "metricName": "notify_api_request_duration_ms.sum",
-                  "reduceTo": "sum",
-                  "spaceAggregation": "sum",
-                  "temporality": null,
-                  "timeAggregation": "rate"
-                }
-              ],
+              "aggregations": [{ "metricName": "notify_api_request_duration_ms.sum", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
               "dataSource": "metrics",
               "disabled": false,
               "expression": "A",
               "groupBy": [],
-              "having": {
-                "expression": ""
-              },
+              "having": { "expression": "" },
               "legend": "duration_sum_rate",
               "limit": null,
               "orderBy": [],
@@ -360,22 +191,12 @@
               "stepInterval": 60
             },
             {
-              "aggregations": [
-                {
-                  "metricName": "notify_api_request_duration_ms.count",
-                  "reduceTo": "sum",
-                  "spaceAggregation": "sum",
-                  "temporality": null,
-                  "timeAggregation": "rate"
-                }
-              ],
+              "aggregations": [{ "metricName": "notify_api_request_duration_ms.count", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
               "dataSource": "metrics",
               "disabled": false,
               "expression": "B",
               "groupBy": [],
-              "having": {
-                "expression": ""
-              },
+              "having": { "expression": "" },
               "legend": "duration_count_rate",
               "limit": null,
               "orderBy": [],
@@ -383,44 +204,11 @@
               "stepInterval": 60
             }
           ],
-          "queryFormulas": [
-            {
-              "disabled": false,
-              "expression": "A/B",
-              "legend": "avg duration (ms)",
-              "queryName": "F1"
-            }
-          ]
+          "queryFormulas": [{ "disabled": false, "expression": "A/B", "legend": "avg duration (ms)", "queryName": "F1" }]
         },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          },
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "B",
-            "query": ""
-          }
-        ],
-        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1005",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          },
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "B",
-            "query": ""
-          }
-        ],
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }, { "disabled": false, "legend": "", "name": "B", "query": "" }],
+        "id": "signoz-notify-005",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }, { "disabled": false, "legend": "", "name": "B", "query": "" }],
         "queryType": "builder"
       },
       "thresholds": [],
@@ -439,30 +227,12 @@
         "builder": {
           "queryData": [
             {
-              "aggregations": [
-                {
-                  "metricName": "notify_api_requests_total",
-                  "reduceTo": "sum",
-                  "spaceAggregation": "sum",
-                  "temporality": null,
-                  "timeAggregation": "rate"
-                }
-              ],
+              "aggregations": [{ "metricName": "notify_api_requests_total", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
               "dataSource": "metrics",
               "disabled": false,
               "expression": "A",
-              "groupBy": [
-                {
-                  "dataType": "string",
-                  "id": "status_code--string--tag--false",
-                  "isColumn": false,
-                  "isJSON": false,
-                  "key": "status_code"
-                }
-              ],
-              "having": {
-                "expression": ""
-              },
+              "groupBy": [{ "dataType": "string", "id": "status_code--string--tag--false", "isColumn": false, "isJSON": false, "key": "status_code", "type": "tag" }],
+              "having": { "expression": "" },
               "legend": "status {{status_code}}",
               "limit": null,
               "orderBy": [],
@@ -472,30 +242,257 @@
           ],
           "queryFormulas": []
         },
-        "clickhouse_sql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
-        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1006",
-        "promql": [
-          {
-            "disabled": false,
-            "legend": "",
-            "name": "A",
-            "query": ""
-          }
-        ],
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-006",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
         "queryType": "builder"
       },
       "thresholds": [],
       "timePreferance": "GLOBAL_TIME",
       "title": "Requests / sec by Status",
       "yAxisUnit": "none"
+    },
+    {
+      "description": "Current request saturation as total in-flight requests divided by configured pod capacity",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a007",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_api_worker_inflight_requests", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "inflight",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            },
+            {
+              "aggregations": [{ "metricName": "notify_api_worker_capacity", "reduceTo": "avg", "spaceAggregation": "avg", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "B",
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "capacity",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "B",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": [{ "disabled": false, "expression": "(A/B)*100", "legend": "saturation %", "queryName": "F1" }]
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }, { "disabled": false, "legend": "", "name": "B", "query": "" }],
+        "id": "signoz-notify-007",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }, { "disabled": false, "legend": "", "name": "B", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Request Saturation (%)",
+      "yAxisUnit": "percent"
+    },
+    {
+      "description": "Configured maximum concurrent request capacity for the pod",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a008",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_api_worker_capacity", "reduceTo": "avg", "spaceAggregation": "avg", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "capacity",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-008",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Configured Request Capacity",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "RSS memory usage by Gunicorn worker process",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a009",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_api_worker_rss_bytes", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "worker_pid-rss-string-tag-false", "isColumn": false, "isJSON": false, "key": "worker_pid", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "worker {{worker_pid}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-009",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Worker RSS by PID",
+      "yAxisUnit": "bytes"
+    },
+    {
+      "description": "Checked out SQLAlchemy connections by bind",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a010",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_api_db_pool_checkedout", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "db_bind-checkedout-string-tag-false", "isColumn": false, "isJSON": false, "key": "db_bind", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "{{db_bind}} checkedout",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-010",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "DB Pool Checked Out",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Idle checked-in SQLAlchemy connections by bind",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a011",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_api_db_pool_checkedin", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "db_bind-checkedin-string-tag-false", "isColumn": false, "isJSON": false, "key": "db_bind", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "{{db_bind}} checkedin",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-011",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "DB Pool Checked In",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Configured pool size and current overflow by bind",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a012",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_api_db_pool_size", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "db_bind-size-string-tag-false", "isColumn": false, "isJSON": false, "key": "db_bind", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "{{db_bind}} size",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            },
+            {
+              "aggregations": [{ "metricName": "notify_api_db_pool_overflow", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "B",
+              "groupBy": [{ "dataType": "string", "id": "db_bind-overflow-string-tag-false", "isColumn": false, "isJSON": false, "key": "db_bind", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "{{db_bind}} overflow",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "B",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }, { "disabled": false, "legend": "", "name": "B", "query": "" }],
+        "id": "signoz-notify-012",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }, { "disabled": false, "legend": "", "name": "B", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "DB Pool Size and Overflow",
+      "yAxisUnit": "none"
     }
-  ],
-  "uuid": "019c9bb5-ae6e-7978-a3cc-5f3c8360ae35"
+  ]
 }

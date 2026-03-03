@@ -47,6 +47,7 @@ celeryCommon:
   OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
   OTEL_SERVICE_NAME: "notification-celery"
   OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
+  OTEL_REQUEST_METRICS_ENABLED: "{{ .StateValues.OTEL_REQUEST_METRICS_ENABLED }}"
 {{ end }}
   FF_USE_PINPOINT_FOR_DEDICATED: "{{ .StateValues.FF_USE_PINPOINT_FOR_DEDICATED }}"
 
