@@ -134,16 +134,16 @@ targetGroupBinding:
 
 resources:
   requests:
-    cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "500m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "400Mi" {{ else if eq .Environment.Name "staging" }} "1000Mi" {{ else }} "1000Mi" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "500m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "1000Mi" {{ else if eq .Environment.Name "staging" }} "1000Mi" {{ else }} "1000Mi" {{ end }}
   limits:
-    cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "1000m" {{ else }} "1000m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "2000Mi" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "1000m" {{ else if eq .Environment.Name "staging" }} "1000m" {{ else }} "1000m" {{ end }}
+    memory: {{ if eq .Environment.Name "production" }} "2000Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "2000Mi" {{ end }}
 
 autoscaling:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 24 {{ end }}
-  maxReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 24 {{ end }}
+  minReplicas: {{ if eq .Environment.Name "production" }} 8 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 4 {{ end }}
+  maxReplicas: {{ if eq .Environment.Name "production" }} 8 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 4 {{ end }}
   targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
 
 pdb:
@@ -157,10 +157,10 @@ readinessProbe:
 livenessProbe:
   initialDelaySeconds: 60
 
-{{ if ne .Environment.Name "production" }}
 nodeSelector:
-  karpenter.sh/capacity-type: spot
-  
+  eks.amazonaws.com/capacityType: ON_DEMAND
+
+{{ if ne .Environment.Name "production" }}
 verticalPodAutoscaler:
   enabled: true
 {{ end }}

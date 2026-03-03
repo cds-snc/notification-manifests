@@ -1,0 +1,501 @@
+{
+  "description": "Notification API worker and request diagnostics (OTEL metrics)",
+  "layout": [
+    {
+      "h": 6,
+      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a001",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "h": 6,
+      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a002",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 6,
+      "y": 0
+    },
+    {
+      "h": 6,
+      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a003",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 6
+    },
+    {
+      "h": 7,
+      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a004",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 12
+    },
+    {
+      "h": 7,
+      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a005",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 19
+    },
+    {
+      "h": 7,
+      "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a006",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 6,
+      "y": 19
+    }
+  ],
+  "name": "",
+  "panelMap": {},
+  "tags": [
+    "notification-api",
+    "otel",
+    "gunicorn"
+  ],
+  "title": "Notification API Worker Concurrency",
+  "uploadedGrafana": false,
+  "variables": {},
+  "version": "v5",
+  "widgets": [
+    {
+      "description": "Total request throughput",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a001",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "metricName": "notify_api_requests_total",
+                  "reduceTo": "sum",
+                  "spaceAggregation": "sum",
+                  "temporality": null,
+                  "timeAggregation": "rate"
+                }
+              ],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [],
+              "having": {
+                "expression": ""
+              },
+              "legend": "RPS",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1001",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Requests / sec",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Current in-flight request count (sum across workers)",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a002",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "metricName": "notify_api_worker_inflight_requests",
+                  "reduceTo": "avg",
+                  "spaceAggregation": "sum",
+                  "temporality": null,
+                  "timeAggregation": "avg"
+                }
+              ],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [],
+              "having": {
+                "expression": ""
+              },
+              "legend": "in_flight_total",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1002",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "In-flight Requests (Total)",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "In-flight concurrency per worker process",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a003",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "metricName": "notify_api_worker_inflight_requests",
+                  "reduceTo": "avg",
+                  "spaceAggregation": "sum",
+                  "temporality": null,
+                  "timeAggregation": "avg"
+                }
+              ],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "worker_pid--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "worker_pid",
+                  "type": "tag"
+                }
+              ],
+              "having": {
+                "expression": ""
+              },
+              "legend": "worker {{worker_pid}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1003",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "In-flight Requests by Worker PID",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Request rate split by endpoint",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a004",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "metricName": "notify_api_requests_total",
+                  "reduceTo": "sum",
+                  "spaceAggregation": "sum",
+                  "temporality": null,
+                  "timeAggregation": "rate"
+                }
+              ],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "endpoint--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "endpoint",
+                  "type": "tag"
+                }
+              ],
+              "having": {
+                "expression": ""
+              },
+              "legend": "{{endpoint}}",
+              "limit": 20,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1004",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Requests / sec by Endpoint",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "App request duration (from Flask before_request to after_request)",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a005",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "metricName": "notify_api_request_duration_ms.sum",
+                  "reduceTo": "sum",
+                  "spaceAggregation": "sum",
+                  "temporality": null,
+                  "timeAggregation": "rate"
+                }
+              ],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [],
+              "having": {
+                "expression": ""
+              },
+              "legend": "duration_sum_rate",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            },
+            {
+              "aggregations": [
+                {
+                  "metricName": "notify_api_request_duration_ms.count",
+                  "reduceTo": "sum",
+                  "spaceAggregation": "sum",
+                  "temporality": null,
+                  "timeAggregation": "rate"
+                }
+              ],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "B",
+              "groupBy": [],
+              "having": {
+                "expression": ""
+              },
+              "legend": "duration_count_rate",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "B",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": [
+            {
+              "disabled": false,
+              "expression": "A/B",
+              "legend": "avg duration (ms)",
+              "queryName": "F1"
+            }
+          ]
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          },
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "B",
+            "query": ""
+          }
+        ],
+        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1005",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          },
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "B",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Average Request Duration (ms)",
+      "yAxisUnit": "ms"
+    },
+    {
+      "description": "Traffic split by status code",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a006",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "metricName": "notify_api_requests_total",
+                  "reduceTo": "sum",
+                  "spaceAggregation": "sum",
+                  "temporality": null,
+                  "timeAggregation": "rate"
+                }
+              ],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "status_code--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "status_code"
+                }
+              ],
+              "having": {
+                "expression": ""
+              },
+              "legend": "status {{status_code}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "f71d5c51-a23f-47c6-977f-8fc9cc4c1006",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Requests / sec by Status",
+      "yAxisUnit": "none"
+    }
+  ],
+  "uuid": "019c9bb5-ae6e-7978-a3cc-5f3c8360ae35"
+}
