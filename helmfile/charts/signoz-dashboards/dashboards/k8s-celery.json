@@ -1,0 +1,264 @@
+{
+  "description": "Notification API Celery worker diagnostics (OTEL metrics)",
+  "layout": [
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a014", "moved": false, "static": false, "w": 12, "x": 0, "y": 0 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a015", "moved": false, "static": false, "w": 12, "x": 0, "y": 7 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a016", "moved": false, "static": false, "w": 6, "x": 0, "y": 14 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a018", "moved": false, "static": false, "w": 6, "x": 6, "y": 14 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a019", "moved": false, "static": false, "w": 6, "x": 0, "y": 21 },
+    { "h": 7, "i": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a020", "moved": false, "static": false, "w": 6, "x": 6, "y": 21 }
+  ],
+  "name": "",
+  "panelMap": {},
+  "tags": ["notification-api", "otel", "celery", "signoz"],
+  "title": "Notification API Celery OTEL Diagnostics",
+  "uploadedGrafana": false,
+  "uuid": "5d145ad5-1b4f-4c79-9d78-20fce9fbaf31",
+  "variables": {},
+  "version": "v5",
+  "widgets": [
+    {
+      "description": "Celery task throughput split by completion status",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a014",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_celery_tasks_total", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "celery-status-string-tag-false", "isColumn": false, "isJSON": false, "key": "status", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "{{status}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-014",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Celery Tasks / sec by Status",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Current in-flight Celery tasks by worker process",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a015",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_celery_worker_inflight_tasks", "reduceTo": "avg", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "avg" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "celery-worker-pid-string-tag-false", "isColumn": false, "isJSON": false, "key": "worker_pid", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "worker {{worker_pid}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-015",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Celery In-flight Tasks by Worker",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Average Celery task execution duration",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a016",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_celery_task_duration_ms.sum", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "task_duration_sum_rate",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            },
+            {
+              "aggregations": [{ "metricName": "notify_celery_task_duration_ms.count", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "B",
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "task_duration_count_rate",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "B",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": [{ "disabled": false, "expression": "A/B", "legend": "avg task duration (ms)", "queryName": "F1" }]
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }, { "disabled": false, "legend": "", "name": "B", "query": "" }],
+        "id": "signoz-notify-016",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }, { "disabled": false, "legend": "", "name": "B", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Average Celery Task Duration (ms)",
+      "yAxisUnit": "ms"
+    },
+    {
+      "description": "Celery retries split by classified error category",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a018",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_celery_task_retries_total", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "error-category-retries-string-tag-false", "isColumn": false, "isJSON": false, "key": "error_category", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "{{error_category}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-018",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": "sum by (error_category) (rate(notify_celery_task_retries_total[5m])) or vector(0)"
+          }
+        ],
+        "queryType": "promql"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Celery Retries / sec by Error Category",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Permanently failed Celery tasks split by classified error category",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a019",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_celery_task_failures_total", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "error-category-failures-string-tag-false", "isColumn": false, "isJSON": false, "key": "error_category", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "{{error_category}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-019",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": "sum by (error_category) (rate(notify_celery_task_failures_total[5m])) or vector(0)"
+          }
+        ],
+        "queryType": "promql"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Celery Failures / sec by Error Category",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Celery task throughput split by task name",
+      "id": "0a1e4f4d-611a-45c5-8fd8-d9cc3026a020",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "metricName": "notify_celery_tasks_total", "reduceTo": "sum", "spaceAggregation": "sum", "temporality": null, "timeAggregation": "rate" }],
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "groupBy": [{ "dataType": "string", "id": "task-name-string-tag-false", "isColumn": false, "isJSON": false, "key": "task_name", "type": "tag" }],
+              "having": { "expression": "" },
+              "legend": "{{task_name}}",
+              "limit": 20,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "signoz-notify-020",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Celery Tasks / sec by Task Name",
+      "yAxisUnit": "none"
+    }
+  ]
+}
