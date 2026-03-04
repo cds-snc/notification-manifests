@@ -17,6 +17,7 @@ dashboards:
   - clickhouse-overview.json
   - lambda-api.json
   - k8s-api.json
+  - notify-api-traces.json
 
 pipelines:
   # File should be placed in: charts/signoz-importer/pipelines/
