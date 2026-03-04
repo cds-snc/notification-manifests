@@ -1,0 +1,44 @@
+{{- if or .Values.dashboards .Values.pipelines.enabled }}
+{{- range .Values.dashboards }}
+{{- $filename := . }}
+{{- $name := $filename | trimSuffix ".json" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "signoz-importer.fullname" $ }}-{{ $name }}
+  labels:
+    {{- include "signoz-importer.labels" $ | nindent 4 }}
+    dashboard: {{ $name }}
+data:
+  dashboard.json: |
+{{ $.Files.Get (printf "dashboards/%s" $filename) | indent 4 }}
+{{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "signoz-importer.fullname" . }}-import-scripts
+  labels:
+    {{- include "signoz-importer.labels" . | nindent 4 }}
+data:
+  import-signoz-dashboards.sh: |
+{{ .Files.Get "scripts/import-signoz-dashboards.sh" | indent 4 }}
+  import-signoz-pipelines.sh: |
+{{ .Files.Get "scripts/import-signoz-pipelines.sh" | indent 4 }}
+
+{{- if .Values.pipelines.enabled }}
+{{- $pipelinesFile := required "pipelines.file is required when pipelines.enabled=true" .Values.pipelines.file }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "signoz-importer.fullname" . }}-pipelines
+  labels:
+    {{- include "signoz-importer.labels" . | nindent 4 }}
+data:
+  pipelines.json: |
+{{ .Files.Get (printf "pipelines/%s" $pipelinesFile) | indent 4 }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,106 @@
+{{- if or .Values.dashboards .Values.pipelines.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "signoz-importer.fullname" . }}-import
+  labels:
+    {{- include "signoz-importer.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+    {{- with .Values.job.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        {{- include "signoz-importer.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: {{ .Values.job.restartPolicy }}
+      containers:
+      - name: import-dashboards
+        image: "{{ .Values.job.image.repository }}:{{ .Values.job.image.tag }}"
+        imagePullPolicy: {{ .Values.job.image.pullPolicy }}
+        env:
+        - name: SIGNOZ_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: signoz
+              key: SIGNOZ_DASHBOARD_API_KEY
+        - name: SIGNOZ_URL
+          value: {{ .Values.signoz.url | quote }}
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          
+          echo "Waiting for SigNoz to be ready..."
+          max_retries=30
+          retry=0
+          
+          until curl -f -s {{ .Values.signoz.url }}/api/v1/health > /dev/null 2>&1; do
+            retry=$((retry + 1))
+            if [ $retry -eq $max_retries ]; then
+              echo "ERROR: SigNoz not ready after $max_retries attempts"
+              exit 1
+            fi
+            echo "Waiting for SigNoz... (attempt $retry/$max_retries)"
+            sleep 10
+          done
+          
+          echo "SigNoz is ready."
+          
+          # Verify API key is loaded (show only first 10 chars for security)
+          if [ -z "$SIGNOZ_API_KEY" ]; then
+            echo "ERROR: SIGNOZ_API_KEY environment variable is empty!"
+            exit 1
+          fi
+          echo "API key loaded: ${SIGNOZ_API_KEY:0:10}..."
+          
+          {{- if .Values.dashboards }}
+          echo "Importing dashboards..."
+          /scripts/import-signoz-dashboards.sh
+          {{- end }}
+
+          {{- if .Values.pipelines.enabled }}
+          echo "Importing pipelines..."
+          /scripts/import-signoz-pipelines.sh
+          echo "Pipeline import complete!"
+          {{- end }}
+        volumeMounts:
+        {{- range .Values.dashboards }}
+        {{- $name := . | trimSuffix ".json" }}
+        - name: dashboard-{{ $name }}
+          mountPath: /dashboards/{{ $name }}
+          readOnly: true
+        {{- end }}
+        - name: import-scripts
+          mountPath: /scripts
+          readOnly: true
+        {{- if .Values.pipelines.enabled }}
+        - name: pipelines
+          mountPath: /pipelines
+          readOnly: true
+        {{- end }}
+      volumes:
+      {{- range .Values.dashboards }}
+      {{- $name := . | trimSuffix ".json" }}
+      - name: dashboard-{{ $name }}
+        configMap:
+          name: {{ include "signoz-importer.fullname" $ }}-{{ $name }}
+      {{- end }}
+      {{- if .Values.pipelines.enabled }}
+      - name: pipelines
+        configMap:
+          name: {{ include "signoz-importer.fullname" . }}-pipelines
+      {{- end }}
+      - name: import-scripts
+        configMap:
+          name: {{ include "signoz-importer.fullname" . }}-import-scripts
+          defaultMode: 0755
+{{- end }}

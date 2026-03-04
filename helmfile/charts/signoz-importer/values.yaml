@@ -26,7 +26,14 @@ job:
 
 # List of dashboards to import
 # Each entry is a filename (without path) from the dashboards/ directory
-# Files should be placed in charts/signoz-dashboards/dashboards/
+# Files should be placed in charts/signoz-importer/dashboards/
 dashboards: []
   # - k8s-node-overview.json
   # - k8s-pod-metrics.json
+
+# Optional log pipelines import
+# File should be placed in charts/signoz-importer/pipelines/
+pipelines:
+  enabled: false
+  file: ""
+  # - pipelines.json

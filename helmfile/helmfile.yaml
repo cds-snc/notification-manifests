@@ -560,17 +560,17 @@ releases:
       step: 4
     chart: charts/signoz-telemetry 
 
-  - name: signoz-dashboards
+  - name: signoz-importer
     namespace: signoz
     disableValidationOnInstall: true
     labels:
-      app: signoz-dashboards
+      app: signoz-importer
       tier: apm
       category: system
       step: 5
-    chart: charts/signoz-dashboards
+    chart: charts/signoz-importer
     values:
-    - ./overrides/system/signoz-dashboards.yaml
+    - ./overrides/system/signoz-importer.yaml
 
   - name: prometheus-cloudwatch-exporter
     namespace: signoz
