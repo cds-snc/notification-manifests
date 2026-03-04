@@ -16,6 +16,7 @@ dashboards:
   - aws-rds-postgres.json
   - clickhouse-overview.json
   - lambda-api.json
+  - k8s-api.json
 
 pipelines:
   # File should be placed in: charts/signoz-importer/pipelines/
