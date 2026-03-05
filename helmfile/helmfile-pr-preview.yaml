@@ -1,0 +1,17 @@
+environments:
+  staging:
+    values:
+      - ./overrides/staging.env
+
+helmDefaults:
+  kubeContext: staging
+
+releases:
+  - name: notify-admin-pr-{{ requiredEnv "PR_NUMBER" }}
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    chart: charts/notify-admin
+    values:
+      - ./overrides/notify/admin.yaml.gotmpl
+      - ./overrides/notify/admin-pr-preview.yaml.gotmpl

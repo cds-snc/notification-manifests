@@ -1,0 +1,60 @@
+# DNS: nginx-ingress + cert-manager handle the subdomain and TLS automatically.
+# If external-dns is not watching Ingress resources in this cluster, a wildcard
+# DNS record for *.staging.notification.cdssandbox.xyz → nginx-ingress LB is
+# sufficient and only needs to be created once.
+#
+# TODO: confirm cert-manager ClusterIssuer name (cert-manager.io/cluster-issuer below).
+
+nameOverride: "admin-pr-{{ requiredEnv "PR_NUMBER" }}"
+fullnameOverride: "notify-admin-pr-{{ requiredEnv "PR_NUMBER" }}"
+
+image:
+  repository: "{{ requiredEnv "REGISTRY" }}/notify/admin"
+  tag: "{{ requiredEnv "PR_NUMBER" }}-k8s"
+
+admin:
+  NOTIFY_ENVIRONMENT: "staging"
+  API_HOST_NAME: "https://api.staging.notification.cdssandbox.xyz"
+  ADMIN_BASE_URL: "pr-{{ requiredEnv "PR_NUMBER" }}.staging.notification.cdssandbox.xyz"
+
+replicaCount: 1
+
+autoscaling:
+  enabled: false
+
+pdb:
+  enabled: false
+
+verticalPodAutoscaler:
+  enabled: false
+
+targetGroupBinding:
+  enabled: false
+
+# The notify-admin K8s Secret is already materialised in the staging namespace
+# by the staging CSI SecretProviderClass. PR pods reuse it directly via
+# secretKeyRef without needing their own SecretProviderClass or IRSA wiring.
+secretProviderClass:
+  enabled: false
+
+# Reuse the staging ServiceAccount (which already has the admin-eks-role IRSA
+# annotation and the admin-image-pull-secret imagePullSecret attached to it).
+serviceAccount:
+  create: false
+  name: notify-admin
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # TODO: confirm issuer name
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: "pr-{{ requiredEnv "PR_NUMBER" }}.staging.notification.cdssandbox.xyz"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: "admin-pr-{{ requiredEnv "PR_NUMBER" }}-tls"
+      hosts:
+        - "pr-{{ requiredEnv "PR_NUMBER" }}.staging.notification.cdssandbox.xyz"
