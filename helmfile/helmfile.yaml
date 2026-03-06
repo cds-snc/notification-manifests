@@ -270,6 +270,8 @@ releases:
     values:
     - ./overrides/system/nginx.yaml.gotmpl
 
+{{ if ne .Environment.Name "production" }}
+
   - name: ingress-public
     namespace: nginx-public
     disableValidationOnInstall: true
@@ -282,6 +284,8 @@ releases:
     chart: charts/nginx-ingress
     values:
     - ./overrides/system/nginx-public.yaml.gotmpl
+
+{{ end }}
 
   - name: xray-daemon
     namespace: xray
