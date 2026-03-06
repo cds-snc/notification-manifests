@@ -1,0 +1,36 @@
+controller:
+  image:
+    tag: 3.4.2
+  ingressClass:
+    name: nginx-public
+  service:
+    type: ClusterIP
+  wildcardTLS:
+    secret: {{.Release.Namespace}}/nginx-public
+  defaultTLS:
+    secret: {{.Release.Namespace}}/nginx-public
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-nginx
+prometheus:
+  create: false
+secretProviderClass:
+  enabled: false
+
+acme:
+  enabled: true
+  email: aws-notify-{{ .Environment.Name }}-admZin@cds-snc.ca
+  solver: dns01
+  route53:
+    region: {{ requiredEnv "AWS_REGION" | quote }}
+    hostedZoneID: {{ requiredEnv "CERT_MANAGER_ROUTE53_ZONE_ID" | quote }}
+    role: {{ requiredEnv "CERT_MANAGER_ROUTE53_ROLE_ARN" | quote }}
+  certificate:
+    secretName: nginx-public
+    dnsNames:
+      - {{ requiredEnv "BASE_DOMAIN" | quote }}
+      - {{ printf "*.%s" (requiredEnv "BASE_DOMAIN") | quote }}
+
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{ requiredEnv "PUBLIC_NGINX_TARGET_GROUP_ARN" }}
