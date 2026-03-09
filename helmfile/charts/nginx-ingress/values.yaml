@@ -537,18 +537,3 @@ secretProviderClass:
 targetGroupBinding:
   enabled: false
   targetGroupARN: none
-
-acme:
-  enabled: false
-  email: ""
-  server: "https://acme-v02.api.letsencrypt.org/directory"
-  privateKeySecretName: ""
-  bootstrapSelfSignedSecret: true
-  solver: http01
-  route53:
-    region: ""
-    hostedZoneID: ""
-    role: ""
-  certificate:
-    secretName: ""
-    dnsNames: []
