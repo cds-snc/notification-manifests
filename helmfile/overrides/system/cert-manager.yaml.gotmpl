@@ -1,9 +1,5 @@
 crds:
     enabled: true
 
-serviceAccount:
-  annotations:
-    eks.amazonaws.com/role-arn: {{ requiredEnv "CERT_MANAGER_ROUTE53_IRSA_ROLE_ARN" | quote }}
-
 nodeSelector:  
   eks.amazonaws.com/capacityType: ON_DEMAND
