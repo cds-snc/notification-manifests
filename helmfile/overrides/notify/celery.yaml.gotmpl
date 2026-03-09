@@ -2,7 +2,7 @@ celeryCommon:
   # ENVIRONMENT SPECIFIC VARIABLES
   ADMIN_BASE_URL: "https://{{ requiredEnv "BASE_DOMAIN" }}"
   ALLOW_HTML_SERVICE_IDS: "{{ .StateValues.ALLOW_HTML_SERVICE_IDS }}"
-  API_HOST_NAME: "https://{{ .StateValues.API_HOST_NAME_PREFIX }}.{{ requiredEnv "BASE_DOMAIN" }}"
+  API_HOST_NAME: "{{ .StateValues.API_HOST_NAME }}"
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
   AWS_REGION: "{{ requiredEnv "AWS_REGION" }}"
   BULK_SEND_TEST_SERVICE_ID: "{{ .StateValues.BULK_SEND_TEST_SERVICE_ID }}"
