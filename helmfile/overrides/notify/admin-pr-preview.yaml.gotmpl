@@ -45,9 +45,14 @@ serviceAccount:
 
 ingress:
   enabled: true
-  className: "nginx"
+  # TODO: a second public-facing nginx ingress controller is needed here.
+  # The existing "nginx" class is ClusterIP + TargetGroupBinding (internal only).
+  # Update className to match whatever the new public controller's IngressClass is named.
+  className: "nginx-public"
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # TODO: confirm issuer name
+    # TODO: confirm cert-manager ClusterIssuer name, or switch to the same
+    # Secrets Manager + CSI pattern used by the existing nginx controller.
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   hosts:
     - host: "pr-{{ requiredEnv "PR_NUMBER" }}.staging.notification.cdssandbox.xyz"
