@@ -263,6 +263,37 @@ nodes:
       minAvailable: 2
     service:
       serviceEnabled: true
+  # CELERY FOR PROCESSING PINPOINT RESULTS (us-west-2)
+  process-pinpoint-results:
+    name: process-pinpoint-results
+    newRelicAppName: "notification-celery-process-pinpoint-results-dev"
+    scriptArg: "sh /app/scripts/run_celery_process_pinpoint_results.sh"
+    deployment:
+      deploymentEnabled: true
+      priorityClassName: celery
+      terminationGracePeriodSeconds: 60
+      replicas: 3
+      nodeSelector:
+        karpenter.sh/capacity-type: spot
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "800Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: true
+      minReplicas: 3
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
+    service:
+      serviceEnabled: true
 
 image:
   repository: public.ecr.aws/cds-snc/notify-api
