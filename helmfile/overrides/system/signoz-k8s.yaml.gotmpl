@@ -125,14 +125,14 @@ otelDeployment:
       awscloudwatch/rds_postgres_logs:
         region: ca-central-1
         logs:
-          poll_interval: 3m
+          poll_interval: 5m
           groups:
             named:
               /aws/rds/cluster/notification-canada-ca-{{ .Environment.Name }}-cluster/postgresql: {}
       awscloudwatch/elasticache_redis_logs:
         region: ca-central-1
         logs:
-          poll_interval: 3m
+          poll_interval: 5m
           groups:
             autodiscover:
               prefix: /aws/elasticache/
@@ -140,7 +140,7 @@ otelDeployment:
       awscloudwatch/lambda_logs:
         region: ca-central-1
         logs:
-          poll_interval: 3m
+          poll_interval: 5m
           groups:
             autodiscover:
               prefix: /aws/lambda/
@@ -148,7 +148,7 @@ otelDeployment:
       awscloudwatch/sns_logs:
         region: ca-central-1
         logs:
-          poll_interval: 3m
+          poll_interval: 5m
           groups:
             autodiscover:
               prefix: sns/ca-central-1
@@ -156,7 +156,7 @@ otelDeployment:
       awscloudwatch/all_logs:
         region: ca-central-1
         logs:
-          poll_interval: 3m
+          poll_interval: 5m
           groups:
             autodiscover:
               prefix: ""
