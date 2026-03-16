@@ -1,0 +1,962 @@
+{
+  "description": "Trace-focused dashboard for the notify-admin frontend service",
+  "layout": [
+    {
+      "h": 8,
+      "i": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0006",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "h": 7,
+      "i": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0004",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 0,
+      "y": 8
+    },
+    {
+      "h": 7,
+      "i": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0005",
+      "moved": false,
+      "static": false,
+      "w": 6,
+      "x": 6,
+      "y": 8
+    },
+    {
+      "h": 8,
+      "i": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0001",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 15
+    },
+    {
+      "h": 8,
+      "i": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0002",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 23
+    },
+    {
+      "h": 8,
+      "i": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0003",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 31
+    }
+  ],
+  "name": "",
+  "panelMap": {},
+  "tags": [
+    "notify-admin",
+    "traces",
+    "frontend",
+    "performance",
+    "errors"
+  ],
+  "title": "Notify Admin Traces",
+  "uploadedGrafana": false,
+  "uuid": "f8a9133d-7a9b-4bfd-a7e4-67cb6ec67731",
+  "variables": {},
+  "version": "v5",
+  "widgets": [
+    {
+      "columnWidths": {
+        "date": 145,
+        "duration_nano": 145,
+        "http.method": 145,
+        "http.route": 145,
+        "http.status_code": 145,
+        "name": 145,
+        "service.name": 145
+      },
+      "description": "Recent traces for the notify-admin frontend service",
+      "id": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0001",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "list",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "service.name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "service.name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "service.name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "notification-admin"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "having": [],
+              "limit": 100,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "spaceAggregation": "sum",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "notify-admin-traces-001",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "string",
+          "name": "body",
+          "type": ""
+        },
+        {
+          "dataType": "string",
+          "name": "timestamp",
+          "type": ""
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "resource",
+          "fieldDataType": "string",
+          "name": "service.name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "string",
+          "name": "name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "duration_nano",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.method",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.route",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.status_code",
+          "signal": "traces"
+        }
+      ],
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Recent Traces",
+      "yAxisUnit": "none"
+    },
+    {
+      "columnWidths": {
+        "date": 145,
+        "duration_nano": 145,
+        "http.method": 145,
+        "http.route": 145,
+        "http.status_code": 145,
+        "name": 145,
+        "service.name": 145
+      },
+      "description": "Failed traces to help isolate frontend request errors",
+      "id": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0002",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "list",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "service.name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "service.name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "service.name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "notification-admin"
+                  },
+                  {
+                    "id": "hasError",
+                    "key": {
+                      "dataType": "bool",
+                      "id": "hasError--bool--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "hasError",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": true
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "having": [],
+              "limit": 100,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "spaceAggregation": "sum",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "notify-admin-traces-002",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "string",
+          "name": "body",
+          "type": ""
+        },
+        {
+          "dataType": "string",
+          "name": "timestamp",
+          "type": ""
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "resource",
+          "fieldDataType": "string",
+          "name": "service.name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "string",
+          "name": "name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "duration_nano",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.method",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.route",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.status_code",
+          "signal": "traces"
+        }
+      ],
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Error Traces",
+      "yAxisUnit": "none"
+    },
+    {
+      "columnWidths": {
+        "date": 145,
+        "duration_nano": 145,
+        "http.method": 145,
+        "http.route": 145,
+        "http.status_code": 145,
+        "name": 145,
+        "service.name": 145
+      },
+      "description": "Long-running frontend traces over one second",
+      "id": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0003",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "list",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "service.name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "service.name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "service.name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "notification-admin"
+                  },
+                  {
+                    "id": "duration_nano",
+                    "key": {
+                      "dataType": "float64",
+                      "id": "duration_nano--float64--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "duration_nano",
+                      "type": "tag"
+                    },
+                    "op": ">",
+                    "value": "1000000000"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "having": [],
+              "limit": 100,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "spaceAggregation": "sum",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "notify-admin-traces-003",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "string",
+          "name": "body",
+          "type": ""
+        },
+        {
+          "dataType": "string",
+          "name": "timestamp",
+          "type": ""
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "resource",
+          "fieldDataType": "string",
+          "name": "service.name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "string",
+          "name": "name",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "duration_nano",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.method",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.route",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.status_code",
+          "signal": "traces"
+        }
+      ],
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Slow Traces (> 1s)",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Frontend trace throughput by route",
+      "id": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0004",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "aggregation": "count",
+                  "reduceTo": "sum",
+                  "spaceAggregation": "sum",
+                  "timeAggregation": "rate"
+                }
+              ],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "service.name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "service.name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "service.name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "notification-admin"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "http.route--string--tag",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "http.route",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "limit": 10,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "spaceAggregation": "sum",
+              "stepInterval": 60,
+              "timeAggregation": "rate"
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "notify-admin-traces-004",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "string",
+          "name": "body",
+          "type": ""
+        },
+        {
+          "dataType": "string",
+          "name": "timestamp",
+          "type": ""
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.route",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "trace_id",
+          "signal": "traces"
+        }
+      ],
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Trace Throughput by Route",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Frontend error traces grouped by HTTP status code",
+      "id": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0005",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "aggregation": "count",
+                  "reduceTo": "sum",
+                  "spaceAggregation": "sum",
+                  "timeAggregation": "rate"
+                }
+              ],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "service.name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "service.name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "service.name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "notification-admin"
+                  },
+                  {
+                    "id": "hasError",
+                    "key": {
+                      "dataType": "bool",
+                      "id": "hasError--bool--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "hasError",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": true
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "http.status_code--string--tag",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "http.status_code",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "limit": 10,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "spaceAggregation": "sum",
+              "stepInterval": 60,
+              "timeAggregation": "rate"
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "id": "notify-admin-traces-005",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "string",
+          "name": "body",
+          "type": ""
+        },
+        {
+          "dataType": "string",
+          "name": "timestamp",
+          "type": ""
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.status_code",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "trace_id",
+          "signal": "traces"
+        }
+      ],
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Error Volume by Status Code",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Frontend route latency percentiles derived from traces",
+      "id": "8c91aaf0-53b9-46db-9d93-d9f8f1ae0006",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [
+                {
+                  "aggregation": "p50",
+                  "attribute": "duration_nano",
+                  "reduceTo": "avg",
+                  "spaceAggregation": "avg",
+                  "timeAggregation": "avg"
+                }
+              ],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "service.name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "service.name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "service.name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "notification-admin"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "http.route--string--tag",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "http.route",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "p50",
+              "limit": 10,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "spaceAggregation": "avg",
+              "stepInterval": 60,
+              "timeAggregation": "avg"
+            },
+            {
+              "aggregations": [
+                {
+                  "aggregation": "p95",
+                  "attribute": "duration_nano",
+                  "reduceTo": "avg",
+                  "spaceAggregation": "avg",
+                  "timeAggregation": "avg"
+                }
+              ],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "B",
+              "filters": {
+                "items": [
+                  {
+                    "id": "service.name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "service.name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "service.name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "notification-admin"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "http.route--string--tag",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "http.route",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "p95",
+              "limit": 10,
+              "orderBy": [],
+              "queryName": "B",
+              "reduceTo": "avg",
+              "spaceAggregation": "avg",
+              "stepInterval": 60,
+              "timeAggregation": "avg"
+            },
+            {
+              "aggregations": [
+                {
+                  "aggregation": "p99",
+                  "attribute": "duration_nano",
+                  "reduceTo": "avg",
+                  "spaceAggregation": "avg",
+                  "timeAggregation": "avg"
+                }
+              ],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "C",
+              "filters": {
+                "items": [
+                  {
+                    "id": "service.name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "service.name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "service.name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "notification-admin"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "http.route--string--tag",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "http.route",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "p99",
+              "limit": 10,
+              "orderBy": [],
+              "queryName": "C",
+              "reduceTo": "avg",
+              "spaceAggregation": "avg",
+              "stepInterval": 60,
+              "timeAggregation": "avg"
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          },
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "B",
+            "query": ""
+          },
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "C",
+            "query": ""
+          }
+        ],
+        "id": "notify-admin-traces-006",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          },
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "B",
+            "query": ""
+          },
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "C",
+            "query": ""
+          }
+        ],
+        "queryType": "builder"
+      },
+      "selectedLogFields": [
+        {
+          "dataType": "string",
+          "name": "body",
+          "type": ""
+        },
+        {
+          "dataType": "string",
+          "name": "timestamp",
+          "type": ""
+        }
+      ],
+      "selectedTracesFields": [
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "http.route",
+          "signal": "traces"
+        },
+        {
+          "fieldContext": "span",
+          "fieldDataType": "",
+          "name": "duration_nano",
+          "signal": "traces"
+        }
+      ],
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Latency Percentiles by Route",
+      "yAxisUnit": "ns"
+    }
+  ]
+}
