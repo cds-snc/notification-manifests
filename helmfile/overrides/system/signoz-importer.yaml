@@ -18,6 +18,7 @@ dashboards:
   - lambda-api.json
   - k8s-api.json
   - notify-api-traces.json
+  - notify-admin-traces.json
 
 pipelines:
   # File should be placed in: charts/signoz-importer/pipelines/
