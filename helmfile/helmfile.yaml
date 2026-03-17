@@ -558,7 +558,6 @@ releases:
       step: 4
     chart: charts/signoz-telemetry 
 
-{{ if ne .Environment.Name "production" }}
   - name: signoz-importer
     namespace: signoz
     disableValidationOnInstall: true
@@ -570,7 +569,6 @@ releases:
     chart: charts/signoz-importer
     values:
     - ./overrides/system/signoz-importer.yaml.gotmpl
-{{ end }}
 
   - name: prometheus-cloudwatch-exporter
     namespace: signoz
