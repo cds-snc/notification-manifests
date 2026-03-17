@@ -583,4 +583,4 @@ releases:
     chart: oci://ghcr.io/prometheus-community/charts/prometheus-cloudwatch-exporter
     version: 0.28.1
     values:
-    - ./overrides/system/prometheus-cloudwatch-exporter.yaml.gotmplgit
+    - ./overrides/system/prometheus-cloudwatch-exporter.yaml.gotmpl
