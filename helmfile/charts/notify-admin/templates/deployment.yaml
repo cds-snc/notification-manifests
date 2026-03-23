@@ -91,8 +91,8 @@ spec:
               path: /_status?simple=true
               port: 6012
             initialDelaySeconds: 10
-            periodSeconds: 3
-            timeoutSeconds: 1
+            periodSeconds: 30
+            timeoutSeconds: 5
             successThreshold: 3
             failureThreshold: 10
           livenessProbe:
@@ -100,8 +100,8 @@ spec:
               path: "/_status?simple=true"
               port: 6012
             initialDelaySeconds: 30
-            periodSeconds: 3
-            timeoutSeconds: 1
+            periodSeconds: 30
+            timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 3
           resources:
