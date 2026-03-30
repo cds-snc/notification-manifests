@@ -1,0 +1,9 @@
+otlpIngress:
+{{ if eq .Environment.Name "dev" }}
+  enabled: true
+{{ else }}
+  enabled: false
+{{ end }}
+  className: nginx-public
+  host: otlp.gateway.{{ requiredEnv "BASE_DOMAIN" }}
+  tls: false

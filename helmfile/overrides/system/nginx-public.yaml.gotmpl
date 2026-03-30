@@ -11,44 +11,9 @@ controller:
   # and nginx.org/server-snippets annotations. Required for auth_request-based
   # JWT validation (ngx_http_auth_request_module is compiled into nginx by default).
   enableSnippets: true
-  wildcardTLS:
-    secret: {{.Release.Namespace}}/nginx-public
-  defaultTLS:
-    secret: {{.Release.Namespace}}/nginx-public
   serviceAccount:
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-nginx-public
-  volumes:
-    - name: secrets-store-inline
-      csi:
-        driver: secrets-store.csi.k8s.io
-        readOnly: true
-        volumeAttributes:
-          secretProviderClass: "nginx-public"
-  volumeMounts:
-          - name: secrets-store-inline
-            mountPath: "/mnt/secrets-store"
-            readOnly: true
-prometheus:
-  create: false
-secretProviderClass:
-  enabled: true
-  name: nginx-public
-  provider: aws
-  parameters:
-    objects: |
-      - objectName: INTERNAL_DNS_KEY_BASE64
-        objectType: "secretsmanager"
-      - objectName: INTERNAL_DNS_CERT_BASE64
-        objectType: "secretsmanager"
-  secretObjects:
-    - data:
-      - key: tls.key
-        objectName: INTERNAL_DNS_KEY_BASE64
-      - key: tls.crt
-        objectName: INTERNAL_DNS_CERT_BASE64
-      secretName: nginx-public
-      type: kubernetes.io/tls
 targetGroupBinding:
   enabled: true
-  targetGroupARN: {{ requiredEnv "NGINX_PUBLIC_TARGET_GROUP_ARN" }}
+  targetGroupARN: {{ requiredEnv "PUBLIC_NGINX_TARGET_GROUP_ARN" }}

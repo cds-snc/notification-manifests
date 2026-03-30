@@ -569,7 +569,9 @@ releases:
       tier: apm
       category: system
       step: 4
-    chart: charts/signoz-telemetry 
+    chart: charts/signoz-telemetry
+    values:
+    - ./overrides/system/signoz-telemetry.yaml.gotmpl
 
   - name: signoz-importer
     namespace: signoz
