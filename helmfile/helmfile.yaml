@@ -270,6 +270,19 @@ releases:
     values:
     - ./overrides/system/nginx.yaml.gotmpl
 
+  - name: ingress-public
+    namespace: nginx-public
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: nginx-public
+      tier: main
+      category: system
+      step: 4
+    chart: charts/nginx-ingress
+    values:
+    - ./overrides/system/nginx-public.yaml.gotmpl
+
   - name: xray-daemon
     namespace: xray
     disableValidationOnInstall: true
@@ -556,7 +569,9 @@ releases:
       tier: apm
       category: system
       step: 4
-    chart: charts/signoz-telemetry 
+    chart: charts/signoz-telemetry
+    values:
+    - ./overrides/system/signoz-telemetry.yaml.gotmpl
 
   - name: signoz-importer
     namespace: signoz

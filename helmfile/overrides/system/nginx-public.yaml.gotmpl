@@ -1,0 +1,19 @@
+controller:
+  image:
+    tag: 3.4.2
+  service:
+    type: ClusterIP
+  ingressClass:
+    name: nginx-public
+    create: true
+    setAsDefaultIngress: false
+  # enableSnippets allows Ingress resources to use nginx.org/location-snippets
+  # and nginx.org/server-snippets annotations. Required for auth_request-based
+  # JWT validation (ngx_http_auth_request_module is compiled into nginx by default).
+  enableSnippets: true
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-nginx-public
+targetGroupBinding:
+  enabled: true
+  targetGroupARN: {{ requiredEnv "PUBLIC_NGINX_TARGET_GROUP_ARN" }}

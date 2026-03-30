@@ -121,3 +121,11 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+otlpIngress:
+  enabled: false
+  className: nginx-public
+  host: ""
+  tls: false
+  tlsSecretName: ""
+  annotations: {}
