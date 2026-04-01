@@ -381,6 +381,7 @@ releases:
       category: system
       step: 3
     chart: eks/aws-load-balancer-controller
+    version: 3.1.0
     values:
     - ./overrides/system/aws-lb-controller.yaml.gotmpl    
 
@@ -468,6 +469,7 @@ releases:
   - name: falco
     namespace: falco
     installed: true
+    version: 8.0.1
     labels:
       app: falco
       tier: full
