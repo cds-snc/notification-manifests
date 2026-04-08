@@ -51,8 +51,6 @@ repositories:
   url: https://kubernetes-sigs.github.io/metrics-server/
 - name: fairwinds-stable
   url: https://charts.fairwinds.com/stable
-- name: newrelic
-  url: https://newrelic.github.io/helm-charts/
 - name: signoz
   url: https://charts.signoz.io
 - name: opentelemetry
