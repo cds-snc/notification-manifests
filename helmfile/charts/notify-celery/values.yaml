@@ -2,7 +2,6 @@ nodes:
   # CELERY BEAT
   beat:
     name: beat
-    newRelicAppName: "notification-celery-beat-dev"
     scriptArg: "sh /app/scripts/run_celery_beat.sh"
     deployment:
       deploymentBeatEnabled: true
@@ -20,7 +19,6 @@ nodes:
   # CELERY FOR CORE TASKS
   core-tasks-static:
     name: core-tasks-static
-    newRelicAppName: "notification-celery-core-tasks-static-dev"
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
     deployment:
       deploymentEnabled: true
@@ -46,7 +44,6 @@ nodes:
   # CELERY FOR SENDING EMAILS
   email-send-static:
     name: email-send-static
-    newRelicAppName: "notification-celery-email-send-static-dev"
     scriptArg: "sh /app/scripts/run_celery_send_email.sh"
     deployment:
       deploymentEnabled: true
@@ -72,7 +69,6 @@ nodes:
   # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
   sms-send-static:
     name: sms-send-static
-    newRelicAppName: "notification-celery-sms-send-static-dev"
     scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
     deployment:
       deploymentEnabled: true
@@ -98,7 +94,6 @@ nodes:
   # CELERY FOR SENDING SMS OVER DEDICATED LONG CODE
   sms-dedicated-static:
     name: sms-dedicated-static
-    newRelicAppName: "notification-celery-sms-dedicated-static-dev"
     scriptArg: "sh /app/scripts/run_celery_sms.sh"
     deployment:
       deploymentBeatEnabled: true
@@ -115,7 +110,6 @@ nodes:
   # CELERY FOR CREATING REPORTS
   generate-reports-static:
     name: generate-reports-static
-    newRelicAppName: "notification-celery-generate-reports-static-dev"
     scriptArg: "sh /app/scripts/run_celery_report_tasks.sh"
     deployment:
       deploymentEnabled: true
@@ -142,7 +136,6 @@ nodes:
   # CELERY FOR CORE TASKS
   core-tasks-scalable:
     name: core-tasks-scalable
-    newRelicAppName: "notification-celery-core-tasks-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
     deployment:
       deploymentEnabled: true
@@ -173,7 +166,6 @@ nodes:
   # CELERY FOR DELIVERY RECEIPTS
   delivery-receipts-scalable:
     name: delivery-receipts-scalable
-    newRelicAppName: "notification-celery-delivery-receipts-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_receipts.sh"
     deployment:
       deploymentEnabled: true
@@ -204,7 +196,6 @@ nodes:
   # CELERY FOR SENDING EMAILS
   scalable-email:
     name: email-send-scalable
-    newRelicAppName: "notification-celery-email-send-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_send_email.sh"
     deployment:
       deploymentEnabled: true
@@ -235,7 +226,6 @@ nodes:
   # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
   scalable-sms:
     name: sms-send-scalable
-    newRelicAppName: "notification-celery-sms-send-scalable-dev"
     scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
     deployment:
       deploymentEnabled: true

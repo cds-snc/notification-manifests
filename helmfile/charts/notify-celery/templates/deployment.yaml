@@ -52,8 +52,6 @@ spec:
               readOnly: true  
           env:
             # Includes specific ENV Variables
-            - name: NEW_RELIC_APP_NAME
-              value: {{ $node.newRelicAppName }}
             - name: STATSD_HOST
               valueFrom:
                 fieldRef:
