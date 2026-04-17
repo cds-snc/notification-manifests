@@ -1,0 +1,45 @@
+environments:
+  sandbox:
+    values:
+      - ./overrides/sandbox.env
+  scratch:
+    values:
+      - ./overrides/scratch.env
+  dev:
+    values:
+      - ./overrides/dev.env
+  staging:
+    values:
+      - ./overrides/staging.env
+  production:
+    values:
+      - ./overrides/production.env
+---
+
+helmDefaults:
+  kubeContext: {{ .Environment.Name }}
+
+releases:
+  - name: k8s-event-logger
+    namespace: amazon-cloudwatch
+    labels:
+      app: k8s-event-logger
+      tier: full
+      category: monitoring
+      step: 2
+    chart: oci://ghcr.io/deliveryhero/helm-charts/k8s-event-logger
+    version: 1.1.8
+    values:
+      - ./overrides/system/k8s-event-logger.yaml.gotmpl
+
+  - name: blazer
+    namespace: tools
+    labels:
+      app: blazer
+      tier: front
+      category: tools
+      step: 3
+    chart: stakater/application
+    version: 2.3.2
+    values:
+    - ./overrides/tools/blazer.yaml.gotmpl
