@@ -139,6 +139,21 @@ nodes:
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
+  sms-send-fair-static:
+    deployment:
+      deploymentEnabled: {{ if eq .Environment.Name "staging" }} true {{ else }} false {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      resources:
+        requests:
+          cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
+        limits:
+          cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "700m" {{ else }} "550m" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
+      replicas: {{ if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
+    pdb:
+      pdbEnabled: {{ if eq .Environment.Name "staging" }} false {{ else }} false {{ end }}
+      minAvailable: {{ if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
   core-tasks-scalable:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
