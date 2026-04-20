@@ -91,7 +91,7 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
-  # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS WITH FAIR QUEUES
+  # CELERY FOR SENDING SMS WITH FAIR QUEUES
   sms-send-fair-static:
     name: sms-send-fair-static
     scriptArg: "sh /app/scripts/run_celery_send_sms_ratelimit.sh"
