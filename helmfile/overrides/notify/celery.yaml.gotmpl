@@ -142,7 +142,7 @@ nodes:
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
   sms-send-fair-static:
     deployment:
-      deploymentEnabled: {{ if eq .Environment.Name "staging" }} true {{ else }} false {{ end }}
+      deploymentEnabled: {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }} true {{ else }} false {{ end }}
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
       resources:
         requests:
