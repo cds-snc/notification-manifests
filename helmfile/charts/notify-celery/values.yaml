@@ -91,6 +91,31 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
+  # CELERY FOR SENDING SMS WITH FAIR QUEUES
+  sms-send-fair-static:
+    name: sms-send-fair-static
+    scriptArg: "sh /app/scripts/run_celery_send_sms_ratelimit.sh"
+    deployment:
+      deploymentEnabled: false
+      terminationGracePeriodSeconds: 60
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "800Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+      priorityClassName: high-priority
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+      replicas: 1
+    pdb:
+      pdbEnabled: false
+      minAvailable: 1
+    autoscaling:
+      hpaEnabled: false
+    service:
+      serviceEnabled: true
   # CELERY FOR SENDING SMS OVER DEDICATED LONG CODE
   sms-dedicated-static:
     name: sms-dedicated-static
