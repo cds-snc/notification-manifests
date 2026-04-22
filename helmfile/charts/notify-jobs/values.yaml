@@ -1,0 +1,62 @@
+image:
+  repository: public.ecr.aws/cds-snc/notify-api
+  pullPolicy: Always
+  tag: "latest"
+
+nameOverride: ""
+fullnameOverride: ""
+
+imagePullSecrets: []
+
+terminationGracePeriodSeconds: 120
+
+serviceAccount:
+  create: true
+  name: notify-jobs
+  annotations: {}
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+secretProviderClass:
+  secretname: notify-jobs
+  enabled: true
+  provider: aws
+
+dockerhub:
+  username: "changeme"
+  pat: "changeme"
+
+oneOffScriptJob:
+  enabled: false
+  runId: "manual"
+  useInlineScript: true
+  secretKeyRefOptional: true
+  # Supported values: shell, python
+  scriptType: "shell"
+  scriptPath: "/opt/one-off-script/one-off-script.sh"
+  backoffLimit: 0
+  restartPolicy: Never
+  ttlSecondsAfterFinished: 604800
+  activeDeadlineSeconds: 43200
+  # Optional explicit overrides; when empty, command/args are derived from scriptType/scriptPath.
+  command: []
+  args: []
+  extraEnv:
+    DUMMY_SLEEP_SECONDS: "120"
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"

@@ -1,0 +1,36 @@
+serviceAccount:
+  create: true
+  name: notify-jobs
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/api-eks-role
+
+secretProviderClass:
+  secretname: notify-api
+  enabled: false
+  provider: aws
+
+oneOffScriptJob:
+  enabled: true
+  # Change runId each time you want to execute a new one-off run.
+  runId: "pondtest3"
+  useInlineScript: true
+  secretKeyRefOptional: true
+  # Supported values: shell, python
+  scriptType: "shell"
+  scriptPath: "/opt/one-off-script/one-off-script.sh"
+  backoffLimit: 0
+  restartPolicy: Never
+  ttlSecondsAfterFinished: 604800
+  activeDeadlineSeconds: 43200
+  # Leave empty to auto-build from scriptType/scriptPath.
+  command: []
+  args: []
+  extraEnv:
+    DUMMY_SLEEP_SECONDS: "30"
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"

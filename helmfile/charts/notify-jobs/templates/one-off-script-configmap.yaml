@@ -1,0 +1,13 @@
+{{- if and .Values.oneOffScriptJob.enabled .Values.oneOffScriptJob.useInlineScript }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jobs.fullname" . }}-one-off-script
+  labels:
+    {{- include "jobs.labels" . | nindent 4 }}
+    app: {{ include "jobs.name" . }}
+    app.kubernetes.io/component: one-off-script
+data:
+  one-off-script.sh: |
+{{ .Files.Get "files/one-off-script.sh" | nindent 4 }}
+{{- end }}
