@@ -58,6 +58,7 @@ Execution modes:
 Built-in validation script behavior:
 
 - Runs from `helmfile/charts/notify-jobs/files/one-off-script.sh` via ConfigMap mount.
+- A Python equivalent is available at `helmfile/charts/notify-jobs/files/one-off-script.py`.
 - Prints non-secret env values such as `NOTIFY_ENVIRONMENT`, `API_HOST_NAME`, and `AWS_REGION`.
 - Reports whether key secrets are present (`SQLALCHEMY_DATABASE_URI`, `SECRET_KEY`, `ADMIN_CLIENT_SECRET`, `REDIS_URL`) without printing secret values.
 - Emits heartbeat logs while simulating long-running work.
