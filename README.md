@@ -40,6 +40,11 @@ If you've updated a secret in the 1password "single source of truth" -- that cha
 Use the dedicated `notify-jobs` chart with `helmfile/overrides/notify/jobs.yaml.gotmpl`.
 This keeps one-off execution independent from API rollout while still consuming `api` plus `apiSecrets` values from `helmfile/overrides/notify/api.yaml.gotmpl`.
 
+Safety guard:
+
+- The `notify-jobs` Helmfile release is disabled by default.
+- To run it, you must opt in explicitly with `RUN_NOTIFY_JOBS=true` and target it by selector.
+
 Recommended flow:
 
 1. Set `oneOffScriptJob.enabled: true`.

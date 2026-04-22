@@ -101,6 +101,7 @@ releases:
 
   - name: notify-jobs
     namespace: notification-canada-ca
+    installed: {{ eq (env "RUN_NOTIFY_JOBS") "true" }}
     disableValidationOnInstall: true
     disableValidation: true
     labels:
