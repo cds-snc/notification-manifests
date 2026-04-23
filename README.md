@@ -35,6 +35,46 @@ SECRET_NAME_FOR_ENV_PASSED_TO_CONTAINER: SECRET_NAME_READ_FROM_AWS_SECRETS_MANAG
 
 If you've updated a secret in the 1password "single source of truth" -- that change will be reflected in AWS Secrets Manager during the next terraform release, and can then subsequently be consumed by our manifests workflows outlined here.
 
+## Running one-off long scripts in Kubernetes
+
+Use the dedicated `notify-jobs` chart with `helmfile/overrides/notify/jobs.yaml.gotmpl`.
+This keeps one-off execution independent from API rollout while still consuming `api` plus `apiSecrets` values from `helmfile/overrides/notify/api.yaml.gotmpl`.
+
+Safety guard:
+
+- The `notify-jobs` Helmfile release is disabled by default.
+- To run it, you must opt in explicitly with `RUN_NOTIFY_JOBS=true` and target it by selector.
+
+Recommended flow:
+
+1. Set `oneOffScriptJob.enabled: true`.
+2. Choose script mode with `oneOffScriptJob.scriptType` (`shell` or `python`) and set `oneOffScriptJob.scriptPath`.
+3. If needed, override with explicit `oneOffScriptJob.command` and `oneOffScriptJob.args`.
+3. Set a unique `oneOffScriptJob.runId` for each execution (for example `backfill-2026-04-22`).
+4. Apply with Helmfile for the target environment.
+5. Monitor logs until completion.
+6. Set `oneOffScriptJob.enabled: false` and apply again to avoid reruns on future deploys.
+
+Execution modes:
+
+- `scriptType: shell` runs `/bin/sh <scriptPath>`
+- `scriptType: python` runs `poetry run python <scriptPath>`
+
+Built-in validation script behavior:
+
+- Runs from `helmfile/charts/notify-jobs/files/one-off-script.sh` via ConfigMap mount.
+- A Python equivalent is available at `helmfile/charts/notify-jobs/files/one-off-script.py`.
+- Prints non-secret env values such as `NOTIFY_ENVIRONMENT`, `API_HOST_NAME`, and `AWS_REGION`.
+- Reports whether key secrets are present (`SQLALCHEMY_DATABASE_URI`, `SECRET_KEY`, `ADMIN_CLIENT_SECRET`, `REDIS_URL`) without printing secret values.
+- Emits heartbeat logs while simulating long-running work.
+- Duration is controlled by `oneOffScriptJob.extraEnv.DUMMY_SLEEP_SECONDS`.
+
+Long-run safety knobs:
+
+- `oneOffScriptJob.activeDeadlineSeconds`: hard timeout (default `43200` for 12 hours)
+- `oneOffScriptJob.backoffLimit`: retry count (`0` means do not retry)
+- `oneOffScriptJob.ttlSecondsAfterFinished`: cleanup time after completion
+
 ## Connecting to the database
 
 1. Get the database connection URI from the AWS console under RDS
