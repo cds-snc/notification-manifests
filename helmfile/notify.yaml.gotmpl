@@ -96,3 +96,14 @@ releases:
     chart: charts/notify-celery
     values:
     - ./overrides/notify/celery.yaml.gotmpl
+
+  - name: ipv4-geolocate
+    namespace: notification-canada-ca
+    labels:
+      app: ipv4-geolocate
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/ipv4-geolocate
+    values:
+    - ./overrides/system/ipv4-geolocate.yaml.gotmpl
