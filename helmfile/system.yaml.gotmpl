@@ -19,6 +19,24 @@ environments:
 helmDefaults:
   kubeContext: {{ .Environment.Name }}
 
+repositories:
+- name: secrets-store-csi-driver
+  url: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+- name: aws-secrets-manager
+  url: https://aws.github.io/secrets-store-csi-driver-provider-aws
+- name: stakater
+  url: https://stakater.github.io/stakater-charts
+- name: deliveryhero
+  url: https://charts.deliveryhero.io
+- name: prometheus-community
+  url: https://prometheus-community.github.io/helm-charts
+- name: okgolove
+  url: https://okgolove.github.io/helm-charts
+- name: fluent
+  url: https://fluent.github.io/helm-charts
+- name: jetstack
+  url: https://charts.jetstack.io
+
 releases:
   - name: karpenter-crd
     namespace: karpenter
