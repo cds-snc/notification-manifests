@@ -1,0 +1,109 @@
+environments:
+  sandbox:
+    values:
+      - ./overrides/sandbox.env
+  scratch:
+    values:
+      - ./overrides/scratch.env
+  dev:
+    values:
+      - ./overrides/dev.env
+  staging:
+    values:
+      - ./overrides/staging.env
+  production:
+    values:
+      - ./overrides/production.env
+---
+
+helmDefaults:
+  kubeContext: {{ .Environment.Name }}
+
+releases:
+  # Uses database-specific overrides
+  - name: notify-database
+    namespace: notification-canada-ca
+    labels:
+      app: notify-database
+      tier: database
+      category: deliverable
+      step: 4
+    chart: charts/notify-database
+    values:
+    - ./overrides/notify/database.yaml.gotmpl 
+
+  - name: notify-documentation
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-documentation
+      tier: frontend
+      category: documentation
+      step: 5
+    chart: charts/notify-documentation
+    values:
+    - ./overrides/notify/documentation.yaml.gotmpl
+
+  - name: notify-api
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-api
+      tier: backend
+      category: deliverable
+      step: 5
+    chart: charts/notify-api
+    values:
+    - ./overrides/notify/api.yaml.gotmpl
+
+  - name: notify-admin
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-admin
+      tier: fronteend
+      category: deliverable
+      step: 5
+    chart: charts/notify-admin
+    values:
+    - ./overrides/notify/admin.yaml.gotmpl
+
+  - name: notify-document-download
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-document-download
+      tier: backend
+      category: deliverable
+      step: 5
+    chart: charts/notify-document-download
+    values:
+    - ./overrides/notify/document-download.yaml.gotmpl
+
+  - name: notify-celery
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-celery
+      tier: backend
+      category: deliverable
+      step: 5
+    chart: charts/notify-celery
+    values:
+    - ./overrides/notify/celery.yaml.gotmpl
+
+  - name: ipv4-geolocate
+    namespace: notification-canada-ca
+    labels:
+      app: ipv4-geolocate
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/ipv4-geolocate
+    values:
+    - ./overrides/system/ipv4-geolocate.yaml.gotmpl
