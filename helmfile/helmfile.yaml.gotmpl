@@ -28,7 +28,572 @@ hooks:
       - "-c"
       - "kubectl create namespace notification-canada-ca --dry-run=client -o yaml | kubectl apply -f - && kubectl label namespace notification-canada-ca goldilocks.fairwinds.com/enabled=true --overwrite && kubectl label namespace notification-canada-ca elbv2.k8s.aws/pod-readiness-gate-inject=enabled --overwrite"
 
-helmfiles:
-  - path: notify.yaml.gotmpl
-  - path: system.yaml.gotmpl
-  - path: tools.yaml.gotmpl
+repositories:
+- name: secrets-store-csi-driver
+  url: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+- name: aws-secrets-manager 
+  url: https://aws.github.io/secrets-store-csi-driver-provider-aws
+- name: stakater 
+  url: https://stakater.github.io/stakater-charts
+- name: deliveryhero
+  url: https://charts.deliveryhero.io
+- name: prometheus-community
+  url: https://prometheus-community.github.io/helm-charts
+- name: okgolove
+  url: https://okgolove.github.io/helm-charts
+- name: fluent
+  url: https://fluent.github.io/helm-charts
+- name: jetstack
+  url: https://charts.jetstack.io
+- name: eks
+  url: https://aws.github.io/eks-charts
+- name: metrics-server
+  url: https://kubernetes-sigs.github.io/metrics-server/
+- name: fairwinds-stable
+  url: https://charts.fairwinds.com/stable
+- name: signoz
+  url: https://charts.signoz.io
+- name: opentelemetry
+  url: https://open-telemetry.github.io/opentelemetry-helm-charts
+- name: vmware-tanzu
+  url: https://vmware-tanzu.github.io/helm-charts
+- name: falco
+  url: https://falcosecurity.github.io/charts
+
+releases:
+  # Uses database-specific overrides
+  - name: notify-database
+    namespace: notification-canada-ca
+    labels:
+      app: notify-database
+      tier: database
+      category: deliverable
+      step: 4
+    chart: charts/notify-database
+    values:
+    - ./overrides/notify/database.yaml.gotmpl 
+
+  - name: notify-documentation
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-documentation
+      tier: frontend
+      category: documentation
+      step: 5
+    chart: charts/notify-documentation
+    values:
+    - ./overrides/notify/documentation.yaml.gotmpl
+
+  - name: notify-api
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-api
+      tier: backend
+      category: deliverable
+      step: 5
+    chart: charts/notify-api
+    values:
+    - ./overrides/notify/api.yaml.gotmpl
+
+  - name: notify-admin
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-admin
+      tier: fronteend
+      category: deliverable
+      step: 5
+    chart: charts/notify-admin
+    values:
+    - ./overrides/notify/admin.yaml.gotmpl
+
+  - name: notify-document-download
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-document-download
+      tier: backend
+      category: deliverable
+      step: 5
+    chart: charts/notify-document-download
+    values:
+    - ./overrides/notify/document-download.yaml.gotmpl
+
+  - name: notify-celery
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-celery
+      tier: backend
+      category: deliverable
+      step: 5
+    chart: charts/notify-celery
+    values:
+    - ./overrides/notify/celery.yaml.gotmpl
+
+  - name: k8s-event-logger
+    namespace: amazon-cloudwatch
+    labels:
+      app: k8s-event-logger
+      tier: full
+      category: monitoring
+      step: 2
+    chart: oci://ghcr.io/deliveryhero/helm-charts/k8s-event-logger
+    version: 1.1.8
+    values:
+      - ./overrides/system/k8s-event-logger.yaml.gotmpl
+
+  - name: karpenter-crd
+    namespace: karpenter
+    labels:
+      app: karpenter
+      tier: crd
+      category: system
+      step: 0
+    chart: oci://public.ecr.aws/karpenter/karpenter-crd
+    version: 1.3.2
+
+  - name: karpenter
+    namespace: karpenter
+    labels:
+      app: karpenter
+      tier: main
+      category: system
+      step: 1
+    chart: oci://public.ecr.aws/karpenter/karpenter
+    version: 1.3.2
+    values:
+    - ./overrides/system/karpenter.yaml.gotmpl
+
+  - name: karpenter-nodepool
+    namespace: karpenter
+    labels:
+      app: karpenter
+      tier: nodepool
+      category: system
+      step: 2
+    chart: charts/karpenter-nodepool
+    values:
+    - ./overrides/system/karpenter.yaml.gotmpl
+
+  - name: priority-classes
+    namespace: kube-system
+    labels:
+      app: priority-classes
+      tier: main
+      category: system
+      step: 0
+    chart: deliveryhero/priority-class
+    version: 0.1.1
+    values:
+    - ./overrides/system/priority-classes.yaml.gotmpl
+
+  - name: secrets-store-csi-driver
+    namespace: kube-system
+    labels:
+      app: secrets-csi
+      tier: full
+      category: system
+      step: 1
+    chart: secrets-store-csi-driver/secrets-store-csi-driver
+    version: 1.4.1
+    values:
+    - ./overrides/system/secrets-csi.yaml.gotmpl
+
+  - name: aws-secrets-provider
+    namespace: kube-system
+    labels:
+      app: aws-secrets
+      tier: full
+      category: system
+      step: 1
+    chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
+    version: 0.3.5
+    values:
+    - ./overrides/system/aws-secrets.yaml.gotmpl
+
+  - name: reloader
+    namespace: kube-system
+    labels:
+      app: reloader
+      tier: full
+      category: system
+      step: 1
+    chart: stakater/reloader
+    version: 2.2.7
+    values:
+    - ./overrides/system/reloader.yaml.gotmpl
+
+  - name: kube-state-metrics
+    namespace: kube-system
+    labels:
+      app: kube-state-metrics
+      tier: full
+      category: system
+      step: 2
+    chart: prometheus-community/kube-state-metrics
+    version: 6.3.0
+    values:
+    - ./overrides/system/kube-state-metrics.yaml.gotmpl
+
+  - name: blazer
+    namespace: tools
+    labels:
+      app: blazer
+      tier: front
+      category: tools
+      step: 3
+    chart: stakater/application
+    version: 2.3.2
+    values:
+    - ./overrides/tools/blazer.yaml.gotmpl
+
+  - name: ingress
+    namespace: nginx
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: nginx
+      tier: main
+      category: system
+      step: 4
+    chart: charts/nginx-ingress
+    values:
+    - ./overrides/system/nginx.yaml.gotmpl
+
+  - name: ingress-public
+    namespace: nginx-public
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: nginx-public
+      tier: main
+      category: system
+      step: 4
+    chart: charts/nginx-ingress
+    values:
+    - ./overrides/system/nginx-public.yaml.gotmpl
+
+  - name: xray-daemon
+    namespace: xray
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: xray-daemon
+      tier: metrics
+      category: tools
+      step: 1
+    chart: okgolove/aws-xray
+    version: 4.0.8
+    values:
+    - ./overrides/system/xray-daemon.yaml.gotmpl
+
+    # SYSTEM AND OTHER STUFF
+  - name: ipv4-geolocate
+    namespace: notification-canada-ca
+    labels:
+      app: ipv4-geolocate
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/ipv4-geolocate
+    values:
+    - ./overrides/system/ipv4-geolocate.yaml.gotmpl
+
+  - name: image-pull-secrets
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: image-pull-secrets
+      tier: secrets
+      category: system
+      step: 2
+    chart: charts/image-pull-secrets
+    values:
+    - ./overrides/system/image-pull-secrets.yaml.gotmpl
+
+  - name: fb-agent
+    namespace: amazon-cloudwatch
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: fb-agent
+      tier: system
+      category: tools
+      step: 1
+    chart: fluent/fluent-bit
+    version: 0.48.5
+    values:
+    - ./overrides/system/fluentbit-agent.yaml.gotmpl
+
+  - name: cert-manager
+    namespace: cert-manager
+    labels:
+      app: cert-manager
+      tier: backend
+      category: system
+      step: 2
+    chart: jetstack/cert-manager
+    version: v1.17.0
+    values:
+    - ./overrides/system/cert-manager.yaml.gotmpl
+
+  - name: aws-cloudwatch-agent
+    namespace: amazon-cloudwatch
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: aws-cloudwatch-agent
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/aws-cloudwatch
+    values:
+    - ./overrides/system/aws-cloudwatch-agent.yaml.gotmpl
+
+  - name: target-group-crds
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: crds
+      tier: crd
+      category: system
+      step: 0
+    chart: charts/targetgroup-crds
+
+  - name: aws-lb-controller
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: aws-lb-controller
+      tier: backend
+      category: system
+      step: 3
+    chart: eks/aws-load-balancer-controller
+    version: 3.1.0
+    values:
+    - ./overrides/system/aws-lb-controller.yaml.gotmpl    
+
+  - name: storage-class
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: storage-class
+      tier: backend
+      category: system
+      step: 0
+    chart: charts/storage-class
+    values:
+    - ./overrides/system/storage-class.yaml.gotmpl
+ 
+  - name: metrics-server
+    namespace: kube-system
+    labels:
+      app: metrics-server
+      tier: backend
+      category: system
+      step: 1
+    chart: metrics-server/metrics-server
+    version: 3.12.2
+    values:
+    - ./overrides/system/metrics-server.yaml.gotmpl
+
+  - name: nidhogg
+    namespace: kube-system
+    labels:
+      app: nidhogg
+      tier: backend
+      category: system
+      step: 1
+    chart: oci://ghcr.io/pelotech/charts/nidhogg
+    version: 0.6.6
+    values:
+    - ./overrides/system/nidhogg.yaml.gotmpl
+
+  - name: velero
+    namespace: velero
+    version: 11.1.1
+    disableValidationOnInstall: true
+    labels:
+      app: velero
+      tier: backup
+      category: system
+      step: 3
+    chart: vmware-tanzu/velero
+    values:
+    - ./overrides/system/velero.yaml.gotmpl 
+
+  - name: volume-snapshot-crds
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: crds
+      tier: crd
+      category: system
+      step: 0
+    chart: charts/volume-snapshot-crds
+
+  - name: volume-snapshot-class
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: volume-snapshot-class
+      tier: backend
+      category: system
+      step: 2
+    chart: charts/volume-snapshot-class
+
+  - name: snapshot-controller
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: snapshot-controller
+      tier: backend
+      category: system
+      step: 2
+    chart: charts/snapshot-controller
+
+  - name: falco
+    namespace: falco
+    installed: true
+    version: 8.0.1
+    labels:
+      app: falco
+      tier: full
+      category: security
+      step: 2
+    chart: falco/falco
+    values:
+    - ./overrides/system/falco.yaml.gotmpl
+
+  - name: falco-secret
+    namespace: falco
+    labels:
+      app: falco
+      tier: secret
+      category: security
+      step: 2
+    chart: charts/notify-secrets
+    values:
+    - ./overrides/system/falco.yaml.gotmpl
+
+  - name: vpa
+    namespace: kube-system
+    labels:
+      app: vpa
+      tier: backend
+      category: system
+      step: 1
+    chart: fairwinds-stable/vpa
+    version: 4.10.1
+    values:
+    - ./overrides/system/vpa.yaml.gotmpl
+
+  - name: goldilocks
+    namespace: goldilocks
+    labels:
+      app: goldilocks
+      tier: backend
+      category: system
+      step: 2
+    chart: fairwinds-stable/goldilocks
+    version: 10.2.0
+    values:
+    - ./overrides/system/goldilocks.yaml.gotmpl
+
+  - name: signoz
+    namespace: signoz
+    version: 0.110.0
+    disableValidationOnInstall: true
+    labels:
+      app: signoz
+      tier: full
+      category: system
+      step: 2
+    chart: signoz/signoz 
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl
+
+  - name: signoz-secret
+    namespace: signoz
+    version: 0.110.0
+    labels:
+      app: signoz
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/notify-secrets
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl
+
+  - name: opentelemetry-operator
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: opentelemetry-operator
+      tier: apm
+      category: system
+      step: 3
+    chart: opentelemetry/opentelemetry-operator
+    values:
+    - ./overrides/system/opentelemetry.yaml.gotmpl 
+
+  - name: signoz-k8s
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-k8s
+      tier: apm
+      category: system
+      step: 3
+    chart: signoz/k8s-infra 
+    values:
+    - ./overrides/system/signoz-k8s.yaml.gotmpl 
+
+  - name: signoz-telemetry
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-telemetry
+      tier: apm
+      category: system
+      step: 4
+    chart: charts/signoz-telemetry
+    values:
+    - ./overrides/system/signoz-telemetry.yaml.gotmpl
+
+  - name: signoz-importer
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-importer
+      tier: apm
+      category: system
+      step: 5
+    chart: charts/signoz-importer
+    values:
+    - ./overrides/system/signoz-importer.yaml.gotmpl
+
+  - name: prometheus-cloudwatch-exporter
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: prometheus-cloudwatch
+      tier: apm
+      category: system
+      step: 5
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-cloudwatch-exporter
+    version: 0.28.1
+    values:
+    - ./overrides/system/prometheus-cloudwatch-exporter.yaml.gotmpl
