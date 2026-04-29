@@ -1,0 +1,125 @@
+{{- if .Values.spotDeployment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "api.fullname" . }}-spot
+  labels:
+    app: {{ include "api.name" . }}
+    tier: spot
+spec:
+  {{- if not .Values.spotDeployment.autoscaling.enabled }}
+  replicas: {{ .Values.spotDeployment.replicaCount }}
+  {{- end }}
+  priorityClassName: {{ .Values.priorityClassName }}
+  strategy:
+    {{ toYaml .Values.updateStrategy | nindent 4 }}
+  selector:
+    matchLabels:
+      app: {{ include "api.name" . }}
+      tier: spot
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ include "api.name" . }}
+        tier: spot
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "api.serviceAccountName" . }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            # Includes common ENV Variables
+            {{- range $key, $val := .Values.api }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+            # Includes secret ENV Variables
+            {{- range $key, $val := .Values.apiSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: notify-api
+                  key: {{ $key }}
+            {{- end }}
+            - name: STATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          {{ if .Values.secretProviderClass.enabled}}
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          {{ end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - sleep {{ .Values.lifecycle.preStop.sleepSeconds | quote }}
+          readinessProbe:
+            httpGet:
+              path: /_status?simple=true
+              port: 6011
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
+            periodSeconds: 10
+            timeoutSeconds: 2
+            successThreshold: 2
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: "/_status?simple=true"
+              port: 6011
+            periodSeconds: 10
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 6
+          resources:
+            {{- if .Values.spotDeployment.resources }}
+            {{- toYaml .Values.spotDeployment.resources | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.resources | nindent 12 }}
+            {{- end }}
+      {{ if .Values.secretProviderClass.enabled}}
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "api.fullname" . }}
+      {{ end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.spotDeployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.spotDeployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
