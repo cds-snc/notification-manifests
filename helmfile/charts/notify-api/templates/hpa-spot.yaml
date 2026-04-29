@@ -1,0 +1,36 @@
+{{- if and .Values.spotDeployment.enabled .Values.spotDeployment.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "api.fullname" . }}-spot
+  labels:
+    {{- include "api.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "api.fullname" . }}-spot
+  minReplicas: {{ .Values.spotDeployment.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.spotDeployment.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.spotDeployment.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.spotDeployment.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.spotDeployment.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          averageUtilization: {{ .Values.spotDeployment.autoscaling.targetMemoryUtilizationPercentage }}
+          type: Utilization
+    {{- end }}
+  {{- if .Values.spotDeployment.autoscaling.behavior }}
+  behavior:
+    {{- toYaml .Values.spotDeployment.autoscaling.behavior | nindent 4 }}
+  {{- end }}
+{{- end }}

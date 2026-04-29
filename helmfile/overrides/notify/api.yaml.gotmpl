@@ -1,5 +1,6 @@
 api:
   #ENVIRONMENT SPECIFIC VARIABLES
+  GUNICORN_THREADS: "{{ .StateValues.API_GUNICORN_THREADS }}"
   GUNICORN_WORKER_CLASS: "{{ .StateValues.API_GUNICORN_WORKER_CLASS }}"
   GUNICORN_WORKERS: "{{ .StateValues.API_GUNICORN_WORKERS }}"
   GUNICORN_WORKER_CONNECTIONS: "{{ .StateValues.API_GUNICORN_WORKER_CONNECTIONS }}"
@@ -99,6 +100,11 @@ apiSecrets:
   WAF_SECRET: MANIFEST_WAF_SECRET
 
 
+replicaCount: 8
+
+autoscaling:
+  enabled: false
+
 image: 
   repository: "{{ .StateValues.API_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
@@ -129,12 +135,6 @@ resources:
     cpu: {{ if eq .Environment.Name "production" }} "1000m" {{ else if eq .Environment.Name "staging" }} "1000m" {{ else }} "1000m" {{ end }}
     memory: {{ if eq .Environment.Name "production" }} "2000Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "2000Mi" {{ end }}
 
-autoscaling:
-  enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 8 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 4 {{ end }}
-  maxReplicas: {{ if eq .Environment.Name "production" }} 8 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 4 {{ end }}
-  targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
-
 pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   minAvailable: 2
@@ -153,3 +153,33 @@ nodeSelector:
 verticalPodAutoscaler:
   enabled: true
 {{ end }}
+
+{{ if eq .Environment.Name "staging" }} 
+spotDeployment:
+  enabled: true
+  autoscaling:
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 150
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1000Mi
+    limits:
+      cpu: 2000m
+      memory: 2000Mi
+  tolerations:
+    - key: "spot"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values: ["spot"]
+{{ end }} 
+            
