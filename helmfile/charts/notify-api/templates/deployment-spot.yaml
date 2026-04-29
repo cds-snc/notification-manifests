@@ -110,7 +110,7 @@ spec:
             volumeAttributes:
               secretProviderClass: {{ include "api.fullname" . }}
       {{ end }}
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.spotDeployment.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}

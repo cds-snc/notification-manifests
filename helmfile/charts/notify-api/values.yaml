@@ -111,6 +111,7 @@ nodeSelector: {}
 spotDeployment:
   enabled: false
   replicaCount: 2
+  nodeSelector: {}
   autoscaling:
     enabled: true
     minReplicas: 2
