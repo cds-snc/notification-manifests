@@ -100,6 +100,11 @@ apiSecrets:
   WAF_SECRET: MANIFEST_WAF_SECRET
 
 
+replicaCount: 8
+
+autoscaling:
+  enabled: false
+
 image: 
   repository: "{{ .StateValues.API_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.API_DOCKER_TAG }}"
@@ -122,33 +127,6 @@ targetGroupBinding:
   enabled: true
   targetGroupARN: {{requiredEnv "API_TARGET_GROUP_ARN"}}
 
-{{ if eq .Release.Name "notify-api-scalable" }}
-autoscaling:
-  enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-  minReplicas: {{ if eq .Environment.Name "production" }} 8 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 4 {{ end }}
-  maxReplicas: {{ if eq .Environment.Name "production" }} 8 {{ else if eq .Environment.Name "staging" }} 8 {{ else }} 4 {{ end }}
-  targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 150 {{ else if eq .Environment.Name "staging" }} 150 {{ else }} 150 {{ end }}
-
-nodeSelector:
-  karpenter.sh/capacity-type: spot
-
-resources:
-  requests:
-    cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "500m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "1000Mi" {{ else if eq .Environment.Name "staging" }} "1000Mi" {{ else }} "1000Mi" {{ end }}
-  limits:
-    cpu: {{ if eq .Environment.Name "production" }} "1000m" {{ else if eq .Environment.Name "staging" }} "2000m" {{ else }} "1000m" {{ end }}
-    memory: {{ if eq .Environment.Name "production" }} "2000Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "2000Mi" {{ end }}
-
-{{ else }}
-
-autoscaling:
-  enabled: false
-
-replicaCount: 8
-nodeSelector:
-  eks.amazonaws.com/capacityType: ON_DEMAND
-
 resources:
   requests:
     cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "500m" {{ end }}
@@ -156,8 +134,6 @@ resources:
   limits:
     cpu: {{ if eq .Environment.Name "production" }} "1000m" {{ else if eq .Environment.Name "staging" }} "1000m" {{ else }} "1000m" {{ end }}
     memory: {{ if eq .Environment.Name "production" }} "2000Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "2000Mi" {{ end }}
-
-{{ end }} 
 
 pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -170,9 +146,40 @@ readinessProbe:
 livenessProbe:
   initialDelaySeconds: 60
 
-
+nodeSelector:
+  eks.amazonaws.com/capacityType: ON_DEMAND
 
 {{ if ne .Environment.Name "production" }}
 verticalPodAutoscaler:
   enabled: true
 {{ end }}
+
+{{ if eq .Environment.Name "staging" }} 
+spotDeployment:
+  enabled: true
+  autoscaling:
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 150
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1000Mi
+    limits:
+      cpu: 2000m
+      memory: 2000Mi
+  tolerations:
+    - key: "spot"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values: ["spot"]
+{{ end }} 
+            
