@@ -99,6 +99,19 @@ releases:
     values:
     - ./overrides/notify/api.yaml.gotmpl
 
+  - name: notify-api-scalable
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-api
+      tier: backend
+      category: deliverable
+      step: 5
+    chart: charts/notify-api
+    values:
+    - ./overrides/notify/api.yaml.gotmpl
+
   - name: notify-admin
     namespace: notification-canada-ca
     disableValidationOnInstall: true
