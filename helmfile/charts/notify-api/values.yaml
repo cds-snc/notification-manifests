@@ -81,6 +81,7 @@ autoscaling:
   minReplicas: 2
   maxReplicas: 2
   targetCPUUtilizationPercentage: 50
+  behavior: {}
 
 verticalPodAutoscaler:
   enabled: false
@@ -102,6 +103,24 @@ pdb:
   minAvailable: 2
 
 nodeSelector: {}
+
+# spotDeployment creates a second Deployment whose pods share the same Service
+# label selector as the main Deployment, so both pools serve traffic together.
+# Use tolerations/affinity here to target spot nodes; configure the main
+# Deployment's affinity to pin it to on-demand nodes.
+spotDeployment:
+  enabled: false
+  replicaCount: 2
+  nodeSelector: {}
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 50
+    behavior: {}
+  resources: {}
+  tolerations: []
+  affinity: {}
 
 targetGroupBinding:
   enabled: false
