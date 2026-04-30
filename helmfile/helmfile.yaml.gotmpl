@@ -101,7 +101,7 @@ releases:
 
   - name: notify-jobs
     namespace: notification-canada-ca
-    installed: {{ eq (env "RUN_NOTIFY_JOBS") "true" }}
+    installed: {{ or (eq .Environment.Name "staging") (eq .Environment.Name "dev") }}
     disableValidationOnInstall: true
     disableValidation: true
     labels:

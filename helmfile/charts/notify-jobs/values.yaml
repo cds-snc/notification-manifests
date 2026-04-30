@@ -36,23 +36,17 @@ dockerhub:
   username: "changeme"
   pat: "changeme"
 
-oneOffScriptJob:
-  enabled: false
-  runId: "manual"
-  useInlineScript: true
+cronJobDefaults:
+  suspend: false
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  useInlineScripts: true
   secretKeyRefOptional: true
-  # Supported values: shell, python
-  scriptType: "shell"
-  scriptPath: "/opt/one-off-script/one-off-script.sh"
   backoffLimit: 0
   restartPolicy: Never
   ttlSecondsAfterFinished: 604800
   activeDeadlineSeconds: 43200
-  # Optional explicit overrides; when empty, command/args are derived from scriptType/scriptPath.
-  command: []
-  args: []
-  extraEnv:
-    DUMMY_SLEEP_SECONDS: "120"
   resources:
     requests:
       cpu: "250m"
@@ -60,3 +54,6 @@ oneOffScriptJob:
     limits:
       cpu: "1000m"
       memory: "2Gi"
+
+scheduledScriptCronJobs:
+  []

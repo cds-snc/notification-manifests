@@ -1,0 +1,134 @@
+{{- $defaults := .Values.cronJobDefaults }}
+{{- range $job := .Values.scheduledScriptCronJobs }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "jobs.fullname" $ }}-{{ $job.name }}
+  labels:
+    {{- include "jobs.labels" $ | nindent 4 }}
+    app: {{ include "jobs.name" $ }}
+    app.kubernetes.io/component: scheduled-script
+spec:
+  schedule: {{ $job.schedule | quote }}
+  suspend: {{ default $defaults.suspend $job.suspend }}
+  concurrencyPolicy: {{ default $defaults.concurrencyPolicy $job.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ default $defaults.successfulJobsHistoryLimit $job.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ default $defaults.failedJobsHistoryLimit $job.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ default $defaults.backoffLimit $job.backoffLimit }}
+      ttlSecondsAfterFinished: {{ default $defaults.ttlSecondsAfterFinished $job.ttlSecondsAfterFinished }}
+      activeDeadlineSeconds: {{ default $defaults.activeDeadlineSeconds $job.activeDeadlineSeconds }}
+      template:
+        metadata:
+          {{- with $.Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          labels:
+            app: {{ include "jobs.name" $ }}
+            app.kubernetes.io/component: scheduled-script
+        spec:
+          {{- with $.Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          serviceAccountName: {{ include "jobs.serviceAccountName" $ }}
+          restartPolicy: {{ default $defaults.restartPolicy $job.restartPolicy }}
+          terminationGracePeriodSeconds: {{ $.Values.terminationGracePeriodSeconds }}
+          securityContext:
+            {{- toYaml $.Values.podSecurityContext | nindent 12 }}
+          containers:
+            - name: {{ $job.name }}
+              securityContext:
+                {{- toYaml $.Values.securityContext | nindent 16 }}
+              image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
+              imagePullPolicy: {{ $.Values.image.pullPolicy }}
+              {{- if gt (len $job.command) 0 }}
+              command:
+                {{- toYaml $job.command | nindent 16 }}
+              {{- else if eq $job.scriptType "python" }}
+              command:
+                - "poetry"
+                - "run"
+                - "python"
+              {{- else }}
+              command:
+                - "/bin/sh"
+              {{- end }}
+              {{- if gt (len $job.args) 0 }}
+              args:
+                {{- toYaml $job.args | nindent 16 }}
+              {{- else }}
+              args:
+                - {{ $job.scriptPath | quote }}
+              {{- end }}
+              env:
+                {{- range $key, $val := $.Values.api }}
+                - name: {{ $key }}
+                  value: {{ $val | quote }}
+                {{- end }}
+                {{- range $key, $val := $.Values.apiSecrets }}
+                - name: {{ $key }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $.Values.secretProviderClass.secretname }}
+                      key: {{ $key }}
+                      optional: {{ default $defaults.secretKeyRefOptional $job.secretKeyRefOptional }}
+                {{- end }}
+                {{- range $key, $val := $job.extraEnv }}
+                - name: {{ $key }}
+                  value: {{ $val | quote }}
+                {{- end }}
+                - name: STATSD_HOST
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: spec.nodeName
+              {{- if default $defaults.useInlineScripts $job.useInlineScripts }}
+              volumeMounts:
+                - name: notify-job-scripts
+                  mountPath: "/opt/notify-jobs-scripts"
+                  readOnly: true
+              {{- end }}
+              {{- if $.Values.secretProviderClass.enabled }}
+              {{- if not (default $defaults.useInlineScripts $job.useInlineScripts) }}
+              volumeMounts:
+              {{- end }}
+                - name: secrets-store-inline
+                  mountPath: "/mnt/secrets-store"
+                  readOnly: true
+              {{- end }}
+              resources:
+                {{- toYaml (default $defaults.resources $job.resources) | nindent 16 }}
+          {{- if default $defaults.useInlineScripts $job.useInlineScripts }}
+          volumes:
+            - name: notify-job-scripts
+              configMap:
+                name: {{ include "jobs.fullname" $ }}-scripts
+                defaultMode: 0555
+          {{- end }}
+          {{- if $.Values.secretProviderClass.enabled }}
+          {{- if not (default $defaults.useInlineScripts $job.useInlineScripts) }}
+          volumes:
+          {{- end }}
+            - name: secrets-store-inline
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: {{ include "jobs.fullname" $ }}
+          {{- end }}
+          {{- with $.Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $.Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+---
+{{- end }}

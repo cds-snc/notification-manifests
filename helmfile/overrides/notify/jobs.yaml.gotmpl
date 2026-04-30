@@ -9,24 +9,17 @@ secretProviderClass:
   enabled: false
   provider: aws
 
-oneOffScriptJob:
-  enabled: false
-  # Change runId each time you want to execute a new one-off run.
-  runId: "unique-id-always-xxx-1"
-  useInlineScript: true
+cronJobDefaults:
+  suspend: false
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  useInlineScripts: true
   secretKeyRefOptional: true
-  # Supported values: shell, python
-  scriptType: "python"
-  scriptPath: "/opt/one-off-script/one-off-script.py"
   backoffLimit: 0
   restartPolicy: Never
   ttlSecondsAfterFinished: 604800
   activeDeadlineSeconds: 43200
-  # Leave empty to auto-build from scriptType/scriptPath.
-  command: []
-  args: []
-  extraEnv:
-    DUMMY_SLEEP_SECONDS: "30"
   resources:
     requests:
       cpu: "250m"
@@ -34,3 +27,17 @@ oneOffScriptJob:
     limits:
       cpu: "1000m"
       memory: "2Gi"
+
+scheduledScriptCronJobs:
+  - name: dummy-report-a
+    schedule: "0 6 * * *"
+    scriptType: "python"
+    scriptPath: "/opt/notify-jobs-scripts/dummy-report-a.py"
+  - name: dummy-report-b
+    schedule: "5 6 * * *"
+    scriptType: "python"
+    scriptPath: "/opt/notify-jobs-scripts/dummy-report-b.py"
+  - name: dummy-maintenance-c
+    schedule: "10 6 * * *"
+    scriptType: "shell"
+    scriptPath: "/opt/notify-jobs-scripts/dummy-maintenance-c.sh"
