@@ -44,7 +44,7 @@ spec:
                 {{- toYaml $.Values.securityContext | nindent 16 }}
               image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
               imagePullPolicy: {{ $.Values.image.pullPolicy }}
-              {{- if gt (len $job.command) 0 }}
+              {{- if and $job.command (gt (len $job.command) 0) }}
               command:
                 {{- toYaml $job.command | nindent 16 }}
               {{- else if eq $job.scriptType "python" }}
@@ -56,7 +56,7 @@ spec:
               command:
                 - "/bin/sh"
               {{- end }}
-              {{- if gt (len $job.args) 0 }}
+              {{- if and $job.args (gt (len $job.args) 0) }}
               args:
                 {{- toYaml $job.args | nindent 16 }}
               {{- else }}
