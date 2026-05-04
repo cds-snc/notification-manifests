@@ -99,6 +99,21 @@ releases:
     values:
     - ./overrides/notify/api.yaml.gotmpl
 
+  - name: notify-jobs
+    namespace: notification-canada-ca
+    installed: {{ or (eq .Environment.Name "staging") (eq .Environment.Name "dev") }}
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-jobs
+      tier: backend
+      category: deliverable
+      step: 5
+    chart: charts/notify-jobs
+    values:
+    - ./overrides/notify/api.yaml.gotmpl
+    - ./overrides/notify/jobs.yaml.gotmpl
+
   - name: notify-admin
     namespace: notification-canada-ca
     disableValidationOnInstall: true
