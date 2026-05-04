@@ -16,7 +16,7 @@ updateStrategy:
     maxSurge: 25%
     maxUnavailable: 25%
 
-priorityClassName: high-priority
+priorityClassName: celery
 
 terminationGracePeriodSeconds: 120
 
