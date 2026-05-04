@@ -41,3 +41,10 @@ scheduledScriptCronJobs:
     schedule: "10 6 * * *"
     scriptType: "shell"
     scriptPath: "/opt/notify-jobs-scripts/dummy-maintenance-c.sh"
+  # Seeds the staging DB with ~1.5M non-PII live notifications once per day.
+  # Targets the performance-testing service (8dad0c16-…).
+  # SQLALCHEMY_DATABASE_URI is injected from the notify-api secret above.
+  - name: seed-staging-data
+    schedule: "0 2 * * *"
+    scriptType: "shell"
+    scriptPath: "/opt/notify-jobs-scripts/seed-staging-data.sh"
