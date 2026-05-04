@@ -1,0 +1,6 @@
+apiVersion: v2
+name: notify-jobs
+description: One-off and long-running jobs for Notify
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
