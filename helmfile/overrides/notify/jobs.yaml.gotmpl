@@ -1,0 +1,50 @@
+serviceAccount:
+  create: true
+  name: notify-jobs
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/api-eks-role
+
+secretProviderClass:
+  secretname: notify-api
+  enabled: false
+  provider: aws
+
+cronJobDefaults:
+  suspend: false
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  useInlineScripts: true
+  secretKeyRefOptional: true
+  backoffLimit: 0
+  restartPolicy: Never
+  ttlSecondsAfterFinished: 604800
+  activeDeadlineSeconds: 43200
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+
+scheduledScriptCronJobs:
+  - name: dummy-report-a
+    schedule: "0 6 * * *"
+    scriptType: "python"
+    scriptPath: "/opt/notify-jobs-scripts/dummy-report-a.py"
+  - name: dummy-report-b
+    schedule: "5 6 * * *"
+    scriptType: "python"
+    scriptPath: "/opt/notify-jobs-scripts/dummy-report-b.py"
+  - name: dummy-maintenance-c
+    schedule: "10 6 * * *"
+    scriptType: "shell"
+    scriptPath: "/opt/notify-jobs-scripts/dummy-maintenance-c.sh"
+  # Seeds the staging DB with ~1.5M non-PII live notifications once per day.
+  # Targets the performance-testing service (8dad0c16-…).
+  # SQLALCHEMY_DATABASE_URI is injected from the notify-api secret above.
+  - name: seed-staging-data
+    schedule: "0 2 * * *"
+    scriptType: "shell"
+    scriptPath: "/opt/notify-jobs-scripts/seed-staging-data.sh"
