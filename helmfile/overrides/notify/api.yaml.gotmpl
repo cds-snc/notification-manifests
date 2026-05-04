@@ -132,7 +132,7 @@ resources:
     cpu: {{ if eq .Environment.Name "production" }} "500m" {{ else if eq .Environment.Name "staging" }} "500m" {{ else }} "500m" {{ end }}
     memory: {{ if eq .Environment.Name "production" }} "1000Mi" {{ else if eq .Environment.Name "staging" }} "1000Mi" {{ else }} "1000Mi" {{ end }}
   limits:
-    cpu: {{ if eq .Environment.Name "production" }} "1000m" {{ else if eq .Environment.Name "staging" }} "1000m" {{ else }} "1000m" {{ end }}
+    cpu: {{ if eq .Environment.Name "production" }} "1000m" {{ else if eq .Environment.Name "staging" }} "1200m" {{ else }} "1000m" {{ end }}
     memory: {{ if eq .Environment.Name "production" }} "2000Mi" {{ else if eq .Environment.Name "staging" }} "2000Mi" {{ else }} "2000Mi" {{ end }}
 
 pdb:

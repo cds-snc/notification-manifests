@@ -82,7 +82,7 @@ spec:
             httpGet:
               path: /_status?simple=true
               port: 6011
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
+            initialDelaySeconds: 15
             periodSeconds: 10
             timeoutSeconds: 2
             successThreshold: 2
@@ -91,6 +91,7 @@ spec:
             httpGet:
               path: "/_status?simple=true"
               port: 6011
+            initialDelaySeconds: 15
             periodSeconds: 10
             timeoutSeconds: 2
             successThreshold: 1
