@@ -35,6 +35,42 @@ SECRET_NAME_FOR_ENV_PASSED_TO_CONTAINER: SECRET_NAME_READ_FROM_AWS_SECRETS_MANAG
 
 If you've updated a secret in the 1password "single source of truth" -- that change will be reflected in AWS Secrets Manager during the next terraform release, and can then subsequently be consumed by our manifests workflows outlined here.
 
+## Running Scheduled Scripts In Kubernetes
+
+Use the dedicated `notify-jobs` chart with `helmfile/overrides/notify/jobs.yaml.gotmpl`.
+This runs as a Helm-managed `CronJob` in staging and still consumes `api` plus `apiSecrets` values from `helmfile/overrides/notify/api.yaml.gotmpl`.
+
+Safety guard:
+
+- The `notify-jobs` Helmfile release is installed only for `--environment staging`.
+- `dev` and `production` do not install this release.
+
+Scheduled behavior:
+
+1. Add script files under `helmfile/charts/notify-jobs/scripts/`.
+2. Add one entry per script in `scheduledScriptCronJobs` in `helmfile/overrides/notify/jobs.yaml.gotmpl`.
+3. Set `name`, `schedule`, `scriptType`, and `scriptPath` for each script.
+4. Deploy with normal staging Helmfile apply.
+
+Execution modes:
+
+- `scriptType: shell` runs `/bin/sh <scriptPath>`
+- `scriptType: python` runs `poetry run python <scriptPath>`
+
+Built-in validation script behavior:
+
+- Three dummy scheduled scripts are included:
+	- `dummy-report-a.py`
+	- `dummy-report-b.py`
+	- `dummy-maintenance-c.sh`
+- All scripts under `helmfile/charts/notify-jobs/scripts/` are mounted into the job pods at `/opt/notify-jobs-scripts`.
+
+Long-run safety knobs:
+
+- `cronJobDefaults.activeDeadlineSeconds`: hard timeout (default `43200` for 12 hours)
+- `cronJobDefaults.backoffLimit`: retry count (`0` means do not retry)
+- `cronJobDefaults.ttlSecondsAfterFinished`: cleanup time after completion
+
 ## Connecting to the database
 
 1. Get the database connection URI from the AWS console under RDS
