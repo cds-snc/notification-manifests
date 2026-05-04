@@ -9,11 +9,6 @@ secretProviderClass:
   enabled: false
   provider: aws
 
-# Secrets injected into every CronJob container via secretKeyRef from the
-# notify-api Kubernetes Secret (created by the API helmfile release).
-apiSecrets:
-  SQLALCHEMY_DATABASE_URI: ""
-
 cronJobDefaults:
   suspend: false
   concurrencyPolicy: Forbid
