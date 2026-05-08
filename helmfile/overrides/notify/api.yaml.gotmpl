@@ -183,3 +183,15 @@ spotDeployment:
                 values: ["spot"]
 {{ end }} 
             
+{{ if eq .Environment.Name "dev" }}
+ingress:
+  annotations: {}
+  className: "nginx-public"
+  enabled: true
+  hosts:
+      - host: api.gateway.{{ requiredEnv "BASE_DOMAIN" }}
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            port: 6012
+{{ end }}
