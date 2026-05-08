@@ -102,6 +102,19 @@ autoscaling:
   maxReplicas: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 3 {{ end }}
   targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 50 {{ else if eq .Environment.Name "staging" }} 50 {{ else }} 50 {{ end }}
 
+{{ if eq .Environment.Name "dev" }}
+ingress:
+  annotations: {}
+  className: "nginx-public"
+  enabled: true
+  hosts:
+      - host: admin.gateway.{{ requiredEnv "BASE_DOMAIN" }}
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            port: 6012
+{{ end }}
+
 pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   minAvailable: 2

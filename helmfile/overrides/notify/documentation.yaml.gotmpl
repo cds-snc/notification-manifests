@@ -27,3 +27,16 @@ limits:
 verticalPodAutoscaler:
   enabled: true
 {{ end }}
+
+{{ if eq .Environment.Name "dev" }}
+ingress:
+  annotations: {}
+  className: "nginx-public"
+  enabled: true
+  hosts:
+      - host: documentation.gateway.{{ requiredEnv "BASE_DOMAIN" }}
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            port: 80
+{{ end }}

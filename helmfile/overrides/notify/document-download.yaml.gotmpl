@@ -63,3 +63,16 @@ pdb:
 verticalPodAutoscaler:
   enabled: true
 {{ end }}
+
+{{ if eq .Environment.Name "dev" }}
+ingress:
+  annotations: {}
+  className: "nginx-public"
+  enabled: true
+  hosts:
+      - host: document-download.gateway.{{ requiredEnv "BASE_DOMAIN" }}
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            port: 7000
+{{ end }}
