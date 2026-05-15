@@ -59,6 +59,8 @@ repositories:
   url: https://vmware-tanzu.github.io/helm-charts
 - name: falco
   url: https://falcosecurity.github.io/charts
+- name: linkerd
+  url: https://helm.linkerd.io/stable
 
 releases:
   # Uses database-specific overrides
@@ -553,6 +555,7 @@ releases:
     - ./overrides/system/signoz.yaml.gotmpl
 
   - name: opentelemetry-operator
+    version: 0.112.1
     namespace: signoz
     disableValidationOnInstall: true
     labels:
@@ -566,17 +569,19 @@ releases:
 
   - name: signoz-k8s
     namespace: signoz
+    version: 0.15.1
     disableValidationOnInstall: true
     labels:
       app: signoz-k8s
       tier: apm
       category: system
       step: 3
-    chart: signoz/k8s-infra 
+    chart: signoz/k8s-infra
     values:
     - ./overrides/system/signoz-k8s.yaml.gotmpl 
 
   - name: signoz-telemetry
+    version: 0.1.0
     namespace: signoz
     disableValidationOnInstall: true
     labels:
@@ -589,6 +594,7 @@ releases:
     - ./overrides/system/signoz-telemetry.yaml.gotmpl
 
   - name: signoz-importer
+    version: 1.0.0
     namespace: signoz
     disableValidationOnInstall: true
     labels:
