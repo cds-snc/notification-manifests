@@ -576,8 +576,7 @@ releases:
       tier: apm
       category: system
       step: 3
-    chart: signoz/k8s-infrakubectl delete mutatingwebhookconfiguration opentelemetry-operator-mutation --ignore-not-found
-kubectl delete validatingwebhookconfiguration opentelemetry-operator-validation --ignore-not-found
+    chart: signoz/k8s-infra
     values:
     - ./overrides/system/signoz-k8s.yaml.gotmpl 
 
