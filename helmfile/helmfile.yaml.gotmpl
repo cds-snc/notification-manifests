@@ -567,7 +567,7 @@ releases:
     values:
     - ./overrides/system/opentelemetry.yaml.gotmpl 
 
-  - name: signoz-k8s
+  - name: signoz-k8
     namespace: signoz
     version: 0.15.1
     disableValidationOnInstall: true
@@ -576,7 +576,8 @@ releases:
       tier: apm
       category: system
       step: 3
-    chart: signoz/k8s-infra
+    chart: signoz/k8s-infrakubectl delete mutatingwebhookconfiguration opentelemetry-operator-mutation --ignore-not-found
+kubectl delete validatingwebhookconfiguration opentelemetry-operator-validation --ignore-not-found
     values:
     - ./overrides/system/signoz-k8s.yaml.gotmpl 
 
@@ -618,74 +619,3 @@ releases:
     version: 0.28.1
     values:
     - ./overrides/system/prometheus-cloudwatch-exporter.yaml.gotmpl
-
-  - name: linkerd-certs
-    namespace: linkerd
-    disableValidationOnInstall: true
-    disableValidation: true
-    needs:
-      - cert-manager/cert-manager
-    labels:
-      app: linkerd
-      tier: certs
-      category: system
-      step: 0
-    chart: charts/linkerd-certs
-
-  - name: linkerd-crds
-    namespace: linkerd
-    disableValidationOnInstall: true
-    disableValidation: true
-    needs:
-      - linkerd/linkerd-certs
-    labels:
-      app: linkerd
-      tier: crd
-      category: system
-      step: 1
-    chart: linkerd/linkerd-crds
-
-  - name: linkerd-control-plane
-    namespace: linkerd
-    disableValidationOnInstall: true
-    disableValidation: true
-    needs:
-      - linkerd/linkerd-crds
-    labels:
-      app: linkerd
-      tier: main
-      category: system
-      step: 2
-    chart: linkerd/linkerd-control-plane
-    values:
-    - ./overrides/system/linkerd.yaml.gotmpl
-
-  - name: linkerd-viz
-    namespace: linkerd-viz
-    disableValidationOnInstall: true
-    disableValidation: true
-    needs:
-      - linkerd/linkerd-control-plane
-    labels:
-      app: linkerd
-      tier: viz
-      category: system
-      step: 3
-    chart: linkerd/linkerd-viz
-    values:
-    - ./overrides/system/linkerd-viz.yaml.gotmpl
-
-  - name: linkerd-viz-ingress
-    namespace: linkerd-viz
-    disableValidationOnInstall: true
-    disableValidation: true
-    needs:
-      - linkerd-viz/linkerd-viz
-    labels:
-      app: linkerd
-      tier: ingress
-      category: system
-      step: 4
-    chart: charts/linkerd-viz-ingress
-    values:
-    - ./overrides/system/linkerd-viz-ingress.yaml.gotmpl
