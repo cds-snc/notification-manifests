@@ -221,7 +221,7 @@ releases:
       category: system
       step: 1
     chart: secrets-store-csi-driver/secrets-store-csi-driver
-    version: 1.4.1
+    version: 1.6.0
     values:
     - ./overrides/system/secrets-csi.yaml.gotmpl
 
@@ -266,7 +266,7 @@ releases:
       category: system
       step: 2
     chart: prometheus-community/kube-state-metrics
-    version: 6.3.0
+    version: 6.4.2
     values:
     - ./overrides/system/kube-state-metrics.yaml.gotmpl
 
@@ -357,7 +357,7 @@ releases:
       category: tools
       step: 1
     chart: fluent/fluent-bit
-    version: 0.48.5
+    version: 0.57.5
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
 
@@ -369,7 +369,7 @@ releases:
       category: system
       step: 2
     chart: jetstack/cert-manager
-    version: v1.17.0
+    version: v1.20.2
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
@@ -406,7 +406,7 @@ releases:
       category: system
       step: 3
     chart: eks/aws-load-balancer-controller
-    version: 3.1.0
+    version: 3.3.0
     values:
     - ./overrides/system/aws-lb-controller.yaml.gotmpl    
 
@@ -431,7 +431,7 @@ releases:
       category: system
       step: 1
     chart: metrics-server/metrics-server
-    version: 3.12.2
+    version: 3.13.0
     values:
     - ./overrides/system/metrics-server.yaml.gotmpl
 
@@ -449,7 +449,7 @@ releases:
 
   - name: velero
     namespace: velero
-    version: 11.1.1
+    version: 11.4.0
     disableValidationOnInstall: true
     labels:
       app: velero
@@ -523,7 +523,7 @@ releases:
       category: system
       step: 1
     chart: fairwinds-stable/vpa
-    version: 4.10.1
+    version: 4.11.0
     values:
     - ./overrides/system/vpa.yaml.gotmpl
 
@@ -535,13 +535,13 @@ releases:
       category: system
       step: 2
     chart: fairwinds-stable/goldilocks
-    version: 10.2.0
+    version: 10.3.0
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
 
   - name: signoz
     namespace: signoz
-    version: 0.110.0
+    version: 0.122.0
     disableValidationOnInstall: true
     labels:
       app: signoz
@@ -565,7 +565,7 @@ releases:
     - ./overrides/system/signoz.yaml.gotmpl
 
   - name: opentelemetry-operator
-    version: 0.112.1
+    version: 0.113.0
     namespace: signoz
     disableValidationOnInstall: true
     labels:
@@ -579,7 +579,7 @@ releases:
 
   - name: signoz-k8s
     namespace: signoz
-    version: 0.15.1
+    version: 0.16.0
     disableValidationOnInstall: true
     labels:
       app: signoz-k8s
