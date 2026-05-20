@@ -214,6 +214,7 @@ releases:
 
   - name: secrets-store-csi-driver
     namespace: kube-system
+    installed: false
     labels:
       app: secrets-csi
       tier: full
@@ -226,13 +227,22 @@ releases:
 
   - name: aws-secrets-provider
     namespace: kube-system
+    needs:
+      - kube-system/secrets-store-csi-driver
     labels:
       app: aws-secrets
       tier: full
       category: system
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 0.3.5
+    version: 3.1.0
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "sh"
+        args:
+          - "-c"
+          - "kubectl wait --for=delete pod -l app.kubernetes.io/name=secrets-store-csi-driver -n kube-system --timeout=120s 2>/dev/null || true"
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
