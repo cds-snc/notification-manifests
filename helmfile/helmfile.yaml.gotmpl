@@ -29,8 +29,6 @@ hooks:
       - "kubectl create namespace notification-canada-ca --dry-run=client -o yaml | kubectl apply -f - && kubectl label namespace notification-canada-ca goldilocks.fairwinds.com/enabled=true --overwrite && kubectl label namespace notification-canada-ca elbv2.k8s.aws/pod-readiness-gate-inject=enabled --overwrite"
 
 repositories:
-- name: secrets-store-csi-driver
-  url: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
 - name: aws-secrets-manager 
   url: https://aws.github.io/secrets-store-csi-driver-provider-aws
 - name: stakater 
@@ -212,23 +210,8 @@ releases:
     values:
     - ./overrides/system/priority-classes.yaml.gotmpl
 
-  - name: secrets-store-csi-driver
-    namespace: kube-system
-    installed: false
-    labels:
-      app: secrets-csi
-      tier: full
-      category: system
-      step: 1
-    chart: secrets-store-csi-driver/secrets-store-csi-driver
-    version: 1.4.1
-    values:
-    - ./overrides/system/secrets-csi.yaml.gotmpl
-
   - name: aws-secrets-provider
     namespace: kube-system
-    needs:
-      - kube-system/secrets-store-csi-driver
     labels:
       app: aws-secrets
       tier: full
@@ -236,13 +219,6 @@ releases:
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
     version: 3.1.0
-    hooks:
-      - events: ["presync"]
-        showlogs: true
-        command: "sh"
-        args:
-          - "-c"
-          - "kubectl wait --for=delete pod -l app.kubernetes.io/name=secrets-store-csi-driver -n kube-system --timeout=120s 2>/dev/null || true"
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
