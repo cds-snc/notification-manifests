@@ -99,11 +99,11 @@ nodes:
       terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
       resources:
         requests:
-          cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "15m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "1169M" {{ else }} "800Mi" {{ end }}
+          cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "50m" {{ else }} "100m" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "1170" {{ else }} "800Mi" {{ end }}
         limits:
-          cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "126m" {{ else }} "550m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1178M" {{ else }} "1024Mi" {{ end }}
+          cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "50m" {{ else }} "550m" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1170M" {{ else }} "1024Mi" {{ end }}
       replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
@@ -160,11 +160,11 @@ nodes:
       replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       resources:
         requests:
-          cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "15m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "1169M" {{ else }} "800Mi" {{ end }}
+          cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "50m" {{ else }} "100m" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "1170M" {{ else }} "800Mi" {{ end }}
         limits:
-          cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "144m" {{ else }} "550m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1178M" {{ else }} "1024Mi" {{ end }}
+          cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "50m" {{ else }} "550m" {{ end }}
+          memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1170M" {{ else }} "1024Mi" {{ end }}
     autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
