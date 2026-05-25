@@ -39,6 +39,13 @@ nodes:
       minAvailable: 2
     autoscaling:
       hpaEnabled: false
+      minReplicas: 3
+      maxReplicas: 30
+      targetCPUUtilizationPercentage: 25
+      targetMemoryUtilizationPercentage: 0
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+      stabilizationWindowSeconds: 90
     service:
       serviceEnabled: true
   # CELERY FOR SENDING EMAILS
@@ -64,6 +71,13 @@ nodes:
       minAvailable: 2
     autoscaling:
       hpaEnabled: false
+      minReplicas: 3
+      maxReplicas: 30
+      targetCPUUtilizationPercentage: 25
+      targetMemoryUtilizationPercentage: 0
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+      stabilizationWindowSeconds: 90
     service:
       serviceEnabled: true
   # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
@@ -89,6 +103,13 @@ nodes:
       minAvailable: 2
     autoscaling:
       hpaEnabled: false
+      minReplicas: 3
+      maxReplicas: 30
+      targetCPUUtilizationPercentage: 25
+      targetMemoryUtilizationPercentage: 0
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+      stabilizationWindowSeconds: 90
     service:
       serviceEnabled: true
   # CELERY FOR SENDING SMS WITH FAIR QUEUES
