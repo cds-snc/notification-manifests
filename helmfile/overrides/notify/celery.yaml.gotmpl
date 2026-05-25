@@ -111,7 +111,7 @@ nodes:
     autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} false {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
-      maxReplicas: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
+      maxReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
       targetMemoryUtilizationPercentage: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 80 {{ else }} 80 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
@@ -135,7 +135,7 @@ nodes:
     autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} false {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
-      maxReplicas: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
+      maxReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
       targetMemoryUtilizationPercentage: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 80 {{ else }} 80 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
@@ -159,7 +159,7 @@ nodes:
     autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} false {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
-      maxReplicas: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
+      maxReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
       targetMemoryUtilizationPercentage: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 80 {{ else }} 80 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}

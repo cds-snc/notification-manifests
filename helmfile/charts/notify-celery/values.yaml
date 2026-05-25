@@ -40,7 +40,7 @@ nodes:
     autoscaling:
       hpaEnabled: false
       minReplicas: 3
-      maxReplicas: 30
+      maxReplicas: 3
       targetCPUUtilizationPercentage: 25
       targetMemoryUtilizationPercentage: 0
       scaleUpPodsValue: 6
@@ -72,7 +72,7 @@ nodes:
     autoscaling:
       hpaEnabled: false
       minReplicas: 3
-      maxReplicas: 30
+      maxReplicas: 3
       targetCPUUtilizationPercentage: 25
       targetMemoryUtilizationPercentage: 0
       scaleUpPodsValue: 6
@@ -104,7 +104,7 @@ nodes:
     autoscaling:
       hpaEnabled: false
       minReplicas: 3
-      maxReplicas: 30
+      maxReplicas: 3
       targetCPUUtilizationPercentage: 25
       targetMemoryUtilizationPercentage: 0
       scaleUpPodsValue: 6
