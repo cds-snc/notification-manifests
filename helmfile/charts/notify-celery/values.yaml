@@ -181,6 +181,7 @@ nodes:
       minReplicas: 3
       maxReplicas: 30
       targetCPUUtilizationPercentage: 25
+      targetMemoryUtilizationPercentage: 0
       scaleUpPodsValue: 6
       scaleUpPeriodSeconds: 45
     pdb:
@@ -211,6 +212,7 @@ nodes:
       minReplicas: 3
       maxReplicas: 10
       targetCPUUtilizationPercentage: 25
+      targetMemoryUtilizationPercentage: 0
       scaleUpPodsValue: 6
       scaleUpPeriodSeconds: 45
     pdb:
@@ -241,6 +243,7 @@ nodes:
       minReplicas: 3
       maxReplicas: 30
       targetCPUUtilizationPercentage: 25
+      targetMemoryUtilizationPercentage: 0
       scaleUpPodsValue: 6
       scaleUpPeriodSeconds: 45
     pdb:
@@ -271,6 +274,7 @@ nodes:
       minReplicas: 3
       maxReplicas: 3
       targetCPUUtilizationPercentage: 25
+      targetMemoryUtilizationPercentage: 0
       scaleUpPodsValue: 6
       scaleUpPeriodSeconds: 45
     pdb:

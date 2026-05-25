@@ -170,6 +170,7 @@ nodes:
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       maxReplicas: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
+      targetMemoryUtilizationPercentage: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 80 {{ else }} 80 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 90 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 90 {{ end }}
@@ -193,6 +194,7 @@ nodes:
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       maxReplicas: {{ if eq .Environment.Name "production" }} 10 {{ else if eq .Environment.Name "staging" }} 10 {{ else }} 10 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
+      targetMemoryUtilizationPercentage: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 80 {{ else }} 80 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 90 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 90 {{ end }}
@@ -216,6 +218,7 @@ nodes:
       minReplicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       maxReplicas: {{ if eq .Environment.Name "production" }} 30 {{ else if eq .Environment.Name "staging" }} 30 {{ else }} 30 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
+      targetMemoryUtilizationPercentage: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 80 {{ else }} 80 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 90 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 90 {{ end }}
@@ -239,6 +242,7 @@ nodes:
       minReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
       maxReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
+      targetMemoryUtilizationPercentage: {{ if eq .Environment.Name "production" }} 0 {{ else if eq .Environment.Name "staging" }} 80 {{ else }} 80 {{ end }}
       scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 90 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 90 {{ end }}
