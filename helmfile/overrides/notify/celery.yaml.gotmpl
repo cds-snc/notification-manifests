@@ -30,6 +30,8 @@ celeryCommon:
   AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
   BATCH_INSERTION_CHUNK_SIZE: "10"
   CELERY_CONCURRENCY: "4"
+  CELERY_TASK_SOFT_TIME_LIMIT: "{{ .StateValues.CELERY_TASK_SOFT_TIME_LIMIT }}"
+  CELERY_TASK_TIME_LIMIT: "{{ .StateValues.CELERY_TASK_TIME_LIMIT }}"
   FF_CLOUDWATCH_METRICS_ENABLED: "True"
   CELERY_DELIVER_SMS_RATE_LIMIT: "{{ .StateValues.CELERY_DELIVER_SMS_RATE_LIMIT }}"
   {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
@@ -86,7 +88,7 @@ nodes:
   sms-dedicated-static:
     deployment:
       deploymentBeatEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       replicas: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
   beat:
     deployment:
@@ -96,7 +98,7 @@ nodes:
   core-tasks-static:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
@@ -111,7 +113,7 @@ nodes:
   email-send-static:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
@@ -126,7 +128,7 @@ nodes:
   sms-send-static:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
@@ -141,7 +143,7 @@ nodes:
   sms-send-fair-static:
     deployment:
       deploymentEnabled: {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }} true {{ else }} false {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       resources:
         requests:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
@@ -156,7 +158,7 @@ nodes:
   core-tasks-scalable:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       resources:
         requests:
@@ -179,7 +181,7 @@ nodes:
   delivery-receipts-scalable:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       resources:
         requests:
@@ -202,7 +204,7 @@ nodes:
   scalable-email:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       replicas: {{ if eq .Environment.Name "production" }} 3 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 3 {{ end }}
       resources:
         requests:
@@ -225,7 +227,7 @@ nodes:
   scalable-sms:
     deployment:
       deploymentEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
+      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 120 {{ else }} 60 {{ end }}
       replicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
       resources:
         requests:
