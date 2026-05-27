@@ -278,6 +278,66 @@ nodes:
       minAvailable: 2
     service:
       serviceEnabled: true
+  # CELERY FOR NIGHTLY TASKS
+  scalable-nightly:
+    name: scalable-nightly
+    scriptArg: "sh /app/scripts/run_celery_nightly.sh"
+    deployment:
+      deploymentEnabled: false
+      priorityClassName: celery
+      terminationGracePeriodSeconds: 60
+      replicas: 3
+      nodeSelector:
+        karpenter.sh/capacity-type: spot
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "800Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: true
+      minReplicas: 3
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
+    service:
+      serviceEnabled: true
+  # CELERY FOR PERIODIC TASKS
+  scalable-periodic:
+    name: scalable-periodic
+    scriptArg: "sh /app/scripts/run_celery_periodic.sh"
+    deployment:
+      deploymentEnabled: false
+      priorityClassName: celery
+      terminationGracePeriodSeconds: 60
+      replicas: 3
+      nodeSelector:
+        karpenter.sh/capacity-type: spot
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "800Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: true
+      minReplicas: 3
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 6
+      scaleUpPeriodSeconds: 45
+    pdb:
+      pdbEnabled: true
+      minAvailable: 2
+    service:
+      serviceEnabled: true
 
 image:
   repository: public.ecr.aws/cds-snc/notify-api
