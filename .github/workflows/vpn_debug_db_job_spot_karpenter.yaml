@@ -1,0 +1,91 @@
+name: VPN Debug - vpn-check
+
+on:
+  push:
+    branches:
+      - vpn-check
+
+concurrency:
+  group: vpn-debug-vpn-check
+  cancel-in-progress: true
+
+env:
+  ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+  AWS_DEFAULT_REGION: ca-central-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  vpn-debug:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Configure credentials to Notify using OIDC
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-manifests-helmfile-staging-apply
+          role-session-name: NotifyManifestsVpnDebug
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb
+
+      - name: Setup Terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
+        env:
+          CONFTEST_VERSION: 0.30.0
+          TERRAFORM_VERSION: 1.9.5
+          TERRAGRUNT_VERSION: 0.66.9
+          TF_SUMMARIZE_VERSION: 0.2.3
+
+      - name: Retrieve VPN Config
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+        run: |
+          scripts/createVPNConfig.sh staging
+
+      - name: Connect to VPN
+        uses: kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5 # v3.1.0
+        with:
+          config_file: /var/tmp/staging.ovpn
+          echo_config: false
+
+      - name: Show OpenVPN process info
+        if: always()
+        run: |
+          echo "VPN debug run complete."
+          ps aux | grep "[o]penvpn" || true
+
+      - name: Dump OpenVPN logs
+        if: always()
+        run: |
+          echo "Searching for OpenVPN logs"
+          sudo find / -maxdepth 4 -type f \( -name "openvpn.log" -o -name "openvpn*.log" -o -name "openvpn.pid" \) 2>/dev/null || true
+
+          echo ""
+          echo "Tail /home/runner/work/notification-manifests/notification-manifests/openvpn.log"
+          sudo tail -n 300 /home/runner/work/notification-manifests/notification-manifests/openvpn.log 2>/dev/null || true
+
+          echo ""
+          echo "Tail /home/runner/work/_actions/kota65535/github-openvpn-connect-action/cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5/openvpn.log"
+          sudo tail -n 300 /home/runner/work/_actions/kota65535/github-openvpn-connect-action/cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5/openvpn.log 2>/dev/null || true
+
+          echo ""
+          echo "Tail /tmp/openvpn.log"
+          sudo tail -n 300 /tmp/openvpn.log 2>/dev/null || true
+
+          echo ""
+          echo "OpenVPN PID file candidates"
+          sudo find / -maxdepth 4 -type f -name "openvpn.pid" -exec sh -c 'echo "--- {} ---"; cat "{}"' \; 2>/dev/null || true
