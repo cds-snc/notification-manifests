@@ -100,7 +100,7 @@ serviceAccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-database
 
 nodeSelector:
-  karpenter.sh/capacity-type: spot
+  karpenter.sh/capacity-type: ON_DEMAND
 
 tolerations:
   - key: nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent
