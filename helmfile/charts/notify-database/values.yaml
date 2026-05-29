@@ -20,7 +20,7 @@ serviceAccount:
   serviceAccountName: "notify-database"
 
 nodeSelector:
-  karpenter.sh/capacity-type: spot
+  karpenter.sh/capacity-type: ON_DEMAND
 
 tolerations: []
 
