@@ -1,5 +1,8 @@
+podPriorityClassName: system-node-critical
+
 falcosidekick:
   enabled: true
+  priorityClassName: system-node-critical
   webui:
     enabled: true
     existingSecret: falco-config-secrets
