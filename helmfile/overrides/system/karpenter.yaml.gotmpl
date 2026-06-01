@@ -24,7 +24,8 @@ nodeClass:
 
 nodePool:
   instanceCategories: "['m', 'r', 'c']"
-  instanceFamily: "['m7i', 'r7i', 'c7i']"
-  instanceCPU: "['4']"
+  # 7th gen Intel + AMD, 6th gen Intel + AMD for broader spot pool availability
+  instanceFamily: "['m7i', 'm7a', 'r7i', 'r7a', 'c7i', 'c7a', 'm6i', 'm6a', 'r6i', 'r6a', 'c6i', 'c6a']"
+  instanceCPU: "['4', '8']"
   # Exclude signoz workload - it runs on dedicated EKS managed node group
   excludeWorkloadTypeLabel: true
