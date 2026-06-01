@@ -20,7 +20,9 @@ serviceAccount:
   serviceAccountName: "notify-database"
 
 nodeSelector:
-  eks.amazonaws.com/capacityType: ON_DEMAND
+  karpenter.sh/capacity-type: spot
+
+tolerations: []
 
 secretProviderClass:
   secretname: notify-database
