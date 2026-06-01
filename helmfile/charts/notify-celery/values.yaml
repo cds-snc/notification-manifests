@@ -288,7 +288,7 @@ nodes:
       terminationGracePeriodSeconds: 60
       replicas: 1
       nodeSelector:
-        karpenter.sh/capacity-type: ON_DEMAND
+        karpenter.sh/capacity-type: spot
       resources:
         requests:
           cpu: "100m" 
@@ -318,7 +318,7 @@ nodes:
       terminationGracePeriodSeconds: 60
       replicas: 3
       nodeSelector:
-        karpenter.sh/capacity-type: ON_DEMAND
+        karpenter.sh/capacity-type: spot
       resources:
         requests:
           cpu: "100m"
