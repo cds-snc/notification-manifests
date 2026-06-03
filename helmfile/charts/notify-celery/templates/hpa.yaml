@@ -16,6 +16,14 @@ spec:
         averageUtilization: {{ $node.autoscaling.targetCPUUtilizationPercentage }}
         type: Utilization
     type: Resource
+  {{- if $node.autoscaling.targetMemoryUtilizationPercentage }}
+  - resource:
+      name: memory
+      target:
+        averageUtilization: {{ $node.autoscaling.targetMemoryUtilizationPercentage }}
+        type: Utilization
+    type: Resource
+  {{- end }}
   behavior:
     scaleUp:
       stabilizationWindowSeconds: {{ $node.autoscaling.stabilizationWindowSeconds }}
