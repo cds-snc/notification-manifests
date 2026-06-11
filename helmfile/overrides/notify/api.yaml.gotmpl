@@ -34,6 +34,7 @@ api:
   ZENDESK_API_URL: "https://api.getbase.com"
   ZENDESK_SELL_API_URL: "https://cds-snc.zendesk.com"
   REDIS_ENABLED: "1"
+  SMS_RATE_LIMITER_BACKEND: "{{ .StateValues.SMS_RATE_LIMITER_BACKEND }}"
   NOTIFICATION_QUEUE_PREFIX: "eks-notification-canada-ca"
   HELM_TEST_API: "HELM-IS-RADICAL!-API"
   FLASK_APP: "application.py"

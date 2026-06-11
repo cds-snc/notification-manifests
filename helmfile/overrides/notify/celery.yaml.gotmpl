@@ -32,6 +32,7 @@ celeryCommon:
   CELERY_CONCURRENCY: "4"
   FF_CLOUDWATCH_METRICS_ENABLED: "True"
   CELERY_DELIVER_SMS_RATE_LIMIT: "{{ .StateValues.CELERY_DELIVER_SMS_RATE_LIMIT }}"
+  SMS_RATE_LIMITER_BACKEND: "{{ .StateValues.SMS_RATE_LIMITER_BACKEND }}"
   {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
   # OpenTelemetry configuration
   FF_ENABLE_OTEL: "true"
