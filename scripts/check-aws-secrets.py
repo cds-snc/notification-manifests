@@ -119,40 +119,49 @@ def main():
     print(f"Found {len(sm_names)} Secrets Manager secret(s) to verify.")
     print(f"Found {len(ssm_names)} SSM parameter(s) to verify.\n")
 
-    missing_sm = []
-    missing_ssm = []
+    error_found = False
 
     if sm_names:
         print(f"{BOLD}Checking Secrets Manager secrets...{NC}")
         ok_count = 0
+        fail_count = 0
         for secret_id in sorted(sm_names):
             if check_secret_exists(secret_id):
                 ok_count += 1
             else:
-                missing_sm.append(secret_id)
-        if ok_count > 0:
+                fail_count += 1
+                if fail_count == 1:
+                    print(f"\n{RED}{BOLD}ERROR: The following secrets/parameters do NOT exist in AWS:{NC}\n")
+                    error_found = True
+                print(f"  {RED}[Secrets Manager]{NC} {secret_id}")
+        
+        if fail_count == 0:
             print(f"  {GREEN}[OK]{NC} {ok_count} verified")
+        else:
+            print(f"  {RED}[FAILED]{NC} {fail_count} of {len(sm_names)} secrets")
 
     if ssm_names:
         print(f"{BOLD}Checking SSM parameters...{NC}")
         ok_count = 0
+        fail_count = 0
         for param_id in sorted(ssm_names):
             if check_ssm_parameter_exists(param_id):
                 ok_count += 1
             else:
-                missing_ssm.append(param_id)
-        if ok_count > 0:
+                fail_count += 1
+                if fail_count == 1:
+                    print(f"\n{RED}{BOLD}ERROR: The following secrets/parameters do NOT exist in AWS:{NC}\n")
+                    error_found = True
+                print(f"  {RED}[SSM Parameter]  {NC} {param_id}")
+        
+        if fail_count == 0:
             print(f"  {GREEN}[OK]{NC} {ok_count} verified")
+        else:
+            print(f"  {RED}[FAILED]{NC} {fail_count} of {len(ssm_names)} parameters")
 
     print()
 
-    if missing_sm or missing_ssm:
-        print(f"{RED}{BOLD}ERROR: The following secrets/parameters do NOT exist in AWS:{NC}\n")
-        for secret_id in missing_sm:
-            print(f"  {RED}[Secrets Manager]{NC} {secret_id}")
-        for param_id in missing_ssm:
-            print(f"  {RED}[SSM Parameter]  {NC} {param_id}")
-        print()
+    if error_found:
         print(
             f"{YELLOW}This likely means the Terraform repo has not been released yet.{NC}"
         )
