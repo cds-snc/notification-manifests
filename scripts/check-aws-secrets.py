@@ -1,0 +1,163 @@
+#!/usr/bin/env python3
+"""
+Check that all AWS Secrets Manager secrets and SSM parameters referenced in
+helmfile override files actually exist in AWS.
+
+Exits with code 1 if any referenced secrets/parameters are missing.
+
+Usage: python3 scripts/check-aws-secrets.py [overrides_dir] [charts_dir]
+"""
+
+import re
+import sys
+import glob
+import json
+import subprocess
+from pathlib import Path
+
+OVERRIDES_DIR = sys.argv[1] if len(sys.argv) > 1 else "helmfile/overrides"
+CHARTS_DIR = sys.argv[2] if len(sys.argv) > 2 else "helmfile/charts"
+
+RED = "\033[0;31m"
+GREEN = "\033[0;32m"
+YELLOW = "\033[1;33m"
+BOLD = "\033[1m"
+NC = "\033[0m"
+
+
+def extract_secrets_from_file(filepath):
+    """
+    Extract AWS secret names and SSM parameter names from a gotmpl/yaml file.
+
+    Three patterns are supported:
+      1. secrets: map values  →  "  ENV_VAR: MANIFEST_SECRET_NAME"
+         The VALUE (right-hand side) is the Secrets Manager secret ID.
+
+      2. objectName + objectType: "secretsmanager"
+         The objectName value is the Secrets Manager secret ID.
+
+      3. objectName + objectType: "ssmparameter"
+         The objectName value is the SSM Parameter Store parameter name.
+    """
+    sm_secrets = set()
+    ssm_params = set()
+
+    with open(filepath) as f:
+        content = f.read()
+
+    # Pattern 1: "  KEY: MANIFEST_VALUE" lines (secrets map)
+    # Matches lines like:  ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
+    for match in re.finditer(r"^\s+\w+:\s+(MANIFEST_\w+)\s*$", content, re.MULTILINE):
+        sm_secrets.add(match.group(1))
+
+    # Patterns 2 & 3: objectName followed closely by objectType
+    # The objects are inside a YAML multi-line string (objects: |), so
+    # objectName and objectType appear on consecutive indented lines.
+    for match in re.finditer(
+        r"objectName:\s+(\S+)\s*\n\s+objectType:\s+\"(secretsmanager|ssmparameter)\"",
+        content,
+    ):
+        name = match.group(1)
+        obj_type = match.group(2)
+        if obj_type == "secretsmanager":
+            sm_secrets.add(name)
+        elif obj_type == "ssmparameter":
+            ssm_params.add(name)
+
+    return sm_secrets, ssm_params
+
+
+def collect_all_references():
+    """Collect all secret/parameter references from overrides and chart values."""
+    all_sm_secrets = set()
+    all_ssm_params = set()
+
+    patterns = [
+        f"{OVERRIDES_DIR}/**/*.gotmpl",
+        f"{CHARTS_DIR}/**/values.yaml",
+    ]
+
+    for pattern in patterns:
+        for filepath in sorted(glob.glob(pattern, recursive=True)):
+            sm, ssm = extract_secrets_from_file(filepath)
+            all_sm_secrets.update(sm)
+            all_ssm_params.update(ssm)
+
+    return all_sm_secrets, all_ssm_params
+
+
+def check_secret_exists(secret_name):
+    """Returns True if the Secrets Manager secret exists, False otherwise."""
+    result = subprocess.run(
+        ["aws", "secretsmanager", "describe-secret", "--secret-id", secret_name],
+        capture_output=True,
+        text=True,
+    )
+    return result.returncode == 0
+
+
+def check_ssm_parameter_exists(param_name):
+    """Returns True if the SSM parameter exists, False otherwise."""
+    result = subprocess.run(
+        ["aws", "ssm", "get-parameter", "--name", param_name],
+        capture_output=True,
+        text=True,
+    )
+    return result.returncode == 0
+
+
+def main():
+    print(f"\n{BOLD}Scanning override files for AWS secret references...{NC}")
+    print(f"  Overrides dir : {OVERRIDES_DIR}")
+    print(f"  Charts dir    : {CHARTS_DIR}\n")
+
+    sm_secrets, ssm_params = collect_all_references()
+
+    print(f"Found {len(sm_secrets)} Secrets Manager secret(s) to check.")
+    print(f"Found {len(ssm_params)} SSM parameter(s) to check.\n")
+
+    missing_sm = []
+    missing_ssm = []
+
+    if sm_secrets:
+        print(f"{BOLD}Checking Secrets Manager secrets...{NC}")
+        for name in sorted(sm_secrets):
+            exists = check_secret_exists(name)
+            status = f"{GREEN}OK{NC}" if exists else f"{RED}MISSING{NC}"
+            print(f"  [{status}] {name}")
+            if not exists:
+                missing_sm.append(name)
+
+    if ssm_params:
+        print(f"\n{BOLD}Checking SSM parameters...{NC}")
+        for name in sorted(ssm_params):
+            exists = check_ssm_parameter_exists(name)
+            status = f"{GREEN}OK{NC}" if exists else f"{RED}MISSING{NC}"
+            print(f"  [{status}] {name}")
+            if not exists:
+                missing_ssm.append(name)
+
+    print()
+
+    if missing_sm or missing_ssm:
+        print(f"{RED}{BOLD}ERROR: The following secrets/parameters are referenced in the")
+        print(f"override files but do NOT exist in AWS yet:{NC}\n")
+        for name in missing_sm:
+            print(f"  {RED}[Secrets Manager]{NC} {name}")
+        for name in missing_ssm:
+            print(f"  {RED}[SSM Parameter]  {NC} {name}")
+        print()
+        print(
+            f"{YELLOW}This likely means the Terraform repo has not been released yet.{NC}"
+        )
+        print(
+            f"{YELLOW}Please ensure the corresponding Terraform changes are applied before merging.{NC}"
+        )
+        sys.exit(1)
+    else:
+        print(f"{GREEN}{BOLD}All referenced secrets and parameters exist in AWS.{NC}")
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
