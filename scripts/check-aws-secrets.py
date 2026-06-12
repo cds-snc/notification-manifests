@@ -124,7 +124,7 @@ def main():
         for name in sorted(sm_secrets):
             exists = check_secret_exists(name)
             status = f"{GREEN}OK{NC}" if exists else f"{RED}MISSING{NC}"
-            print(f"  [{status}] {name}")
+            print(f"  [{status}] {name}")  # lgtm[py/clear-text-logging-sensitive-data]
             if not exists:
                 missing_sm.append(name)
 
@@ -133,7 +133,7 @@ def main():
         for name in sorted(ssm_params):
             exists = check_ssm_parameter_exists(name)
             status = f"{GREEN}OK{NC}" if exists else f"{RED}MISSING{NC}"
-            print(f"  [{status}] {name}")
+            print(f"  [{status}] {name}")  # lgtm[py/clear-text-logging-sensitive-data]
             if not exists:
                 missing_ssm.append(name)
 
@@ -143,9 +143,9 @@ def main():
         print(f"{RED}{BOLD}ERROR: The following secrets/parameters are referenced in the")
         print(f"override files but do NOT exist in AWS yet:{NC}\n")
         for name in missing_sm:
-            print(f"  {RED}[Secrets Manager]{NC} {name}")
+            print(f"  {RED}[Secrets Manager]{NC} {name}")  # lgtm[py/clear-text-logging-sensitive-data]
         for name in missing_ssm:
-            print(f"  {RED}[SSM Parameter]  {NC} {name}")
+            print(f"  {RED}[SSM Parameter]  {NC} {name}")  # lgtm[py/clear-text-logging-sensitive-data]
         print()
         print(
             f"{YELLOW}This likely means the Terraform repo has not been released yet.{NC}"
