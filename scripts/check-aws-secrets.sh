@@ -12,7 +12,7 @@ CHARTS_DIR="helmfile/charts"
 
 echo -e "\n${BOLD}Scanning override files for AWS secret references...${NC}"
 echo "  Overrides dir : $OVERRIDES_DIR"
-echo "  Charts dir    : $CHARTS_DIR\n"
+echo -e "  Charts dir    : $CHARTS_DIR\n"
 
 # Temporary files to store unique secrets/parameters
 SM_TEMP=$(mktemp)
@@ -52,7 +52,7 @@ SM_COUNT=$(sort -u "$SM_TEMP" | grep -c . || echo 0)
 SSM_COUNT=$(sort -u "$SSM_TEMP" | grep -c . || echo 0)
 
 echo "Found $SM_COUNT Secrets Manager secret(s) to verify."
-echo "Found $SSM_COUNT SSM parameter(s) to verify.\n"
+echo -e "Found $SSM_COUNT SSM parameter(s) to verify.\n"
 
 MISSING_TEMP=$(mktemp)
 FAILED=0
@@ -65,7 +65,7 @@ if [[ $SM_COUNT -gt 0 ]]; then
     while IFS= read -r secret; do
         [[ -z "$secret" ]] && continue
         if aws secretsmanager describe-secret --secret-id "$secret" --region "${AWS_DEFAULT_REGION:-ca-central-1}" >/dev/null 2>&1; then
-            ((OK_COUNT++))
+            OK_COUNT=$((OK_COUNT + 1))
         else
             FAILED=1
             echo "[Secrets Manager] $secret" >> "$MISSING_TEMP"
@@ -87,7 +87,7 @@ if [[ $SSM_COUNT -gt 0 ]]; then
     while IFS= read -r param; do
         [[ -z "$param" ]] && continue
         if aws ssm get-parameter --name "$param" --region "${AWS_DEFAULT_REGION:-ca-central-1}" >/dev/null 2>&1; then
-            ((OK_COUNT++))
+            OK_COUNT=$((OK_COUNT + 1))
         else
             FAILED=1
             echo "[SSM Parameter] $param" >> "$MISSING_TEMP"
