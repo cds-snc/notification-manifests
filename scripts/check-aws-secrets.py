@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# lgtm: disable=py/clear-text-logging-sensitive-data
 """
 Check that all AWS Secrets Manager secrets and SSM parameters referenced in
 helmfile override files actually exist in AWS.
@@ -8,9 +7,8 @@ Exits with code 1 if any referenced secrets/parameters are missing.
 
 Usage: python3 scripts/check-aws-secrets.py [overrides_dir] [charts_dir]
 
-Note: This script only logs secret/parameter identifiers (their names), never
-their values. The identifiers themselves are not sensitive; the AWS API calls
-verify existence without accessing the actual secret content.
+Note: This script only verifies the existence of secret/parameter identifiers
+(their names), never accessing the actual secret values.
 """
 
 import re
@@ -74,8 +72,8 @@ def extract_secrets_from_file(filepath):
 
 def collect_all_references():
     """Collect all secret/parameter references from overrides and chart values."""
-    all_sm_secrets = set()
-    all_ssm_params = set()
+    sm_names = set()
+    ssm_names = set()
 
     patterns = [
         f"{OVERRIDES_DIR}/**/*.gotmpl",
@@ -85,10 +83,10 @@ def collect_all_references():
     for pattern in patterns:
         for filepath in sorted(glob.glob(pattern, recursive=True)):
             sm, ssm = extract_secrets_from_file(filepath)
-            all_sm_secrets.update(sm)
-            all_ssm_params.update(ssm)
+            sm_names.update(sm)
+            ssm_names.update(ssm)
 
-    return all_sm_secrets, all_ssm_params
+    return sm_names, ssm_names
 
 
 def check_secret_exists(secret_name):
@@ -116,41 +114,40 @@ def main():
     print(f"  Overrides dir : {OVERRIDES_DIR}")
     print(f"  Charts dir    : {CHARTS_DIR}\n")
 
-    sm_secrets, ssm_params = collect_all_references()
+    sm_names, ssm_names = collect_all_references()
 
-    print(f"Found {len(sm_secrets)} Secrets Manager secret(s) to check.")
-    print(f"Found {len(ssm_params)} SSM parameter(s) to check.\n")
+    print(f"Found {len(sm_names)} Secrets Manager secret(s) to verify.")
+    print(f"Found {len(ssm_names)} SSM parameter(s) to verify.\n")
 
     missing_sm = []
     missing_ssm = []
 
-    if sm_secrets:
+    if sm_names:
         print(f"{BOLD}Checking Secrets Manager secrets...{NC}")
-        for name in sorted(sm_secrets):
-            exists = check_secret_exists(name)
+        for secret_id in sorted(sm_names):
+            exists = check_secret_exists(secret_id)
             status = f"{GREEN}OK{NC}" if exists else f"{RED}MISSING{NC}"
-            print(f"  [{status}] {name}")
+            print(f"  [{status}] {secret_id}")
             if not exists:
-                missing_sm.append(name)
+                missing_sm.append(secret_id)
 
-    if ssm_params:
+    if ssm_names:
         print(f"\n{BOLD}Checking SSM parameters...{NC}")
-        for name in sorted(ssm_params):
-            exists = check_ssm_parameter_exists(name)
+        for param_id in sorted(ssm_names):
+            exists = check_ssm_parameter_exists(param_id)
             status = f"{GREEN}OK{NC}" if exists else f"{RED}MISSING{NC}"
-            print(f"  [{status}] {name}")
+            print(f"  [{status}] {param_id}")
             if not exists:
-                missing_ssm.append(name)
+                missing_ssm.append(param_id)
 
     print()
 
     if missing_sm or missing_ssm:
-        print(f"{RED}{BOLD}ERROR: The following secrets/parameters are referenced in the")
-        print(f"override files but do NOT exist in AWS yet:{NC}\n")
-        for name in missing_sm:
-            print(f"  {RED}[Secrets Manager]{NC} {name}")
-        for name in missing_ssm:
-            print(f"  {RED}[SSM Parameter]  {NC} {name}")
+        print(f"{RED}{BOLD}ERROR: The following secrets/parameters do NOT exist in AWS:{NC}\n")
+        for secret_id in missing_sm:
+            print(f"  {RED}[Secrets Manager]{NC} {secret_id}")
+        for param_id in missing_ssm:
+            print(f"  {RED}[SSM Parameter]  {NC} {param_id}")
         print()
         print(
             f"{YELLOW}This likely means the Terraform repo has not been released yet.{NC}"
@@ -160,7 +157,7 @@ def main():
         )
         sys.exit(1)
     else:
-        print(f"{GREEN}{BOLD}All referenced secrets and parameters exist in AWS.{NC}")
+        print(f"{GREEN}{BOLD}All {len(sm_names) + len(ssm_names)} secrets/parameters verified in AWS.{NC}")
         sys.exit(0)
 
 
