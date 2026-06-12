@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# lgtm[py/clear-text-logging-sensitive-data]
+# lgtm: disable=py/clear-text-logging-sensitive-data
 """
 Check that all AWS Secrets Manager secrets and SSM parameters referenced in
 helmfile override files actually exist in AWS.
@@ -7,6 +7,10 @@ helmfile override files actually exist in AWS.
 Exits with code 1 if any referenced secrets/parameters are missing.
 
 Usage: python3 scripts/check-aws-secrets.py [overrides_dir] [charts_dir]
+
+Note: This script only logs secret/parameter identifiers (their names), never
+their values. The identifiers themselves are not sensitive; the AWS API calls
+verify existence without accessing the actual secret content.
 """
 
 import re
