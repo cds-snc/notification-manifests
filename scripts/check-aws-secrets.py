@@ -124,21 +124,25 @@ def main():
 
     if sm_names:
         print(f"{BOLD}Checking Secrets Manager secrets...{NC}")
+        ok_count = 0
         for secret_id in sorted(sm_names):
-            exists = check_secret_exists(secret_id)
-            status = f"{GREEN}OK{NC}" if exists else f"{RED}MISSING{NC}"
-            print(f"  [{status}] {secret_id}")
-            if not exists:
+            if check_secret_exists(secret_id):
+                ok_count += 1
+            else:
                 missing_sm.append(secret_id)
+        if ok_count > 0:
+            print(f"  {GREEN}[OK]{NC} {ok_count} verified")
 
     if ssm_names:
-        print(f"\n{BOLD}Checking SSM parameters...{NC}")
+        print(f"{BOLD}Checking SSM parameters...{NC}")
+        ok_count = 0
         for param_id in sorted(ssm_names):
-            exists = check_ssm_parameter_exists(param_id)
-            status = f"{GREEN}OK{NC}" if exists else f"{RED}MISSING{NC}"
-            print(f"  [{status}] {param_id}")
-            if not exists:
+            if check_ssm_parameter_exists(param_id):
+                ok_count += 1
+            else:
                 missing_ssm.append(param_id)
+        if ok_count > 0:
+            print(f"  {GREEN}[OK]{NC} {ok_count} verified")
 
     print()
 
@@ -157,7 +161,8 @@ def main():
         )
         sys.exit(1)
     else:
-        print(f"{GREEN}{BOLD}All {len(sm_names) + len(ssm_names)} secrets/parameters verified in AWS.{NC}")
+        total = len(sm_names) + len(ssm_names)
+        print(f"{GREEN}{BOLD}All {total} secrets/parameters verified in AWS.{NC}")
         sys.exit(0)
 
 
