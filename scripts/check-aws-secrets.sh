@@ -24,6 +24,37 @@ trap "rm -f $SM_TEMP $SSM_TEMP" EXIT
 grep -h "MANIFEST_[A-Z0-9_]*" "$OVERRIDES_DIR"/**/*.gotmpl "$CHARTS_DIR"/*/values.yaml 2>/dev/null | \
     grep -oE 'MANIFEST_[A-Z0-9_]+' | sort -u >> "$SM_TEMP" || true
 
+# Pattern 1b: Extract values from any "*Secrets:" mapping blocks.
+# This catches non-MANIFEST names too, e.g. "QA_TEST_MISSING_SECRET".
+for file in $(find "$OVERRIDES_DIR" "$CHARTS_DIR" -name "*.gotmpl" -o -name "values.yaml" 2>/dev/null); do
+    awk '
+        function leading_spaces(s,    n) {
+            n = 0
+            while (substr(s, n + 1, 1) == " ") n++
+            return n
+        }
+
+        {
+            line = $0
+            indent = leading_spaces(line)
+
+            if (line ~ /^[[:space:]]*[A-Za-z0-9_]+Secrets:[[:space:]]*$/) {
+                in_secrets = 1
+                secrets_indent = indent
+                next
+            }
+
+            if (in_secrets && line !~ /^[[:space:]]*$/ && indent <= secrets_indent) {
+                in_secrets = 0
+            }
+
+            if (in_secrets && match(line, /^[[:space:]]*[A-Za-z0-9_]+:[[:space:]]*([A-Za-z0-9_\/.:-]+)[[:space:]]*$/, m)) {
+                print m[1]
+            }
+        }
+    ' "$file" >> "$SM_TEMP" 2>/dev/null || true
+done
+
 # Pattern 2: Extract objectName with objectType:secretsmanager
 # Look for blocks with both objectName and objectType: secretsmanager
 for file in $(find "$OVERRIDES_DIR" "$CHARTS_DIR" -name "*.gotmpl" -o -name "values.yaml" 2>/dev/null); do
