@@ -92,8 +92,8 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING SMS WITH FAIR QUEUES
-  sms-send-fair-static:
-    name: sms-send-fair-static
+  sms-send-ratelimit-static:
+    name: sms-send-ratelimit-static
     scriptArg: "sh /app/scripts/run_celery_send_sms_ratelimit.sh"
     deployment:
       deploymentEnabled: false
