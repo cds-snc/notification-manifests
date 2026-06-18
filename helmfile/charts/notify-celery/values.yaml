@@ -279,30 +279,6 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR NIGHTLY TASKS
-  nightly-static:
-    name: nightly-static
-    scriptArg: "sh /app/scripts/run_celery_nightly.sh"
-    deployment:
-      deploymentEnabled: true
-      terminationGracePeriodSeconds: 60
-      resources:
-        requests:
-          cpu: "100m"
-          memory: "800Mi"
-        limits:
-          cpu: "550m"
-          memory: "1024Mi"
-      priorityClassName: high-priority
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
-      replicas: 1
-    pdb:
-      pdbEnabled: true
-      minAvailable: 0
-    autoscaling:
-      hpaEnabled: false
-    service:
-      serviceEnabled: true  
   nightly-burst:
     name: nightly-burst
     scriptArg: "sh /app/scripts/run_celery_nightly.sh"
@@ -310,9 +286,9 @@ nodes:
       deploymentEnabled: true
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
-      replicas: 0
+      replicas: 1
       nodeSelector:
-        karpenter.sh/capacity-type: spot
+        eks.amazonaws.com/capacityType: ON_DEMAND
       resources:
         requests:
           cpu: "100m" 
@@ -322,14 +298,14 @@ nodes:
           memory: "1024Mi"
     autoscaling:
       hpaEnabled: true
-      minReplicas: 0
-      maxReplicas: 3
+      minReplicas: 1
+      maxReplicas: 4
       targetCPUUtilizationPercentage: 25
       scaleUpPodsValue: 1
       scaleUpPeriodSeconds: 45
     pdb:
       pdbEnabled: true
-      minAvailable: 0
+      minAvailable: 1
     service:
       serviceEnabled: true
   # CELERY FOR PERIODIC TASKS
