@@ -51,6 +51,11 @@ admin:
   OTEL_SERVICE_NAME: "notification-admin"
   OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
 {{ end }}
+{{ if ne .Environment.Name "production" }}
+  ENABLE_CLIENT_SIDE_OTEL: "true"
+  OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
+{{ end }}
+
 
 adminSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
