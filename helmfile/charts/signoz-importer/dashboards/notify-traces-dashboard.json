@@ -1,0 +1,763 @@
+{
+  "description": "Browser page load performance metrics from OpenTelemetry browser.page_load spans. Covers load times, section/path breakdown, DOM timings, and navigation patterns.",
+  "id": "gcn-frontend-page-load-traces",
+  "layout": [
+    { "h": 6, "i": "panel-volume",     "moved": false, "static": false, "w": 6,  "x": 0, "y": 0  },
+    { "h": 6, "i": "panel-duration",   "moved": false, "static": false, "w": 6,  "x": 6, "y": 0  },
+    { "h": 6, "i": "panel-by-section", "moved": false, "static": false, "w": 6,  "x": 0, "y": 6  },
+    { "h": 6, "i": "panel-nav-type",   "moved": false, "static": false, "w": 6,  "x": 6, "y": 6  },
+    { "h": 6, "i": "panel-dom-timing", "moved": false, "static": false, "w": 6,  "x": 0, "y": 12 },
+    { "h": 6, "i": "panel-ttfb",       "moved": false, "static": false, "w": 6,  "x": 6, "y": 12 },
+    { "h": 8, "i": "panel-by-path",    "moved": false, "static": false, "w": 12, "x": 0, "y": 18 }
+  ],
+  "tags": ["otel", "frontend", "browser", "traces"],
+  "title": "GC Notify — Frontend Page Load Traces",
+  "widgets": [
+    {
+      "description": "Number of browser.page_load spans recorded per minute",
+      "fillSpans": false,
+      "id": "panel-volume",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "count",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-vol-name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "having": [],
+              "legend": "Page Loads / min",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "id": "q-volume",
+        "promql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "softMax": null,
+      "softMin": null,
+      "timePreference": "GLOBAL_TIME",
+      "title": "Page Load Volume",
+      "yAxisUnit": "short"
+    },
+
+    {
+      "description": "P50 / P95 / P99 end-to-end page load duration (span duration = loadEventEnd – navigationStart)",
+      "fillSpans": false,
+      "id": "panel-duration",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "p50",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-dur-p50",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "having": [],
+              "legend": "P50",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            },
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "p95",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "B",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-dur-p95",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "having": [],
+              "legend": "P95",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "B",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            },
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "p99",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "C",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-dur-p99",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "having": [],
+              "legend": "P99",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "C",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "id": "q-duration",
+        "promql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "softMax": null,
+      "softMin": null,
+      "timePreference": "GLOBAL_TIME",
+      "title": "Page Load Duration — P50 / P95 / P99",
+      "yAxisUnit": "ns"
+    },
+
+    {
+      "description": "P95 page load duration grouped by page.section (first URL path segment, e.g. features, pricing, documentation)",
+      "fillSpans": false,
+      "id": "panel-by-section",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "p95",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-sec-name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "page.section--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "page.section",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "{{page.section}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "id": "q-by-section",
+        "promql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "softMax": null,
+      "softMin": null,
+      "timePreference": "GLOBAL_TIME",
+      "title": "P95 Page Load Duration by Section",
+      "yAxisUnit": "ns"
+    },
+
+    {
+      "description": "Count of page loads split by navigation type: navigate, reload, back_forward, prerender",
+      "fillSpans": false,
+      "id": "panel-nav-type",
+      "isStacked": true,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "count",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-nav-name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "browser.navigation.type--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "browser.navigation.type",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "{{browser.navigation.type}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "id": "q-nav-type",
+        "promql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "softMax": null,
+      "softMin": null,
+      "timePreference": "GLOBAL_TIME",
+      "title": "Page Loads by Navigation Type",
+      "yAxisUnit": "short"
+    },
+
+    {
+      "description": "Average DOM timings per section: domContentLoaded vs domComplete. Requires browser.navigation.dom_content_loaded_ms and browser.navigation.dom_complete_ms to be indexed as span attributes in SigNoz.",
+      "fillSpans": false,
+      "id": "panel-dom-timing",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "browser.navigation.dom_content_loaded_ms--float64--tag--false",
+                "isColumn": false,
+                "isJSON": false,
+                "key": "browser.navigation.dom_content_loaded_ms",
+                "type": "tag"
+              },
+              "aggregateOperator": "avg",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-dom-name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "page.section--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "page.section",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "DOMContentLoaded — {{page.section}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            },
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "browser.navigation.dom_complete_ms--float64--tag--false",
+                "isColumn": false,
+                "isJSON": false,
+                "key": "browser.navigation.dom_complete_ms",
+                "type": "tag"
+              },
+              "aggregateOperator": "avg",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "B",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-domcomplete-name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "page.section--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "page.section",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "DOM Complete — {{page.section}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "B",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "id": "q-dom-timing",
+        "promql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "softMax": null,
+      "softMin": null,
+      "timePreference": "GLOBAL_TIME",
+      "title": "Avg DOM Timings by Section (ms)",
+      "yAxisUnit": "ms"
+    },
+
+    {
+      "description": "Average time to first byte (responseStart) by page section — a proxy for server response latency as seen by the browser",
+      "fillSpans": false,
+      "id": "panel-ttfb",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "graph",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "browser.navigation.response_start_ms--float64--tag--false",
+                "isColumn": false,
+                "isJSON": false,
+                "key": "browser.navigation.response_start_ms",
+                "type": "tag"
+              },
+              "aggregateOperator": "avg",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-ttfb-name",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "page.section--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "page.section",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "TTFB — {{page.section}}",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "id": "q-ttfb",
+        "promql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "softMax": null,
+      "softMin": null,
+      "timePreference": "GLOBAL_TIME",
+      "title": "Avg Time to First Byte by Section (ms)",
+      "yAxisUnit": "ms"
+    },
+
+    {
+      "description": "P50, P95, and total count of page loads grouped by exact URL path. Top 20 paths by volume over the selected time range.",
+      "fillSpans": false,
+      "id": "panel-by-path",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "table",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "p50",
+              "dataSource": "traces",
+              "disabled": true,
+              "expression": "A",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-path-p50",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "page.path--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "page.path",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "P50",
+              "limit": 20,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            },
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "p95",
+              "dataSource": "traces",
+              "disabled": true,
+              "expression": "B",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-path-p95",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "page.path--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "page.path",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "P95",
+              "limit": 20,
+              "orderBy": [],
+              "queryName": "B",
+              "reduceTo": "avg",
+              "stepInterval": 60
+            },
+            {
+              "aggregateAttribute": {
+                "dataType": "float64",
+                "id": "durationNano--float64--tag--true",
+                "isColumn": true,
+                "isJSON": false,
+                "key": "durationNano",
+                "type": "tag"
+              },
+              "aggregateOperator": "count",
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "C",
+              "filters": {
+                "items": [
+                  {
+                    "id": "f-path-count",
+                    "key": {
+                      "dataType": "string",
+                      "id": "name--string--tag--true",
+                      "isColumn": true,
+                      "isJSON": false,
+                      "key": "name",
+                      "type": "tag"
+                    },
+                    "op": "=",
+                    "value": "browser.page_load"
+                  }
+                ],
+                "op": "AND"
+              },
+              "groupBy": [
+                {
+                  "dataType": "string",
+                  "id": "page.path--string--tag--false",
+                  "isColumn": false,
+                  "isJSON": false,
+                  "key": "page.path",
+                  "type": "tag"
+                }
+              ],
+              "having": [],
+              "legend": "Loads",
+              "limit": 20,
+              "orderBy": [],
+              "queryName": "C",
+              "reduceTo": "sum",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": [
+            {
+              "disabled": false,
+              "expression": "A/1000000",
+              "legend": "P50 (ms)",
+              "queryName": "F1"
+            },
+            {
+              "disabled": false,
+              "expression": "B/1000000",
+              "legend": "P95 (ms)",
+              "queryName": "F2"
+            }
+          ]
+        },
+        "clickhouse_sql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "id": "q-by-path",
+        "promql": [{ "disabled": true, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "softMax": null,
+      "softMin": null,
+      "timePreference": "GLOBAL_TIME",
+      "title": "Page Load Duration by URL Path — Top 20 (P50 / P95 ms / Count)",
+      "yAxisUnit": "ms"
+    }
+  ]
+}
