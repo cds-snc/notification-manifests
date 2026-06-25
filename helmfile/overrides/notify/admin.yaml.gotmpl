@@ -43,6 +43,7 @@ admin:
   ONE_CLICK_UNSUB_SERVICE_IDS: "{{ .StateValues.ONE_CLICK_UNSUB_SERVICE_IDS }}"
   ONE_CLICK_UNSUB_ALL_SERVICES: "{{ .StateValues.ONE_CLICK_UNSUB_ALL_SERVICES }}"
   FF_FILE_ATTACHMENTS: "{{ .StateValues.FF_FILE_ATTACHMENTS }}"
+  FF_ADD_TEMPLATE_PERM: "{{ .StateValues.FF_ADD_TEMPLATE_PERM }}"
 {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
   # OpenTelemetry configuration
   FF_ENABLE_OTEL: "true"
