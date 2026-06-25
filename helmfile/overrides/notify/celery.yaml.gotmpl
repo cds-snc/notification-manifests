@@ -237,7 +237,7 @@ nodes:
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 90 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 90 {{ end }}
     pdb:
-      pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
+      pdbEnabled: false
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
   sms-burst:
     deployment:
@@ -260,7 +260,7 @@ nodes:
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 90 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 90 {{ end }}
     pdb:
-      pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
+      pdbEnabled: false
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
   nightly-burst:
     deployment:
@@ -283,7 +283,7 @@ nodes:
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 90 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 90 {{ end }}
     pdb:
-      pdbEnabled: true
+      pdbEnabled: false
       minAvailable: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
   periodic-burst:
     deployment:
