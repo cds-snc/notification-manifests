@@ -44,19 +44,20 @@ admin:
   ONE_CLICK_UNSUB_ALL_SERVICES: "{{ .StateValues.ONE_CLICK_UNSUB_ALL_SERVICES }}"
   FF_FILE_ATTACHMENTS: "{{ .StateValues.FF_FILE_ATTACHMENTS }}"
   FF_ADD_TEMPLATE_PERM: "{{ .StateValues.FF_ADD_TEMPLATE_PERM }}"
+
+### Backend OTEL Configuration
 {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
-  # OpenTelemetry configuration
   FF_ENABLE_OTEL: "true"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
   OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
   OTEL_SERVICE_NAME: "notification-admin"
   OTEL_RESOURCE_ATTRIBUTES: "service.namespace=notification-canada-ca,deployment.environment={{ .Environment.Name }}"
 {{ end }}
-{{ if ne .Environment.Name "production" }}
+### Client Side OTEL Configuration
+{{ if eq .StateValues.ENABLE_CLIENT_SIDE_OTEL "true"}}
   ENABLE_CLIENT_SIDE_OTEL: "true"
   OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
-{{ end }}
-
+{{ end }} 
 
 adminSecrets:
   ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
