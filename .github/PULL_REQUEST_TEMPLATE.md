@@ -29,7 +29,6 @@
 
 - [ ] I made sure that the changes are as expected in [Notify staging](https://staging.notification.cdssandbox.xyz/)
 - [ ] I have checked if the docker images I am referencing exist
-  - [ ] [api lambda](https://ca-central-1.console.aws.amazon.com/ecr/repositories/private/296255494825/notify/api-lambda?region=ca-central-1) (requires Notification-Production / AdministratorAccess login)
   - [ ] [api k8s](https://gallery.ecr.aws/v6b8u5o6/notify-api)
   - [ ] [admin](https://gallery.ecr.aws/v6b8u5o6/notify-admin)
   - [ ] [documentation](https://gallery.ecr.aws/v6b8u5o6/notify-documentation)
