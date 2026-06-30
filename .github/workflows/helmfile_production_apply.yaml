@@ -14,6 +14,9 @@ env:
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+  HEARTBEAT_IMAGE: heartbeat:1ba3ebd
+  SYSTEM_STATUS_IMAGE: system_status:1ba3ebd
+  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:1ba3ebd
   ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   AWS_DEFAULT_REGION: ca-central-1
 
@@ -104,6 +107,30 @@ jobs:
           helmfile --environment production -l 'tier=crd' apply
           helmfile --environment production -l 'app!=notify-database,tier!=crd' apply
           popd
+  
+      - name: Force heartbeat lambda to redeploy on environment changes
+        if: ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: heartbeat
+          image-uri: $PRIVATE_ECR/$HEARTBEAT_IMAGE
+
+      - name: Force system_status to redeploy on environment changes
+        if: ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: system_status
+          image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
+
+      - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
+        if: ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: ses_to_sqs_email_callbacks
+          image-uri: $PRIVATE_ECR/$SES_TO_SQS_EMAIL_CALLBACKS_IMAGE
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}

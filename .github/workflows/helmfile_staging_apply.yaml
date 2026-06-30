@@ -109,6 +109,27 @@ jobs:
           helmfile --environment staging -l 'app!=notify-database,tier!=crd' apply
           popd
 
+      - name: Force heartbeat lambda to redeploy on environment changes
+        if: ${{ success() }} 
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: heartbeat
+
+      - name: Force system_status to redeploy on environment changes
+        if: ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: system_status
+
+      - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
+        if: ${{ success() }}
+        uses: ./.github/actions/update-lambda-function
+        with:
+          alias-name: latest
+          function-name: ses_to_sqs_email_callbacks
+
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
