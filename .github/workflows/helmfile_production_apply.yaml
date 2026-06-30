@@ -14,7 +14,6 @@ env:
   PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  API_LAMBDA_IMAGE: api-lambda:d8b2a43
   HEARTBEAT_IMAGE: heartbeat:1ba3ebd
   SYSTEM_STATUS_IMAGE: system_status:1ba3ebd
   SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:1ba3ebd
@@ -108,24 +107,7 @@ jobs:
           helmfile --environment production -l 'tier=crd' apply
           helmfile --environment production -l 'app!=notify-database,tier!=crd' apply
           popd
-
-      - name: Save ENV vars and secrets to AWS Param Store
-        if: ${{ success() }}
-        run: |
-          # wait for the secrets and env vars to be available
-          sleep 20
-          source ./scripts/lambdaParamStoreUpdatesProduction.sh -g
-          echo DIFF=$DIFF
-          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
   
-      - name: Force api-lambda to redeploy on environment changes
-        if: ${{ success() }}
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: api-lambda
-          image-uri: $PRIVATE_ECR/$API_LAMBDA_IMAGE
-
       - name: Force heartbeat lambda to redeploy on environment changes
         if: ${{ success() }}
         uses: ./.github/actions/update-lambda-function
