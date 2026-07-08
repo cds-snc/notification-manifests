@@ -1,4 +1,4 @@
-name: Dev - Helmfile Apply All and Deploy API Lambda
+name: Dev - Helmfile Apply
 
 on:
   push:
@@ -114,41 +114,5 @@ jobs:
           helmfile --environment dev -l 'tier=crd' apply
           helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply
           popd
-
-      - name: Save ENV vars and secrets to AWS Param Store
-        if: ${{ success() }}
-        run: |
-          # wait for the secrets and env vars to be available
-          sleep 20
-          source ./scripts/lambdaParamStoreUpdatesDev.sh -g
-          echo DIFF=$DIFF
-          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
-
-      - name: Login to Dev ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
-
-      - name: Deploy api-lambda from dev ECR
-        if: ${{ success() }}
-        run: |
-          DEV_REGISTRY=${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-          echo "Deploying api-lambda with tag: ${{ env.DEV_API_DOCKER_TAG }}"
-          aws lambda update-function-code \
-            --function-name api-lambda \
-            --image-uri $DEV_REGISTRY/api-lambda:${{ env.DEV_API_DOCKER_TAG }} > /dev/null 2>&1
-
-      - name: Publish lambda version and update alias
-        if: ${{ success() }}
-        run: |
-          aws lambda wait function-updated --function-name api-lambda
-          VERSION="$(aws lambda publish-version --function-name api-lambda | jq -r '.Version')"
-          aws lambda update-alias \
-            --function-name api-lambda \
-            --name latest \
-            --function-version "$VERSION"
-
-      - name: Logout of Amazon ECR
-        if: always()
-        run: docker logout ${{ steps.login-ecr.outputs.registry }}
 
 

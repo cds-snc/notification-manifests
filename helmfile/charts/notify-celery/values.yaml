@@ -92,8 +92,8 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING SMS WITH FAIR QUEUES
-  sms-send-fair-static:
-    name: sms-send-fair-static
+  sms-send-ratelimit-static:
+    name: sms-send-ratelimit-static
     scriptArg: "sh /app/scripts/run_celery_send_sms_ratelimit.sh"
     deployment:
       deploymentEnabled: false
@@ -157,10 +157,10 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
-  # SCALABLE CONFIGS
+  # burst CONFIGS
   # CELERY FOR CORE TASKS
-  core-tasks-scalable:
-    name: core-tasks-scalable
+  core-tasks-burst:
+    name: core-tasks-burst
     scriptArg: "sh /app/scripts/run_celery_core_tasks.sh"
     deployment:
       deploymentEnabled: true
@@ -189,8 +189,8 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR DELIVERY RECEIPTS
-  delivery-receipts-scalable:
-    name: delivery-receipts-scalable
+  delivery-receipts-burst:
+    name: delivery-receipts-burst
     scriptArg: "sh /app/scripts/run_celery_receipts.sh"
     deployment:
       deploymentEnabled: true
@@ -219,8 +219,8 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING EMAILS
-  scalable-email:
-    name: email-send-scalable
+  email-burst:
+    name: email-send-burst
     scriptArg: "sh /app/scripts/run_celery_send_email.sh"
     deployment:
       deploymentEnabled: true
@@ -249,8 +249,8 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR SENDING NON-DEDICATED LONG CODE SMS
-  scalable-sms:
-    name: sms-send-scalable
+  sms-burst:
+    name: sms-send-burst
     scriptArg: "sh /app/scripts/run_celery_send_sms.sh"
     deployment:
       deploymentEnabled: true
@@ -279,8 +279,8 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR NIGHTLY TASKS
-  scalable-nightly:
-    name: scalable-nightly
+  nightly-burst:
+    name: nightly-burst
     scriptArg: "sh /app/scripts/run_celery_nightly.sh"
     deployment:
       deploymentEnabled: true
@@ -299,7 +299,7 @@ nodes:
     autoscaling:
       hpaEnabled: true
       minReplicas: 1
-      maxReplicas: 3
+      maxReplicas: 4
       targetCPUUtilizationPercentage: 25
       scaleUpPodsValue: 1
       scaleUpPeriodSeconds: 45
@@ -309,8 +309,32 @@ nodes:
     service:
       serviceEnabled: true
   # CELERY FOR PERIODIC TASKS
-  scalable-periodic:
-    name: scalable-periodic
+  periodic-static:
+    name: periodic-static
+    scriptArg: "sh /app/scripts/run_celery_periodic.sh"
+    deployment:
+      deploymentEnabled: true
+      terminationGracePeriodSeconds: 60
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "800Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+      priorityClassName: high-priority
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+      replicas: 6
+    pdb:
+      pdbEnabled: true
+      minAvailable: 3
+    autoscaling:
+      hpaEnabled: false
+    service:
+      serviceEnabled: true
+  periodic-burst:
+    name: periodic-burst
     scriptArg: "sh /app/scripts/run_celery_periodic.sh"
     deployment:
       deploymentEnabled: true
@@ -318,7 +342,7 @@ nodes:
       terminationGracePeriodSeconds: 60
       replicas: 3
       nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+        karpenter.sh/capacity-type: spot
       resources:
         requests:
           cpu: "100m"
@@ -328,14 +352,14 @@ nodes:
           memory: "1024Mi"
     autoscaling:
       hpaEnabled: true
-      minReplicas: 3
-      maxReplicas: 6
+      minReplicas: 1
+      maxReplicas: 4
       targetCPUUtilizationPercentage: 25
       scaleUpPodsValue: 1
       scaleUpPeriodSeconds: 45
     pdb:
       pdbEnabled: true
-      minAvailable: 3
+      minAvailable: 1
     service:
       serviceEnabled: true
 
