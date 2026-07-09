@@ -1,23 +1,28 @@
 name: Production - Helmfile Apply Specific Image
-run-name: Production - Helmfile Apply Specific Image ${{ github.event.inputs.component }} - ${{ github.event.inputs.image_tag }}
+run-name: Production - Helmfile Apply Specific Image Set
 
 on:
   workflow_dispatch:
     inputs:
-      component:
-        description: "Application component to rollout"
+      admin_image_tag:
+        description: "ADMIN_DOCKER_TAG value"
         required: true
-        type: choice
-        options:
-          - api
-          - admin
-      image_tag:
-        description: "Container image tag to deploy"
+        type: string
+      api_image_tag:
+        description: "API_DOCKER_TAG value"
+        required: true
+        type: string
+      document_download_image_tag:
+        description: "DOCUMENT_DOWNLOAD_DOCKER_TAG value"
+        required: true
+        type: string
+      documentation_image_tag:
+        description: "DOCUMENTATION_DOCKER_TAG value"
         required: true
         type: string
 
 concurrency:
-  group: helmfile-production-apply-specific-image-${{ github.event.inputs.component }}
+  group: helmfile-production-apply-specific-image
   cancel-in-progress: false
 
 env:
@@ -97,45 +102,72 @@ jobs:
         run: |
           ./helmfile/getContext.sh -g
 
-      - name: Rollout selected component with specified image tag
-        id: helmfile_apply
+      - name: Validate required image tag format
         env:
-          COMPONENT: ${{ github.event.inputs.component }}
-          IMAGE_TAG: ${{ github.event.inputs.image_tag }}
+          ADMIN_IMAGE_TAG: ${{ github.event.inputs.admin_image_tag }}
+          API_IMAGE_TAG: ${{ github.event.inputs.api_image_tag }}
+          DOCUMENT_DOWNLOAD_IMAGE_TAG: ${{ github.event.inputs.document_download_image_tag }}
+          DOCUMENTATION_IMAGE_TAG: ${{ github.event.inputs.documentation_image_tag }}
         run: |
-          case "$COMPONENT" in
-            api)
-              STATE_KEY="API_DOCKER_TAG"
-              ;;
-            admin)
-              STATE_KEY="ADMIN_DOCKER_TAG"
-              ;;
-            *)
-              echo "Unsupported component: $COMPONENT"
-              exit 1
-              ;;
-          esac
+          validate_tag() {
+            local key="$1"
+            local value="$2"
 
+            if [ -z "${value// }" ]; then
+              echo "$key is required and cannot be blank."
+              exit 1
+            fi
+
+            if [[ ! "$value" =~ ^[A-Fa-f0-9]{7}$ ]]; then
+              echo "$key must be a 7-character hexadecimal commit tag (example: cf41e0f)."
+              exit 1
+            fi
+          }
+
+          validate_tag "ADMIN_DOCKER_TAG" "$ADMIN_IMAGE_TAG"
+          validate_tag "API_DOCKER_TAG" "$API_IMAGE_TAG"
+          validate_tag "DOCUMENT_DOWNLOAD_DOCKER_TAG" "$DOCUMENT_DOWNLOAD_IMAGE_TAG"
+          validate_tag "DOCUMENTATION_DOCKER_TAG" "$DOCUMENTATION_IMAGE_TAG"
+
+      - name: Overwrite four image tags in production overrides
+        env:
+          ADMIN_IMAGE_TAG: ${{ github.event.inputs.admin_image_tag }}
+          API_IMAGE_TAG: ${{ github.event.inputs.api_image_tag }}
+          DOCUMENT_DOWNLOAD_IMAGE_TAG: ${{ github.event.inputs.document_download_image_tag }}
+          DOCUMENTATION_IMAGE_TAG: ${{ github.event.inputs.documentation_image_tag }}
+        run: |
+          sed -i "s/^ADMIN_DOCKER_TAG:.*$/ADMIN_DOCKER_TAG: \"${ADMIN_IMAGE_TAG}\"/" helmfile/overrides/production.env
+          sed -i "s/^API_DOCKER_TAG:.*$/API_DOCKER_TAG: \"${API_IMAGE_TAG}\"/" helmfile/overrides/production.env
+          sed -i "s/^DOCUMENT_DOWNLOAD_DOCKER_TAG:.*$/DOCUMENT_DOWNLOAD_DOCKER_TAG: \"${DOCUMENT_DOWNLOAD_IMAGE_TAG}\"/" helmfile/overrides/production.env
+          sed -i "s/^DOCUMENTATION_DOCKER_TAG:.*$/DOCUMENTATION_DOCKER_TAG: \"${DOCUMENTATION_IMAGE_TAG}\"/" helmfile/overrides/production.env
+
+          grep '^ADMIN_DOCKER_TAG:' helmfile/overrides/production.env
+          grep '^API_DOCKER_TAG:' helmfile/overrides/production.env
+          grep '^DOCUMENT_DOWNLOAD_DOCKER_TAG:' helmfile/overrides/production.env
+          grep '^DOCUMENTATION_DOCKER_TAG:' helmfile/overrides/production.env
+
+      - name: Run Database Upgrade Helmfile Sync
+        uses: ./.github/actions/db-migration
+        with:
+          environment: "production"
+          namespace: "notification-canada-ca"
+          app_label: "notify-database"
+          timeout: "400s"
+
+      - name: Run full Helmfile apply with selected image override
+        id: helmfile_apply
+        run: |
           pushd helmfile
           helmfile --environment production \
-            -l "app=notify-${COMPONENT}" \
-            --state-values-set-string "${STATE_KEY}=${IMAGE_TAG}" \
+            -l 'tier=crd' \
+            apply
+          helmfile --environment production \
+            -l 'app!=notify-database,tier!=crd' \
             apply
           popd
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
         run: |
-          json='{"text":"<!here> Production rollback failed for ${{ github.event.inputs.component }} (${{ github.event.inputs.image_tag }}) in <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|notification-manifests>."}'
+          json='{"text":"<!here> Production specific image deploy failed in <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|notification-manifests>."}'
           curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
-
-  clear-cache:
-    if: github.event.inputs.component == 'api'
-    needs: rollout
-    uses: ./.github/workflows/clear-notify-cache.yaml
-    with:
-      environment: production
-      cache_clear_user_name: CACHE_CLEAR_USER
-      api_url: https://api.notification.canada.ca
-    secrets:
-      CACHE_CLEAR_CLIENT_SECRET: ${{ secrets.PRODUCTION_CACHE_CLEAR_CLIENT_SECRET }}
