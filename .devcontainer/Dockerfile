@@ -30,28 +30,21 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+COPY .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
+
 # Install kubens
 RUN git clone -b v${KUBENS_VERSION} --single-branch https://github.com/ahmetb/kubectx /opt/kubectx \
     && ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx \
     && ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 
-# Install AWS cli
-RUN curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
-    && unzip awscliv2.zip \
-    && aws/install \
-    && rm -rf \
-        awscliv2.zip \
-        aws \
-        /usr/local/aws-cli/v2/*/dist/awscli/examples
-
-COPY .devcontainer/scripts/notify-dev-entrypoint.sh /usr/local/bin/
+# Install AWS CLI v2 (non-interactive, install dir + symlink)
+RUN curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip \
+ && unzip /tmp/awscliv2.zip -d /tmp \
+ && /tmp/aws/install -i /usr/local/aws-cli -b /usr/local/bin \
+ && rm -rf /tmp/aws /tmp/awscliv2.zip
 
 # Install Helm
-RUN curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-RUN sudo apt-get install apt-transport-https --yes
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-RUN sudo apt-get update
-RUN sudo apt-get install helm
+RUN curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # Install Helmfile
 RUN curl -LO https://github.com/helmfile/helmfile/releases/download/v0.151.0/helmfile_0.151.0_linux_amd64.tar.gz
