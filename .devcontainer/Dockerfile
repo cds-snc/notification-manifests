@@ -38,10 +38,18 @@ RUN git clone -b v${KUBENS_VERSION} --single-branch https://github.com/ahmetb/ku
     && ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 
 # Install AWS CLI v2 (non-interactive, install dir + symlink)
-RUN curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip \
- && unzip /tmp/awscliv2.zip -d /tmp \
- && /tmp/aws/install -i /usr/local/aws-cli -b /usr/local/bin \
- && rm -rf /tmp/aws /tmp/awscliv2.zip
+RUN set -eux; \
+    AWS_ZIP_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; \
+    curl -fsSL -o /tmp/awscliv2.zip "$AWS_ZIP_URL"; \
+    if curl -fsSL -o /tmp/awscliv2.zip.sha256 "${AWS_ZIP_URL}.sha256"; then \
+        expected=$(cut -d' ' -f1 /tmp/awscliv2.zip.sha256); \
+        echo "${expected}  /tmp/awscliv2.zip" | sha256sum -c -; \
+    else \
+        echo "WARNING: checksum not found at ${AWS_ZIP_URL}.sha256; skipping verification" >&2; \
+    fi; \
+    unzip -q /tmp/awscliv2.zip -d /tmp; \
+    /tmp/aws/install -i /usr/local/aws-cli -b /usr/local/bin; \
+    rm -rf /tmp/aws /tmp/awscliv2.zip /tmp/awscliv2.zip.sha256
 
 # Install Helm
 RUN curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
