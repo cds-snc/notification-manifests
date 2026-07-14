@@ -150,9 +150,9 @@ nodes:
           cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
         limits:
-          cpu: {{ if eq .Environment.Name "production" }} "550m" {{ else if eq .Environment.Name "staging" }} "700m" {{ else }} "550m" {{ end }}
+          cpu: {{ if eq .Environment.Name "production" }} "700m" {{ else if eq .Environment.Name "staging" }} "700m" {{ else }} "550m" {{ end }}
           memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
-      replicas: {{ if eq .Environment.Name "staging" }} 7 {{ else }} 1 {{ end }}
+      replicas: {{ if eq .Environment.Name "dev" }} 1 {{ else }} 7 {{ end }}
     pdb:
       pdbEnabled: {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }} false {{ else }} false {{ end }}
       minAvailable: {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }} 1 {{ else }} 1 {{ end }}
