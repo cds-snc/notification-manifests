@@ -38,8 +38,7 @@ RUN git clone -b v${KUBENS_VERSION} --single-branch https://github.com/ahmetb/ku
     && ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 
 # Install AWS CLI v2 (non-interactive, install dir + symlink)
-RUN set -eux; \
-    AWS_ZIP_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; \
+RUN AWS_ZIP_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; \
     curl -fsSL -o /tmp/awscliv2.zip "$AWS_ZIP_URL"; \
     if curl -fsSL -o /tmp/awscliv2.zip.sha256 "${AWS_ZIP_URL}.sha256"; then \
         expected=$(cut -d' ' -f1 /tmp/awscliv2.zip.sha256); \
@@ -52,7 +51,18 @@ RUN set -eux; \
     rm -rf /tmp/aws /tmp/awscliv2.zip /tmp/awscliv2.zip.sha256
 
 # Install Helm
-RUN curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+RUN HELM_VERSION="v3.21.3"; \
+    ARCH="linux-amd64"; \
+    TARBALL="helm-${HELM_VERSION}-${ARCH}.tar.gz"; \
+    URL="https://get.helm.sh/${TARBALL}"; \
+    curl -fsSLO "$URL"; \
+    curl -fsSLO "${URL}.sha256" || { echo "ERROR: checksum not found at ${URL}.sha256"; exit 1; }; \
+    expected=$(cat "${TARBALL}.sha256"); \
+    echo "${expected}  ${TARBALL}" | sha256sum -c -; \
+    tar -zxvf "${TARBALL}"; \
+    mv "${ARCH}"/helm /usr/local/bin/helm; \
+    chmod +x /usr/local/bin/helm; \
+    rm -rf "${TARBALL}" "${TARBALL}.sha256" "${ARCH}"
 
 # Install Helmfile
 RUN curl -LO https://github.com/helmfile/helmfile/releases/download/v0.151.0/helmfile_0.151.0_linux_amd64.tar.gz
