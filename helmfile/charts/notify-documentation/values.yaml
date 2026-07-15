@@ -5,6 +5,8 @@ image:
   pullPolicy: Always
   tag: "latest"
 
+env: []
+
 pdb:
   enabled: true
   minAvailable: 1

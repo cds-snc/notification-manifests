@@ -2,6 +2,11 @@ image:
   repository: "{{ .StateValues.DOCUMENTATION_IMAGE_REPOSITORY }}"
   tag: "{{ .StateValues.DOCUMENTATION_DOCKER_TAG }}"
 
+# Point the docs (OpenAPI spec + examples) at the API for the current environment.
+env:
+  - name: API_BASE_URL
+    value: "https://api.{{ requiredEnv "BASE_DOMAIN" }}"
+
 targetGroupBinding:
   enabled: true
   targetGroupARN: {{requiredEnv "DOCUMENTATION_TARGET_GROUP_ARN"}}
