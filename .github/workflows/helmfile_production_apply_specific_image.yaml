@@ -1,0 +1,173 @@
+name: Production - Helmfile Apply Specific Image
+run-name: Production - Helmfile Apply Specific Image Set
+
+on:
+  workflow_dispatch:
+    inputs:
+      admin_image_tag:
+        description: "ADMIN_DOCKER_TAG value"
+        required: true
+        type: string
+      api_image_tag:
+        description: "API_DOCKER_TAG value"
+        required: true
+        type: string
+      document_download_image_tag:
+        description: "DOCUMENT_DOWNLOAD_DOCKER_TAG value"
+        required: true
+        type: string
+      documentation_image_tag:
+        description: "DOCUMENTATION_DOCKER_TAG value"
+        required: true
+        type: string
+
+concurrency:
+  group: helmfile-production-apply-specific-image
+  cancel-in-progress: false
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
+  PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
+  ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+  AWS_DEFAULT_REGION: ca-central-1
+
+permissions:
+  id-token: write # This is required for requesting the OIDC JWT
+  contents: read
+
+jobs:
+  rollout:
+    runs-on: ubuntu-latest
+    name: Rollout on EKS
+    steps:
+      - name: Inject token authentication
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Configure credentials to Notify using OIDC
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-manifests-helmfile-production-apply
+          role-session-name: NotifyManifestsApplySpecificImage
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
+          helmfile-version: "v1.4.4"
+          helm-s3-plugin-version: "v0.16.2"
+
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+
+      - name: Setup Terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
+        env:
+          CONFTEST_VERSION: 0.30.0
+          TERRAFORM_VERSION: 1.9.5
+          TERRAGRUNT_VERSION: 0.66.9
+          TF_SUMMARIZE_VERSION: 0.2.3
+
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb
+
+      - name: Retrieve VPN Config
+        run: |
+          scripts/createVPNConfig.sh production
+
+      - name: Connect to VPN
+        uses: kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5 # v3.1.0
+        with:
+          config_file: /var/tmp/production.ovpn
+          echo_config: false
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias production
+
+      - name: Load Context Variables
+        run: |
+          ./helmfile/getContext.sh -g
+
+      - name: Validate required image tag format
+        env:
+          ADMIN_IMAGE_TAG: ${{ github.event.inputs.admin_image_tag }}
+          API_IMAGE_TAG: ${{ github.event.inputs.api_image_tag }}
+          DOCUMENT_DOWNLOAD_IMAGE_TAG: ${{ github.event.inputs.document_download_image_tag }}
+          DOCUMENTATION_IMAGE_TAG: ${{ github.event.inputs.documentation_image_tag }}
+        run: |
+          validate_tag() {
+            local key="$1"
+            local value="$2"
+
+            if [ -z "${value// }" ]; then
+              echo "$key is required and cannot be blank."
+              exit 1
+            fi
+
+            if [[ ! "$value" =~ ^[A-Fa-f0-9]{7}$ ]]; then
+              echo "$key must be a 7-character hexadecimal commit tag (example: cf41e0f)."
+              exit 1
+            fi
+          }
+
+          validate_tag "ADMIN_DOCKER_TAG" "$ADMIN_IMAGE_TAG"
+          validate_tag "API_DOCKER_TAG" "$API_IMAGE_TAG"
+          validate_tag "DOCUMENT_DOWNLOAD_DOCKER_TAG" "$DOCUMENT_DOWNLOAD_IMAGE_TAG"
+          validate_tag "DOCUMENTATION_DOCKER_TAG" "$DOCUMENTATION_IMAGE_TAG"
+
+      - name: Overwrite four image tags in production overrides
+        env:
+          ADMIN_IMAGE_TAG: ${{ github.event.inputs.admin_image_tag }}
+          API_IMAGE_TAG: ${{ github.event.inputs.api_image_tag }}
+          DOCUMENT_DOWNLOAD_IMAGE_TAG: ${{ github.event.inputs.document_download_image_tag }}
+          DOCUMENTATION_IMAGE_TAG: ${{ github.event.inputs.documentation_image_tag }}
+        run: |
+          sed -i "s/^ADMIN_DOCKER_TAG:.*$/ADMIN_DOCKER_TAG: \"${ADMIN_IMAGE_TAG}\"/" helmfile/overrides/production.env
+          sed -i "s/^API_DOCKER_TAG:.*$/API_DOCKER_TAG: \"${API_IMAGE_TAG}\"/" helmfile/overrides/production.env
+          sed -i "s/^DOCUMENT_DOWNLOAD_DOCKER_TAG:.*$/DOCUMENT_DOWNLOAD_DOCKER_TAG: \"${DOCUMENT_DOWNLOAD_IMAGE_TAG}\"/" helmfile/overrides/production.env
+          sed -i "s/^DOCUMENTATION_DOCKER_TAG:.*$/DOCUMENTATION_DOCKER_TAG: \"${DOCUMENTATION_IMAGE_TAG}\"/" helmfile/overrides/production.env
+
+          grep '^ADMIN_DOCKER_TAG:' helmfile/overrides/production.env
+          grep '^API_DOCKER_TAG:' helmfile/overrides/production.env
+          grep '^DOCUMENT_DOWNLOAD_DOCKER_TAG:' helmfile/overrides/production.env
+          grep '^DOCUMENTATION_DOCKER_TAG:' helmfile/overrides/production.env
+
+      - name: Run Database Upgrade Helmfile Sync
+        uses: ./.github/actions/db-migration
+        with:
+          environment: "production"
+          namespace: "notification-canada-ca"
+          app_label: "notify-database"
+          timeout: "400s"
+
+      - name: Run full Helmfile apply with selected image override
+        id: helmfile_apply
+        run: |
+          pushd helmfile
+          helmfile --environment production \
+            -l 'tier=crd' \
+            apply
+          helmfile --environment production \
+            -l 'app!=notify-database,tier!=crd' \
+            apply
+          popd
+
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json='{"text":"<!here> Production specific image deploy failed in <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|notification-manifests>."}'
+          curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
