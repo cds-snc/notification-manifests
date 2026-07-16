@@ -1,0 +1,79 @@
+name: Velero - Restore
+run-name: Velero - Restore (${{ github.event.inputs.environment }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      backup_name:
+        description: Backup name to restore from (run "List Backups" workflow to see available)
+        required: true
+        type: string
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  AWS_DEFAULT_REGION: ca-central-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Setup cluster access
+        uses: ./.github/actions/setup-cluster-access
+        with:
+          environment: ${{ github.event.inputs.environment }}
+          aws-account-id: ${{ secrets[format('{0}_AWS_ACCOUNT_ID', github.event.inputs.environment == 'dev' && 'DEV' || (github.event.inputs.environment == 'staging' && 'STAGING' || 'PRODUCTION'))] }}
+          op-service-account-token: ${{ secrets[format('OP_SERVICE_ACCOUNT_TOKEN_{0}', github.event.inputs.environment == 'dev' && 'DEV' || (github.event.inputs.environment == 'staging' && 'STAGING' || 'PRODUCTION'))] }}
+          role-name: notification-manifests-helmfile-${{ github.event.inputs.environment }}-apply
+
+      - name: Setup Velero CLI
+        uses: ./.github/actions/setup-velero
+
+      - name: Verify backup exists
+        run: |
+          echo "Checking backup: ${{ github.event.inputs.backup_name }}"
+          velero backup describe "${{ github.event.inputs.backup_name }}"
+
+      - name: Restore from backup
+        run: |
+          RESTORE_NAME="${{ github.event.inputs.backup_name }}-restore-$(date +%Y%m%d-%H%M%S)"
+          echo "Creating restore: $RESTORE_NAME"
+          
+          velero restore create "$RESTORE_NAME" \
+            --from-backup "${{ github.event.inputs.backup_name }}" \
+            --include-resources "deployments,statefulsets,daemonsets" \
+            --wait
+          
+          velero restore describe "$RESTORE_NAME"
+
+      - name: Wait for pods to stabilize
+        run: |
+          echo "Waiting for pods to become ready..."
+          kubectl wait --for=condition=ready pod \
+            -n notification-canada-ca \
+            --all --timeout=300s || true
+          
+          echo ""
+          echo "Pod status:"
+          kubectl get pods -n notification-canada-ca
+
+      - name: Notify Slack
+        if: always()
+        run: |
+          STATUS=$([ "${{ job.status }}" == "success" ] && echo "✓ completed" || echo "✗ failed")
+          json="{\"text\":\"Velero restore $STATUS for ${{ github.event.inputs.environment }}: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow> | Backup: ${{ github.event.inputs.backup_name }}\"}"
+          curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
