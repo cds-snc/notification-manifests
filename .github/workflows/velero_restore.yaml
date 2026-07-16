@@ -38,7 +38,7 @@ jobs:
           environment: ${{ github.event.inputs.environment }}
           aws-account-id: ${{ (github.event.inputs.environment == 'dev' && secrets.DEV_AWS_ACCOUNT_ID) || (github.event.inputs.environment == 'staging' && secrets.STAGING_AWS_ACCOUNT_ID) || secrets.PRODUCTION_AWS_ACCOUNT_ID }}
           op-service-account-token: ${{ (github.event.inputs.environment == 'dev' && secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV) || (github.event.inputs.environment == 'staging' && secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING) || secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
-          role-name: notification-manifests-helmfile-${{ github.event.inputs.environment }}-apply
+          role-name: ${{ (github.event.inputs.environment == 'dev' && 'notification-manifests-k8s-lambda-apply-main-branch') || format('notification-manifests-helmfile-{0}-apply', github.event.inputs.environment) }}
 
       - name: Setup Velero CLI
         uses: ./.github/actions/setup-velero
