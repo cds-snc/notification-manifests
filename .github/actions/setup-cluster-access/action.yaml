@@ -28,8 +28,8 @@ runs:
 
     - name: Setup Terraform tools
       uses: cds-snc/terraform-tools-setup@v1
-      with:
-        terragrunt-version: "0.66.9"
+      env:
+        TERRAGRUNT_VERSION: 0.66.9
 
     - name: Retrieve VPN Config
       shell: bash
