@@ -1,0 +1,68 @@
+name: Velero - Snapshot (Manual)
+run-name: Velero - Snapshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
+concurrency:
+  group: velero-snapshot-${{ github.event.inputs.environment }}
+  cancel-in-progress: false
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  AWS_DEFAULT_REGION: ca-central-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Determine environment
+        id: env
+        run: |
+          echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+
+      - name: Setup cluster access
+        uses: ./.github/actions/setup-cluster-access
+        with:
+          environment: ${{ steps.env.outputs.environment }}
+          aws-account-id: ${{ (steps.env.outputs.environment == 'dev' && secrets.DEV_AWS_ACCOUNT_ID) || (steps.env.outputs.environment == 'staging' && secrets.STAGING_AWS_ACCOUNT_ID) || secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+          op-service-account-token: ${{ (steps.env.outputs.environment == 'dev' && secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV) || (steps.env.outputs.environment == 'staging' && secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING) || secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
+          role-name: notification-manifests-helmfile-${{ steps.env.outputs.environment }}-apply
+
+      - name: Setup Velero CLI
+        uses: ./.github/actions/setup-velero
+
+      - name: Create snapshot
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          BACKUP_NAME="${{ steps.env.outputs.environment }}-snapshot-${TIMESTAMP}"
+          echo "Creating backup: $BACKUP_NAME"
+          
+          velero backup create "$BACKUP_NAME" \
+            --include-namespaces notification-canada-ca \
+            --snapshot-volumes=false \
+            --wait
+          
+          velero backup get "$BACKUP_NAME"
+
+      - name: Notify Slack on failure
+        if: failure()
+        run: |
+          json='{"text":"Velero snapshot creation failed for ${{ steps.env.outputs.environment }}: <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow>"}'
+          curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}

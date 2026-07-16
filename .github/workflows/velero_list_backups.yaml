@@ -1,0 +1,48 @@
+name: Velero - List Backups
+run-name: Velero - List Backups (${{ github.event.inputs.environment }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  AWS_DEFAULT_REGION: ca-central-1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Setup cluster access
+        uses: ./.github/actions/setup-cluster-access
+        with:
+          environment: ${{ github.event.inputs.environment }}
+          aws-account-id: ${{ (github.event.inputs.environment == 'dev' && secrets.DEV_AWS_ACCOUNT_ID) || (github.event.inputs.environment == 'staging' && secrets.STAGING_AWS_ACCOUNT_ID) || secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+          op-service-account-token: ${{ (github.event.inputs.environment == 'dev' && secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV) || (github.event.inputs.environment == 'staging' && secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING) || secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
+          role-name: notification-manifests-helmfile-${{ github.event.inputs.environment }}-apply
+
+      - name: Setup Velero CLI
+        uses: ./.github/actions/setup-velero
+
+      - name: List available backups
+        run: |
+          echo "Available Velero backups (newest first):"
+          echo ""
+          velero backup get --sort-by=metadata.creationTimestamp | tee backups.txt
+          echo ""
+          echo "Use the backup name from the first column in the Velero Restore workflow."

@@ -1,0 +1,13 @@
+name: Setup Velero CLI
+description: Install Velero CLI
+
+runs:
+  using: composite
+  steps:
+    - name: Install Velero CLI
+      shell: bash
+      run: |
+        wget -q https://github.com/vmware-tanzu/velero/releases/download/v1.13.1/velero-v1.13.1-linux-amd64.tar.gz
+        tar -xzf velero-v1.13.1-linux-amd64.tar.gz
+        sudo mv velero-v1.13.1-linux-amd64/velero /usr/local/bin/
+        velero version
