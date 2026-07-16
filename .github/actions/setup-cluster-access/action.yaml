@@ -31,6 +31,13 @@ runs:
       env:
         TERRAGRUNT_VERSION: 0.66.9
 
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+      with:
+        role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/${{ inputs.role-name }}
+        role-session-name: ClusterAccess
+        aws-region: ca-central-1
+
     - name: Retrieve VPN Config
       shell: bash
       run: scripts/createVPNConfig.sh ${{ inputs.environment }}
@@ -46,13 +53,6 @@ runs:
       with:
         config_file: /var/tmp/${{ inputs.environment }}.ovpn
         echo_config: false
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
-      with:
-        role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/${{ inputs.role-name }}
-        role-session-name: ClusterAccess
-        aws-region: ca-central-1
 
     - name: Configure kubeconfig
       shell: bash
