@@ -1,13 +1,7 @@
-name: Velero - Snapshot (Auto/Manual)
+name: Velero - Snapshot (Manual)
 run-name: Velero - Snapshot
 
 on:
-  workflow_run:
-    workflows: ["Staging - Helmfile Apply"]
-    types:
-      - completed
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       environment:
@@ -20,7 +14,7 @@ on:
           - production
 
 concurrency:
-  group: velero-snapshot-${{ github.event.inputs.environment || 'staging' }}
+  group: velero-snapshot-${{ github.event.inputs.environment }}
   cancel-in-progress: false
 
 env:
@@ -41,12 +35,7 @@ jobs:
       - name: Determine environment
         id: env
         run: |
-          if [ "${{ github.event_name }}" = "workflow_run" ]; then
-            ENV="staging"
-          else
-            ENV="${{ github.event.inputs.environment }}"
-          fi
-          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
 
       - name: Setup cluster access
         uses: ./.github/actions/setup-cluster-access
