@@ -29,6 +29,12 @@ runs:
     - name: Retrieve VPN Config
       shell: bash
       run: scripts/createVPNConfig.sh ${{ inputs.environment }}
+      env:
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.op-service-account-token }}
+
+    - name: Install OpenVPN
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y openvpn
 
     - name: Connect to VPN
       uses: kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5 # v3.1.0
