@@ -32,8 +32,8 @@ jobs:
         uses: ./.github/actions/setup-cluster-access
         with:
           environment: ${{ github.event.inputs.environment }}
-          aws-account-id: ${{ secrets[format('{0}_AWS_ACCOUNT_ID', github.event.inputs.environment == 'dev' && 'DEV' || (github.event.inputs.environment == 'staging' && 'STAGING' || 'PRODUCTION'))] }}
-          op-service-account-token: ${{ secrets[format('OP_SERVICE_ACCOUNT_TOKEN_{0}', github.event.inputs.environment == 'dev' && 'DEV' || (github.event.inputs.environment == 'staging' && 'STAGING' || 'PRODUCTION'))] }}
+          aws-account-id: ${{ (github.event.inputs.environment == 'dev' && secrets.DEV_AWS_ACCOUNT_ID) || (github.event.inputs.environment == 'staging' && secrets.STAGING_AWS_ACCOUNT_ID) || secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+          op-service-account-token: ${{ (github.event.inputs.environment == 'dev' && secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV) || (github.event.inputs.environment == 'staging' && secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING) || secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
           role-name: notification-manifests-helmfile-${{ github.event.inputs.environment }}-apply
 
       - name: Setup Velero CLI
