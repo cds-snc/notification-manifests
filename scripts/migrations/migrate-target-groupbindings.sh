@@ -4,7 +4,7 @@ set -euo pipefail
 ENVIRONMENT="${1:?Usage: $0 <environment> [--revert]}"
 MODE="${2:-}"
 
-[[ "${ENVIRONMENT}" == "production" ]] && export PROD_LOCAL=true
+[[ "${ENVIRONMENT}" == "production" ]] && export LOCAL_PROD=true
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TERRAFORM_REPO="${HOME}/projects/notification-terraform"
 HELMFILE_DIR="${SCRIPT_DIR}/../../helmfile"
@@ -23,8 +23,40 @@ run_helmfile_sync() {
 }
 
 ###############################################################################
-# Revert mode
+# Pre-launch: fetch origin and merge origin/main into every branch we'll use.
+# Halt if any branch has conflicts that can't be resolved automatically.
 ###############################################################################
+if [[ "${MODE}" == "--revert" ]]; then
+  BRANCHES=(admin-tt-revert-step-1 admin-tt-revert-step-2)
+else
+  BRANCHES=(admin-tt-step-1 admin-tt-step-3 admin-tt-step-4)
+fi
+
+echo "==> [Pre-launch] Fetching origin and merging origin/main into branches: ${BRANCHES[*]}"
+cd "${TERRAFORM_REPO}"
+ORIGINAL_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+git fetch origin
+
+for branch in "${BRANCHES[@]}"; do
+  echo "    Updating ${branch}..."
+  git checkout "${branch}"
+  BEFORE="$(git rev-parse HEAD)"
+  if ! git merge origin/main --no-edit; then
+    git merge --abort 2>/dev/null || true
+    git checkout "${ORIGINAL_BRANCH}"
+    echo "ERROR: Merge conflict in '${branch}' — resolve conflicts manually and re-run." >&2
+    exit 1
+  fi
+  if [[ "$(git rev-parse HEAD)" != "${BEFORE}" ]]; then
+    echo "      Pushing ${branch}..."
+    git push origin "${branch}"
+  fi
+done
+
+git checkout "${ORIGINAL_BRANCH}"
+echo "==> [Pre-launch] All branches up to date"
+
+
 if [[ "${MODE}" == "--revert" ]]; then
   echo "==> [Revert Step 1] Checking out admin-tt-revert-step-1 and running terragrunt apply"
   cd "${TERRAFORM_REPO}"
