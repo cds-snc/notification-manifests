@@ -4,6 +4,7 @@ set -euo pipefail
 ENVIRONMENT="${1:?Usage: $0 <environment> [--revert]}"
 MODE="${2:-}"
 
+[[ "${ENVIRONMENT}" == "production" ]] && export PROD_LOCAL=true
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TERRAFORM_REPO="${HOME}/projects/notification-terraform"
 HELMFILE_DIR="${SCRIPT_DIR}/../../helmfile"
