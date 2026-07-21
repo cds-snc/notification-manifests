@@ -14,8 +14,6 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_DEFAULT_REGION: ca-central-1
   ENVIRONMENT: staging
-  # This disables Terraform's strict lockfile checking globally for this run
-  TF_PLUGIN_CACHE_DIR: ""
 
 permissions:
   id-token: write
@@ -30,9 +28,7 @@ jobs:
 
       - name: Patch scripts for this runner
         run: |
-          sed -i "s/terragrunt init -reconfigure -upgrade/find . -name '.terraform.lock.hcl' -delete \&\& terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
-          # the Github action cache step uses terraform init. Let's patch out the cached lockfile requirement by adding a global override via TF_CLI_ARGS
-          echo "TF_CLI_ARGS_init=-lockfile=readonly" >> $GITHUB_ENV
+          sed -i "s/terragrunt init -reconfigure -upgrade/rm -f .terraform.lock.hcl \&\& terragrunt run-all init -upgrade \&\& terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
 
       - name: Setup cluster access
         uses: ./.github/actions/setup-cluster-access
