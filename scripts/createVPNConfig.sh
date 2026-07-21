@@ -17,6 +17,10 @@ fi
 op read op://$VAULT/"TERRAFORM_SECRETS_$ENVIRONMENT"/notesPlain > /var/tmp/notification-terraform/aws/$ENVIRONMENT.tfvars   
 cd /var/tmp/notification-terraform/env/$ENVIRONMENT/eks
 export INFRASTRUCTURE_VERSION=$(cat ../../../.github/workflows/infrastructure_version.txt)
+
+# Use the same plugin cache directory
+export TF_PLUGIN_CACHE_DIR=~/.terraform.d/plugin-cache
+
 terragrunt init -reconfigure -upgrade
 ENDPOINT_ID=$(terragrunt output --raw gha_vpn_id)
 CERT=$(terragrunt output --raw gha_vpn_certificate)

@@ -43,26 +43,22 @@ runs:
       run: |
         git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
         
-        # List directory structure to debug
-        echo "=== Checking notification-terraform structure ==="
-        ls -la /var/tmp/notification-terraform/env/${{ inputs.environment }}/ || echo "env/${{ inputs.environment }} not found"
-        
         # Download tfvars needed for terragrunt init
         OP_VAULT=$([ "${{ inputs.environment }}" = "production" ] && echo "ppnxsriom3alsxj4ogikyjxlzi" || echo "4eyyuwddp6w4vxlabrr2i2duxm")
         op read "op://${OP_VAULT}/TERRAFORM_SECRETS_${{ inputs.environment }}/notesPlain" > /var/tmp/notification-terraform/aws/${{ inputs.environment }}.tfvars
         
-        # Initialize all terragrunt modules in this environment
+        # We must initialize directly in the eks directory where createVPNConfig.sh runs
         cd /var/tmp/notification-terraform
         export INFRASTRUCTURE_VERSION=$(cat .github/workflows/infrastructure_version.txt 2>/dev/null || echo "unknown")
+        
+        cd env/${{ inputs.environment }}/eks
+        
+        # Setting TF_PLUGIN_CACHE_DIR ensures providers are retained for subsequent steps
         export TF_PLUGIN_CACHE_DIR=~/.terraform.d/plugin-cache
         mkdir -p $TF_PLUGIN_CACHE_DIR
         
-        # Use terragrunt run-all init to initialize all modules and cache all providers
-        cd env/${{ inputs.environment }}
-        terragrunt run-all init --terragrunt-non-interactive 2>&1 | head -100 || true
-        
-        echo "=== Provider cache contents ==="
-        find ~/.terraform.d/plugin-cache -type f 2>/dev/null | head -20 || echo "No cached providers found"
+        echo "Installing terraform plugins in $(pwd)"
+        terragrunt init -upgrade || true
       env:
         OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.op-service-account-token }}
 
