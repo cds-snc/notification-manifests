@@ -38,11 +38,6 @@ runs:
         role-session-name: ClusterAccess
         aws-region: ca-central-1
 
-    - name: Initialize Terraform
-      shell: bash
-      run: terraform init
-      working-directory: terraform/gha_vpn_config
-
     - name: Retrieve VPN Config
       shell: bash
       run: scripts/createVPNConfig.sh ${{ inputs.environment }}
