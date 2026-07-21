@@ -61,3 +61,4 @@ jobs:
           # json='{"text":"Velero snapshot creation failed for staging (debug workflow): <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow>"}'
           # curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
           echo "Workflow failed - Slack notification disabled"
+
