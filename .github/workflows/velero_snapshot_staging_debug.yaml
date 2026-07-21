@@ -30,6 +30,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
+      - name: Patch createVPNConfig to fix lockfile issues
+        run: |
+          sed -i "s/terragrunt init -reconfigure -upgrade/rm -f .terraform.lock.hcl \&\& terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
+
       - name: Setup cluster access
         uses: ./.github/actions/setup-cluster-access
         with:
