@@ -54,7 +54,7 @@ jobs:
       - name: Create snapshot
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          BACKUP_NAME="${{ steps.env.outputs.environment }}-snapshot-${TIMESTAMP}"
+          BACKUP_NAME="${{ steps.env.outputs.environment }}-ns-notification-canada-ca-${TIMESTAMP}"
           echo "Creating backup: $BACKUP_NAME"
           
           velero backup create "$BACKUP_NAME" \
