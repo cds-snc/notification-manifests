@@ -42,12 +42,27 @@ runs:
       shell: bash
       run: |
         git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
-        cd /var/tmp/notification-terraform/env/${{ inputs.environment }}/eks
+        
+        # List directory structure to debug
+        echo "=== Checking notification-terraform structure ==="
+        ls -la /var/tmp/notification-terraform/env/${{ inputs.environment }}/ || echo "env/${{ inputs.environment }} not found"
+        
         # Download tfvars needed for terragrunt init
-        op read op://$([ "${{ inputs.environment }}" = "production" ] && echo "ppnxsriom3alsxj4ogikyjxlzi" || echo "4eyyuwddp6w4vxlabrr2i2duxm")/"TERRAFORM_SECRETS_${{ inputs.environment }}"/notesPlain > /var/tmp/notification-terraform/aws/${{ inputs.environment }}.tfvars
-        export INFRASTRUCTURE_VERSION=$(cat ../../../.github/workflows/infrastructure_version.txt)
-        # Use terragrunt init to properly cache all providers
-        terragrunt init -upgrade || true
+        OP_VAULT=$([ "${{ inputs.environment }}" = "production" ] && echo "ppnxsriom3alsxj4ogikyjxlzi" || echo "4eyyuwddp6w4vxlabrr2i2duxm")
+        op read "op://${OP_VAULT}/TERRAFORM_SECRETS_${{ inputs.environment }}/notesPlain" > /var/tmp/notification-terraform/aws/${{ inputs.environment }}.tfvars
+        
+        # Initialize all terragrunt modules in this environment
+        cd /var/tmp/notification-terraform
+        export INFRASTRUCTURE_VERSION=$(cat .github/workflows/infrastructure_version.txt 2>/dev/null || echo "unknown")
+        export TF_PLUGIN_CACHE_DIR=~/.terraform.d/plugin-cache
+        mkdir -p $TF_PLUGIN_CACHE_DIR
+        
+        # Use terragrunt run-all init to initialize all modules and cache all providers
+        cd env/${{ inputs.environment }}
+        terragrunt run-all init --terragrunt-non-interactive 2>&1 | head -100 || true
+        
+        echo "=== Provider cache contents ==="
+        find ~/.terraform.d/plugin-cache -type f 2>/dev/null | head -20 || echo "No cached providers found"
       env:
         OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.op-service-account-token }}
 
