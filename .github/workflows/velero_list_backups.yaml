@@ -52,3 +52,19 @@ jobs:
           velero backup get | tee backups.txt
           echo ""
           echo "Use the backup name from the first column in the Velero Restore workflow."
+
+      - name: Send list to Slack
+        run: |
+          # Grab the first 11 lines (header + top 10 backups)
+          BACKUPS=$(head -n 11 backups.txt || echo "No backups found.")
+          
+          # Create JSON payload using jq to safely escape the multiline text
+          JSON_PAYLOAD=$(jq -n \
+            --arg backups "$BACKUPS" \
+            --arg url "https://github.com/${{ github.repository }}/actions/workflows/velero_restore.yaml" \
+            --arg env "${{ github.event.inputs.environment || 'staging' }}" \
+            '{
+              "text": "🗄️ *Available Velero Backups (\($env))*\n```\n\($backups)\n```\n👉 <\($url)|*Click here to run the Restore workflow*>"
+            }')
+            
+          curl -X POST -H 'Content-type: application/json' --data "$JSON_PAYLOAD" ${{ secrets.SLACK_WEBHOOK }}
