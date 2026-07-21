@@ -1,11 +1,9 @@
-# Trigger execution
 name: Test VPN Connectivity (Staging)
 
 on:
   push:
     branches:
       - switch-to-gha-vpn-secrets
-  pull_request:
 
 env:
   AWS_DEFAULT_REGION: ca-central-1
