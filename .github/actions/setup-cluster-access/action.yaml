@@ -41,38 +41,10 @@ runs:
     - name: Cache Terraform providers
       shell: bash
       run: |
-        git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
-        
-        # Download tfvars needed for terragrunt init
-        OP_VAULT=$([ "${{ inputs.environment }}" = "production" ] && echo "ppnxsriom3alsxj4ogikyjxlzi" || echo "4eyyuwddp6w4vxlabrr2i2duxm")
-        op read "op://${OP_VAULT}/TERRAFORM_SECRETS_${{ inputs.environment }}/notesPlain" > /var/tmp/notification-terraform/aws/${{ inputs.environment }}.tfvars
-        
-        cd /var/tmp/notification-terraform
-        export INFRASTRUCTURE_VERSION=$(cat .github/workflows/infrastructure_version.txt 2>/dev/null || echo "unknown")
-        
-        export TF_PLUGIN_CACHE_DIR=~/.terraform.d/plugin-cache
-        mkdir -p $TF_PLUGIN_CACHE_DIR
-        
-        # Write an explicitly defined terraform required_providers block 
-        # so raw terraform init has exactly what it needs to resolve the locks
-        cat <<EOF > env/${{ inputs.environment }}/cache_plugins.tf
-        terraform {
-          required_providers {
-            aws = { source = "hashicorp/aws", version = "6.15.0" }
-            null = { source = "hashicorp/null", version = "3.2.4" }
-            tls = { source = "hashicorp/tls", version = "4.1.0" }
-            github = { source = "integrations/github", version = "6.7.3" }
-            archive = { source = "hashicorp/archive", version = "2.7.1" }
-          }
-        }
-        EOF
-        cd env/${{ inputs.environment }}
-        rm -f .terraform.lock.hcl && terraform init -upgrade
-        
-        cd eks
-        terragrunt init -upgrade || true
-      env:
-        OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.op-service-account-token }}
+        git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform-init
+        cd /var/tmp/notification-terraform-init/env/${{ inputs.environment }}/eks
+        terraform init -upgrade || true
+        rm -rf /var/tmp/notification-terraform-init
 
     - name: Retrieve VPN Config
       shell: bash
