@@ -41,10 +41,9 @@ runs:
     - name: Cache Terraform providers
       shell: bash
       run: |
-        git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform-init
-        cd /var/tmp/notification-terraform-init/env/${{ inputs.environment }}/eks
+        git clone https://github.com/cds-snc/notification-terraform.git /var/tmp/notification-terraform
+        cd /var/tmp/notification-terraform/env/${{ inputs.environment }}/eks
         terraform init -upgrade || true
-        rm -rf /var/tmp/notification-terraform-init
 
     - name: Retrieve VPN Config
       shell: bash
