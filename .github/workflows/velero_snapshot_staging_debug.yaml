@@ -32,6 +32,9 @@ jobs:
 
       - name: Patch createVPNConfig to fix lockfile issues
         run: |
+          find /var/tmp/notification-terraform -name ".terraform.lock.hcl" -delete || true
+          find /var/tmp/notification-terraform-init -name ".terraform.lock.hcl" -delete || true
+
           sed -i "s/terragrunt init -reconfigure -upgrade/rm -f .terraform.lock.hcl \&\& terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
 
       - name: Setup cluster access
@@ -47,6 +50,9 @@ jobs:
 
       - name: Create snapshot
         run: |
+          find /var/tmp/notification-terraform -name ".terraform.lock.hcl" -delete || true
+          find /var/tmp/notification-terraform-init -name ".terraform.lock.hcl" -delete || true
+
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           BACKUP_NAME="staging-snapshot-${TIMESTAMP}"
           echo "Creating backup: $BACKUP_NAME"
@@ -61,6 +67,9 @@ jobs:
       - name: Notify Slack on failure
         if: failure()
         run: |
+          find /var/tmp/notification-terraform -name ".terraform.lock.hcl" -delete || true
+          find /var/tmp/notification-terraform-init -name ".terraform.lock.hcl" -delete || true
+
           # Slack notification disabled during testing
           # json='{"text":"Velero snapshot creation failed for staging (debug workflow): <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow>"}'
           # curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
