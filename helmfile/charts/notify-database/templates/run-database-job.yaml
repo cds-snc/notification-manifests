@@ -22,35 +22,31 @@ spec:
         - name: init-postgres
           image: alpine
           command:
-            [
-              "sh",
-              "-c",
-              "until nslookup $POSTGRES_HOST; do echo waiting for postgres; sleep 2; done;",
-            ]
-          env:
-            - name: POSTGRES_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secretProviderClass.secretname }}
-                  key: POSTGRES_HOST
+            - sh
+            - -c
+            - until nslookup "$(cat /mnt/secrets-store/{{ .Values.dbSecrets.POSTGRES_HOST }})"; do echo waiting for postgres; sleep 2; done;
+          {{- if .Values.secretProviderClass.enabled }}
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          {{- end }}
       containers:
         - name: db-migration
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["poetry"]
-          args: ["run", "flask", "db", "{{ .Values.database.args }}"]
+          command:
+            - sh
+            - -ceu
+            - |
+              {{- range $key, $val := .Values.dbSecrets }}
+              export {{ $key }}="$(cat /mnt/secrets-store/{{ $val }})"
+              {{- end }}
+              exec poetry run flask db {{ .Values.database.args }}
           env:
             # Common ENV Variables
             {{- range $key, $val := .Values.db }}
             - name: {{ $key }}
               value: {{ $val | quote }}
-            {{- end }}
-            # Secret ENV Variables
-            {{- range $key, $val := .Values.dbSecrets }}
-            - name: {{ $key }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.secretProviderClass.secretname }}
-                  key: {{ $key }}
             {{- end }}
             # Node-specific variables
             - name: STATSD_HOST
