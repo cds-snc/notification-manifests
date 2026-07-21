@@ -67,7 +67,7 @@ runs:
         }
         EOF
         cd env/${{ inputs.environment }}
-        terraform init -upgrade || true
+        rm -f .terraform.lock.hcl && terraform init -upgrade
         
         cd eks
         terragrunt init -upgrade || true
