@@ -5,10 +5,6 @@ on:
   push:
     branches:
       - workflow-staging-test
-    paths:
-      - '.github/actions/setup-cluster-access/**'
-      - '.github/workflows/velero_snapshot_staging_debug.yaml'
-      - 'scripts/createVPNConfig.sh'
 
 concurrency:
   group: velero-snapshot-staging-debug
@@ -18,6 +14,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_DEFAULT_REGION: ca-central-1
   ENVIRONMENT: staging
+  # This disables Terraform's strict lockfile checking globally for this run
+  TF_PLUGIN_CACHE_DIR: ""
 
 permissions:
   id-token: write
@@ -30,12 +28,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
-      - name: Patch createVPNConfig to fix lockfile issues
+      - name: Patch scripts for this runner
         run: |
-          find /var/tmp/notification-terraform -name ".terraform.lock.hcl" -delete || true
-          find /var/tmp/notification-terraform-init -name ".terraform.lock.hcl" -delete || true
-
-          sed -i "s/terragrunt init -reconfigure -upgrade/rm -f .terraform.lock.hcl \&\& terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
+          sed -i "s/terragrunt init -reconfigure -upgrade/find . -name '.terraform.lock.hcl' -delete \&\& terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
+          # the Github action cache step uses terraform init. Let's patch out the cached lockfile requirement by adding a global override via TF_CLI_ARGS
+          echo "TF_CLI_ARGS_init=-lockfile=readonly" >> $GITHUB_ENV
 
       - name: Setup cluster access
         uses: ./.github/actions/setup-cluster-access
@@ -50,28 +47,8 @@ jobs:
 
       - name: Create snapshot
         run: |
-          find /var/tmp/notification-terraform -name ".terraform.lock.hcl" -delete || true
-          find /var/tmp/notification-terraform-init -name ".terraform.lock.hcl" -delete || true
-
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           BACKUP_NAME="staging-snapshot-${TIMESTAMP}"
           echo "Creating backup: $BACKUP_NAME"
-          
-          velero backup create "$BACKUP_NAME" \
-            --include-namespaces notification-canada-ca \
-            --snapshot-volumes=false \
-            --wait
-          
+          velero backup create "$BACKUP_NAME" --include-namespaces notification-canada-ca --snapshot-volumes=false --wait
           velero backup get "$BACKUP_NAME"
-
-      - name: Notify Slack on failure
-        if: failure()
-        run: |
-          find /var/tmp/notification-terraform -name ".terraform.lock.hcl" -delete || true
-          find /var/tmp/notification-terraform-init -name ".terraform.lock.hcl" -delete || true
-
-          # Slack notification disabled during testing
-          # json='{"text":"Velero snapshot creation failed for staging (debug workflow): <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow>"}'
-          # curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
-          echo "Workflow failed - Slack notification disabled"
-
