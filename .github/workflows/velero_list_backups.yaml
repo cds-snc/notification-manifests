@@ -46,6 +46,6 @@ jobs:
         run: |
           echo "Available Velero backups (newest first):"
           echo ""
-          velero backup get --sort-by=metadata.creationTimestamp | tee backups.txt
+          velero backup get | tee backups.txt
           echo ""
           echo "Use the backup name from the first column in the Velero Restore workflow."
