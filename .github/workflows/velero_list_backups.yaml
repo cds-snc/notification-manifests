@@ -47,16 +47,22 @@ jobs:
 
       - name: List available backups
         run: |
-          echo "Available Velero backups (newest first):"
+          echo "Full Velero backup list:"
+          velero backup get | tee velero_output.txt
           echo ""
-          velero backup get | tee backups.txt
+          echo "Filtered list (Completed, 0 errors):"
+          awk 'BEGIN {printf "%-55s %s\n", "NAME", "CREATED"} $2=="Completed" && $3=="0" {printf "%-55s %s %s\n", $1, $5, $6}' velero_output.txt | head -n 11 > backups.txt
+          cat backups.txt
           echo ""
           echo "Use the backup name from the first column in the Velero Restore workflow."
 
       - name: Send list to Slack
         run: |
-          # Grab the first 11 lines (header + top 10 backups)
-          BACKUPS=$(head -n 11 backups.txt || echo "No backups found.")
+          # Grab the filtered list
+          BACKUPS=$(cat backups.txt)
+          if [ $(wc -l < backups.txt) -le 1 ]; then
+            BACKUPS="No completed, error-free backups found."
+          fi
           
           # Create JSON payload using jq to safely escape the multiline text
           JSON_PAYLOAD=$(jq -n \
