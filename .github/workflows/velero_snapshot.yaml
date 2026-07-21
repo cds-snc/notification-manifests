@@ -44,6 +44,9 @@ jobs:
           aws-account-id: ${{ (steps.env.outputs.environment == 'dev' && secrets.DEV_AWS_ACCOUNT_ID) || (steps.env.outputs.environment == 'staging' && secrets.STAGING_AWS_ACCOUNT_ID) || secrets.PRODUCTION_AWS_ACCOUNT_ID }}
           op-service-account-token: ${{ (steps.env.outputs.environment == 'dev' && secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV) || (steps.env.outputs.environment == 'staging' && secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING) || secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
           role-name: ${{ (steps.env.outputs.environment == 'dev' && 'notification-manifests-k8s-lambda-apply-main-branch') || format('notification-manifests-helmfile-{0}-apply', steps.env.outputs.environment) }}
+          gha-vpn-id: ${{ (steps.env.outputs.environment == 'dev' && secrets.GHA_VPN_ID_DEV) || (steps.env.outputs.environment == 'staging' && secrets.GHA_VPN_ID_STAGING) || secrets.GHA_VPN_ID_PRODUCTION }}
+          gha-vpn-cert: ${{ (steps.env.outputs.environment == 'dev' && secrets.GHA_VPN_CERT_DEV) || (steps.env.outputs.environment == 'staging' && secrets.GHA_VPN_CERT_STAGING) || secrets.GHA_VPN_CERT_PRODUCTION }}
+          gha-vpn-key: ${{ (steps.env.outputs.environment == 'dev' && secrets.GHA_VPN_KEY_DEV) || (steps.env.outputs.environment == 'staging' && secrets.GHA_VPN_KEY_STAGING) || secrets.GHA_VPN_KEY_PRODUCTION }}
 
       - name: Setup Velero CLI
         uses: ./.github/actions/setup-velero

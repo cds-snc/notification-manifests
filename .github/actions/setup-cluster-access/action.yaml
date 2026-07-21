@@ -14,6 +14,15 @@ inputs:
   role-name:
     description: IAM role name to assume
     required: true
+  gha-vpn-id:
+    description: VPN Endpoint ID
+    required: true
+  gha-vpn-cert:
+    description: VPN Certificate
+    required: true
+  gha-vpn-key:
+    description: VPN Key
+    required: true
 
 runs:
   using: composite
@@ -41,11 +50,21 @@ runs:
         role-session-name: ClusterAccess
         aws-region: ca-central-1
 
-    - name: Retrieve VPN Config
+    - name: Create VPN Config
       shell: bash
-      run: scripts/createVPNConfig.sh ${{ inputs.environment }}
       env:
-        OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.op-service-account-token }}
+        GHA_VPN_ID: ${{ inputs.gha-vpn-id }}
+        GHA_VPN_CERT: ${{ inputs.gha-vpn-cert }}
+        GHA_VPN_KEY: ${{ inputs.gha-vpn-key }}
+      run: |
+        # Use an external file to safely pipe the secrets to avoid ANY chance of string interpolation leaks
+        aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id "$GHA_VPN_ID" --output text > "/var/tmp/${{ inputs.environment }}.ovpn"
+        echo "<cert>" >> "/var/tmp/${{ inputs.environment }}.ovpn"
+        echo "$GHA_VPN_CERT" >> "/var/tmp/${{ inputs.environment }}.ovpn"
+        echo "</cert>" >> "/var/tmp/${{ inputs.environment }}.ovpn"
+        echo "<key>" >> "/var/tmp/${{ inputs.environment }}.ovpn"
+        echo "$GHA_VPN_KEY" >> "/var/tmp/${{ inputs.environment }}.ovpn"
+        echo "</key>" >> "/var/tmp/${{ inputs.environment }}.ovpn"
 
     - name: Install OpenVPN
       shell: bash
