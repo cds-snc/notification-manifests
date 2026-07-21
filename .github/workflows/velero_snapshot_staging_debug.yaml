@@ -32,7 +32,7 @@ jobs:
 
       - name: Patch createVPNConfig to fix lockfile issues
         run: |
-          sed -i "s/terragrunt init -reconfigure -upgrade/find . -name ".terraform.lock.hcl" -delete \rm -f .terraform.lock.hcl \&\& terragrunt init\rm -f .terraform.lock.hcl \&\& terragrunt init terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
+          sed -i "s/terragrunt init -reconfigure -upgrade/rm -f .terraform.lock.hcl \&\& terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
 
       - name: Setup cluster access
         uses: ./.github/actions/setup-cluster-access
