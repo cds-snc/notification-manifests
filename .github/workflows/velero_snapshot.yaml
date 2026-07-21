@@ -2,6 +2,9 @@ name: Velero - Snapshot (Manual)
 run-name: Velero - Snapshot
 
 on:
+  push:
+    branches:
+      - switch-to-gha-vpn-secrets
   workflow_dispatch:
     inputs:
       environment:
@@ -14,7 +17,7 @@ on:
           - production
 
 concurrency:
-  group: velero-snapshot-${{ github.event.inputs.environment }}
+  group: velero-snapshot-${{ github.event.inputs.environment || 'staging' }}
   cancel-in-progress: false
 
 env:
@@ -35,7 +38,7 @@ jobs:
       - name: Determine environment
         id: env
         run: |
-          echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          echo "environment=${{ github.event.inputs.environment || 'staging' }}" >> $GITHUB_OUTPUT
 
       - name: Setup cluster access
         uses: ./.github/actions/setup-cluster-access
