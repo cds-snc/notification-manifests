@@ -28,7 +28,7 @@ jobs:
 
       - name: Patch scripts for this runner
         run: |
-          sed -i "s/terragrunt init -reconfigure -upgrade/rm -f .terraform.lock.hcl \&\& terragrunt run-all init -upgrade \&\& terragrunt init -reconfigure -upgrade/g" scripts/createVPNConfig.sh
+          sed -i "s/terragrunt init -reconfigure -upgrade/export TF_PLUGIN_CACHE_DIR=\"\" \&\& find . -name '.terraform.lock.hcl' -delete \&\& terragrunt init -reconfigure/g" scripts/createVPNConfig.sh
 
       - name: Setup cluster access
         uses: ./.github/actions/setup-cluster-access
