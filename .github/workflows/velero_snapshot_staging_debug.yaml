@@ -47,13 +47,14 @@ jobs:
 
       - name: Setup Terraform tools
         uses: cds-snc/terraform-tools-setup@v1
-        env:
+        env: # In case you want to override default versions
+          CONFTEST_VERSION: 0.30.0 
+          TERRAFORM_VERSION: 1.9.5
           TERRAGRUNT_VERSION: 0.66.9
+          TF_SUMMARIZE_VERSION: 0.2.3                    
           
       - name: Retrieve VPN Config
         run: |
-          # Inline patch to disable caching recursively for this script
-          sed -i "s/terragrunt init -reconfigure -upgrade/export TF_PLUGIN_CACHE_DIR=\"\" \\&\\& find . -name '.terraform.lock.hcl' -delete \\&\\& terragrunt init -reconfigure/g" scripts/createVPNConfig.sh
           scripts/createVPNConfig.sh staging
 
       - name: Connect to VPN
