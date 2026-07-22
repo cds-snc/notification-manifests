@@ -2,8 +2,6 @@ name: Velero - Snapshot
 run-name: Velero - Snapshot
 
 on:
-  schedule:
-    - cron: '0 10 * * *' # 10:00 UTC = 6:00 AM EDT (Summer) / 5:00 AM EST (Winter)
   workflow_call:
     inputs:
       environment:
@@ -11,7 +9,7 @@ on:
         required: true
         type: string
       backup_type:
-        description: Backup type tag (e.g. helm, manual, nightly)
+        description: Backup type tag (e.g. helm, manual)
         required: false
         type: string
         default: helm
@@ -33,7 +31,6 @@ on:
         options:
           - manual
           - helm
-          - nightly
 
 concurrency:
   group: velero-snapshot-${{ inputs.environment || github.event.inputs.environment || 'staging' }}
@@ -77,10 +74,8 @@ jobs:
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           
-          # Determine trigger type for backup naming
-          if [ "${{ github.event_name }}" == "schedule" ]; then
-            BACKUP_TYPE="nightly"
-          elif [ -n "${{ inputs.backup_type }}" ]; then
+          # Determine backup type for naming
+          if [ -n "${{ inputs.backup_type }}" ]; then
             BACKUP_TYPE="${{ inputs.backup_type }}"
           else
             BACKUP_TYPE="manual"
