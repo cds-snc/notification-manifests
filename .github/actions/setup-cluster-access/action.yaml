@@ -1,0 +1,63 @@
+name: Setup Cluster Access
+description: Setup VPN, AWS credentials, and kubeconfig for a given environment
+
+inputs:
+  environment:
+    description: Environment name (staging, production, dev)
+    required: true
+  aws-account-id:
+    description: AWS Account ID for the environment
+    required: true
+  op-service-account-token:
+    description: 1Password service account token
+    required: true
+  role-name:
+    description: IAM role name to assume
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install 1Password CLI
+      shell: bash
+      run: |
+        curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+        sudo dpkg -i 1pass.deb
+      env:
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.op-service-account-token }}
+
+    - name: Setup Terraform tools
+      uses: cds-snc/terraform-tools-setup@v1
+      env:
+        CONFTEST_VERSION: 0.30.0 
+        TERRAFORM_VERSION: 1.9.5
+        TERRAGRUNT_VERSION: 0.66.9
+        TF_SUMMARIZE_VERSION: 0.2.3 
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+      with:
+        role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/${{ inputs.role-name }}
+        role-session-name: ClusterAccess
+        aws-region: ca-central-1
+
+    - name: Retrieve VPN Config
+      shell: bash
+      run: scripts/createVPNConfig.sh ${{ inputs.environment }}
+      env:
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ inputs.op-service-account-token }}
+
+    - name: Install OpenVPN
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y openvpn openvpn-systemd-resolved
+
+    - name: Connect to VPN
+      uses: kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5 # v3.1.0
+      with:
+        config_file: /var/tmp/${{ inputs.environment }}.ovpn
+        echo_config: false
+
+    - name: Configure kubeconfig
+      shell: bash
+      run: |
+        aws eks update-kubeconfig --name notification-canada-ca-${{ inputs.environment }}-eks-cluster --alias ${{ inputs.environment }}
