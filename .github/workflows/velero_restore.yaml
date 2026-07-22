@@ -58,7 +58,8 @@ jobs:
           
           velero restore create "$RESTORE_NAME" \
             --from-backup "${{ github.event.inputs.backup_name }}" \
-            --include-resources "deployments,statefulsets,daemonsets" \
+            --existing-resource-policy update \
+            --include-resources "deployments,statefulsets,daemonsets,configmaps,secrets,services,ingresses,horizontalpodautoscalers" \
             --wait
           
           velero restore describe "$RESTORE_NAME"
