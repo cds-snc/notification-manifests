@@ -56,6 +56,14 @@ jobs:
       - name: Setup Velero CLI
         uses: ./.github/actions/setup-velero
 
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
+          helmfile-version: "v1.4.4"
+          helm-s3-plugin-version: "v0.16.2"
+
       - name: Verify backup exists
         run: |
           echo "Checking backup: ${{ github.event.inputs.backup_name }}"
@@ -116,6 +124,10 @@ jobs:
           echo ""
           echo "Pod status:"
           kubectl get pods -n "${NAMESPACE}"
+
+      - name: Load Context Variables
+        run: |
+          ./helmfile/getContext.sh -g
 
       - name: Align database migration state
         uses: ./.github/actions/db-migration
