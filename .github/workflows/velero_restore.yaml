@@ -16,6 +16,21 @@ on:
         description: Backup name to restore from (run "List Backups" workflow to see available)
         required: true
         type: string
+      run_db_migration:
+        description: Run DB migration alignment after restore
+        required: false
+        default: false
+        type: boolean
+      db_args:
+        description: DB migration args (upgrade/downgrade/revision)
+        required: false
+        default: upgrade
+        type: string
+      api_docker_tag:
+        description: Optional API image tag to use for DB migration job
+        required: false
+        default: ""
+        type: string
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -85,6 +100,17 @@ jobs:
           echo ""
           echo "Pod status:"
           kubectl get pods -n "${NAMESPACE}"
+
+      - name: Align database migration state
+        if: ${{ github.event.inputs.run_db_migration == 'true' }}
+        uses: ./.github/actions/db-migration
+        with:
+          environment: ${{ github.event.inputs.environment }}
+          namespace: notification-canada-ca
+          app_label: notify-database
+          timeout: "400s"
+          db_args: ${{ github.event.inputs.db_args }}
+          api_docker_tag: ${{ github.event.inputs.api_docker_tag }}
 
       - name: Notify Slack
         if: always()
