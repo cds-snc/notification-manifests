@@ -16,18 +16,13 @@ on:
         description: Backup name to restore from (run "List Backups" workflow to see available)
         required: true
         type: string
-      run_db_migration:
-        description: Run DB migration alignment after restore
-        required: false
-        default: false
-        type: boolean
       db_args:
         description: DB migration args (upgrade/downgrade/revision)
         required: false
         default: upgrade
         type: string
       api_docker_tag:
-        description: Optional API image tag to use for DB migration job
+        description: Optional override API image tag for DB migration job (default: tag captured on backup)
         required: false
         default: ""
         type: string
@@ -66,6 +61,27 @@ jobs:
           echo "Checking backup: ${{ github.event.inputs.backup_name }}"
           velero backup describe "${{ github.event.inputs.backup_name }}"
 
+      - name: Determine DB migration API tag
+        id: db_tag
+        run: |
+          OVERRIDE_TAG="${{ github.event.inputs.api_docker_tag }}"
+
+          if [ -n "${OVERRIDE_TAG}" ]; then
+            echo "Using override API tag: ${OVERRIDE_TAG}"
+            echo "api_docker_tag=${OVERRIDE_TAG}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BACKUP_TAG=$(kubectl get backup "${{ github.event.inputs.backup_name }}" -n velero -o jsonpath='{.metadata.annotations.notify\.gc\.ca/api-docker-tag}')
+
+          if [ -n "${BACKUP_TAG}" ]; then
+            echo "Using API tag captured with backup: ${BACKUP_TAG}"
+            echo "api_docker_tag=${BACKUP_TAG}" >> "$GITHUB_OUTPUT"
+          else
+            echo "No API tag annotation found on backup; DB migration will use current Helm values."
+            echo "api_docker_tag=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Restore from backup
         run: |
           RESTORE_NAME="${{ github.event.inputs.backup_name }}-restore-$(date +%Y%m%d-%H%M%S)"
@@ -102,7 +118,6 @@ jobs:
           kubectl get pods -n "${NAMESPACE}"
 
       - name: Align database migration state
-        if: ${{ github.event.inputs.run_db_migration == 'true' }}
         uses: ./.github/actions/db-migration
         with:
           environment: ${{ github.event.inputs.environment }}
@@ -110,7 +125,7 @@ jobs:
           app_label: notify-database
           timeout: "400s"
           db_args: ${{ github.event.inputs.db_args }}
-          api_docker_tag: ${{ github.event.inputs.api_docker_tag }}
+          api_docker_tag: ${{ steps.db_tag.outputs.api_docker_tag }}
 
       - name: Notify Slack
         if: always()
