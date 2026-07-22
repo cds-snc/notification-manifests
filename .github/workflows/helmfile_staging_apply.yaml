@@ -31,6 +31,7 @@ jobs:
     uses: ./.github/workflows/velero_snapshot.yaml
     with:
       environment: staging
+      backup_type: helm
     secrets: inherit
 
   helmfile-apply:
