@@ -30,6 +30,7 @@ jobs:
     uses: ./.github/workflows/velero_snapshot.yaml
     with:
       environment: production
+      backup_type: helm
     secrets: inherit
 
   helmfile-apply:

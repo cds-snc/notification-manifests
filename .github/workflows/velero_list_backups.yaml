@@ -48,7 +48,13 @@ jobs:
           velero backup get | tee velero_output.txt
           echo ""
           echo "Filtered list (Completed, 0 errors, notification namespace only):"
-          awk 'BEGIN {printf "%-55s %s\n", "NAME", "CREATED"} $2=="Completed" && $3=="0" && $1 ~ /notification-canada-ca/ {printf "%-55s %s %s\n", $1, $5, $6}' velero_output.txt | head -n 6 > backups.txt
+          awk '$2=="Completed" && $3=="0" && $1 ~ /notification-canada-ca/ {print $1 "\t" $5 " " $6}' velero_output.txt \
+            | sort -k2,2r \
+            | head -n 5 > backups_raw.txt
+          {
+            printf "%-55s %s\n" "NAME" "CREATED"
+            awk -F "\t" '{printf "%-55s %s\n", $1, $2}' backups_raw.txt
+          } > backups.txt
           cat backups.txt
           echo ""
           echo "Use the backup name from the first column in the Velero Restore workflow."

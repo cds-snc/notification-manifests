@@ -10,6 +10,11 @@ on:
         description: Environment
         required: true
         type: string
+      backup_type:
+        description: Backup type tag (e.g. helm, manual, nightly)
+        required: false
+        type: string
+        default: helm
   workflow_dispatch:
     inputs:
       environment:
@@ -20,6 +25,15 @@ on:
           - dev
           - staging
           - production
+      backup_type:
+        description: Backup type tag
+        required: false
+        type: choice
+        default: manual
+        options:
+          - manual
+          - helm
+          - nightly
 
 concurrency:
   group: velero-snapshot-${{ inputs.environment || github.event.inputs.environment || 'staging' }}
@@ -66,8 +80,8 @@ jobs:
           # Determine trigger type for backup naming
           if [ "${{ github.event_name }}" == "schedule" ]; then
             BACKUP_TYPE="nightly"
-          elif [ "${{ github.event_name }}" == "workflow_call" ]; then
-            BACKUP_TYPE="helm"
+          elif [ -n "${{ inputs.backup_type }}" ]; then
+            BACKUP_TYPE="${{ inputs.backup_type }}"
           else
             BACKUP_TYPE="manual"
           fi
