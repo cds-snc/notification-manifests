@@ -2,9 +2,6 @@ name: Velero - Snapshot
 run-name: Velero - Snapshot
 
 on:
-  push:
-    branches:
-      - switch-to-gha-vpn-secrets
   schedule:
     - cron: '0 10 * * *' # 10:00 UTC = 6:00 AM EDT (Summer) / 5:00 AM EST (Winter)
   workflow_dispatch:
@@ -60,11 +57,9 @@ jobs:
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           
-          # Determine if this was triggered automatically by cron/push or manually by a user
+          # Determine if this was triggered automatically by cron or manually by a user
           if [ "${{ github.event_name }}" == "schedule" ]; then
             BACKUP_TYPE="nightly"
-          elif [ "${{ github.event_name }}" == "push" ]; then
-            BACKUP_TYPE="push"
           else
             BACKUP_TYPE="manual"
           fi

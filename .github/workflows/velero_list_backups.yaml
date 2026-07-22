@@ -2,9 +2,6 @@ name: Velero - List Backups
 run-name: Velero - List Backups (${{ github.event.inputs.environment || 'staging' }})
 
 on:
-  push:
-    branches:
-      - switch-to-gha-vpn-secrets
   workflow_dispatch:
     inputs:
       environment:
