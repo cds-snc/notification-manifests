@@ -58,21 +58,33 @@ jobs:
           
           velero restore create "$RESTORE_NAME" \
             --from-backup "${{ github.event.inputs.backup_name }}" \
-            --include-resources "deployments,statefulsets,daemonsets" \
+            --existing-resource-policy update \
+            --include-resources "deployments,statefulsets,daemonsets,configmaps,secrets,services,ingresses,horizontalpodautoscalers" \
             --wait
           
           velero restore describe "$RESTORE_NAME"
 
-      - name: Wait for pods to stabilize
+      - name: Wait for workloads to stabilize
         run: |
-          echo "Waiting for pods to become ready..."
-          kubectl wait --for=condition=ready pod \
-            -n notification-canada-ca \
-            --all --timeout=300s || true
-          
+          set +e
+          NAMESPACE="notification-canada-ca"
+
+          echo "Waiting for deployment/statefulset/daemonset rollouts in ${NAMESPACE}..."
+
+          for KIND in deployment statefulset daemonset; do
+            echo ""
+            echo "Checking ${KIND} rollouts..."
+            kubectl get "${KIND}" -n "${NAMESPACE}" --no-headers -o custom-columns=":metadata.name" | while read -r NAME; do
+              if [ -n "$NAME" ]; then
+                echo "Waiting on ${KIND}/${NAME}"
+                kubectl rollout status "${KIND}/${NAME}" -n "${NAMESPACE}" --timeout=300s || true
+              fi
+            done
+          done
+
           echo ""
           echo "Pod status:"
-          kubectl get pods -n notification-canada-ca
+          kubectl get pods -n "${NAMESPACE}"
 
       - name: Notify Slack
         if: always()
