@@ -1,7 +1,15 @@
-name: Velero - Snapshot (Manual)
+name: Velero - Snapshot
 run-name: Velero - Snapshot
 
 on:
+  schedule:
+    - cron: '0 10 * * *' # 10:00 UTC = 6:00 AM EDT (Summer) / 5:00 AM EST (Winter)
+  workflow_call:
+    inputs:
+      environment:
+        description: Environment
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       environment:
@@ -14,7 +22,7 @@ on:
           - production
 
 concurrency:
-  group: velero-snapshot-${{ github.event.inputs.environment }}
+  group: velero-snapshot-${{ inputs.environment || github.event.inputs.environment || 'staging' }}
   cancel-in-progress: false
 
 env:
@@ -35,7 +43,7 @@ jobs:
       - name: Determine environment
         id: env
         run: |
-          echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          echo "environment=${{ inputs.environment || github.event.inputs.environment || 'staging' }}" >> $GITHUB_OUTPUT
 
       - name: Setup cluster access
         uses: ./.github/actions/setup-cluster-access
@@ -44,6 +52,9 @@ jobs:
           aws-account-id: ${{ (steps.env.outputs.environment == 'dev' && secrets.DEV_AWS_ACCOUNT_ID) || (steps.env.outputs.environment == 'staging' && secrets.STAGING_AWS_ACCOUNT_ID) || secrets.PRODUCTION_AWS_ACCOUNT_ID }}
           op-service-account-token: ${{ (steps.env.outputs.environment == 'dev' && secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV) || (steps.env.outputs.environment == 'staging' && secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING) || secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
           role-name: ${{ (steps.env.outputs.environment == 'dev' && 'notification-manifests-k8s-lambda-apply-main-branch') || format('notification-manifests-helmfile-{0}-apply', steps.env.outputs.environment) }}
+          gha-vpn-id: ${{ (steps.env.outputs.environment == 'dev' && secrets.GHA_VPN_ID_DEV) || (steps.env.outputs.environment == 'staging' && secrets.GHA_VPN_ID_STAGING) || secrets.GHA_VPN_ID_PRODUCTION }}
+          gha-vpn-cert: ${{ (steps.env.outputs.environment == 'dev' && secrets.GHA_VPN_CERT_DEV) || (steps.env.outputs.environment == 'staging' && secrets.GHA_VPN_CERT_STAGING) || secrets.GHA_VPN_CERT_PRODUCTION }}
+          gha-vpn-key: ${{ (steps.env.outputs.environment == 'dev' && secrets.GHA_VPN_KEY_DEV) || (steps.env.outputs.environment == 'staging' && secrets.GHA_VPN_KEY_STAGING) || secrets.GHA_VPN_KEY_PRODUCTION }}
 
       - name: Setup Velero CLI
         uses: ./.github/actions/setup-velero
@@ -51,7 +62,17 @@ jobs:
       - name: Create snapshot
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          BACKUP_NAME="${{ steps.env.outputs.environment }}-snapshot-${TIMESTAMP}"
+          
+          # Determine trigger type for backup naming
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            BACKUP_TYPE="nightly"
+          elif [ "${{ github.event_name }}" == "workflow_call" ]; then
+            BACKUP_TYPE="helm"
+          else
+            BACKUP_TYPE="manual"
+          fi
+          
+          BACKUP_NAME="${{ steps.env.outputs.environment }}-ns-notification-canada-ca-${BACKUP_TYPE}-${TIMESTAMP}"
           echo "Creating backup: $BACKUP_NAME"
           
           velero backup create "$BACKUP_NAME" \

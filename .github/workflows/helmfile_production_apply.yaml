@@ -26,7 +26,14 @@ permissions:
   pull-requests: write
 
 jobs:
+  pre-apply-snapshot:
+    uses: ./.github/workflows/velero_snapshot.yaml
+    with:
+      environment: production
+    secrets: inherit
+
   helmfile-apply:
+    needs: pre-apply-snapshot
     runs-on: ubuntu-latest
     steps:
 
