@@ -16,6 +16,16 @@ on:
         description: Backup name to restore from (run "List Backups" workflow to see available)
         required: true
         type: string
+      db_args:
+        description: DB migration args (upgrade/downgrade/revision)
+        required: false
+        default: upgrade
+        type: string
+      api_docker_tag:
+        description: Optional override API image tag for DB migration job (default: tag captured on backup)
+        required: false
+        default: ""
+        type: string
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -46,10 +56,39 @@ jobs:
       - name: Setup Velero CLI
         uses: ./.github/actions/setup-velero
 
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
+          helmfile-version: "v1.4.4"
+          helm-s3-plugin-version: "v0.16.2"
+
       - name: Verify backup exists
         run: |
           echo "Checking backup: ${{ github.event.inputs.backup_name }}"
           velero backup describe "${{ github.event.inputs.backup_name }}"
+
+      - name: Determine DB migration API tag
+        id: db_tag
+        run: |
+          OVERRIDE_TAG="${{ github.event.inputs.api_docker_tag }}"
+
+          if [ -n "${OVERRIDE_TAG}" ]; then
+            echo "Using override API tag: ${OVERRIDE_TAG}"
+            echo "api_docker_tag=${OVERRIDE_TAG}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BACKUP_TAG=$(kubectl get backup "${{ github.event.inputs.backup_name }}" -n velero -o jsonpath='{.metadata.annotations.notify\.gc\.ca/api-docker-tag}')
+
+          if [ -n "${BACKUP_TAG}" ]; then
+            echo "Using API tag captured with backup: ${BACKUP_TAG}"
+            echo "api_docker_tag=${BACKUP_TAG}" >> "$GITHUB_OUTPUT"
+          else
+            echo "No API tag annotation found on backup; DB migration will use current Helm values."
+            echo "api_docker_tag=" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Restore from backup
         run: |
@@ -85,6 +124,20 @@ jobs:
           echo ""
           echo "Pod status:"
           kubectl get pods -n "${NAMESPACE}"
+
+      - name: Load Context Variables
+        run: |
+          ./helmfile/getContext.sh -g
+
+      - name: Align database migration state
+        uses: ./.github/actions/db-migration
+        with:
+          environment: ${{ github.event.inputs.environment }}
+          namespace: notification-canada-ca
+          app_label: notify-database
+          timeout: "400s"
+          db_args: ${{ github.event.inputs.db_args }}
+          api_docker_tag: ${{ steps.db_tag.outputs.api_docker_tag }}
 
       - name: Notify Slack
         if: always()

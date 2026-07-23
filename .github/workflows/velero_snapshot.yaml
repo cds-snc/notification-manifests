@@ -73,6 +73,7 @@ jobs:
       - name: Create snapshot
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          NAMESPACE="notification-canada-ca"
           
           # Determine backup type for naming
           if [ -n "${{ inputs.backup_type }}" ]; then
@@ -80,11 +81,17 @@ jobs:
           else
             BACKUP_TYPE="manual"
           fi
+
+          # Capture current API image tag so restores can align DB migrations with app version.
+          API_IMAGE=$(kubectl get deployment notify-api -n "${NAMESPACE}" -o jsonpath='{.spec.template.spec.containers[0].image}')
+          API_DOCKER_TAG="${API_IMAGE##*:}"
           
           BACKUP_NAME="${{ steps.env.outputs.environment }}-ns-notification-canada-ca-${BACKUP_TYPE}-${TIMESTAMP}"
           echo "Creating backup: $BACKUP_NAME"
+          echo "Captured notify-api tag: ${API_DOCKER_TAG}"
           
           velero backup create "$BACKUP_NAME" \
+            --annotations "notify.gc.ca/api-docker-tag=${API_DOCKER_TAG}" \
             --include-namespaces notification-canada-ca \
             --snapshot-volumes=false \
             --wait

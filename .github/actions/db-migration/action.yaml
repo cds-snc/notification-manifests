@@ -18,6 +18,10 @@ inputs:
     description: "Additional arguments for the database migration command."
     required: false
     default: "upgrade"
+  api_docker_tag:
+    description: "Optional API Docker tag to run migrations with (sets API_DOCKER_TAG in Helmfile state values)."
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -27,7 +31,14 @@ runs:
       shell: bash
       run: |
         pushd helmfile
-        helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} --state-values-set DB_ARGS="${{ inputs.db_args }}" sync
+        if [ -n "${{ inputs.api_docker_tag }}" ]; then
+          helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} \
+            --state-values-set DB_ARGS="${{ inputs.db_args }}" \
+            --state-values-set API_DOCKER_TAG="${{ inputs.api_docker_tag }}" sync
+        else
+          helmfile --environment ${{ inputs.environment }} -l app=${{ inputs.app_label }} \
+            --state-values-set DB_ARGS="${{ inputs.db_args }}" sync
+        fi
         IMAGE_TAG=$(helm get values ${{ inputs.app_label }} -n ${{ inputs.namespace }} -o json | jq -r '.image.tag')
         RELEASE_REVISION=$(helm list -n ${{ inputs.namespace }} -o json | jq -r '.[] | select(.name=="${{ inputs.app_label }}") | .revision')
         echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
