@@ -16,12 +16,6 @@ on:
   repository_dispatch:
     types: [webhook]
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
-  DOCKER_TAG: ${{ github.event.inputs.tag }}
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
-
 permissions:
   id-token: write
   contents: read
