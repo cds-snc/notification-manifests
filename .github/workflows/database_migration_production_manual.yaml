@@ -65,11 +65,6 @@ jobs:
           helmfile-version: "v1.4.4"
           helm-s3-plugin-version: "v0.16.2"
 
-      - name: Install OpenVPN
-        run: |
-          sudo apt update
-          sudo apt install -y openvpn openvpn-systemd-resolved
-
       - name: Setup Terraform tools
         uses: cds-snc/terraform-tools-setup@v1
         env: # In case you want to override default versions
@@ -78,24 +73,17 @@ jobs:
           TERRAGRUNT_VERSION: 0.66.9
           TF_SUMMARIZE_VERSION: 0.2.3                           
 
-      - name: Install 1Pass CLI
-        run: |
-          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
-          sudo dpkg -i 1pass.deb 
 
-      - name: Retrieve VPN Config
-        run: |
-          scripts/createVPNConfig.sh production 2> /dev/null   
-
-      - name: Connect to VPN
-        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
+      - name: Setup cluster access
+        uses: ./.github/actions/setup-cluster-access
         with:
-          config_file: /var/tmp/production.ovpn
-          echo_config: false            
-
-      - name: Configure kubeconfig
-        run: |
-          aws eks update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias production
+          environment: production
+          aws-account-id: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+          op-service-account-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
+          role-name: notification-manifests-database-migration-production
+          gha-vpn-id: ${{ secrets.GHA_VPN_ID_PRODUCTION }}
+          gha-vpn-cert: ${{ secrets.GHA_VPN_CERT_PRODUCTION }}
+          gha-vpn-key: ${{ secrets.GHA_VPN_KEY_PRODUCTION }}
 
       - name: Load Context Variables
         run: |
