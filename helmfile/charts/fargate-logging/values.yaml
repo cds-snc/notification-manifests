@@ -1,0 +1,3 @@
+region: ca-central-1
+clusterName: ""
+logStreamPrefix: fargate-

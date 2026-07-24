@@ -1,0 +1,6 @@
+apiVersion: v2
+name: fargate-logging
+description: Creates the aws-observability namespace and aws-logging ConfigMap required for EKS Fargate pod logging to CloudWatch via Fluent Bit
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
