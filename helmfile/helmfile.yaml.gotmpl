@@ -218,7 +218,7 @@ releases:
       category: system
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 3.1.0
+    version: 3.1.1
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
@@ -230,7 +230,7 @@ releases:
       category: system
       step: 1
     chart: stakater/reloader
-    version: 2.2.7
+    version: 2.2.14
     values:
     - ./overrides/system/reloader.yaml.gotmpl
 
@@ -255,7 +255,7 @@ releases:
       category: tools
       step: 3
     chart: stakater/application
-    version: 2.3.2
+    version: 2.3.4
     values:
     - ./overrides/tools/blazer.yaml.gotmpl
 
@@ -282,7 +282,7 @@ releases:
       category: tools
       step: 1
     chart: okgolove/aws-xray
-    version: 4.0.8
+    version: 4.0.12
     values:
     - ./overrides/system/xray-daemon.yaml.gotmpl
 
@@ -458,7 +458,7 @@ releases:
   - name: falco
     namespace: falco
     installed: true
-    version: 8.0.1
+    version: 8.0.5
     labels:
       app: falco
       tier: full
