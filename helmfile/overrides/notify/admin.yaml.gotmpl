@@ -46,6 +46,7 @@ admin:
   FF_FILE_ATTACHMENTS: "{{ .StateValues.FF_FILE_ATTACHMENTS }}"
   FF_ADD_TEMPLATE_PERM: "{{ .StateValues.FF_ADD_TEMPLATE_PERM }}"
   FF_REPORT_API: "{{ .StateValues.FF_REPORT_API }}"
+  FILE_ATTACH_SERVICES: "{{ .StateValues.FILE_ATTACH_SERVICES }}"
 
 ### Backend OTEL Configuration
 {{ if eq .StateValues.FF_ENABLE_OTEL "true"}}
