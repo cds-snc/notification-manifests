@@ -16,10 +16,6 @@ on:
           - downgrade
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
-  PRODUCTION_AWS_ACCOUNT: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_PRODUCTION }}
   ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   AWS_DEFAULT_REGION: ca-central-1
 

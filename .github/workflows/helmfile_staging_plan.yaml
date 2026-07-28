@@ -5,9 +5,6 @@ on:
   pull_request:
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
   ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
   AWS_DEFAULT_REGION: ca-central-1
 
