@@ -8,10 +8,6 @@ on:
       - 'helmfile/overrides/dev.env'
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
-  DEV_AWS_ACCOUNT: ${{ secrets.DEV_AWS_ACCOUNT_ID }}
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_DEV }}
   ACCOUNT_ID: ${{ secrets.DEV_AWS_ACCOUNT_ID }}
   AWS_DEFAULT_REGION: ca-central-1
 

@@ -17,10 +17,6 @@ on:
         required: true
         type: string
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  AWS_DEFAULT_REGION: ca-central-1
-
 permissions:
   id-token: write
   contents: read
