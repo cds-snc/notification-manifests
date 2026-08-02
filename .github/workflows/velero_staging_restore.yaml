@@ -1,0 +1,146 @@
+name: Staging - Velero Restore (Quick Revert)
+run-name: Staging - Velero Restore
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_name:
+        description: "Velero backup name to restore (leave empty to use most recent)"
+        required: false
+        type: string
+
+concurrency:
+  group: velero-staging-restore
+  cancel-in-progress: false
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  STAGING_AWS_ACCOUNT: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN_STAGING }}
+  ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+  AWS_DEFAULT_REGION: ca-central-1
+
+permissions:
+  id-token: write # This is required for requesting the OIDC JWT
+  contents: read
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    name: Restore from Velero Snapshot
+    steps:
+      - name: Inject token authentication
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Configure credentials to Notify using OIDC
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-manifests-helmfile-staging-apply
+          role-session-name: NotifyManifestsVeleroRestore
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          fetch-depth: 0
+
+      - name: Install 1Pass CLI
+        run: |
+          curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
+          sudo dpkg -i 1pass.deb
+
+      - name: Retrieve VPN Config
+        run: |
+          scripts/createVPNConfig.sh staging
+
+      - name: Connect to VPN
+        uses: kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5 # v3.1.0
+        with:
+          config_file: /var/tmp/staging.ovpn
+          echo_config: false
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging
+
+      - name: Install Velero CLI
+        run: |
+          wget https://github.com/vmware-tanzu/velero/releases/download/v1.13.1/velero-v1.13.1-linux-amd64.tar.gz
+          tar -xzf velero-v1.13.1-linux-amd64.tar.gz
+          sudo mv velero-v1.13.1-linux-amd64/velero /usr/local/bin/
+          velero version
+
+      - name: Determine backup to restore
+        env:
+          BACKUP_NAME_INPUT: ${{ github.event.inputs.backup_name }}
+        run: |
+          if [ -n "$BACKUP_NAME_INPUT" ]; then
+            BACKUP_NAME="$BACKUP_NAME_INPUT"
+            echo "Using specified backup: $BACKUP_NAME"
+          else
+            # Get the most recent backup
+            BACKUP_NAME=$(velero backup get --namespace velero -o json | \
+              jq -r '.items | sort_by(.metadata.creationTimestamp) | reverse | .[0].metadata.name')
+            echo "Using most recent backup: $BACKUP_NAME"
+          fi
+          
+          if [ -z "$BACKUP_NAME" ]; then
+            echo "Error: No backup found or specified"
+            exit 1
+          fi
+          
+          echo "BACKUP_TO_RESTORE=$BACKUP_NAME" >> $GITHUB_ENV
+
+      - name: List available backups
+        run: |
+          echo "=== Available Velero Backups ==="
+          velero backup get --namespace velero
+
+      - name: Verify backup status
+        run: |
+          echo "Checking backup: ${{ env.BACKUP_TO_RESTORE }}"
+          velero backup describe "${{ env.BACKUP_TO_RESTORE }}" --namespace velero
+
+      - name: Create and apply restore from snapshot
+        run: |
+          RESTORE_NAME="${{ env.BACKUP_TO_RESTORE }}-restore-$(date +%Y%m%d-%H%M%S)"
+          
+          echo "Creating restore: $RESTORE_NAME from backup: ${{ env.BACKUP_TO_RESTORE }}"
+          
+          # Restore only Deployments, StatefulSets, DaemonSets (workload resources, not storage)
+          velero restore create "$RESTORE_NAME" \
+            --namespace velero \
+            --from-backup "${{ env.BACKUP_TO_RESTORE }}" \
+            --include-resources "deployments,statefulsets,daemonsets" \
+            --wait
+          
+          # Verify restore completed
+          velero restore describe "$RESTORE_NAME" --namespace velero
+
+      - name: Wait for pods to stabilize
+        run: |
+          kubectl wait --for=condition=ready pod \
+            -l app.kubernetes.io/instance=notify-api \
+            -n notification-canada-ca \
+            --timeout=5m || true
+          
+          kubectl wait --for=condition=ready pod \
+            -l app.kubernetes.io/instance=notify-admin \
+            -n notification-canada-ca \
+            --timeout=5m || true
+          
+          echo "Pod status after restore:"
+          kubectl get pods -n notification-canada-ca
+
+      - name: Notify Slack channel if this job failed
+        if: ${{ failure() }}
+        run: |
+          json='{"text":"<!here> Staging Velero restore failed in <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|notification-manifests>. Backup: ${{ env.BACKUP_TO_RESTORE }}"}'
+          curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Notify Slack channel on success
+        if: ${{ success() }}
+        run: |
+          json='{"text":"Staging Velero restore completed successfully from backup: ${{ env.BACKUP_TO_RESTORE }}"}'
+          curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
