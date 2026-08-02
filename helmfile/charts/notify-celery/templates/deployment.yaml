@@ -40,12 +40,16 @@ spec:
                 fieldPath: spec.nodeName
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: IfNotPresent
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
         command: ["/bin/sh"]
         args: ["-c", "sh /app/scripts/cwcheck.sh"]
       containers:
         - name: {{ include "celery.fullname" . }}-{{ $node.name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"
@@ -97,7 +101,8 @@ spec:
       dnsPolicy: {{ .Values.dnsPolicy }}
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}
-      securityContext: {}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       terminationGracePeriodSeconds: {{ $node.deployment.terminationGracePeriodSeconds }}
 status: {}
 {{- end }}
