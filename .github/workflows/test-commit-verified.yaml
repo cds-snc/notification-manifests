@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - gh-bot-commit-signing
-    paths:
-      - .github/workflows/test-commit-verified.yaml
-  workflow_dispatch:
 
 jobs:
   test-commit:
