@@ -1,9 +1,8 @@
 name: Test Commit Verified Action
 
 on:
-  push:
-    branches:
-      - gh-bot-commit-signing
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
 
 jobs:
   test-commit:
@@ -11,6 +10,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Obtain a Notify PR Bot GitHub App Installation Access Token
         run: |
@@ -25,7 +26,7 @@ jobs:
       - name: Commit using the action
         uses: ./.github/actions/commit-verified
         with:
-          github-token: ${{ env.GITHUB_TOKEN }}
+          github-token: ${{ ehead_refB_TOKEN }}
           branch: ${{ github.ref_name }}
           commit-message: "chore(test): dummy commit to verify signing API [skip ci]"
           files: dummy-test-file.txt
