@@ -1,0 +1,170 @@
+name: Dev - Deploy dev branch images
+
+on:
+  repository_dispatch:
+    types: [deploy-dev-branch-images]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  HELMFILE_FILE_PATH: ${{ github.workspace }}/helmfile
+  DEV_AWS_ACCOUNT: ${{ secrets.DEV_AWS_ACCOUNT_ID }}
+  ACCOUNT_ID: ${{ secrets.DEV_AWS_ACCOUNT_ID }}
+  AWS_DEFAULT_REGION: ca-central-1
+  REGISTRY: ${{ secrets.DEV_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-dev-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inject token authentication
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Configure credentials to Notify dev using OIDC
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-manifests-apply
+          role-session-name: NotifyManifestsApplyDev
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Checkout manifests repo
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
+          helmfile-version: "v0.151.0"
+          helm-s3-plugin-version: "v0.16.2"
+
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+
+      - name: Retrieve VPN Config
+        run: |
+          scripts/createVPNConfig.sh dev 2> /dev/null
+
+      - name: Connect to VPN
+        uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
+        with:
+          config_file: /var/tmp/dev.ovpn
+          echo_config: false
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev
+
+      - name: Load Context Variables
+        run: |
+          ./helmfile/getContext.sh -g
+
+      - name: Run Database Upgrade Helmfile Sync
+        id: db_migration
+        run: |
+          set -euo pipefail
+          ENVIRONMENT="dev"
+          NAMESPACE="notification-canada-ca"
+          APP_LABEL="notify-database"
+          DB_ARGS="upgrade"
+
+          pushd helmfile
+          helmfile --environment "$ENVIRONMENT" -l app="$APP_LABEL" \
+            --state-values-set DB_ARGS="$DB_ARGS" \
+            apply -- \
+            --set image.repository="${REGISTRY}/notify-database" \
+            --set image.tag="latest"
+
+          IMAGE_TAG="latest"
+          RELEASE_REVISION=$(helm list -n "$NAMESPACE" -o json | jq -r ".[] | select(.name==\"$APP_LABEL\") | .revision")
+
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "release_revision=${RELEASE_REVISION}" >> "$GITHUB_OUTPUT"
+          popd
+
+      - name: Wait for Database Migration Job Completion
+        env:
+          IMAGE_TAG: ${{ steps.db_migration.outputs.image_tag }}
+          RELEASE_REVISION: ${{ steps.db_migration.outputs.release_revision }}
+        run: |
+          set -euo pipefail
+          NAMESPACE="notification-canada-ca"
+          TIMEOUT="400s"
+
+          echo "Using image tag: ${IMAGE_TAG}"
+          echo "Using release revision: ${RELEASE_REVISION}"
+
+          kubectl wait --for=condition=complete "job/notify-db-migration-job-${IMAGE_TAG}-${RELEASE_REVISION}" \
+            -n "$NAMESPACE" \
+            --timeout="$TIMEOUT"
+
+      - name: Helmfile apply for all other releases
+        run: |
+          pushd helmfile
+          helmfile --environment dev -l 'tier=crd' apply
+          helmfile --environment dev -l 'app!=notify-database,app!=notify-api,app!=notify-admin,app!=notify-document-download,tier!=crd' apply
+          popd
+
+      - name: Helmfile apply for dev images (api, admin, document-download)
+        strategy:
+          matrix:
+            app:
+              - api
+              - admin
+              - document-download
+        run: |
+          pushd helmfile
+          helmfile --environment dev -l "app=notify-${{ matrix.app }}" apply -- \
+            --set image.repository="${REGISTRY}/${{ matrix.app }}" \
+            --set image.tag="latest"
+          popd
+
+      - name: Save ENV vars and secrets to AWS Param Store
+        if: ${{ success() }}
+        run: |
+          # wait for the secrets and env vars to be available
+          sleep 20
+          source ./scripts/lambdaParamStoreUpdatesDev.sh -g
+          echo DIFF=$DIFF
+          echo "ENV_DIFF=$DIFF" >> $GITHUB_ENV
+
+      - name: Deploy api-lambda from latest image tag
+        run: |
+          set -euo pipefail
+          IMAGE_NAME="api-lambda"
+          # Find the latest image tag for api-lambda in the dev ECR repo
+          LATEST_TAG=$(aws ecr describe-images \
+            --repository-name "notify/${IMAGE_NAME}" \
+            --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]' \
+            --output text)
+
+          if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "None" ]; then
+            echo "No image tag found in ECR for $IMAGE_NAME" >&2
+            exit 1
+          fi
+
+          IMAGE_URI="$REGISTRY/${IMAGE_NAME}:$LATEST_TAG"
+          echo "Deploying api-lambda with image: $IMAGE_URI" >&2
+
+          aws lambda update-function-code \
+            --function-name api-lambda-dev \
+            --image-uri "$IMAGE_URI" > /dev/null 2>&1
+
+          aws lambda wait function-updated --function-name api-lambda-dev
+          VERSION="$(aws lambda publish-version --function-name api-lambda-dev | jq -r '.Version')"
+
+          aws lambda update-alias \
+            --function-name api-lambda-dev \
+            --name latest \
+            --function-version "$VERSION" > /dev/null 2>&1
+
+
