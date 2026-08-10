@@ -22,11 +22,6 @@ jobs:
           token: ${{ env.GITHUB_TOKEN }}
           ref: main
 
-      - name: Setup git config
-        run: |
-          git config user.name "Notify PR Bot"
-          git config user.email "action@github.com"
-
       # ADMIN_DOCKER_TAG
       # API_DOCKER_TAG
       # DOCUMENT_DOWNLOAD_DOCKER_TAG
@@ -56,10 +51,12 @@ jobs:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
       - name: Commit
-        run: |
-          git add helmfile/overrides/staging.env
-          git commit -m "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
-          git push
+        uses: ./.github/actions/commit-verified
+        with:
+          github-token: ${{ env.GITHUB_TOKEN }}
+          branch: main
+          commit-message: "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
+          files: helmfile/overrides/staging.env
 
       - name: Branch protection ON
         if: always()

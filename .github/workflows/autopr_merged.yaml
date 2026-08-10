@@ -44,11 +44,6 @@ jobs:
         run: |
           echo $NEW_VERSION > VERSION
 
-      - name: setup git config
-        run: |
-          git config user.name "Notify PR Bot"
-          git config user.email "action@github.com"
-
       - name: Branch protection OFF
         uses: octokit/request-action@v2.x
         with:
@@ -68,13 +63,12 @@ jobs:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
           
       - name: commit
-        env:
-          NEW_VERSION: ${{ steps.tag_version.outputs.new_tag }}
-          CURRENT_VERSION: ${{ env.CURRENT_VERSION }}
-        run: |
-          git add VERSION
-          git commit -m "New release: ${CURRENT_VERSION} -> ${NEW_VERSION}"
-          git push origin main
+        uses: ./.github/actions/commit-verified
+        with:
+          github-token: ${{ env.GITHUB_TOKEN }}
+          branch: main
+          commit-message: "New release: ${{ env.CURRENT_VERSION }} -> ${{ steps.tag_version.outputs.new_tag }}"
+          files: VERSION
 
       - name: Branch protection ON
         if: always()
