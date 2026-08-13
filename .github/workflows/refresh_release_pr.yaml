@@ -1,0 +1,40 @@
+name: Refresh production release PR
+
+on:
+  push:
+    branches:
+      - refresh-release-pr-workflow # TEMP: remove before merging, only for testing this workflow on this branch
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+permissions:
+  contents: read
+
+jobs:
+  refresh-release-pr:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'push' ||
+      (
+        github.event.pull_request.merged == true &&
+        !contains(github.event.pull_request.title, '[AUTO-PR]') &&
+        !contains(github.event.pull_request.title, '[MANIFEST]')
+      )
+
+    steps:
+      # Generate a bot token that will be used for all workflow actions.
+      # This is required as the default repo GITHUB_TOKEN does not trigger new workflow runs.
+      - name: Obtain a Notify PR Bot GitHub App Installation Access Token
+        run: |
+          TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.PR_BOT_GITHUB_TOKEN }})"
+          echo "::add-mask::$TOKEN"
+          echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
+
+      - name: Refresh production release PR
+        uses: cds-snc/notification-pr-bot@b70dc73610a8e72a7af40e5ccc320e14ce773988 # main
+        env:
+          TOKEN: ${{ env.GITHUB_TOKEN }}
+          TARGET_REPO: notification-manifests
