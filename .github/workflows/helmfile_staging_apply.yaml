@@ -165,7 +165,7 @@ jobs:
       - name: Report deployment to Sentinel
         uses: cds-snc/sentinel-forward-data-action@765ac36a34b70d87ae77f228c48025a4331b6275 # main@2026-08-13
         with:
-          input_data: '{"product": "notify", "sha": "${{ github.sha }}", "version": "${{ steps.bump_and_push_tag.outputs.new_tag }}" "repository": "${{ github.repository }}", "environment": "staging"}'
+          input_data: '{"product": "notify", "sha": "${{ github.sha }}", "version": "${{ steps.bump_and_push_tag.outputs.new_tag }}", "repository": "${{ github.repository }}", "environment": "staging"}'
           log_type: CDS_Product_Deployment_Data
           log_analytics_workspace_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
           log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
