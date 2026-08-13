@@ -1,9 +1,6 @@
 name: Refresh production release PR
 
 on:
-  push:
-    branches:
-      - refresh-release-pr-workflow # TEMP: remove before merging, only for testing this workflow on this branch
   pull_request:
     branches:
       - main
@@ -17,12 +14,9 @@ jobs:
   refresh-release-pr:
     runs-on: ubuntu-latest
     if: >-
-      github.event_name == 'push' ||
-      (
-        github.event.pull_request.merged == true &&
-        !contains(github.event.pull_request.title, '[AUTO-PR]') &&
-        !contains(github.event.pull_request.title, '[MANIFEST]')
-      )
+      github.event.pull_request.merged == true &&
+      !contains(github.event.pull_request.title, '[AUTO-PR]') &&
+      !contains(github.event.pull_request.title, '[MANIFEST]')
 
     steps:
       # Generate a bot token that will be used for all workflow actions.
