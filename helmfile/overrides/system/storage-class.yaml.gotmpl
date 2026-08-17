@@ -2,12 +2,12 @@ storageClasses:
   - name: notify
     defaultClass: true
     annotations: {}
-    provisioner: ebs.csi.aws.com
+    provisioner: efs.csi.aws.com
     reclaimPolicy: Retain
-    volumeBindingMode: WaitForFirstConsumer
-    allowVolumeExpansion: true
+    volumeBindingMode: Immediate
+    allowVolumeExpansion: false
     parameters:
-      type: gp3
-      encrypted: "true"
-      fsType: ext4
+      provisioningMode: efs-ap
+      fileSystemId: {{ requiredEnv "EFS_FILE_SYSTEM_ID" }}
+      directoryPerms: "700"
     mountOptions: []

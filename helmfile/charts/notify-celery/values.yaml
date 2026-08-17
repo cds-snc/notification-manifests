@@ -6,8 +6,7 @@ nodes:
     deployment:
       deploymentBeatEnabled: true
       terminationGracePeriodSeconds: 30
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: {}
       replicas: 3
     pdb:
       pdbEnabled: false
@@ -31,8 +30,7 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
       priorityClassName: high-priority
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: {}
       replicas: 3
     pdb:
       pdbEnabled: true
@@ -56,8 +54,7 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
       priorityClassName: high-priority
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: {}
       replicas: 3
     pdb:  
       pdbEnabled: true
@@ -81,8 +78,7 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
       priorityClassName: high-priority
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: {}
       replicas: 3
     pdb:
       pdbEnabled: true
@@ -98,8 +94,7 @@ nodes:
     deployment:
       deploymentBeatEnabled: true
       terminationGracePeriodSeconds: 60
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: {}
       replicas: 3
     pdb:
       pdbEnabled: false
@@ -122,8 +117,7 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
       priorityClassName: high-priority
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: {}
       replicas: 1
     pdb:
       pdbEnabled: false
@@ -142,8 +136,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 3
-      nodeSelector:
-        karpenter.sh/capacity-type: spot
+      nodeSelector: {}
       resources:
         requests:
           cpu: "100m"
@@ -172,8 +165,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 3
-      nodeSelector:
-        karpenter.sh/capacity-type: spot
+      nodeSelector: {}
       resources:
         requests:
           cpu: "100m"
@@ -202,8 +194,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 3
-      nodeSelector:
-        karpenter.sh/capacity-type: spot
+      nodeSelector: {}
       resources:
         requests:
           cpu: "100m"
@@ -232,8 +223,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 3
-      nodeSelector:
-        karpenter.sh/capacity-type: spot
+      nodeSelector: {}
       resources:
         requests:
           cpu: "100m"
@@ -262,8 +252,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 1
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: {}
       resources:
         requests:
           cpu: "100m" 
@@ -298,8 +287,7 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
       priorityClassName: high-priority
-      nodeSelector:
-        eks.amazonaws.com/capacityType: ON_DEMAND
+      nodeSelector: {}
       replicas: 6
     pdb:
       pdbEnabled: true
@@ -316,8 +304,7 @@ nodes:
       priorityClassName: celery
       terminationGracePeriodSeconds: 60
       replicas: 3
-      nodeSelector:
-        karpenter.sh/capacity-type: spot
+      nodeSelector: {}
       resources:
         requests:
           cpu: "100m"
@@ -380,7 +367,7 @@ terminationGracePeriodSeconds: 60
 
 secretProviderClass:
   secretname: notify-celery
-  enabled: true
+  enabled: false
   provider: aws
   parameters:
     objects: |

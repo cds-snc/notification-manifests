@@ -29,7 +29,7 @@ affinity: {}
 
 secretProviderClass:
   secretname: notify-jobs
-  enabled: true
+  enabled: false
   provider: aws
 
 dockerhub:

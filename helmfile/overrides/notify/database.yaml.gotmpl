@@ -1,6 +1,6 @@
 db:
   #ENVIRONMENT SPECIFIC VARIABLES
-  NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
+  NOTIFY_ENVIRONMENT: "{{ .Environment.Name | trimSuffix "-fargate" }}"
   ADMIN_BASE_DOMAIN: "https://{{ requiredEnv "BASE_DOMAIN" }}"
   ASSET_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-asset-upload"
   CSV_UPLOAD_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-csv-upload"
@@ -90,6 +90,8 @@ dockerhub:
 
 ttlSecondsAfterFinished: 34560
 
+nodeSelector: {}
+
 service:
   enabled: false
 
@@ -99,14 +101,11 @@ serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-database
 
-nodeSelector:
-  karpenter.sh/capacity-type: spot
-
 tolerations:
   - key: nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent
     operator: Exists
     effect: NoSchedule
-  - key: nidhogg.uswitch.com/amazon-cloudwatch.ebs-csi-node
+  - key: nidhogg.uswitch.com/amazon-cloudwatch.efs-csi-node
     operator: Exists
     effect: NoSchedule
   - key: nidhogg.uswitch.com/amazon-cloudwatch.fb-agent-fluent-bit

@@ -19,14 +19,11 @@ serviceAccount:
   create: true
   serviceAccountName: "notify-database"
 
-nodeSelector:
-  karpenter.sh/capacity-type: spot
-
 tolerations: []
 
 secretProviderClass:
   secretname: notify-database
-  enabled: true
+  enabled: false
   provider: aws
   parameters:
     objects: |

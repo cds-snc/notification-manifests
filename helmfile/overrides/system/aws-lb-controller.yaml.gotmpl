@@ -1,8 +1,9 @@
 clusterName: notification-canada-ca-${ .Environment.Name }-eks-cluster
+region: ca-central-1
+vpcId: {{ requiredEnv "VPC_ID" }}
 serviceAccount:
     create: true
     name: aws-load-balancer-controller
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/notification-canada-ca-{{ .Environment.Name }}-aws-lb-controller-role
 enableCertManager: true
-
-nodeSelector:  
-  eks.amazonaws.com/capacityType: ON_DEMAND

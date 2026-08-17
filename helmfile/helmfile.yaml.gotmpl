@@ -8,6 +8,9 @@ environments:
   dev:
     values:
       - ./overrides/dev.env
+  dev-fargate:
+    values:
+      - ./overrides/dev.env
   staging:
     values:
       - ./overrides/staging.env
@@ -17,7 +20,7 @@ environments:
 ---
 
 helmDefaults:
-  kubeContext: dev-fargate
+  kubeContext: {{ .Environment.Name }}
 
 ### Ugly but this is required to get goldilocks to read the correct namespace labels
 hooks:
@@ -59,9 +62,224 @@ repositories:
   url: https://falcosecurity.github.io/charts
 - name: linkerd
   url: https://helm.linkerd.io/stable
+- name: aws-efs-csi-driver
+  url: https://kubernetes-sigs.github.io/aws-efs-csi-driver
+- name: external-secrets
+  url: https://charts.external-secrets.io
 
 releases:
-  # Uses database-specific overrides
+  # step: 0
+  - name: priority-classes
+    namespace: kube-system
+    labels:
+      app: priority-classes
+      tier: main
+      category: system
+      step: 0
+    chart: deliveryhero/priority-class
+    version: 0.1.1
+    values:
+    - ./overrides/system/priority-classes.yaml.gotmpl
+
+  - name: target-group-crds
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: crds
+      tier: crd
+      category: system
+      step: 0
+    chart: charts/targetgroup-crds
+
+  - name: storage-class
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true
+    installed: true
+    labels:
+      app: storage-class
+      tier: backend
+      category: system
+      step: 0
+    chart: charts/storage-class
+    values:
+    - ./overrides/system/storage-class.yaml.gotmpl
+
+  - name: volume-snapshot-crds
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: crds
+      tier: crd
+      category: system
+      step: 0
+    chart: charts/volume-snapshot-crds
+
+  # step: 1
+  - name: aws-efs-csi-driver
+    namespace: kube-system
+    labels:
+      app: aws-efs-csi-driver
+      tier: backend
+      category: system
+      step: 1
+    chart: aws-efs-csi-driver/aws-efs-csi-driver
+    values:
+    - ./overrides/system/aws-efs-csi-driver.yaml.gotmpl
+
+  - name: fargate-logging
+    namespace: aws-observability
+    installed: true
+    labels:
+      app: fargate-logging
+      tier: full
+      category: system
+      step: 1
+    chart: charts/fargate-logging
+    values:
+    - ./overrides/system/fargate-logging.yaml.gotmpl
+
+  - name: aws-secrets-provider
+    namespace: kube-system
+    installed: false
+    labels:
+      app: aws-secrets
+      tier: full
+      category: system
+      step: 1
+    chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
+    version: 3.1.0
+    values:
+    - ./overrides/system/aws-secrets.yaml.gotmpl
+
+  - name: external-secrets
+    namespace: external-secrets
+    labels:
+      app: external-secrets
+      tier: full
+      category: system
+      step: 1
+    chart: external-secrets/external-secrets
+    version: 0.10.4
+    values:
+    - ./overrides/system/external-secrets.yaml.gotmpl
+
+  - name: reloader
+    namespace: kube-system
+    labels:
+      app: reloader
+      tier: full
+      category: system
+      step: 1
+    chart: stakater/reloader
+    version: 2.2.7
+    values:
+    - ./overrides/system/reloader.yaml.gotmpl
+
+  - name: ipv4-geolocate
+    namespace: notification-canada-ca
+    labels:
+      app: ipv4-geolocate
+      tier: backend
+      category: system
+      step: 1
+    chart: charts/ipv4-geolocate
+    values:
+    - ./overrides/system/ipv4-geolocate.yaml.gotmpl
+
+  # step: 2
+  - name: k8s-event-logger
+    namespace: aws-observability
+    labels:
+      app: k8s-event-logger
+      tier: full
+      category: monitoring
+      step: 2
+    chart: oci://ghcr.io/deliveryhero/helm-charts/k8s-event-logger
+    version: 1.1.8
+    values:
+      - ./overrides/system/k8s-event-logger.yaml.gotmpl
+
+  - name: notify-secrets
+    namespace: notification-canada-ca
+    disableValidationOnInstall: true
+    disableValidation: true
+    labels:
+      app: notify-secrets
+      tier: secrets
+      category: deliverable
+      step: 2
+    chart: charts/notify-secrets
+    values:
+    - ./overrides/notify/secrets.yaml.gotmpl
+
+  - name: kube-state-metrics
+    namespace: kube-system
+    labels:
+      app: kube-state-metrics
+      tier: full
+      category: system
+      step: 2
+    chart: prometheus-community/kube-state-metrics
+    version: 6.3.0
+    values:
+    - ./overrides/system/kube-state-metrics.yaml.gotmpl
+
+  - name: image-pull-secrets
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: image-pull-secrets
+      tier: secrets
+      category: system
+      step: 2
+    chart: charts/image-pull-secrets
+    values:
+    - ./overrides/system/image-pull-secrets.yaml.gotmpl
+
+  - name: cert-manager
+    namespace: cert-manager
+    labels:
+      app: cert-manager
+      tier: backend
+      category: system
+      step: 2
+    chart: jetstack/cert-manager
+    version: v1.17.0
+    values:
+    - ./overrides/system/cert-manager.yaml.gotmpl
+
+
+  # step: 3
+  - name: aws-lb-controller
+    namespace: kube-system
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: aws-lb-controller
+      tier: backend
+      category: system
+      step: 3
+    chart: eks/aws-load-balancer-controller
+    version: 3.1.0
+    values:
+    - ./overrides/system/aws-lb-controller.yaml.gotmpl
+
+  - name: velero
+    namespace: velero
+    version: 12.1.0
+    disableValidationOnInstall: true
+    labels:
+      app: velero
+      tier: backup
+      category: system
+      step: 3
+    chart: vmware-tanzu/velero
+    values:
+    - ./overrides/system/velero.yaml.gotmpl
+
+  # step: 4
   - name: notify-database
     namespace: notification-canada-ca
     labels:
@@ -71,8 +289,9 @@ releases:
       step: 4
     chart: charts/notify-database
     values:
-    - ./overrides/notify/database.yaml.gotmpl 
+    - ./overrides/notify/database.yaml.gotmpl
 
+  # step: 5
   - name: notify-documentation
     namespace: notification-canada-ca
     disableValidationOnInstall: true
@@ -152,194 +371,3 @@ releases:
     chart: charts/notify-celery
     values:
     - ./overrides/notify/celery.yaml.gotmpl
-
-  - name: k8s-event-logger
-    namespace: amazon-cloudwatch
-    labels:
-      app: k8s-event-logger
-      tier: full
-      category: monitoring
-      step: 2
-    chart: oci://ghcr.io/deliveryhero/helm-charts/k8s-event-logger
-    version: 1.1.8
-    values:
-      - ./overrides/system/k8s-event-logger.yaml.gotmpl
-
-  - name: priority-classes
-    namespace: kube-system
-    labels:
-      app: priority-classes
-      tier: main
-      category: system
-      step: 0
-    chart: deliveryhero/priority-class
-    version: 0.1.1
-    values:
-    - ./overrides/system/priority-classes.yaml.gotmpl
-
-  - name: fargate-logging
-    namespace: aws-observability
-    installed: {{ eq .Environment.Name "dev" }}
-    labels:
-      app: fargate-logging
-      tier: full
-      category: system
-      step: 1
-    chart: charts/fargate-logging
-    values:
-    - ./overrides/system/fargate-logging.yaml.gotmpl
-
-  - name: aws-secrets-provider
-    namespace: kube-system
-    labels:
-      app: aws-secrets
-      tier: full
-      category: system
-      step: 1
-    chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 3.1.0
-    values:
-    - ./overrides/system/aws-secrets.yaml.gotmpl
-
-  - name: reloader
-    namespace: kube-system
-    labels:
-      app: reloader
-      tier: full
-      category: system
-      step: 1
-    chart: stakater/reloader
-    version: 2.2.7
-    values:
-    - ./overrides/system/reloader.yaml.gotmpl
-
-  - name: kube-state-metrics
-    namespace: kube-system
-    labels:
-      app: kube-state-metrics
-      tier: full
-      category: system
-      step: 2
-    chart: prometheus-community/kube-state-metrics
-    version: 6.3.0
-    values:
-    - ./overrides/system/kube-state-metrics.yaml.gotmpl
-
-    # SYSTEM AND OTHER STUFF
-  - name: ipv4-geolocate
-    namespace: notification-canada-ca
-    labels:
-      app: ipv4-geolocate
-      tier: backend
-      category: system
-      step: 1
-    chart: charts/ipv4-geolocate
-    values:
-    - ./overrides/system/ipv4-geolocate.yaml.gotmpl
-
-  - name: image-pull-secrets
-    namespace: kube-system
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: image-pull-secrets
-      tier: secrets
-      category: system
-      step: 2
-    chart: charts/image-pull-secrets
-    values:
-    - ./overrides/system/image-pull-secrets.yaml.gotmpl
-
-  - name: cert-manager
-    namespace: cert-manager
-    labels:
-      app: cert-manager
-      tier: backend
-      category: system
-      step: 2
-    chart: jetstack/cert-manager
-    version: v1.17.0
-    values:
-    - ./overrides/system/cert-manager.yaml.gotmpl
-
-  - name: target-group-crds
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: crds
-      tier: crd
-      category: system
-      step: 0
-    chart: charts/targetgroup-crds
-
-  - name: aws-lb-controller
-    namespace: kube-system
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: aws-lb-controller
-      tier: backend
-      category: system
-      step: 3
-    chart: eks/aws-load-balancer-controller
-    version: 3.1.0
-    values:
-    - ./overrides/system/aws-lb-controller.yaml.gotmpl    
-
-  - name: storage-class
-    namespace: kube-system
-    disableValidationOnInstall: true
-    disableValidation: true
-    installed: false
-    labels:
-      app: storage-class
-      tier: backend
-      category: system
-      step: 0
-    chart: charts/storage-class
-    values:
-    - ./overrides/system/storage-class.yaml.gotmpl
- 
-  - name: velero
-    namespace: velero
-    version: 11.1.1
-    disableValidationOnInstall: true
-    labels:
-      app: velero
-      tier: backup
-      category: system
-      step: 3
-    chart: vmware-tanzu/velero
-    values:
-    - ./overrides/system/velero.yaml.gotmpl 
-
-  - name: volume-snapshot-crds
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: crds
-      tier: crd
-      category: system
-      step: 0
-    chart: charts/volume-snapshot-crds
-
-  - name: volume-snapshot-class
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: volume-snapshot-class
-      tier: backend
-      category: system
-      step: 2
-    chart: charts/volume-snapshot-class
-
-  - name: snapshot-controller
-    namespace: kube-system
-    disableValidationOnInstall: true
-    disableValidation: true 
-    labels:
-      app: snapshot-controller
-      tier: backend
-      category: system
-      step: 2
-    chart: charts/snapshot-controller

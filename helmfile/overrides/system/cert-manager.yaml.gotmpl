@@ -1,5 +1,10 @@
 crds:
     enabled: true
 
-nodeSelector:  
-  eks.amazonaws.com/capacityType: ON_DEMAND
+startupapicheck:
+  enabled: false
+
+webhook:
+  securePort: 10260
+  extraArgs:
+    - --dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc,cert-manager-webhook.cert-manager.svc.cluster.local

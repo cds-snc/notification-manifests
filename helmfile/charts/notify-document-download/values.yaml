@@ -86,8 +86,7 @@ pdb:
   enabled: true
   minAvailable: 1
 
-nodeSelector:
-  eks.amazonaws.com/capacityType: ON_DEMAND
+nodeSelector: {}
 
 tolerations: []
 
@@ -95,7 +94,7 @@ affinity: {}
 
 secretProviderClass:
   secretname: document-download
-  enabled: true
+  enabled: false
   provider: aws
   parameters:
     objects: |
