@@ -7,11 +7,6 @@ initContainers:
 
 priorityClassName: system-cluster-critical
 
-# public.ecr.aws/bitnami/kubectl is retired (404). The chart's own fallback (bitnamilegacy/kubectl,
-# tag unset) auto-matches the cluster's k8s version, but bitnamilegacy is a frozen snapshot capped
-# at 1.33.4 - confirmed via `helmfile diff` that it tries to pull a nonexistent "1.36" tag on this
-# cluster (server v1.36.2), which would ImagePullBackOff. Pinned to alpine/k8s instead, which is
-# still actively built and publishes tags matching current k8s versions.
 kubectl:
   image:
     repository: alpine/k8s
