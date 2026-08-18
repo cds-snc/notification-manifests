@@ -7,10 +7,8 @@ initContainers:
 
 priorityClassName: system-cluster-critical
 
-kubectl:
-  image:
-    repository: public.ecr.aws/bitnami/kubectl
-    tag: "latest"
+# kubectl.image left unset: public.ecr.aws/bitnami/kubectl is retired (404); chart default
+# (bitnamilegacy/kubectl, no tag) auto-matches the cluster's Kubernetes version instead.
 
 configuration:
   features: "EnableCSI" 
