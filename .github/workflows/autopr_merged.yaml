@@ -45,7 +45,7 @@ jobs:
           echo $NEW_VERSION > VERSION
 
       - name: Branch protection OFF
-        uses: octokit/request-action@v2.x
+        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
@@ -72,7 +72,7 @@ jobs:
 
       - name: Branch protection ON
         if: always()
-        uses: octokit/request-action@v2.x
+        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
         with:
           route: PUT /repos/:repository/branches/main/protection
           repository: ${{ github.repository }}
