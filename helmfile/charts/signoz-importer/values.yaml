@@ -9,7 +9,9 @@ signoz:
 job:
   image:
     repository: dwdraju/alpine-curl-jq
-    tag: latest
+    # No semver tags are published upstream for this image, only "latest".
+    # Pin the digest alongside the tag so the reference is immutable.
+    tag: "latest@sha256:eb00b3d4864c03814885a1c15ed1f5b2b569ca102ad4d02c27d582affb4fd6b1"
     pullPolicy: IfNotPresent
   
   # Annotations for the job (useful for ArgoCD hooks)
