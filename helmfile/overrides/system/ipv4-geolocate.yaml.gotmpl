@@ -1,1 +1,4 @@
-# Add any environmental configurations here :) 
+# Add any environmental configurations here :)
+image:
+  repository: "{{ .StateValues.IPV4_IMAGE_REPOSITORY }}"
+  tag: "{{ .StateValues.IPV4_DOCKER_TAG }}"
