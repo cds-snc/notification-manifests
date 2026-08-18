@@ -8,8 +8,6 @@ initContainers:
 priorityClassName: system-cluster-critical
 
 kubectl:
-  # alpine/k8s's kubectl failed the velero-upgrade-crds Job in staging (BackoffLimitExceeded).
-  # Switched to alpine/kubectl, which Ben confirmed working for the same issue.
   image:
     repository: docker.io/alpine/kubectl
     tag: "1.36.3"
