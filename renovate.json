@@ -12,5 +12,8 @@
     "**/test/**",
     "**/tests/**",
     "**/__fixtures__/**"
+  ],
+  "ignoreDeps": [
+    "cds-snc/notification-pr-bot"
   ]
 }

@@ -28,7 +28,7 @@ jobs:
           echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
 
       - name: Refresh production release PR
-        uses: cds-snc/notification-pr-bot@b70dc73610a8e72a7af40e5ccc320e14ce773988 # main
+        uses: cds-snc/notification-pr-bot@main
         env:
           TOKEN: ${{ env.GITHUB_TOKEN }}
           TARGET_REPO: notification-manifests
