@@ -99,19 +99,7 @@ serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/secrets-csi-role-database
 
-nodeSelector:
-  karpenter.sh/capacity-type: spot
+# nodeSelector/tolerations intentionally not overridden here: the chart's
+# values.yaml default (on-demand node group) applies and doesn't need the
+# nidhogg startup-taint tolerations that were required for spot nodes.
 
-tolerations:
-  - key: nidhogg.uswitch.com/amazon-cloudwatch.aws-cloudwatch-agent
-    operator: Exists
-    effect: NoSchedule
-  - key: nidhogg.uswitch.com/amazon-cloudwatch.ebs-csi-node
-    operator: Exists
-    effect: NoSchedule
-  - key: nidhogg.uswitch.com/amazon-cloudwatch.fb-agent-fluent-bit
-    operator: Exists
-    effect: NoSchedule
-  - key: nidhogg.uswitch.com/amazon-cloudwatch.secrets-store-csi-driver
-    operator: Exists
-    effect: NoSchedule
