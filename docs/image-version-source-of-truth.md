@@ -1,91 +1,96 @@
 # Image Version Source of Truth
 
-The environment files under `helmfile/overrides` are the committed image-version record for each deployment environment:
+## Goal
 
-- `dev.env`
-- `staging.env`
-- `production.env`
+No Notify-owned image, in any environment, should ever be deployed by a mutable tag
+(`:latest`, `:bootstrap`, or any tag a rebuild can silently overwrite). Every environment's
+exact running version must be readable from one place without guessing, without querying ECR,
+and without cloning another repo.
 
-Image-producing repositories must publish an immutable image tag and dispatch an `update-docker-image` event to `cds-snc/notification-manifests` with:
+## Why this has been hard
+
+Not because the idea is complicated — because today there are three disconnected mechanisms,
+and none of them cover every image:
+
+1. **Kubernetes app images** (admin/API/document-download/documentation/IPv4/Blazer) are
+   tracked in this repo's `helmfile/overrides/{dev,staging,production}.env` and rendered by
+   Helm. This is the only mechanism that already works end-to-end.
+2. **Lambda images** are built by `notification-lambdas` into private, per-environment ECR
+   accounts. Most of them were never wired into this repo's tracked files at all — three of
+   them (heartbeat/system_status/ses_to_sqs_email_callbacks) were hardcoded literals inside a
+   GitHub Actions `env:` block in `helmfile_production_apply.yaml`, invisible to the same
+   dispatch/PR mechanism every other component uses. The rest (google-cidr,
+   pinpoint_to_sqs_sms_callbacks, sns_to_sqs_sms_callbacks, ses_receiving_emails) are not
+   deployed by this repo at all today.
+3. **Terraform's bootstrap/recovery path** clones source and rebuilds images on the fly,
+   tagging them literally `bootstrap` or `latest`. This is a break-glass mechanism that got
+   conflated with normal deploys, so several Terraform locals still default to `bootstrap`/
+   `latest` even outside of recovery.
+
+Because these three mechanisms don't talk to each other, "what's actually running in
+production right now" has never had one answer. Fixing that means giving every image family
+the same treatment as mechanism (1) above, then deleting the special cases.
+
+## The source of truth
+
+`helmfile/overrides/{dev,staging,production}.env` in this repo is the canonical record. Every
+tracked field is `<COMPONENT>_DOCKER_TAG`. Nothing that deploys to an environment should read
+an image tag from anywhere else (not a workflow's `env:` block, not a Terraform default, not a
+"pull `:latest`" step).
+
+Producers publish an immutable tag (git SHA or equivalent) and either:
+
+- dispatch an `update-docker-image` event to update `staging.env`/`dev.env` automatically
+  (existing mechanism, `.github/workflows/update_image_tags_staging_and_dev.yaml`), or
+- for `production.env`, land a normal reviewed PR bumping the tag (existing pattern, e.g. the
+  `Updated manifests to notification-api:701ac57...` commits).
 
 ```json
 {
   "event_type": "update-docker-image",
-  "client_payload": {
-    "component": "IPV4",
-    "docker_tag": "<immutable-tag>"
-  }
+  "client_payload": { "component": "IPV4", "docker_tag": "<immutable-tag>" }
 }
 ```
 
-The manifests workflow writes the component's `*_DOCKER_TAG` to both `staging.env` and `dev.env`. Production values are changed through the normal production release process.
+## Status of every deployed component
 
-## Deployed Notify component matrix
-
-The image record must cover every deployed Notify component, not only every Docker repository.
-
-| Deployed component | Image record | Current producer | Relationship |
+| Component | Tracked field | Producer | State |
 | --- | --- | --- | --- |
-| `notify-admin` | `ADMIN_DOCKER_TAG` | `notification-admin` | Direct public ECR image |
-| `notify-api` | `API_DOCKER_TAG` | `notification-api` | Direct public ECR image |
-| `notify-celery` | `API_DOCKER_TAG` | `notification-api` | Shares the API image |
-| `notify-database` | `API_DOCKER_TAG` | `notification-api` | Database migration image shares the API image |
-| `notify-jobs` | `API_DOCKER_TAG` | `notification-api` | Shares the API image through `api.yaml.gotmpl` |
-| `notify-document-download` | `DOCUMENT_DOWNLOAD_DOCKER_TAG` | `notification-document-download-api` | Direct public ECR image |
-| `notify-documentation` | `DOCUMENTATION_DOCKER_TAG` | `notification-documentation` | Direct public ECR image |
-| `ipv4-geolocate` | `IPV4_DOCKER_TAG` | `ipv4-geolocate-webservice` | Direct public ECR image |
-| Blazer web deployment | `BLAZER_DOCKER_TAG` | `notification-lambdas` | Private ECR image also built by the Lambda repository |
-| Blazer migration init container | fixed `ankane/blazer:v3.5.1` | Ankane upstream | Third-party pinned image; not a Notify release tag |
-| `heartbeat` Lambda | Lambda tag record required | `notification-lambdas` | Private per-environment ECR |
-| `system_status` Lambda | Lambda tag record required | `notification-lambdas` | Private per-environment ECR |
-| `google-cidr` Lambda | Lambda tag record required | `notification-lambdas` | Private per-environment ECR |
-| `pinpoint_to_sqs_sms_callbacks` Lambda | Lambda tag record required | `notification-lambdas` | Private per-environment ECR; also built in us-west-2 |
-| `ses_to_sqs_email_callbacks` Lambda | Lambda tag record required | `notification-lambdas` | Private per-environment ECR |
-| `sns_to_sqs_sms_callbacks` Lambda | Lambda tag record required | Terraform/bootstrap path and legacy image history | Private per-environment ECR; verify before migration |
-| `ses_receiving_emails` Lambda | Lambda tag record required | Terraform/bootstrap path and legacy image history | Private per-environment ECR; verify before migration |
-| Lambda log extension | Lambda tag record required | `notification-terraform` bootstrap path | Private ECR; currently has a `latest` fallback |
+| `notify-admin` | `ADMIN_DOCKER_TAG` | notification-admin | Tracked, immutable, dispatch-wired |
+| `notify-api` | `API_DOCKER_TAG` | notification-api | Tracked, immutable, dispatch-wired |
+| `notify-celery` / `notify-jobs` / `notify-database` | `API_DOCKER_TAG` (inherited) | notification-api | Tracked via API image |
+| `notify-document-download` | `DOCUMENT_DOWNLOAD_DOCKER_TAG` | notification-document-download-api | Tracked, immutable, dispatch-wired |
+| `notify-documentation` | `DOCUMENTATION_DOCKER_TAG` | notification-documentation | Tracked, immutable, dispatch-wired |
+| `ipv4-geolocate` | `IPV4_DOCKER_TAG` | ipv4-geolocate-webservice | Tracked here, but producer still only publishes a date tag + `latest` and never dispatches |
+| Blazer (web) | `BLAZER_DOCKER_TAG` | notification-lambdas | Tracked here, but value is still the literal `bootstrap` tag — producer doesn't publish a real release tag yet |
+| Blazer (migrate init container) | fixed `ankane/blazer:v3.5.1` | upstream (ankane) | Already immutable, not a Notify image, no action needed |
+| `heartbeat` / `system_status` / `ses_to_sqs_email_callbacks` Lambdas | `HEARTBEAT_DOCKER_TAG` / `SYSTEM_STATUS_DOCKER_TAG` / `SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG` | notification-lambdas | **Newly tracked in `production.env` this PR** (moved out of the hardcoded workflow `env:` block, same values, zero behavior change). Producer still also pushes `:latest`. |
+| `google-cidr` Lambda | not tracked | notification-lambdas | Production is currently running `:latest` with no real tag recorded anywhere — needs the producer to resolve/publish a real tag before this repo can track it |
+| `pinpoint_to_sqs_sms_callbacks` Lambda | not tracked | notification-lambdas | Built and pushed with a SHA tag today but never deployed from this repo |
+| `sns_to_sqs_sms_callbacks` Lambda | not tracked | notification-terraform / legacy | Deployed via Terraform, not this repo; has stale/legacy image history |
+| `ses_receiving_emails` Lambda | not tracked | notification-terraform / legacy | Same as above |
+| Lambda log extension | not tracked | notification-terraform bootstrap path | Only exists as a `:latest` bootstrap build today |
 
-The current workflow directly updates these manifest fields:
+## The plan, in order
 
-- `ADMIN`
-- `API` (therefore also Celery, jobs, and database)
-- `DOCUMENT_DOWNLOAD`
-- `DOCUMENTATION`
-- `IPV4`
-- `BLAZER`
+1. **(Done, this PR)** Stop hiding tags in workflow files. Every Kubernetes/Lambda tag this
+   repo actually deploys now lives in `helmfile/overrides/*.env`, nothing else.
+2. **notification-lambdas**: stop pushing `:latest` for every image once each consumer below is
+   confirmed to use the SHA tag instead; dispatch (or PR) each real tag to this repo the same
+   way document-download/documentation already do.
+3. **ipv4-geolocate-webservice**: publish a real immutable tag (source commit, not a date) and
+   add the same dispatch call as the other producers. Remove the `:latest` push.
+4. **Blazer producer** (notification-lambdas): publish a real release tag for the web image
+   instead of `bootstrap`; once that exists, replace `BLAZER_DOCKER_TAG`'s value here.
+5. **notification-terraform**: replace every `bootstrap`/`latest` fallback local with a value
+   read from this repo's tracked tags (no live GitHub fetch during plan/apply). Keep the
+   bootstrap/recovery path, but make it produce a unique `bootstrap-<env>-<run id>` tag, never
+   the literal `bootstrap`.
+6. **Remaining Lambdas** (google-cidr, pinpoint_to_sqs_sms_callbacks, sns_to_sqs_sms_callbacks,
+   ses_receiving_emails, log extension): resolve and verify one real tag per environment per
+   image (account, region, repository, digest, source commit), then add the tracked field here
+   and wire the deploy step. Do this only after each value is independently confirmed — never
+   copy a tag between environments or guess one.
 
-Lambda fields are intentionally marked as required rather than populated with copied values until
-the private ECR account, repository, region, digest, and source commit are verified per environment.
-
-The following deployed images are infrastructure or third-party dependencies, not Notify release
-images and should not be mixed into this contract: Alpine init containers, Signoz, Fluent Bit,
-Velero, Kubernetes controllers, ingress, and the pinned Blazer migration image.
-
-## Producer status verified on 2026-08-20
-
-- `notification-api`, `notification-admin`, `notification-document-download-api`, and
-  `notification-documentation` already publish short commit tags. Document download and
-  documentation already dispatch their staging tag updates here; API and admin use the same
-  existing dispatch pattern.
-- `ipv4-geolocate-webservice` currently publishes `latest` and a date tag, updates Kubernetes
-  directly, and does not dispatch to manifests. It needs a unique source-commit tag and a dispatch.
-- `notification-lambdas` publishes short commit tags and `latest` to separate staging and
-  production ECR accounts, updates staging Lambdas directly, and does not dispatch a complete
-  Lambda version record here. Its production SBOM path also scans `latest`.
-- `notification-terraform` still owns a recovery/bootstrap build path and has legacy `latest` or
-  literal `bootstrap` fallbacks in normal image consumers. It must consume the committed record
-  for ordinary deployments without fetching GitHub or rebuilding source during every plan.
-
-## Producer migration requirements
-
-- `notification-lambdas` must dispatch immutable tags for every Lambda image it publishes and stop pushing `latest` after consumers migrate.
-- The Lambda inventory includes `heartbeat`, `system_status`, `google-cidr`,
-  `pinpoint_to_sqs_sms_callbacks`, `ses_to_sqs_email_callbacks`,
-  `sns_to_sqs_sms_callbacks`, and `ses_receiving_emails`; Terraform consumers must be migrated
-  alongside the Lambda build matrix rather than only updating the three redeploy steps in this repo.
-- Lambda image records must include the private ECR account, repository, region, and tag. They must not be resolved from public ECR.
-- `notification-terraform` must consume committed image inputs for normal deployments and use a unique, explicitly supplied bootstrap tag only for recovery builds.
-- `ipv4-geolocate-webservice` must publish a unique immutable tag, preferably the source commit, instead of only a date tag and `latest`.
-- Blazer's producer must replace the mutable `bootstrap` publication with an immutable release tag before `BLAZER_DOCKER_TAG` can stop using that compatibility value.
-
-Do not copy image tags between environments or retag an image until its digest, source commit, ECR account, and region have been verified.
+Do not skip ahead to step 6 before steps 2-5 land; the whole point is one mechanism, not a
+sixth special case.
