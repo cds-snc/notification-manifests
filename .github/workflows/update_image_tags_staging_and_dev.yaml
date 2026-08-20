@@ -28,6 +28,7 @@ jobs:
       # DOCUMENTATION_DOCKER_TAG
       # IPV4_DOCKER_TAG
       # BLAZER_DOCKER_TAG
+      # API_DOCKER_TAG also controls notify-celery, notify-jobs, and notify-database
       # dev tracks staging so it stays in sync with the same commit, no separate dispatch needed
       - name: Update the docker tag in staging.env and dev.env
         run: |
