@@ -1,0 +1,85 @@
+name: Update Docker Image for Manifests in Dev
+
+
+on:
+  repository_dispatch:
+    types:
+      - update-docker-image-dev
+
+env:
+  COMPONENT: ${{ github.event.client_payload.component }}
+  DOCKER_TAG: ${{ github.event.client_payload.docker_tag }}
+
+jobs:
+
+  update-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtain a Notify PR Bot GitHub App Installation Access Token
+        run: |
+          TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.PR_BOT_GITHUB_TOKEN }})"
+          echo "::add-mask::$TOKEN"
+          echo "GITHUB_TOKEN=$TOKEN" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+          ref: main
+
+      # ADMIN_DOCKER_TAG
+      # API_DOCKER_TAG
+      # DOCUMENT_DOWNLOAD_DOCKER_TAG
+      # DOCUMENTATION_DOCKER_TAG
+      - name: Update the docker tag in dev.env
+        run: |
+          echo "Updating docker tag in dev.env"
+          sed -i 's/^${{ env.COMPONENT }}_DOCKER_TAG:.*/${{ env.COMPONENT }}_DOCKER_TAG: "'"${{ env.DOCKER_TAG }}"'"/' helmfile/overrides/dev.env
+          cat helmfile/overrides/dev.env
+
+      - name: Branch protection OFF
+        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            null
+          required_linear_history: |
+            null
+          enforce_admins: |
+            null
+          required_pull_request_reviews: |
+            null
+          restrictions: | 
+            null 
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+
+      - name: Commit
+        uses: ./.github/actions/commit-verified
+        with:
+          github-token: ${{ env.GITHUB_TOKEN }}
+          branch: main
+          commit-message: "Update ${{ env.COMPONENT }} docker image tag to ${{ env.DOCKER_TAG }}"
+          files: helmfile/overrides/dev.env
+
+      - name: Branch protection ON
+        if: always()
+        uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
+        with:
+          route: PUT /repos/:repository/branches/main/protection
+          repository: ${{ github.repository }}
+          required_status_checks: | 
+            strict: true
+            checks:
+              - context: helmfile-diff
+          required_linear_history: |
+            true
+          enforce_admins: |
+            true
+          required_pull_request_reviews: |
+            required_approving_review_count: 1
+          restrictions: | 
+            null 
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
