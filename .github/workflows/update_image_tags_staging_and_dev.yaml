@@ -1,4 +1,4 @@
-name: Update Docker Image for Manifests in Staging
+name: Update Docker Image for Manifests in Staging and Dev
 
 on:
   repository_dispatch:
@@ -26,11 +26,14 @@ jobs:
       # API_DOCKER_TAG
       # DOCUMENT_DOWNLOAD_DOCKER_TAG
       # DOCUMENTATION_DOCKER_TAG
-      - name: Update the docker tag in staging.env
+      # dev tracks staging so it stays in sync with the same commit, no separate dispatch needed
+      - name: Update the docker tag in staging.env and dev.env
         run: |
-          echo "Updating docker tag in staging.env"
+          echo "Updating docker tag in staging.env and dev.env"
           sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/staging.env
+          sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/dev.env
           cat helmfile/overrides/staging.env
+          cat helmfile/overrides/dev.env
 
       - name: Branch protection OFF
         uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
@@ -56,7 +59,9 @@ jobs:
           github-token: ${{ env.GITHUB_TOKEN }}
           branch: main
           commit-message: "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
-          files: helmfile/overrides/staging.env
+          files: |
+            helmfile/overrides/staging.env
+            helmfile/overrides/dev.env
 
       - name: Branch protection ON
         if: always()
