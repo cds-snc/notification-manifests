@@ -19,18 +19,11 @@ serviceAccount:
   create: true
   serviceAccountName: "notify-database"
 
-# Run on the always-warm EKS managed on-demand node group instead of a Karpenter
-# spot node: a new spot node can take 5+ minutes to provision and become
-# schedulable (spot capacity fulfillment + node bootstrap + nidhogg startup
-# taints), which blocks this job and any deploy waiting on it.
-nodeSelector:
-  eks.amazonaws.com/capacityType: ON_DEMAND
-
 tolerations: []
 
 secretProviderClass:
   secretname: notify-database
-  enabled: true
+  enabled: false
   provider: aws
   parameters:
     objects: |

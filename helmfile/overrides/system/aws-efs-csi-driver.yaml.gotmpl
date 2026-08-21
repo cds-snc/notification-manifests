@@ -1,0 +1,12 @@
+controller:
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/efs-csi-controller-eks
+  # privileged: false disables delete-access-point-root-dir, acceptable when using efs-ap provisioning mode
+  containerSecurityContext:
+    privileged: false
+    allowPrivilegeEscalation: false
+
+# Node DaemonSet requires privilege but only runs on EC2 nodes, not Fargate
+node:
+  enabled: false

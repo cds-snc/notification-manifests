@@ -12,7 +12,7 @@ celeryCommon:
   HC_EN_SERVICE_ID: "{{ .StateValues.HC_EN_SERVICE_ID }}"
   HC_FR_SERVICE_ID: "{{ .StateValues.HC_FR_SERVICE_ID }}"
   NOTIFY_EMAIL_DOMAIN: "{{ requiredEnv "BASE_DOMAIN" }}"
-  NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
+  NOTIFY_ENVIRONMENT: "{{ .Environment.Name | trimSuffix "-fargate" }}"
   REDIS_ENABLED: "{{ .StateValues.REDIS_ENABLED }}"
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"
   AWS_XRAY_SDK_ENABLED: {{ .StateValues.AWS_XRAY_SDK_ENABLED }}
@@ -76,15 +76,15 @@ dockerhub:
   username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
   pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
 
-{{ if ne .Environment.Name "production" }}
-defaultVerticalPodAutoscaler:
+{{ if hasSuffix "-fargate" .Environment.Name }}
+# Fargate nodes can't run the cwagent DaemonSet, so run it as a sidecar instead.
+cloudwatchAgent:
   enabled: true
 {{ end }}
 
-
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/celery-eks-role
+        eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/notification-canada-ca-dev-fargate-cloudwatch-agent-role
 
 nodes:
   sms-dedicated-static:

@@ -54,9 +54,13 @@ spec:
                   key: {{ $key }}
             {{- end }}
             - name: STATSD_HOST
+              {{ if .Values.cloudwatchAgent.enabled }}
+              value: "localhost"
+              {{ else }}
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+              {{ end }}
           {{ if .Values.secretProviderClass.enabled}}    
           volumeMounts:
             - name: secrets-store-inline
@@ -93,14 +97,36 @@ spec:
             failureThreshold: 6    # ~60s before restart
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{ if .Values.secretProviderClass.enabled}}    
+        {{ if .Values.cloudwatchAgent.enabled }}
+        - name: cloudwatch-agent
+          image: "{{ .Values.cloudwatchAgent.image.repository }}:{{ .Values.cloudwatchAgent.image.tag }}"
+          env:
+            # Without this, the agent can't reach the EC2 metadata service on
+            # Fargate, assumes it's on-prem, and ignores the IRSA credentials.
+            - name: RUN_IN_AWS
+              value: "True"
+          volumeMounts:
+            - name: cwagentconfig
+              mountPath: /etc/cwagentconfig
+              readOnly: true
+          resources:
+            {{- toYaml .Values.cloudwatchAgent.resources | nindent 12 }}
+        {{ end }}
+      {{ if or .Values.secretProviderClass.enabled .Values.cloudwatchAgent.enabled }}    
       volumes:
+        {{ if .Values.secretProviderClass.enabled }}
         - name: secrets-store-inline
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
               secretProviderClass: {{ include "api.fullname" . }}
+        {{ end }}
+        {{ if .Values.cloudwatchAgent.enabled }}
+        - name: cwagentconfig
+          configMap:
+            name: {{ include "api.fullname" . }}-cwagentconfig
+        {{ end }}
       {{ end }}                   
       {{- with .Values.nodeSelector }}
       nodeSelector:

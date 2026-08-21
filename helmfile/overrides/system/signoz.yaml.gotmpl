@@ -15,8 +15,6 @@ clickhouse:
   # Add MergeTree setting to allow more broken parts during restore
   settings:
     merge_tree/max_suspicious_broken_parts: "200"
-  nodeSelector:
-    workload-type: signoz
   tolerations:
     - key: dedicated
       operator: Equal
@@ -36,8 +34,6 @@ clickhouse:
     replicaCount: 3
     persistence:
       size: 10Gi
-    nodeSelector:
-      workload-type: signoz
     tolerations:
       - key: dedicated
         operator: Equal
@@ -97,8 +93,6 @@ signoz:
     - name: secrets-store
       mountPath: /mnt/secrets-store
       readOnly: true
-  nodeSelector:
-    workload-type: signoz
   tolerations:
     - key: dedicated
       operator: Equal
@@ -108,8 +102,6 @@ signoz:
 schemaMigrator:
   # Enable replication for ClickHouse tables to support HA with multiple replicas
   enableReplication: true
-  nodeSelector:
-    workload-type: signoz
   tolerations:
     - key: dedicated
       operator: Equal
@@ -119,8 +111,6 @@ schemaMigrator:
 otelCollector:
   # Run multiple OtelCollector replicas for HA
   replicaCount: 2
-  nodeSelector:
-    workload-type: signoz
   tolerations:
     - key: dedicated
       operator: Equal
@@ -133,8 +123,6 @@ postgresql:
   persistence:
     mountPath: /signoz/postgresql
     dataDir: /signoz/postgresql/data
-  nodeSelector:
-    workload-type: signoz
   tolerations:
     - key: dedicated
       operator: Equal

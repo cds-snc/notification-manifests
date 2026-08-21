@@ -50,16 +50,22 @@ spec:
         - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           name: {{ include "celery.fullname" . }}-{{ $node.name }}
+          {{ if .Values.secretProviderClass.enabled }}
           volumeMounts:
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"
               readOnly: true  
+          {{ end }}
           env:
             # Includes specific ENV Variables
             - name: STATSD_HOST
+              {{ if .Values.cloudwatchAgent.enabled }}
+              value: "localhost"
+              {{ else }}
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+              {{ end }}
             # Includes common ENV Variables
             {{- range $key, $val := .Values.celeryCommon }}
             - name: {{ $key }}
@@ -75,14 +81,36 @@ spec:
             {{- end }}
           command: ["/bin/sh"]
           args: ["-c", "{{ $node.scriptArg }}"]
-      {{ if .Values.secretProviderClass.enabled}}    
+      {{ if .Values.cloudwatchAgent.enabled }}
+        - name: cloudwatch-agent
+          image: "{{ .Values.cloudwatchAgent.image.repository }}:{{ .Values.cloudwatchAgent.image.tag }}"
+          env:
+            # Without this, the agent can't reach the EC2 metadata service on
+            # Fargate, assumes it's on-prem, and ignores the IRSA credentials.
+            - name: RUN_IN_AWS
+              value: "True"
+          volumeMounts:
+            - name: cwagentconfig
+              mountPath: /etc/cwagentconfig
+              readOnly: true
+          resources:
+            {{- toYaml .Values.cloudwatchAgent.resources | nindent 12 }}
+      {{ end }}
+      {{ if or .Values.secretProviderClass.enabled .Values.cloudwatchAgent.enabled }}    
       volumes:
+        {{ if .Values.secretProviderClass.enabled }}
         - name: secrets-store-inline
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
               secretProviderClass: {{ include "celery.fullname" . }}
+        {{ end }}
+        {{ if .Values.cloudwatchAgent.enabled }}
+        - name: cwagentconfig
+          configMap:
+            name: {{ include "celery.fullname" . }}-cwagentconfig
+        {{ end }}
       {{ end }}   
       dnsPolicy: {{ .Values.dnsPolicy }}
       restartPolicy: {{ .Values.restartPolicy }}

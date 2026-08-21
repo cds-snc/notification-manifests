@@ -132,7 +132,7 @@ affinity: {}
 
 secretProviderClass:
   secretname: notify-api
-  enabled: true
+  enabled: false
   provider: aws
   parameters:
     objects: |
@@ -153,3 +153,21 @@ secretProviderClass:
 dockerhub:
   username: "changeme"
   pat: "changeme"
+
+# Runs the CloudWatch agent as a sidecar to accept statsd metrics over
+# localhost. Needed on EKS Fargate, since DaemonSets (and therefore the
+# node-level cloudwatch-agent) aren't supported there.
+cloudwatchAgent:
+  enabled: false
+  image:
+    repository: public.ecr.aws/cloudwatch-agent/cloudwatch-agent
+    tag: 1.300061.0b1289
+  region: ca-central-1
+  namespace: NotificationCanadaCa
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "150Mi"
+    limits:
+      cpu: "200m"
+      memory: "200Mi"

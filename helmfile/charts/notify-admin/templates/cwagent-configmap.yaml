@@ -1,0 +1,25 @@
+{{ if .Values.cloudwatchAgent.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "admin.fullname" . }}-cwagentconfig
+data:
+  # Sidecar-only config: no host/docker metrics, since Fargate pods have no
+  # access to the underlying node.
+  cwagentconfig.json: |
+    {
+      "agent": {
+        "region": "{{ .Values.cloudwatchAgent.region }}"
+      },
+      "metrics": {
+        "namespace": "{{ .Values.cloudwatchAgent.namespace }}",
+        "metrics_collected": {
+          "statsd": {
+            "service_address": ":8125",
+            "metrics_collection_interval": 15,
+            "metrics_aggregation_interval": 60
+          }
+        }
+      }
+    }
+{{ end }}

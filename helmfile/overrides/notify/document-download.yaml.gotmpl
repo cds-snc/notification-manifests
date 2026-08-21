@@ -4,7 +4,7 @@ documentDownload:
   AWS_XRAY_CONTEXT_MISSING: "{{ .StateValues.AWS_XRAY_CONTEXT_MISSING }}"  
   AWS_XRAY_SDK_ENABLED: "{{ .StateValues.AWS_XRAY_SDK_ENABLED }}"
   DEBUG: "{{ .StateValues.DEBUG }}"
-  NOTIFY_ENVIRONMENT: "{{ .Environment.Name }}"
+  NOTIFY_ENVIRONMENT: "{{ .Environment.Name | trimSuffix "-fargate" }}"
   DOCUMENTS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download"
   BACKEND_HOSTNAME: "api.document.{{ requiredEnv "BASE_DOMAIN" }}"
   SCAN_FILES_DOCUMENTS_BUCKET: "{{ .Release.Namespace }}-{{ .Environment.Name }}-document-download-scan-files"
@@ -59,7 +59,7 @@ pdb:
   enabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
   minAvailable: {{ if eq .Environment.Name "production" }} 1 {{ else if eq .Environment.Name "staging" }} 1 {{ else }} 1 {{ end }}
 
-{{ if ne .Environment.Name "production" }}
-verticalPodAutoscaler:
-  enabled: true
-{{ end }}
+readinessProbe:
+  initialDelaySeconds: 60
+livenessProbe:
+  initialDelaySeconds: 60
