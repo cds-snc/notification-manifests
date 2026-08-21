@@ -10,9 +10,6 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  HEARTBEAT_IMAGE: heartbeat:1ba3ebd
-  SYSTEM_STATUS_IMAGE: system_status:1ba3ebd
-  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:1ba3ebd
   ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   AWS_DEFAULT_REGION: ca-central-1
 
@@ -82,6 +79,14 @@ jobs:
       - name: Load Context Variables
         run: |
             ./helmfile/getContext.sh -g
+
+      - name: Read Lambda docker tags from production.env
+        run: |
+          FILE=helmfile/overrides/production.env
+          for COMPONENT in HEARTBEAT SYSTEM_STATUS SES_TO_SQS_EMAIL_CALLBACKS; do
+            TAG=$(grep -E "^${COMPONENT}_DOCKER_TAG:" "$FILE" | sed "s/${COMPONENT}_DOCKER_TAG: *\"\([^\"]*\)\".*/\1/" | tr -d '\r')
+            echo "${COMPONENT}_IMAGE=$(echo $COMPONENT | tr '[:upper:]' '[:lower:]'):${TAG}" >> $GITHUB_ENV
+          done
 
       - name: Run Database Upgrade Helmfile Sync
         uses: ./.github/actions/db-migration
