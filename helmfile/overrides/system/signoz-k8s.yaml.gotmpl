@@ -91,6 +91,8 @@ presets:
         enabled: true
 
 otelAgent:
+  # DaemonSet not supported on Fargate; host metrics/logs collected via otelDeployment instead
+  enabled: false
   priorityClassName: system-node-critical
   config:
     receivers:

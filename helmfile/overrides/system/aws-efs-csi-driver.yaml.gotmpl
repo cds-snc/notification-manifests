@@ -10,3 +10,10 @@ controller:
 # Node DaemonSet requires privilege but only runs on EC2 nodes, not Fargate
 node:
   enabled: false
+
+sidecars:
+  csiProvisioner:
+    additionalArgs:
+      # With no node DaemonSet, no CSINode has the driver's topology key, so the
+      # provisioner's default immediate-binding topology lookup always fails.
+      - --immediate-topology=false

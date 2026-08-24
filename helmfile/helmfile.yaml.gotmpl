@@ -371,3 +371,109 @@ releases:
     chart: charts/notify-celery
     values:
     - ./overrides/notify/celery.yaml.gotmpl
+
+  - name: ingress
+    namespace: nginx
+    disableValidationOnInstall: true
+    disableValidation: true 
+    labels:
+      app: nginx
+      tier: main
+      category: system
+      step: 1
+    chart: charts/nginx-ingress
+    values:
+    - ./overrides/system/nginx.yaml.gotmpl
+
+# Signoz
+
+  - name: signoz
+    namespace: signoz
+    version: 0.110.0
+    disableValidationOnInstall: true
+    labels:
+      app: signoz
+      tier: full
+      category: system
+      step: 2
+    chart: signoz/signoz 
+    values:
+    - ./overrides/system/signoz.yaml.gotmpl
+
+  - name: signoz-secret
+    namespace: signoz
+    version: 0.110.0
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-secret
+      tier: apm
+      category: system
+      step: 2
+    chart: charts/notify-secrets
+    values:
+    - ./overrides/system/signoz-secret.yaml.gotmpl
+
+  - name: opentelemetry-operator
+    version: 0.112.1
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: opentelemetry-operator
+      tier: apm
+      category: system
+      step: 3
+    chart: opentelemetry/opentelemetry-operator
+    values:
+    - ./overrides/system/opentelemetry.yaml.gotmpl 
+
+  - name: signoz-k8s
+    namespace: signoz
+    version: 0.15.1
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-k8s
+      tier: apm
+      category: system
+      step: 3
+    chart: signoz/k8s-infra
+    values:
+    - ./overrides/system/signoz-k8s.yaml.gotmpl 
+
+  - name: signoz-telemetry
+    version: 0.1.0
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-telemetry
+      tier: apm
+      category: system
+      step: 4
+    chart: charts/signoz-telemetry
+    values:
+    - ./overrides/system/signoz-telemetry.yaml.gotmpl
+
+  - name: signoz-importer
+    version: 1.0.0
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: signoz-importer
+      tier: apm
+      category: system
+      step: 5
+    chart: charts/signoz-importer
+    values:
+    - ./overrides/system/signoz-importer.yaml.gotmpl
+
+  - name: prometheus-cloudwatch-exporter
+    namespace: signoz
+    disableValidationOnInstall: true
+    labels:
+      app: prometheus-cloudwatch
+      tier: apm
+      category: system
+      step: 5
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-cloudwatch-exporter
+    version: 0.28.1
+    values:
+    - ./overrides/system/prometheus-cloudwatch-exporter.yaml.gotmpl

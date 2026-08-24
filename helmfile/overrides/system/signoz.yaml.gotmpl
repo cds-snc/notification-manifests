@@ -80,19 +80,6 @@ signoz:
   serviceAccount: 
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/signoz-eks-role
-  
-  additionalVolumes:
-    - name: secrets-store
-      csi:
-        driver: secrets-store.csi.k8s.io
-        readOnly: true
-        volumeAttributes:
-          secretProviderClass: signoz
-  
-  additionalVolumeMounts:
-    - name: secrets-store
-      mountPath: /mnt/secrets-store
-      readOnly: true
   tolerations:
     - key: dedicated
       operator: Equal
@@ -128,14 +115,3 @@ postgresql:
       operator: Equal
       value: signoz
       effect: NoSchedule
-
-secretProviderClass:
-  name: signoz
-  secretname: signoz
-  enabled: true
-  provider: aws
-  secrets: 
-    SIGNOZ_EMAIL_SMTP_AUTH_USERNAME: MANIFEST_SIGNOZ_SMTP_USERNAME
-    SIGNOZ_EMAIL_SMTP_AUTH_PASSWORD: MANIFEST_SIGNOZ_SMTP_PASSWORD
-    SIGNOZ_POSTGRES_PASSWORD: MANIFEST_SIGNOZ_POSTGRES_PASSWORD
-    SIGNOZ_DASHBOARD_API_KEY: MANIFEST_SIGNOZ_DASHBOARD_API_KEY

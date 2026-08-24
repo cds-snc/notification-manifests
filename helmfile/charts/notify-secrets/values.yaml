@@ -4,6 +4,16 @@ serviceAccountRef:
   name: external-secrets
   namespace: external-secrets
 
+# Only one release cluster-wide should have this enabled (creates the singleton ClusterSecretStore)
+clusterSecretStore:
+  enabled: true
+
+# Set enabled: true to have this release also create an ExternalSecret pointing at the shared ClusterSecretStore
+externalSecret:
+  enabled: false
+  secretname: ""
+  secrets: {}
+
 # Legacy — kept for reference only
 # Default values for notify-secrets.
 

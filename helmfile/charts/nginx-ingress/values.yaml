@@ -534,6 +534,12 @@ secretProviderClass:
   secretObjects: []
   parameters: {}
 
+externalSecret:
+  enabled: false
+  secretname: ""
+  secrettype: Opaque
+  secrets: {}
+
 targetGroupBinding:
   enabled: false
   targetGroupARN: none
