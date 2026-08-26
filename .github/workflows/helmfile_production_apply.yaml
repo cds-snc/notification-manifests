@@ -10,9 +10,9 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
-  HEARTBEAT_IMAGE: heartbeat:1ba3ebd
-  SYSTEM_STATUS_IMAGE: system_status:1ba3ebd
-  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:1ba3ebd
+  HEARTBEAT_IMAGE: heartbeat:144c2e1
+  SYSTEM_STATUS_IMAGE: system_status:144c2e1
+  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:144c2e1
   ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   AWS_DEFAULT_REGION: ca-central-1
 
