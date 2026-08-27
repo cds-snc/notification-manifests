@@ -31,6 +31,9 @@ jobs:
       # API_DOCKER_TAG
       # DOCUMENT_DOWNLOAD_DOCKER_TAG
       # DOCUMENTATION_DOCKER_TAG
+      # HEARTBEAT_DOCKER_TAG
+      # SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG
+      # SYSTEM_STATUS_DOCKER_TAG
       - name: Update the docker tag in dev.env
         run: |
           echo "Updating docker tag in dev.env"
