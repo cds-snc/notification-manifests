@@ -4,6 +4,7 @@ on:
   repository_dispatch:
     types:
       - update-docker-image
+      - update-lambda-image-tags
 
 jobs:
   update-image:
@@ -26,13 +27,22 @@ jobs:
       # API_DOCKER_TAG
       # DOCUMENT_DOWNLOAD_DOCKER_TAG
       # DOCUMENTATION_DOCKER_TAG
+        # BLAZER_DOCKER_TAG
+        # GOOGLE_CIDR_DOCKER_TAG
       # HEARTBEAT_DOCKER_TAG
+        # PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG
       # SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG
       # SYSTEM_STATUS_DOCKER_TAG
       - name: Update the docker tag in staging.env
         run: |
           echo "Updating docker tag in staging.env"
-          sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/staging.env
+          if [ "${{ github.event.action }}" = "update-lambda-image-tags" ]; then
+            for component in BLAZER GOOGLE_CIDR HEARTBEAT PINPOINT_TO_SQS_SMS_CALLBACKS SYSTEM_STATUS SES_TO_SQS_EMAIL_CALLBACKS; do
+              sed -i 's/^'"$component"'_DOCKER_TAG:.*/'"$component"'_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/staging.env
+            done
+          else
+            sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/staging.env
+          fi
           cat helmfile/overrides/staging.env
 
       - name: Branch protection OFF
