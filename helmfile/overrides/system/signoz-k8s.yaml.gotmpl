@@ -247,7 +247,7 @@ otelDeployment:
             - transform/add_source_rds_postgres
             - batch
           exporters:
-            - otlphttp
+            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
         logs/elasticache_redis:
           receivers:
             - awscloudwatch/elasticache_redis_logs
@@ -255,7 +255,7 @@ otelDeployment:
             - transform/add_source_elasticache_redis
             - batch
           exporters:
-            - otlphttp
+            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
         logs/aws_lambda:
           receivers:
             - awscloudwatch/lambda_logs
@@ -263,7 +263,7 @@ otelDeployment:
             - transform/set_lambda_source_from_log_group
             - batch
           exporters:
-            - otlphttp
+            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
         logs/sns:
           receivers:
             - awscloudwatch/sns_logs
@@ -271,7 +271,7 @@ otelDeployment:
             - transform/add_source_sns
             - batch
           exporters:
-            - otlphttp
+            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
         logs/cloudwatch_all:
           receivers:
             - awscloudwatch/all_logs
@@ -280,11 +280,11 @@ otelDeployment:
             - transform/set_cloudwatch_source_from_log_group
             - batch
           exporters:
-            - otlphttp
+            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
         metrics/cloudwatch:
           receivers:
             - prometheus/cloudwatch_exporter
           processors:
             - batch
           exporters:
-            - otlphttp
+            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
