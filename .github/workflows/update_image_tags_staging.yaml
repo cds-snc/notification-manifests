@@ -68,7 +68,7 @@ jobs:
         with:
           github-token: ${{ env.GITHUB_TOKEN }}
           branch: main
-          commit-message: "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
+          commit-message: "${{ github.event.action == 'update-lambda-image-tags' && format('Update Lambda image tags to {0}', github.event.client_payload.docker_tag) || format('Update {0} docker image tag to {1}', github.event.client_payload.component, github.event.client_payload.docker_tag) }}"
           files: helmfile/overrides/staging.env
 
       - name: Branch protection ON
