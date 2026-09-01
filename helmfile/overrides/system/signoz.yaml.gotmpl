@@ -15,6 +15,9 @@ clickhouse:
   # Add MergeTree setting to allow more broken parts during restore
   settings:
     merge_tree/max_suspicious_broken_parts: "200"
+    # Replicas diverge from ZooKeeper during rolling restarts; let them re-attach
+    # and re-sync from the healthy peer instead of staying readonly.
+    merge_tree/replicated_max_ratio_of_wrong_parts: "1"
   nodeSelector:
     workload-type: signoz
   tolerations:
