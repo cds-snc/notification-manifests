@@ -15,7 +15,8 @@ falcosidekick:
           paths:
             - path: /
     redis:
-      storageClass: gp2
+      storageClass: notify
+      storageSize: "100Gi"
   config:
     existingSecret: falco-config-secrets
     aws:
