@@ -505,9 +505,7 @@ releases:
 
   - name: signoz
     namespace: signoz
-    # Production stays on 0.110.0 until ClickHouse is pre-staged to 25.12.5; the
-    # 0.138.0 pre-upgrade migrator hook requires CH >= 25.6.
-    version: {{ if eq .Environment.Name "production" }}0.110.0{{ else }}0.138.0{{ end }}
+    version: 0.138.0
     disableValidationOnInstall: true
     labels:
       app: signoz
@@ -520,7 +518,7 @@ releases:
 
   - name: signoz-secret
     namespace: signoz
-    version: 0.110.0
+    version: 0.138.0
     labels:
       app: signoz
       tier: apm
@@ -531,7 +529,7 @@ releases:
     - ./overrides/system/signoz.yaml.gotmpl
 
   - name: opentelemetry-operator
-    version: {{ if eq .Environment.Name "production" }}0.112.1{{ else }}0.122.0{{ end }}
+    version: 0.122.0
     namespace: signoz
     disableValidationOnInstall: true
     labels:
@@ -545,8 +543,7 @@ releases:
 
   - name: signoz-k8s
     namespace: signoz
-    # 0.17.0 renames the OTLP exporter to otlphttp; see signoz-k8s.yaml.gotmpl.
-    version: {{ if eq .Environment.Name "production" }}0.15.1{{ else }}0.17.0{{ end }}
+    version: 0.17.0
     disableValidationOnInstall: true
     labels:
       app: signoz-k8s

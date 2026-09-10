@@ -12,7 +12,6 @@ clickhouse:
   persistence:
     storageClass: notify
     size: 1Ti
-  # Add MergeTree setting to allow more broken parts during restore
   settings:
     merge_tree/max_suspicious_broken_parts: "200"
     # Replicas diverge from ZooKeeper during rolling restarts; let them re-attach
