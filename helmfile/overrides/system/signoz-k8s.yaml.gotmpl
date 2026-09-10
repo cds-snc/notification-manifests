@@ -238,11 +238,6 @@ otelDeployment:
               - set(attributes["source"], resource.attributes["cloudwatch.log.group.name"]) where attributes["source"] == nil and resource.attributes["cloudwatch.log.group.name"] != nil
               - set(resource.attributes["source"], attributes["source"]) where attributes["source"] != nil
               - delete_key(attributes, "source") where attributes["source"] != nil
-    exporters:
-      otlphttp:
-        endpoint: http://signoz-otel-collector:4318
-        tls:
-          insecure: true
     service:
       pipelines:
         logs/rds_postgres:

@@ -502,7 +502,7 @@ releases:
     version: 10.6.0
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
-    
+
   - name: signoz
     namespace: signoz
     version: 0.138.0
@@ -529,22 +529,21 @@ releases:
     - ./overrides/system/signoz.yaml.gotmpl
 
   - name: opentelemetry-operator
-    version: 0.112.1
+    version: 0.122.0
     namespace: signoz
     disableValidationOnInstall: true
     labels:
       app: opentelemetry-operator
       tier: apm
       category: system
-      step: 4
+      step: 3
     chart: opentelemetry/opentelemetry-operator
     values:
     - ./overrides/system/opentelemetry.yaml.gotmpl 
 
   - name: signoz-k8s
     namespace: signoz
-    # 0.17.0 renames the OTLP exporter to otlphttp; see signoz-k8s.yaml.gotmpl.
-    version: 0.15.1
+    version: 0.17.0
     disableValidationOnInstall: true
     labels:
       app: signoz-k8s
