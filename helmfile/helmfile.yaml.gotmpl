@@ -551,7 +551,7 @@ releases:
       app: signoz-k8s
       tier: apm
       category: system
-      step: 5
+      step: 3
     chart: signoz/k8s-infra
     values:
     - ./overrides/system/signoz-k8s.yaml.gotmpl 
@@ -564,7 +564,7 @@ releases:
       app: signoz-telemetry
       tier: apm
       category: system
-      step: 6
+      step: 4
     chart: charts/signoz-telemetry
     values:
     - ./overrides/system/signoz-telemetry.yaml.gotmpl
@@ -577,7 +577,7 @@ releases:
       app: signoz-importer
       tier: apm
       category: system
-      step: 7
+      step: 5
     chart: charts/signoz-importer
     values:
     - ./overrides/system/signoz-importer.yaml.gotmpl
@@ -589,7 +589,7 @@ releases:
       app: prometheus-cloudwatch
       tier: apm
       category: system
-      step: 8
+      step: 5
     chart: oci://ghcr.io/prometheus-community/charts/prometheus-cloudwatch-exporter
     version: 0.28.1
     values:
