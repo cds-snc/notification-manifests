@@ -14,8 +14,8 @@ documentDownload:
   HTTP_SCHEME: "https"
 
 documentDownloadSecrets:
-  SECRET_KEY: MANIFEST_SECRET_KEY
-  AUTH_TOKENS: MANIFEST_DOCUMENT_DOWNLOAD_API_KEY
+  SECRET_KEY: SECRET_KEY
+  AUTH_TOKENS: AUTH_TOKENS
 
 image: 
   repository: "{{ .StateValues.DOCUMENT_DOWNLOAD_IMAGE_REPOSITORY }}"
@@ -30,8 +30,8 @@ podAnnotations:
 {{ end }}
 
 dockerhub:
-  username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
-  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
+  username: {{ requiredEnv "DOCKER_HUB_USERNAME" }}
+  pat: {{ requiredEnv "DOCKER_HUB_PAT" }}
 
 serviceAccount:
   annotations:
