@@ -19,13 +19,8 @@ SM_TEMP=$(mktemp)
 SSM_TEMP=$(mktemp)
 trap "rm -f $SM_TEMP $SSM_TEMP" EXIT
 
-# Pattern 1: Extract MANIFEST_* from environment variable mappings
-# e.g., "ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET"
-grep -h "MANIFEST_[A-Z0-9_]*" "$OVERRIDES_DIR"/**/*.gotmpl "$CHARTS_DIR"/*/values.yaml 2>/dev/null | \
-    grep -oE 'MANIFEST_[A-Z0-9_]+' | sort -u >> "$SM_TEMP" || true
-
-# Pattern 1b: Extract values from any "*Secrets:" mapping blocks.
-# This catches non-MANIFEST names too, e.g. "QA_TEST_MISSING_SECRET".
+# Extract values from any "*Secrets:" mapping blocks.
+# This catches all source secret names, e.g. "QA_TEST_MISSING_SECRET".
 for file in $(find "$OVERRIDES_DIR" "$CHARTS_DIR" -name "*.gotmpl" -o -name "values.yaml" 2>/dev/null); do
     awk '
         function leading_spaces(s,    n) {
