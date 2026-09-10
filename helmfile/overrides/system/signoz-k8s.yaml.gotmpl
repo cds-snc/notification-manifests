@@ -238,6 +238,11 @@ otelDeployment:
               - set(attributes["source"], resource.attributes["cloudwatch.log.group.name"]) where attributes["source"] == nil and resource.attributes["cloudwatch.log.group.name"] != nil
               - set(resource.attributes["source"], attributes["source"]) where attributes["source"] != nil
               - delete_key(attributes, "source") where attributes["source"] != nil
+    exporters:
+      otlphttp:
+        endpoint: http://signoz-otel-collector:4318
+        tls:
+          insecure: true
     service:
       pipelines:
         logs/rds_postgres:
@@ -247,7 +252,7 @@ otelDeployment:
             - transform/add_source_rds_postgres
             - batch
           exporters:
-            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
+            - otlphttp
         logs/elasticache_redis:
           receivers:
             - awscloudwatch/elasticache_redis_logs
@@ -255,7 +260,7 @@ otelDeployment:
             - transform/add_source_elasticache_redis
             - batch
           exporters:
-            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
+            - otlphttp
         logs/aws_lambda:
           receivers:
             - awscloudwatch/lambda_logs
@@ -263,7 +268,7 @@ otelDeployment:
             - transform/set_lambda_source_from_log_group
             - batch
           exporters:
-            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
+            - otlphttp
         logs/sns:
           receivers:
             - awscloudwatch/sns_logs
@@ -271,7 +276,7 @@ otelDeployment:
             - transform/add_source_sns
             - batch
           exporters:
-            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
+            - otlphttp
         logs/cloudwatch_all:
           receivers:
             - awscloudwatch/all_logs
@@ -280,11 +285,11 @@ otelDeployment:
             - transform/set_cloudwatch_source_from_log_group
             - batch
           exporters:
-            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
+            - otlphttp
         metrics/cloudwatch:
           receivers:
             - prometheus/cloudwatch_exporter
           processors:
             - batch
           exporters:
-            - {{ if eq .Environment.Name "production" }}otlp{{ else }}otlphttp{{ end }}
+            - otlphttp

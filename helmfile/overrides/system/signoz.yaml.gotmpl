@@ -4,15 +4,24 @@ global:
   storageClass: notify
   clusterName: notification-canada-ca-{{ .Environment.Name }}-eks-cluster
 
+# ClickHouse configuration - bundled with SigNoz but version-controlled separately
+# To upgrade ClickHouse:
+#   1. Update the image.tag below
+#   2. Commit and push as a separate PR
+#   3. Wait for CH rolling restart to complete before upgrading SigNoz version
 clickhouse:
   installCustomStorageClass: true
+  # IMPORTANT: Update this tag to upgrade ClickHouse version independently
+  # Current version: 25.5.6 (production) | 25.12.5 (staging)
+  image:
+    tag: 25.5.6
   layout:
     shardsCount: 1
     replicasCount: 2
   persistence:
     storageClass: notify
     size: 1Ti
-  # Add MergeTree setting to allow more broken parts during restore
+  # MergeTree settings - protects against readonly lockups
   settings:
     merge_tree/max_suspicious_broken_parts: "200"
     # Replicas diverge from ZooKeeper during rolling restarts; let them re-attach

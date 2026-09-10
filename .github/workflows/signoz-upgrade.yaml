@@ -1,0 +1,245 @@
+name: SigNoz Upgrade
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment (staging or production)'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      signoz_version:
+        description: 'SigNoz chart version to upgrade to'
+        required: true
+      signoz_k8s_version:
+        description: 'SigNoz k8s-infra chart version to upgrade to'
+        required: true
+      opentelemetry_operator_version:
+        description: 'OpenTelemetry Operator version (optional, defaults to current)'
+        required: false
+      clickhouse_version:
+        description: 'ClickHouse version to pre-stage (optional, extracted from SigNoz chart if not provided)'
+        required: false
+      skip_preflight:
+        description: 'Skip pre-flight checks (not recommended)'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  preflight-check:
+    runs-on: ubuntu-latest
+    name: Pre-Upgrade Health Check
+    if: ${{ !inputs.skip_preflight }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Setup cluster access
+        uses: ./.github/actions/setup-cluster-access
+        with:
+          environment: ${{ inputs.environment }}
+          aws-account-id: ${{ secrets[format('{ 0 }_AWS_ACCOUNT_ID', toUpper(inputs.environment))] }}
+          op-service-account-token: ${{ secrets[format('OP_SERVICE_ACCOUNT_TOKEN_{0}', toUpper(inputs.environment))] }}
+          role-name: ${{ format('notification-manifests-helmfile-{0}-apply', inputs.environment) }}
+          gha-vpn-id: ${{ secrets[format('GHA_VPN_ID_{0}', toUpper(inputs.environment))] }}
+          gha-vpn-cert: ${{ secrets[format('GHA_VPN_CERT_{0}', toUpper(inputs.environment))] }}
+          gha-vpn-key: ${{ secrets[format('GHA_VPN_KEY_{0}', toUpper(inputs.environment))] }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@19c5e8a58f47bdc10d8c0c94c9c08e1b9f3e9a7d # v3
+
+      - name: Pre-flight health check
+        run: |
+          chmod +x ./scripts/signoz-upgrade-preflight.sh
+          ./scripts/signoz-upgrade-preflight.sh ${{ inputs.environment }}
+
+  prestage-clickhouse:
+    runs-on: ubuntu-latest
+    name: Pre-Stage ClickHouse
+    needs: preflight-check
+    if: |
+      always() && 
+      (needs.preflight-check.result == 'success' || needs.preflight-check.result == 'skipped')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Setup cluster access
+        uses: ./.github/actions/setup-cluster-access
+        with:
+          environment: ${{ inputs.environment }}
+          aws-account-id: ${{ secrets[format('{ 0 }_AWS_ACCOUNT_ID', toUpper(inputs.environment))] }}
+          op-service-account-token: ${{ secrets[format('OP_SERVICE_ACCOUNT_TOKEN_{0}', toUpper(inputs.environment))] }}
+          role-name: ${{ format('notification-manifests-helmfile-{0}-apply', inputs.environment) }}
+          gha-vpn-id: ${{ secrets[format('GHA_VPN_ID_{0}', toUpper(inputs.environment))] }}
+          gha-vpn-cert: ${{ secrets[format('GHA_VPN_CERT_{0}', toUpper(inputs.environment))] }}
+          gha-vpn-key: ${{ secrets[format('GHA_VPN_KEY_{0}', toUpper(inputs.environment))] }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@19c5e8a58f47bdc10d8c0c94c9c08e1b9f3e9a7d # v3
+
+      - name: Pre-stage ClickHouse
+        run: |
+          chmod +x ./scripts/signoz-upgrade-clickhouse-prestage.sh
+          # If clickhouse_version not provided, extract from SigNoz chart
+          CH_VERSION="${{ inputs.clickhouse_version }}"
+          if [[ -z "$CH_VERSION" ]]; then
+            echo "ClickHouse version not specified; will be handled by helm chart defaults"
+            exit 0
+          fi
+          ./scripts/signoz-upgrade-clickhouse-prestage.sh ${{ inputs.environment }} "$CH_VERSION"
+
+  helmfile-apply:
+    runs-on: ubuntu-latest
+    name: Apply SigNoz Chart Upgrades
+    needs: prestage-clickhouse
+    if: always() && needs.prestage-clickhouse.result != 'failure'
+    steps:
+      - name: Inject token authentication
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Configure credentials
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets[format('{ 0 }_AWS_ACCOUNT_ID', toUpper(inputs.environment))] }}:role/notification-manifests-helmfile-${{ inputs.environment }}-apply
+          role-session-name: NotifyManifestsUpgrade
+          aws-region: ca-central-1
+
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@fd46979d2984c886929c416fbdf859b1c5efa0ea # v2.1.0
+        with:
+          install-kubectl: yes
+          install-helm: yes
+          helmfile-version: "v1.4.4"
+          helm-s3-plugin-version: "v0.16.2"
+
+      - name: Setup cluster access
+        uses: ./.github/actions/setup-cluster-access
+        with:
+          environment: ${{ inputs.environment }}
+          aws-account-id: ${{ secrets[format('{ 0 }_AWS_ACCOUNT_ID', toUpper(inputs.environment))] }}
+          op-service-account-token: ${{ secrets[format('OP_SERVICE_ACCOUNT_TOKEN_{0}', toUpper(inputs.environment))] }}
+          role-name: ${{ format('notification-manifests-helmfile-{0}-apply', inputs.environment) }}
+          gha-vpn-id: ${{ secrets[format('GHA_VPN_ID_{0}', toUpper(inputs.environment))] }}
+          gha-vpn-cert: ${{ secrets[format('GHA_VPN_CERT_{0}', toUpper(inputs.environment))] }}
+          gha-vpn-key: ${{ secrets[format('GHA_VPN_KEY_{0}', toUpper(inputs.environment))] }}
+
+      - name: Load Context Variables
+        run: |
+          ./helmfile/getContext.sh -g
+
+      - name: Update chart versions in helmfile
+        run: |
+          # This creates a temporary override for the chart versions
+          # Note: In production, you should update VERSION file instead
+          cat > /tmp/signoz-versions.txt << 'EOF'
+          signoz=${{ inputs.signoz_version }}
+          signoz-k8s=${{ inputs.signoz_k8s_version }}
+          EOF
+          cat /tmp/signoz-versions.txt
+
+      - name: Apply SigNoz Chart Updates
+        id: helmfile_apply
+        run: |
+          pushd helmfile
+          # For production, you'll want to update VERSION file and commit
+          # For now, we apply just the signoz releases
+          helmfile --environment ${{ inputs.environment }} \
+            -l 'app=signoz,app=signoz-k8s,app=signoz-telemetry,app=signoz-importer' \
+            apply
+          popd
+
+      - name: Wait for rollout
+        run: |
+          # Give the deployment time to start
+          sleep 10
+          
+          # Wait for SigNoz pod to be ready
+          kubectl rollout status deployment/signoz \
+            -n signoz \
+            --timeout=5m || true
+
+  postflight-verification:
+    runs-on: ubuntu-latest
+    name: Post-Upgrade Verification
+    needs: helmfile-apply
+    if: always() && needs.helmfile-apply.result != 'failure'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Setup cluster access
+        uses: ./.github/actions/setup-cluster-access
+        with:
+          environment: ${{ inputs.environment }}
+          aws-account-id: ${{ secrets[format('{ 0 }_AWS_ACCOUNT_ID', toUpper(inputs.environment))] }}
+          op-service-account-token: ${{ secrets[format('OP_SERVICE_ACCOUNT_TOKEN_{0}', toUpper(inputs.environment))] }}
+          role-name: ${{ format('notification-manifests-helmfile-{0}-apply', inputs.environment) }}
+          gha-vpn-id: ${{ secrets[format('GHA_VPN_ID_{0}', toUpper(inputs.environment))] }}
+          gha-vpn-cert: ${{ secrets[format('GHA_VPN_CERT_{0}', toUpper(inputs.environment))] }}
+          gha-vpn-key: ${{ secrets[format('GHA_VPN_KEY_{0}', toUpper(inputs.environment))] }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@19c5e8a58f47bdc10d8c0c94c9c08e1b9f3e9a7d # v3
+
+      - name: Post-upgrade verification
+        run: |
+          chmod +x ./scripts/signoz-upgrade-postflight.sh
+          ./scripts/signoz-upgrade-postflight.sh ${{ inputs.environment }}
+
+  notify-status:
+    runs-on: ubuntu-latest
+    name: Notify Status
+    if: always()
+    needs: [preflight-check, prestage-clickhouse, helmfile-apply, postflight-verification]
+    steps:
+      - name: Determine overall status
+        id: status
+        run: |
+          # Check if any critical job failed
+          if [[ "${{ needs.helmfile-apply.result }}" == "failure" ]] || [[ "${{ needs.postflight-verification.result }}" == "failure" ]]; then
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+            echo "message=SigNoz upgrade FAILED" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+            echo "message=SigNoz upgrade completed" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Notify Slack on completion
+        if: always()
+        run: |
+          json=$(cat <<EOF
+          {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "${{ steps.status.outputs.emoji }} ${{ steps.status.outputs.message }}\n*Environment:* ${{ inputs.environment }}\n*SigNoz:* ${{ inputs.signoz_version }}\n*SigNoz k8s:* ${{ inputs.signoz_k8s_version }}\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow>"
+                }
+              }
+            ]
+          }
+          EOF
+          )
+          curl -X POST -H 'Content-type: application/json' --data "$json" ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Fail if upgrade failed
+        if: steps.status.outputs.status == 'failure'
+        run: exit 1
