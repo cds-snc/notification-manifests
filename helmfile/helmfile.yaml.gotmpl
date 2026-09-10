@@ -502,10 +502,9 @@ releases:
     version: 10.6.0
     values:
     - ./overrides/system/goldilocks.yaml.gotmpl
+    
   - name: signoz
     namespace: signoz
-    # Production stays on 0.110.0 until ClickHouse is pre-staged to 25.12.5; the
-    # 0.138.0 pre-upgrade migrator hook requires CH >= 25.6.
     version: 0.138.0
     disableValidationOnInstall: true
     labels:
@@ -524,7 +523,7 @@ releases:
       app: signoz
       tier: apm
       category: system
-      step: 3
+      step: 2
     chart: charts/notify-secrets
     values:
     - ./overrides/system/signoz.yaml.gotmpl
