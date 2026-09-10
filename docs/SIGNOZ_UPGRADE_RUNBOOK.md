@@ -1,13 +1,46 @@
-# SigNoz Upgrade Runbook - Quick Reference
+# SigNoz Upgrade Runbook
 
-## Pre-Upgrade Checklist
+## Quick 4-Step Upgrade Process
 
-- [ ] Staging tested and verified (if upgrading to new version)
-- [ ] Backup window scheduled (if production)
-- [ ] Team notified via Slack
-- [ ] Velero pre-upgrade snapshot scheduled (production only)
+### Step 1: Pre-flight Health Check
+```bash
+./scripts/signoz-upgrade-preflight.sh production
+```
 
-## Standard Upgrade Path (GitHub Actions - Recommended)
+Expected: `✅ [OK] Pre-flight check PASSED`
+
+If any ❌ checks fail, **STOP** and investigate before proceeding.
+
+### Step 2: Pre-stage ClickHouse (5-15 minutes)
+```bash
+./scripts/signoz-upgrade-clickhouse-prestage.sh production 25.12.5
+```
+
+Updates ClickHouse and waits for rolling restart.
+
+Expected: `✅ [OK] Rolling restart complete`
+
+### Step 3: Apply Helmfile Upgrade
+```bash
+helmfile sync --environment production
+```
+
+Bumps SigNoz to 0.138.0 and applies all config changes.
+
+### Step 4: Post-Upgrade Verification (5-15 minutes)
+```bash
+./scripts/signoz-upgrade-postflight.sh production
+```
+
+Waits for migrator job and verifies all components.
+
+Expected: `✅ [OK] Post-upgrade verification PASSED`
+
+**Total time: 15-40 minutes**
+
+---
+
+## GitHub Actions Upgrade (Alternative)
 
 ### Step 1: Trigger Workflow
 
