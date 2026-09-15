@@ -218,7 +218,7 @@ releases:
       category: system
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 3.1.2
+    version: 3.1.3
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
@@ -543,7 +543,7 @@ releases:
 
   - name: signoz-k8s
     namespace: signoz
-    version: 0.17.0
+    version: 0.17.1
     disableValidationOnInstall: true
     labels:
       app: signoz-k8s
