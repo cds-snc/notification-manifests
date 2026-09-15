@@ -38,13 +38,13 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        image: "{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
         imagePullPolicy: IfNotPresent
         command: ["/bin/sh"]
         args: ["-c", "sh /app/scripts/cwcheck.sh"]
       containers:
         - name: {{ include "celery.fullname" . }}-{{ $node.name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: secrets-store-inline

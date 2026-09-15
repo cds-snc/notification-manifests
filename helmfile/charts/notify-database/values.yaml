@@ -5,7 +5,7 @@ image:
   repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: ""
 
 ttlSecondsAfterFinished: 34560
 
