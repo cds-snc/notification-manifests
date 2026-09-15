@@ -33,17 +33,22 @@ jobs:
         # PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG
       # SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG
       # SYSTEM_STATUS_DOCKER_TAG
-      - name: Update the docker tag in staging.env
+      - name: Update the docker tag in staging.env and dev.env
         run: |
-          echo "Updating docker tag in staging.env"
+          echo "Updating docker tag in staging.env and dev.env"
           if [ "${{ github.event.action }}" = "update-lambda-image-tags" ]; then
-            for component in BLAZER GOOGLE_CIDR HEARTBEAT PINPOINT_TO_SQS_SMS_CALLBACKS SYSTEM_STATUS SES_TO_SQS_EMAIL_CALLBACKS; do
-              sed -i 's/^'"$component"'_DOCKER_TAG:.*/'"$component"'_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/staging.env
+            for component in BLAZER GOOGLE_CIDR HEARTBEAT PINPOINT_TO_SQS_SMS_CALLBACKS SES_RECEIVING_EMAILS SNS_TO_SQS_SMS_CALLBACKS SYSTEM_STATUS SES_TO_SQS_EMAIL_CALLBACKS; do
+              for file in helmfile/overrides/staging.env helmfile/overrides/dev.env; do
+                sed -i 's/^'"$component"'_DOCKER_TAG:.*/'"$component"'_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' "$file"
+              done
             done
           else
-            sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' helmfile/overrides/staging.env
+            for file in helmfile/overrides/staging.env helmfile/overrides/dev.env; do
+              sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' "$file"
+            done
           fi
           cat helmfile/overrides/staging.env
+          cat helmfile/overrides/dev.env
 
       - name: Branch protection OFF
         uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
@@ -69,7 +74,9 @@ jobs:
           github-token: ${{ env.GITHUB_TOKEN }}
           branch: main
           commit-message: "Update ${{ github.event.client_payload.component }} docker image tag to ${{ github.event.client_payload.docker_tag }}"
-          files: helmfile/overrides/staging.env
+          files: |
+            helmfile/overrides/staging.env
+            helmfile/overrides/dev.env
 
       - name: Branch protection ON
         if: always()

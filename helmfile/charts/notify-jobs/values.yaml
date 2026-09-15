@@ -1,7 +1,7 @@
 image:
   repository: public.ecr.aws/cds-snc/notify-api
   pullPolicy: Always
-  tag: "latest"
+  tag: ""
 
 nameOverride: ""
 fullnameOverride: ""
