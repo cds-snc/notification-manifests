@@ -23,6 +23,11 @@ for dashboard_file in "$DASHBOARDS_ROOT"/*/dashboard.json; do
   dashboard_name="$(basename "$(dirname "$dashboard_file")")"
   echo "Importing dashboard: $dashboard_name"
 
+  dashboard_title="$(jq -r '.title // empty' "$dashboard_file")"
+  if [ -z "$dashboard_title" ]; then
+    dashboard_title="$dashboard_name"
+  fi
+
   dashboard_uuid="$(jq -r '.uuid // empty' "$dashboard_file")"
   if [ -z "$dashboard_uuid" ] || [ "$dashboard_uuid" = "null" ]; then
     echo "✗ Skipping dashboard '$dashboard_name': missing uuid in JSON"
@@ -33,25 +38,21 @@ for dashboard_file in "$DASHBOARDS_ROOT"/*/dashboard.json; do
 
   all_dashboards="$(curl -s \
     -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
-    "${SIGNOZ_URL%/}/api/v1/dashboards")"
+    "${SIGNOZ_URL%/}/api/v2/dashboards?limit=200")"
 
-  dashboard_id="$(echo "$all_dashboards" | jq -r --arg uuid "$dashboard_uuid" \
-    '.data[]? | select(.data.uuid == $uuid) | .id' | head -n1)"
+  dashboard_id="$(echo "$all_dashboards" | jq -r --arg title "$dashboard_title" \
+    '.data.dashboards[]? | select((.spec.display.name // .name) == $title) | .id' | head -n1)"
 
   if [ -n "$dashboard_id" ]; then
-    echo "Dashboard already exists (ID: $dashboard_id) - updating..."
-    response="$(curl -s -w "\n%{http_code}" -X PUT \
-      -H "Content-Type: application/json" \
-      -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
-      --data-binary "@$dashboard_file" \
-      "${SIGNOZ_URL%/}/api/v1/dashboards/$dashboard_id")"
+    echo "Dashboard already exists (ID: $dashboard_id) - skipping"
+    continue
   else
     echo "Dashboard does not exist - creating..."
     response="$(curl -s -w "\n%{http_code}" -X POST \
       -H "Content-Type: application/json" \
       -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
       --data-binary "@$dashboard_file" \
-      "${SIGNOZ_URL%/}/api/v1/dashboards")"
+      "${SIGNOZ_URL%/}/api/v2/dashboards")"
   fi
 
   http_code="$(echo "$response" | tail -n1)"
