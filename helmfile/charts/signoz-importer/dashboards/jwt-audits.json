@@ -1,0 +1,214 @@
+{
+  "description": "JWT authentication and authorization audit events for investigating token validation and authorization failures.",
+  "layout": [
+    { "h": 4, "i": "jwt-total", "moved": false, "static": false, "w": 3, "x": 0, "y": 0 },
+    { "h": 4, "i": "jwt-success", "moved": false, "static": false, "w": 3, "x": 3, "y": 0 },
+    { "h": 4, "i": "jwt-validation-failed", "moved": false, "static": false, "w": 3, "x": 6, "y": 0 },
+    { "h": 4, "i": "jwt-authorization-failed", "moved": false, "static": false, "w": 3, "x": 9, "y": 0 },
+    { "h": 10, "i": "jwt-unsuccessful-events", "moved": false, "static": false, "w": 12, "x": 0, "y": 4 }
+  ],
+  "name": "",
+  "panelMap": {},
+  "tags": ["jwt", "security", "logs"],
+  "title": "JWT Token Audits",
+  "uploadedGrafana": false,
+  "variables": {},
+  "version": "v5",
+  "widgets": [
+    {
+      "description": "All JWT audit events recorded in the selected time range.",
+      "id": "jwt-total",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "value",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "logs",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "body = 'JWT audit event'" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "jwt-total-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Total JWT Audit Events",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Successfully validated JWT audit events.",
+      "id": "jwt-success",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "value",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "logs",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "body = 'JWT audit event' AND event = 'jwt.validated'" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "jwt-success-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Successful JWT Audit Events",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "JWT validation failures, including empty or otherwise invalid tokens.",
+      "id": "jwt-validation-failed",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "value",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "logs",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "body = 'JWT audit event' AND event LIKE 'jwt.validation%'" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "jwt-validation-failed-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "JWT Validation Failed",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "JWT authorization failures after token validation.",
+      "id": "jwt-authorization-failed",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "value",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "logs",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "body = 'JWT audit event' AND event LIKE 'jwt.authorization%'" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "jwt-authorization-failed-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "JWT Authorization Failed",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Detailed unsuccessful JWT audit events. Grouped records retain the request and token context needed for investigation.",
+      "id": "jwt-unsuccessful-events",
+      "isStacked": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "panelTypes": "table",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "logs",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "body = 'JWT audit event' AND event != 'jwt.validated'" },
+              "groupBy": [
+                { "dataType": "string", "id": "event--string--tag--false", "isColumn": false, "isJSON": false, "key": "event", "type": "tag" },
+                { "dataType": "string", "id": "timestamp--string--tag--false", "isColumn": false, "isJSON": false, "key": "timestamp", "type": "tag" },
+                { "dataType": "string", "id": "endpoint--string--tag--false", "isColumn": false, "isJSON": false, "key": "endpoint", "type": "tag" },
+                { "dataType": "string", "id": "method--string--tag--false", "isColumn": false, "isJSON": false, "key": "method", "type": "tag" },
+                { "dataType": "string", "id": "path--string--tag--false", "isColumn": false, "isJSON": false, "key": "path", "type": "tag" },
+                { "dataType": "string", "id": "source-ip--string--tag--false", "isColumn": false, "isJSON": false, "key": "source_ip", "type": "tag" },
+                { "dataType": "string", "id": "api-key-id--string--tag--false", "isColumn": false, "isJSON": false, "key": "api_key_id", "type": "tag" },
+                { "dataType": "string", "id": "request-id--string--tag--false", "isColumn": false, "isJSON": false, "key": "request_id", "type": "tag" },
+                { "dataType": "string", "id": "trace-id--string--tag--false", "isColumn": false, "isJSON": false, "key": "trace_id", "type": "tag" }
+              ],
+              "having": { "expression": "" },
+              "legend": "Unsuccessful JWT events",
+              "limit": 100,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "jwt-unsuccessful-events-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "GLOBAL_TIME",
+      "title": "Unsuccessful JWT Events",
+      "yAxisUnit": "none"
+    }
+  ]
+}
