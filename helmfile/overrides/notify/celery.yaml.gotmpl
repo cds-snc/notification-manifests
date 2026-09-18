@@ -25,8 +25,10 @@ celeryCommon:
   REPORTS_BUCKET_NAME: "{{ .Release.Namespace }}-{{ .Environment.Name }}-reports"
   # NON-ENVIRONMENT SPECIFIC VARIABLES
   AWS_PINPOINT_REGION: "us-west-2"
+  AWS_DEDICATED_LONG_CODES_REGION: "us-west-2"
+  AWS_TOLL_FREE_REGION: "{{ if eq .Environment.Name "staging" }}ca-central-1{{ else }}us-west-2{{ end }}"
   NOTIFICATION_QUEUE_PREFIX: "eks-notification-canada-ca"
-  AWS_US_TOLL_FREE_NUMBER: "+18449261787"
+  AWS_US_TOLL_FREE_NUMBER: "{{ if eq .Environment.Name "staging" }}+18444939430{{ else }}+18449261787{{ end }}"
   AWS_XRAY_DAEMON_ADDRESS: "xray-daemon-aws-xray.xray.svc.cluster.local:2000"
   BATCH_INSERTION_CHUNK_SIZE: "10"
   CELERY_CONCURRENCY: "4"
