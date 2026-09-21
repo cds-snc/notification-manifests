@@ -17,24 +17,23 @@ while true; do
   if [ "$status" -eq 0 ]; then
     rm -f "$log_file"
     break
+  elif tr '\n' ' ' < "$log_file" | grep -Eq "$retry_pattern" && [ "$attempt" -lt "$RETRY_ATTEMPTS" ]; then
+    should_retry=1
+    attempt=$((attempt + 1))
+  else
+    should_retry=0
   fi
 
-  if ! tr '\n' ' ' < "$log_file" | grep -Eq "$retry_pattern"; then
-    rm -f "$log_file"
-    popd >/dev/null
-    exit "$status"
-  fi
-
-  if [ "$attempt" -ge "$RETRY_ATTEMPTS" ]; then
-    rm -f "$log_file"
-    popd >/dev/null
-    exit "$status"
-  fi
-
-  attempt=$((attempt + 1))
-  echo "Helmfile command failed, retrying in ${RETRY_DELAY_SECONDS} seconds (attempt ${attempt}/${RETRY_ATTEMPTS})..."
-  sleep "$RETRY_DELAY_SECONDS"
   rm -f "$log_file"
+
+  if [ "$should_retry" -eq 1 ]; then
+    echo "Helmfile command failed, retrying in ${RETRY_DELAY_SECONDS} seconds (attempt ${attempt}/${RETRY_ATTEMPTS})..."
+    sleep "$RETRY_DELAY_SECONDS"
+    continue
+  fi
+
+  popd >/dev/null
+  exit "$status"
 done
 
 popd >/dev/null
