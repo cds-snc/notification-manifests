@@ -42,7 +42,7 @@ runs:
             break
           fi
 
-          if ! tr '\n' ' ' < "$log_file" | grep -Eiq 'error:.*failed to .*fetch .*((504 )?gateway timeout|tls handshake timeout|connection reset by peer|i/o timeout)'; then
+          if ! tr '\n' ' ' < "$log_file" | grep -Eq '(Error:|error:).*(Failed to|failed to).*(fetch|Fetch) .*((504 )?Gateway Timeout|(504 )?gateway timeout|TLS handshake timeout|tls handshake timeout|connection reset by peer|i/o timeout)'; then
             rm -f "$log_file"
             popd
             exit "$status"
