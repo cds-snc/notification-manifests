@@ -8,10 +8,11 @@ run_case() {
   local scenario=$1
   local expected_status=$2
   local expected_calls=$3
+  local helmfile_directory=${4:-helmfile}
 
   local temp_dir
   temp_dir=$(mktemp -d)
-  mkdir -p "$temp_dir/bin" "$temp_dir/helmfile"
+  mkdir -p "$temp_dir/bin" "$temp_dir/$helmfile_directory"
 
   cat > "$temp_dir/bin/helmfile" <<'EOF'
 #!/usr/bin/env bash
@@ -62,6 +63,7 @@ EOF
     export TEST_SCENARIO="$scenario"
     export HELMFILE_ENVIRONMENT=staging
     export HELMFILE_SELECTOR='app!=notify-database,tier!=crd'
+    export HELMFILE_DIRECTORY="$helmfile_directory"
     export RETRY_ATTEMPTS=2
     export RETRY_DELAY_SECONDS=0
     bash "$SCRIPT_UNDER_TEST"
@@ -87,5 +89,6 @@ EOF
 run_case retry_then_success 0 2
 run_case lowercase_fetch_timeout 0 2
 run_case deterministic_failure 1 1
+run_case retry_then_success 0 2 custom-helmfile
 
 echo "helmfile apply retry tests passed"

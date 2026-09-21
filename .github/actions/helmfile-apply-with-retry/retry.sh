@@ -5,6 +5,19 @@ retry_pattern='((Error:|error:).*(Failed to|failed to).*(fetch|Fetch)|failed to 
 
 helmfile_directory="${HELMFILE_DIRECTORY:-helmfile}"
 
+is_retryable_failure() {
+  python - "$1" "$retry_pattern" <<'PY'
+import pathlib
+import re
+import sys
+
+log_path = pathlib.Path(sys.argv[1])
+pattern = sys.argv[2]
+text = log_path.read_text().replace("\n", " ")
+raise SystemExit(0 if re.search(pattern, text) else 1)
+PY
+}
+
 pushd "$helmfile_directory" >/dev/null
 
 attempt=1
@@ -19,7 +32,7 @@ while true; do
   if [ "$status" -eq 0 ]; then
     rm -f "$log_file"
     break
-  elif tr '\n' ' ' < "$log_file" | grep -Eq "$retry_pattern" && [ "$attempt" -lt "$RETRY_ATTEMPTS" ]; then
+  elif is_retryable_failure "$log_file" && [ "$attempt" -lt "$RETRY_ATTEMPTS" ]; then
     should_retry=1
     attempt=$((attempt + 1))
   else
