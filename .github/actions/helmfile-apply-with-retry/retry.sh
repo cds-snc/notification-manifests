@@ -13,7 +13,7 @@ import sys
 
 log_path = pathlib.Path(sys.argv[1])
 pattern = sys.argv[2]
-text = log_path.read_text().replace("\n", " ")
+text = log_path.read_text(encoding="utf-8", errors="replace").replace("\n", " ")
 raise SystemExit(0 if re.search(pattern, text) else 1)
 PY
 }
