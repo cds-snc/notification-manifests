@@ -30,15 +30,34 @@ runs:
         pushd helmfile
 
         attempt=1
-        until helmfile --environment "$HELMFILE_ENVIRONMENT" -l "$HELMFILE_SELECTOR" apply; do
-          if [ "$attempt" -ge "$RETRY_ATTEMPTS" ]; then
+        while true; do
+          log_file=$(mktemp)
+          set +e
+          helmfile --environment "$HELMFILE_ENVIRONMENT" -l "$HELMFILE_SELECTOR" apply 2>&1 | tee "$log_file"
+          status=${PIPESTATUS[0]}
+          set -e
+
+          if [ "$status" -eq 0 ]; then
+            rm -f "$log_file"
+            break
+          fi
+
+          if ! grep -Eiq 'failed to fetch|gateway timeout|tls handshake timeout|connection reset by peer|i/o timeout' "$log_file"; then
+            rm -f "$log_file"
             popd
-            exit 1
+            exit "$status"
+          fi
+
+          if [ "$attempt" -ge "$RETRY_ATTEMPTS" ]; then
+            rm -f "$log_file"
+            popd
+            exit "$status"
           fi
 
           attempt=$((attempt + 1))
           echo "Helmfile command failed, retrying in ${RETRY_DELAY_SECONDS} seconds (attempt ${attempt}/${RETRY_ATTEMPTS})..."
           sleep "$RETRY_DELAY_SECONDS"
+          rm -f "$log_file"
         done
 
         popd
