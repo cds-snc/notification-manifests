@@ -95,9 +95,25 @@ jobs:
         if: ${{ success() }}
         id: helmfile_apply
         run: |
+          retry_helmfile() {
+            local attempts=$1
+            shift
+            local attempt=1
+
+            until "$@"; do
+              if [ "$attempt" -ge "$attempts" ]; then
+                return 1
+              fi
+
+              attempt=$((attempt + 1))
+              echo "Helmfile command failed, retrying in 30 seconds (attempt ${attempt}/${attempts})..."
+              sleep 30
+            done
+          }
+
           pushd helmfile
           helmfile --environment production -l 'tier=crd' apply
-          helmfile --environment production -l 'app!=notify-database,tier!=crd' apply
+          retry_helmfile 3 helmfile --environment production -l 'app!=notify-database,tier!=crd' apply
           popd
   
       - name: Force heartbeat lambda to redeploy on environment changes
