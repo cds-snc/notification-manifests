@@ -1,0 +1,44 @@
+name: "Helmfile Apply with Retry"
+description: "Run helmfile apply and retry transient failures."
+inputs:
+  environment:
+    description: "The Helmfile environment to use (e.g., staging)."
+    required: true
+  selector:
+    description: "The Helmfile selector passed to -l."
+    required: true
+  attempts:
+    description: "How many times to try the helmfile apply command."
+    required: false
+    default: "3"
+  delay_seconds:
+    description: "How long to wait between retries."
+    required: false
+    default: "30"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Helmfile Apply
+      shell: bash
+      env:
+        HELMFILE_ENVIRONMENT: ${{ inputs.environment }}
+        HELMFILE_SELECTOR: ${{ inputs.selector }}
+        RETRY_ATTEMPTS: ${{ inputs.attempts }}
+        RETRY_DELAY_SECONDS: ${{ inputs.delay_seconds }}
+      run: |
+        pushd helmfile
+
+        attempt=1
+        until helmfile --environment "$HELMFILE_ENVIRONMENT" -l "$HELMFILE_SELECTOR" apply; do
+          if [ "$attempt" -ge "$RETRY_ATTEMPTS" ]; then
+            popd
+            exit 1
+          fi
+
+          attempt=$((attempt + 1))
+          echo "Helmfile command failed, retrying in ${RETRY_DELAY_SECONDS} seconds (attempt ${attempt}/${RETRY_ATTEMPTS})..."
+          sleep "$RETRY_DELAY_SECONDS"
+        done
+
+        popd
