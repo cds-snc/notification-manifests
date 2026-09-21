@@ -9,10 +9,14 @@ run_case() {
   local expected_status=$2
   local expected_calls=$3
   local helmfile_directory=${4:-helmfile}
+  local create_directory=${5:-yes}
 
   local temp_dir
   temp_dir=$(mktemp -d)
-  mkdir -p "$temp_dir/bin" "$temp_dir/$helmfile_directory"
+  mkdir -p "$temp_dir/bin"
+  if [ "$create_directory" = "yes" ]; then
+    mkdir -p "$temp_dir/$helmfile_directory"
+  fi
 
   cat > "$temp_dir/bin/helmfile" <<'EOF'
 #!/usr/bin/env bash
@@ -90,5 +94,6 @@ run_case retry_then_success 0 2
 run_case lowercase_fetch_timeout 0 2
 run_case deterministic_failure 1 1
 run_case retry_then_success 0 2 custom-helmfile
+run_case retry_then_success 1 0 missing-helmfile no
 
 echo "helmfile apply retry tests passed"

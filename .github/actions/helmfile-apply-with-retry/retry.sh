@@ -18,6 +18,11 @@ raise SystemExit(0 if re.search(pattern, text) else 1)
 PY
 }
 
+if [ ! -d "$helmfile_directory" ]; then
+  echo "Helmfile directory not found: $helmfile_directory" >&2
+  exit 1
+fi
+
 pushd "$helmfile_directory" >/dev/null
 
 attempt=1
