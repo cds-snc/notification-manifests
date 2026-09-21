@@ -3,7 +3,9 @@ set -euo pipefail
 
 retry_pattern='((Error:|error:).*(Failed to|failed to).*(fetch|Fetch)|failed to .*fetch) .*((504 )?Gateway Timeout|(504 )?gateway timeout|TLS handshake timeout|tls handshake timeout|connection reset by peer|i/o timeout)'
 
-pushd helmfile >/dev/null
+helmfile_directory="${HELMFILE_DIRECTORY:-helmfile}"
+
+pushd "$helmfile_directory" >/dev/null
 
 attempt=1
 while true; do

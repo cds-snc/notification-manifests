@@ -7,6 +7,10 @@ inputs:
   selector:
     description: "The Helmfile selector passed to -l."
     required: true
+  helmfile_directory:
+    description: "Path to the helmfile directory, relative to the workspace root."
+    required: false
+    default: "helmfile"
   attempts:
     description: "How many times to try the helmfile apply command."
     required: false
@@ -24,6 +28,7 @@ runs:
       env:
         HELMFILE_ENVIRONMENT: ${{ inputs.environment }}
         HELMFILE_SELECTOR: ${{ inputs.selector }}
+        HELMFILE_DIRECTORY: ${{ inputs.helmfile_directory }}
         RETRY_ATTEMPTS: ${{ inputs.attempts }}
         RETRY_DELAY_SECONDS: ${{ inputs.delay_seconds }}
       run: ./.github/actions/helmfile-apply-with-retry/retry.sh
