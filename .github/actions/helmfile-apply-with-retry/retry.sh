@@ -9,9 +9,10 @@ attempt=1
 while true; do
   log_file=$(mktemp)
   set +e
-  helmfile --environment "$HELMFILE_ENVIRONMENT" -l "$HELMFILE_SELECTOR" apply 2>&1 | tee "$log_file"
-  status=${PIPESTATUS[0]}
+  helmfile --environment "$HELMFILE_ENVIRONMENT" -l "$HELMFILE_SELECTOR" apply >"$log_file" 2>&1
+  status=$?
   set -e
+  cat "$log_file"
 
   if [ "$status" -eq 0 ]; then
     rm -f "$log_file"
