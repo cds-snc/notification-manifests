@@ -41,11 +41,7 @@ jobs:
           if [ "${{ github.event.action }}" = "update-lambda-image-tags" ]; then
             for component in BLAZER GOOGLE_CIDR HEARTBEAT SES_RECEIVING_EMAILS SNS_TO_SQS_SMS_CALLBACKS PINPOINT_TO_SQS_SMS_CALLBACKS SYSTEM_STATUS SES_TO_SQS_EMAIL_CALLBACKS; do
               for file in helmfile/overrides/staging.env helmfile/overrides/dev.env; do
-                if grep -q "^${component}_DOCKER_TAG:" "$file"; then
-                  sed -i 's/^'"$component"'_DOCKER_TAG:.*/'"$component"'_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' "$file"
-                else
-                  printf '%s\n' "${component}_DOCKER_TAG: \"${{ github.event.client_payload.docker_tag }}\"" >> "$file"
-                fi
+                sed -i 's/^'"$component"'_DOCKER_TAG:.*/'"$component"'_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' "$file"
               done
             done
           else
