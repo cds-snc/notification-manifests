@@ -11,9 +11,9 @@ on:
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
   # Legacy release-bot compatibility. The deploy steps below use production.env instead.
-  HEARTBEAT_IMAGE: heartbeat:9303312
-  SYSTEM_STATUS_IMAGE: system_status:9303312
-  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:9303312
+  HEARTBEAT_IMAGE: heartbeat:e77261f
+  SYSTEM_STATUS_IMAGE: system_status:e77261f
+  SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:e77261f
   ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
   AWS_DEFAULT_REGION: ca-central-1
 
