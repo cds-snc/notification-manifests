@@ -86,11 +86,8 @@ jobs:
       - name: Read Lambda image tags from staging.env
         id: lambda-image-tags
         run: |
-          curl --fail --silent --show-error \
-            --output staging.env \
-            https://raw.githubusercontent.com/cds-snc/notification-manifests/main/helmfile/overrides/staging.env
           for key in HEARTBEAT_DOCKER_TAG SYSTEM_STATUS_DOCKER_TAG SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG; do
-            value="$(sed -n "s/^${key}:[[:space:]]*\"\([^\"]*\)\"/\1/p" staging.env)"
+            value="$(sed -n "s/^${key}:[[:space:]]*\"\([^\"]*\)\"/\1/p" helmfile/overrides/staging.env)"
             test -n "$value"
             test "$value" != "latest"
             test "$value" != "bootstrap"
