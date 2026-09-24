@@ -10,6 +10,7 @@ on:
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
+  # Legacy release-bot compatibility. The deploy steps below use production.env instead.
   HEARTBEAT_IMAGE: heartbeat:e77261f
   SYSTEM_STATUS_IMAGE: system_status:e77261f
   SES_TO_SQS_EMAIL_CALLBACKS_IMAGE: ses_to_sqs_email_callbacks:e77261f
@@ -83,6 +84,17 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
 
+      - name: Read Lambda image tags from production.env
+        id: lambda-image-tags
+        run: |
+          for key in HEARTBEAT_DOCKER_TAG SYSTEM_STATUS_DOCKER_TAG SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG; do
+            value="$(sed -n "s/^${key}:[[:space:]]*\"\([^\"]*\)\"/\1/p" helmfile/overrides/production.env)"
+            test -n "$value"
+            test "$value" != "latest"
+            test "$value" != "bootstrap"
+            echo "${key}=${value}" >> "$GITHUB_OUTPUT"
+          done
+
       - name: Run Database Upgrade Helmfile Sync
         uses: ./.github/actions/db-migration
         with:
@@ -106,7 +118,7 @@ jobs:
         with:
           alias-name: latest
           function-name: heartbeat
-          image-uri: $PRIVATE_ECR/$HEARTBEAT_IMAGE
+          image-uri: $PRIVATE_ECR/heartbeat:${{ steps.lambda-image-tags.outputs.HEARTBEAT_DOCKER_TAG }}
 
       - name: Force system_status to redeploy on environment changes
         if: ${{ success() }}
@@ -114,7 +126,7 @@ jobs:
         with:
           alias-name: latest
           function-name: system_status
-          image-uri: $PRIVATE_ECR/$SYSTEM_STATUS_IMAGE
+          image-uri: $PRIVATE_ECR/system_status:${{ steps.lambda-image-tags.outputs.SYSTEM_STATUS_DOCKER_TAG }}
 
       - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
         if: ${{ success() }}
@@ -122,7 +134,7 @@ jobs:
         with:
           alias-name: latest
           function-name: ses_to_sqs_email_callbacks
-          image-uri: $PRIVATE_ECR/$SES_TO_SQS_EMAIL_CALLBACKS_IMAGE
+          image-uri: $PRIVATE_ECR/ses_to_sqs_email_callbacks:${{ steps.lambda-image-tags.outputs.SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG }}
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
