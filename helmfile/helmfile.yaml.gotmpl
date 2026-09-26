@@ -218,7 +218,7 @@ releases:
       category: system
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 3.1.2
+    version: 3.1.4
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
@@ -230,7 +230,7 @@ releases:
       category: system
       step: 1
     chart: stakater/reloader
-    version: 2.2.16
+    version: 2.2.17
     values:
     - ./overrides/system/reloader.yaml.gotmpl
 
@@ -321,7 +321,7 @@ releases:
       category: tools
       step: 1
     chart: fluent/fluent-bit
-    version: 0.58.1
+    version: 0.58.2
     values:
     - ./overrides/system/fluentbit-agent.yaml.gotmpl
 
@@ -333,7 +333,7 @@ releases:
       category: system
       step: 2
     chart: jetstack/cert-manager
-    version: v1.21.1
+    version: v1.21.2
     values:
     - ./overrides/system/cert-manager.yaml.gotmpl
 
@@ -543,7 +543,7 @@ releases:
 
   - name: signoz-k8s
     namespace: signoz
-    version: 0.17.0
+    version: 0.17.1
     disableValidationOnInstall: true
     labels:
       app: signoz-k8s
