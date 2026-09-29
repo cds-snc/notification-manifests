@@ -83,6 +83,7 @@ jobs:
 
       - name: Login to Amazon ECR Public
         run: |
+          set -o pipefail
           aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
              
       - name: Run Database Upgrade Helmfile Sync

@@ -85,6 +85,7 @@ jobs:
 
       - name: Login to Amazon ECR Public
         run: |
+          set -o pipefail
           aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
 
       - name: Read Lambda image tags from production.env
