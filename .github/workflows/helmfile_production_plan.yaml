@@ -67,6 +67,10 @@ jobs:
         run: |
             ./helmfile/getContext.sh -g
 
+      - name: Login to Amazon ECR Public
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
+
       - name: Helmfile Diff
         id: helmfile_diff
         run: |
