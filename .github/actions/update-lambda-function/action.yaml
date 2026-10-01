@@ -7,6 +7,10 @@ inputs:
   function-name:
     description: Name of the function to update
     required: true
+  aws-region:
+    description: AWS Region where the Lambda function and image are located
+    default: ca-central-1
+    required: false
   image-uri:
     description: Image tag to update the function with (if not specified, only the lambda description is updated to trigger a reload)
     default: ''
@@ -21,6 +25,7 @@ runs:
       shell: bash
       run: |
         aws lambda update-function-code \
+          --region ${{ inputs.aws-region }} \
           --function-name ${{ inputs.function-name }} \
           --image-uri ${{ inputs.image-uri }} > /dev/null 2>&1
 
@@ -29,16 +34,22 @@ runs:
       shell: bash
       run: |
         aws lambda update-function-configuration \
+          --region ${{ inputs.aws-region }} \
           --function-name ${{ inputs.function-name }} \
           --description $(date -u +"%Y-%m-%dT%H:%M:%SZ") > /dev/null 2>&1
 
     - name: Publish version and update alias
       shell: bash
       run: |
-        aws lambda wait function-updated --function-name ${{ inputs.function-name }}
-        VERSION="$(aws lambda publish-version --function-name ${{ inputs.function-name }} | jq -r '.Version')"
+        aws lambda wait function-updated \
+          --region ${{ inputs.aws-region }} \
+          --function-name ${{ inputs.function-name }}
+        VERSION="$(aws lambda publish-version \
+          --region ${{ inputs.aws-region }} \
+          --function-name ${{ inputs.function-name }} | jq -r '.Version')"
 
         aws lambda update-alias \
+          --region ${{ inputs.aws-region }} \
           --function-name ${{ inputs.function-name }} \
           --name ${{ inputs.alias-name }} \
           --function-version "$VERSION" > /dev/null 2>&1
