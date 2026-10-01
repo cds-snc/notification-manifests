@@ -122,7 +122,7 @@ jobs:
         with:
           alias-name: latest
           function-name: heartbeat
-          image-uri: "$PRIVATE_ECR/heartbeat:${{ steps.lambda-image-tags.outputs.HEARTBEAT_DOCKER_TAG }}"
+          image-uri: $PRIVATE_ECR/heartbeat:${{ steps.lambda-image-tags.outputs.HEARTBEAT_DOCKER_TAG }}
 
       - name: Force system_status to redeploy on environment changes
         if: ${{ success() }}
@@ -130,7 +130,7 @@ jobs:
         with:
           alias-name: latest
           function-name: system_status
-          image-uri: "$PRIVATE_ECR/system_status:${{ steps.lambda-image-tags.outputs.SYSTEM_STATUS_DOCKER_TAG }}"
+          image-uri: $PRIVATE_ECR/system_status:${{ steps.lambda-image-tags.outputs.SYSTEM_STATUS_DOCKER_TAG }}
 
       - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
         if: ${{ success() }}
@@ -138,7 +138,7 @@ jobs:
         with:
           alias-name: latest
           function-name: ses_to_sqs_email_callbacks
-          image-uri: "$PRIVATE_ECR/ses_to_sqs_email_callbacks:${{ steps.lambda-image-tags.outputs.SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG }}"
+          image-uri: $PRIVATE_ECR/ses_to_sqs_email_callbacks:${{ steps.lambda-image-tags.outputs.SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG }}
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
