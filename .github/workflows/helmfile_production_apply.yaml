@@ -190,6 +190,7 @@ jobs:
         run: |
           aws ecs describe-task-definition \
             --task-definition blazer \
+            --include TAGS \
             --query taskDefinition \
             --output json > /tmp/blazer-task-definition.json
 
