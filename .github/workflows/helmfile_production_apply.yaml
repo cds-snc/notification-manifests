@@ -7,7 +7,6 @@ on:
       - main
     paths:
       - "VERSION"
-      - "helmfile/overrides/production.env"
 
 env:
   PRIVATE_ECR: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/notify
@@ -92,7 +91,7 @@ jobs:
       - name: Read Lambda image tags from production.env
         id: lambda-image-tags
         run: |
-          for key in BLAZER_DOCKER_TAG GOOGLE_CIDR_DOCKER_TAG HEARTBEAT_DOCKER_TAG PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG SES_RECEIVING_EMAILS_DOCKER_TAG SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG SNS_TO_SQS_SMS_CALLBACKS_DOCKER_TAG SYSTEM_STATUS_DOCKER_TAG; do
+          for key in HEARTBEAT_DOCKER_TAG SYSTEM_STATUS_DOCKER_TAG SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG; do
             value="$(sed -n "s/^${key}:[[:space:]]*\"\([^\"]*\)\"/\1/p" helmfile/overrides/production.env)"
             test -n "$value"
             test "$value" != "latest"
@@ -123,7 +122,7 @@ jobs:
         with:
           alias-name: latest
           function-name: heartbeat
-          image-uri: "$PRIVATE_ECR/heartbeat:${{ steps.lambda-image-tags.outputs.HEARTBEAT_DOCKER_TAG }}"
+          image-uri: $PRIVATE_ECR/heartbeat:${{ steps.lambda-image-tags.outputs.HEARTBEAT_DOCKER_TAG }}
 
       - name: Force system_status to redeploy on environment changes
         if: ${{ success() }}
@@ -131,7 +130,7 @@ jobs:
         with:
           alias-name: latest
           function-name: system_status
-          image-uri: "$PRIVATE_ECR/system_status:${{ steps.lambda-image-tags.outputs.SYSTEM_STATUS_DOCKER_TAG }}"
+          image-uri: $PRIVATE_ECR/system_status:${{ steps.lambda-image-tags.outputs.SYSTEM_STATUS_DOCKER_TAG }}
 
       - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
         if: ${{ success() }}
@@ -139,78 +138,7 @@ jobs:
         with:
           alias-name: latest
           function-name: ses_to_sqs_email_callbacks
-          image-uri: "$PRIVATE_ECR/ses_to_sqs_email_callbacks:${{ steps.lambda-image-tags.outputs.SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG }}"
-
-      - name: Force google-cidr to redeploy on environment changes
-        if: ${{ success() }}
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: google-cidr
-          image-uri: "${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/lambda/google-cidr:${{ steps.lambda-image-tags.outputs.GOOGLE_CIDR_DOCKER_TAG }}"
-
-      - name: Force sns_to_sqs_sms_callbacks to redeploy on environment changes
-        if: ${{ success() }}
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: sns_to_sqs_sms_callbacks
-          image-uri: "$PRIVATE_ECR/sns_to_sqs_sms_callbacks:${{ steps.lambda-image-tags.outputs.SNS_TO_SQS_SMS_CALLBACKS_DOCKER_TAG }}"
-
-      - name: Force pinpoint_to_sqs_sms_callbacks to redeploy on environment changes
-        if: ${{ success() }}
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: pinpoint_to_sqs_sms_callbacks
-          image-uri: "$PRIVATE_ECR/pinpoint_to_sqs_sms_callbacks:${{ steps.lambda-image-tags.outputs.PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG }}"
-
-      - name: Force pinpoint_to_sqs_sms_callbacks_us_west_2 to redeploy on environment changes
-        if: ${{ success() }}
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: pinpoint_to_sqs_sms_callbacks_us_west_2
-          aws-region: us-west-2
-          image-uri: "${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/notify/pinpoint_to_sqs_sms_callbacks:${{ steps.lambda-image-tags.outputs.PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG }}"
-
-      - name: Force ses_receiving_emails to redeploy on environment changes
-        if: ${{ success() }}
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: ses_receiving_emails
-          aws-region: us-east-1
-          image-uri: "${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/notify/ses_receiving_emails:${{ steps.lambda-image-tags.outputs.SES_RECEIVING_EMAILS_DOCKER_TAG }}"
-
-      - name: Update Blazer ECS service image
-        if: ${{ success() }}
-        env:
-          BLAZER_IMAGE_URI: "${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/database-tools/blazer:${{ steps.lambda-image-tags.outputs.BLAZER_DOCKER_TAG }}"
-        run: |
-          aws ecs describe-task-definition \
-            --task-definition blazer \
-            --include TAGS \
-            --query taskDefinition \
-            --output json > /tmp/blazer-task-definition.json
-
-          jq --arg image "$BLAZER_IMAGE_URI" '
-            .containerDefinitions |= map(
-              if .name == "blazer" then .image = $image else . end
-            )
-            | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)
-          ' /tmp/blazer-task-definition.json > /tmp/blazer-task-definition-register.json
-
-          task_definition_arn="$(aws ecs register-task-definition \
-            --cli-input-json file:///tmp/blazer-task-definition-register.json \
-            --query 'taskDefinition.taskDefinitionArn' \
-            --output text)"
-
-          aws ecs update-service \
-            --cluster blazer \
-            --service blazer \
-            --task-definition "$task_definition_arn" >/dev/null
-          aws ecs wait services-stable --cluster blazer --services blazer
+          image-uri: $PRIVATE_ECR/ses_to_sqs_email_callbacks:${{ steps.lambda-image-tags.outputs.SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG }}
 
       - name: Notify Slack channel if this job failed
         if: ${{ failure() }}
