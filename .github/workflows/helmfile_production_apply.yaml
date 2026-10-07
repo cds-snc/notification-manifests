@@ -32,6 +32,15 @@ jobs:
   helmfile-apply:
     needs: pre-apply-snapshot
     runs-on: ubuntu-latest
+    outputs:
+      BLAZER_DOCKER_TAG: ${{ steps.lambda-image-tags.outputs.BLAZER_DOCKER_TAG }}
+      GOOGLE_CIDR_DOCKER_TAG: ${{ steps.lambda-image-tags.outputs.GOOGLE_CIDR_DOCKER_TAG }}
+      HEARTBEAT_DOCKER_TAG: ${{ steps.lambda-image-tags.outputs.HEARTBEAT_DOCKER_TAG }}
+      PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG: ${{ steps.lambda-image-tags.outputs.PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG }}
+      SES_RECEIVING_EMAILS_DOCKER_TAG: ${{ steps.lambda-image-tags.outputs.SES_RECEIVING_EMAILS_DOCKER_TAG }}
+      SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG: ${{ steps.lambda-image-tags.outputs.SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG }}
+      SNS_TO_SQS_SMS_CALLBACKS_DOCKER_TAG: ${{ steps.lambda-image-tags.outputs.SNS_TO_SQS_SMS_CALLBACKS_DOCKER_TAG }}
+      SYSTEM_STATUS_DOCKER_TAG: ${{ steps.lambda-image-tags.outputs.SYSTEM_STATUS_DOCKER_TAG }}
     steps:
 
       - name: Inject token authentication
@@ -91,7 +100,7 @@ jobs:
       - name: Read Lambda image tags from production.env
         id: lambda-image-tags
         run: |
-          for key in HEARTBEAT_DOCKER_TAG SYSTEM_STATUS_DOCKER_TAG SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG; do
+          for key in BLAZER_DOCKER_TAG GOOGLE_CIDR_DOCKER_TAG HEARTBEAT_DOCKER_TAG PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG SES_RECEIVING_EMAILS_DOCKER_TAG SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG SNS_TO_SQS_SMS_CALLBACKS_DOCKER_TAG SYSTEM_STATUS_DOCKER_TAG; do
             value="$(sed -n "s/^${key}:[[:space:]]*\"\([^\"]*\)\"/\1/p" helmfile/overrides/production.env)"
             test -n "$value"
             test "$value" != "latest"
@@ -115,40 +124,117 @@ jobs:
           helmfile --environment production -l 'tier=crd' apply
           helmfile --environment production -l 'app!=notify-database,tier!=crd' apply
           popd
-  
-      - name: Force heartbeat lambda to redeploy on environment changes
-        if: ${{ success() }}
+
+  lambda-deploy:
+    needs: helmfile-apply
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - function_name: heartbeat
+            image: notify/heartbeat
+            region: ca-central-1
+            tag_key: HEARTBEAT_DOCKER_TAG
+          - function_name: system_status
+            image: notify/system_status
+            region: ca-central-1
+            tag_key: SYSTEM_STATUS_DOCKER_TAG
+          - function_name: ses_to_sqs_email_callbacks
+            image: notify/ses_to_sqs_email_callbacks
+            region: ca-central-1
+            tag_key: SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG
+          - function_name: google-cidr
+            image: lambda/google-cidr
+            region: ca-central-1
+            tag_key: GOOGLE_CIDR_DOCKER_TAG
+          - function_name: sns_to_sqs_sms_callbacks
+            image: notify/sns_to_sqs_sms_callbacks
+            region: ca-central-1
+            tag_key: SNS_TO_SQS_SMS_CALLBACKS_DOCKER_TAG
+          - function_name: pinpoint_to_sqs_sms_callbacks
+            image: notify/pinpoint_to_sqs_sms_callbacks
+            region: ca-central-1
+            tag_key: PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG
+          - function_name: pinpoint_to_sqs_sms_callbacks_us_west_2
+            image: notify/pinpoint_to_sqs_sms_callbacks
+            region: us-west-2
+            tag_key: PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG
+          - function_name: ses_receiving_emails
+            image: notify/ses_receiving_emails
+            region: us-east-1
+            tag_key: SES_RECEIVING_EMAILS_DOCKER_TAG
+    steps:
+      - name: Configure credentials to Notify using OIDC
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-manifests-helmfile-production-apply
+          role-session-name: NotifyManifestsApply
+          aws-region: ${{ matrix.region }}
+
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Update Lambda image and alias
         uses: ./.github/actions/update-lambda-function
         with:
           alias-name: latest
-          function-name: heartbeat
-          image-uri: $PRIVATE_ECR/heartbeat:${{ steps.lambda-image-tags.outputs.HEARTBEAT_DOCKER_TAG }}
+          function-name: ${{ matrix.function_name }}
+          aws-region: ${{ matrix.region }}
+          image-uri: "${{ env.ACCOUNT_ID }}.dkr.ecr.${{ matrix.region }}.amazonaws.com/${{ matrix.image }}:${{ needs.helmfile-apply.outputs[matrix.tag_key] }}"
 
-      - name: Force system_status to redeploy on environment changes
-        if: ${{ success() }}
-        uses: ./.github/actions/update-lambda-function
+  blazer-deploy:
+    needs: helmfile-apply
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure credentials to Notify using OIDC
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
         with:
-          alias-name: latest
-          function-name: system_status
-          image-uri: $PRIVATE_ECR/system_status:${{ steps.lambda-image-tags.outputs.SYSTEM_STATUS_DOCKER_TAG }}
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/notification-manifests-helmfile-production-apply
+          role-session-name: NotifyManifestsApply
+          aws-region: ca-central-1
 
-      - name: Force ses_to_sqs_email_callbacks to redeploy on environment changes
-        if: ${{ success() }}
-        uses: ./.github/actions/update-lambda-function
-        with:
-          alias-name: latest
-          function-name: ses_to_sqs_email_callbacks
-          image-uri: $PRIVATE_ECR/ses_to_sqs_email_callbacks:${{ steps.lambda-image-tags.outputs.SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG }}
+      - name: Update Blazer ECS service image
+        env:
+          BLAZER_IMAGE_URI: "${{ env.ACCOUNT_ID }}.dkr.ecr.ca-central-1.amazonaws.com/database-tools/blazer:${{ needs.helmfile-apply.outputs.BLAZER_DOCKER_TAG }}"
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition blazer \
+            --include TAGS \
+            --query taskDefinition \
+            --output json > /tmp/blazer-task-definition.json
 
-      - name: Notify Slack channel if this job failed
-        if: ${{ failure() }}
+          jq --arg image "$BLAZER_IMAGE_URI" '
+            .containerDefinitions |= map(
+              if .name == "blazer" then .image = $image else . end
+            )
+            | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)
+          ' /tmp/blazer-task-definition.json > /tmp/blazer-task-definition-register.json
+
+          task_definition_arn="$(aws ecs register-task-definition \
+            --cli-input-json file:///tmp/blazer-task-definition-register.json \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)"
+
+          aws ecs update-service \
+            --cluster blazer \
+            --service blazer \
+            --task-definition "$task_definition_arn" >/dev/null
+          aws ecs wait services-stable --cluster blazer --services blazer
+
+  notify-slack:
+    needs: [helmfile-apply, lambda-deploy, blazer-deploy]
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack channel if production apply failed
         run: |
           json='{"text":"<!here> Production Helmfile Apply is Failing <https://github.com/cds-snc/notification-manifests/|notification-manifests> !"}'
-          curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
-
+          curl --fail -X POST -H 'Content-type: application/json' --data "$json" "${{ secrets.SLACK_WEBHOOK }}"
 
   clear-cache:
-    needs: helmfile-apply
+    needs: [lambda-deploy, blazer-deploy]
     uses: ./.github/workflows/clear-notify-cache.yaml
     with:
       environment: production
@@ -160,7 +246,7 @@ jobs:
 
   publish-deployment:
     runs-on: ubuntu-latest
-    needs: helmfile-apply
+    needs: [lambda-deploy, blazer-deploy]
 
     steps:
       
