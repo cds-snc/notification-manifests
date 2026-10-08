@@ -27,7 +27,7 @@ runs:
         aws lambda update-function-code \
           --region ${{ inputs.aws-region }} \
           --function-name ${{ inputs.function-name }} \
-          --image-uri ${{ inputs.image-uri }} > /dev/null 2>&1
+          --image-uri ${{ inputs.image-uri }}
 
     - name: Update lambda description
       if: inputs.image-uri == ''
@@ -36,7 +36,7 @@ runs:
         aws lambda update-function-configuration \
           --region ${{ inputs.aws-region }} \
           --function-name ${{ inputs.function-name }} \
-          --description $(date -u +"%Y-%m-%dT%H:%M:%SZ") > /dev/null 2>&1
+          --description $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
     - name: Publish version and update alias
       shell: bash
@@ -52,4 +52,4 @@ runs:
           --region ${{ inputs.aws-region }} \
           --function-name ${{ inputs.function-name }} \
           --name ${{ inputs.alias-name }} \
-          --function-version "$VERSION" > /dev/null 2>&1
+          --function-version "$VERSION"
