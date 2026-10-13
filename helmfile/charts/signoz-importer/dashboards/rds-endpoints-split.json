@@ -1,0 +1,180 @@
+{
+  "spec": {
+    "display": {
+      "name": "AWS RDS Postgres (endpoints analysis)",
+      "description": "Database Metrics"
+    },
+    "variables": [],
+    "panels": {
+      "d5a4e0ae-3f3f-4bfd-ac4a-a63d35636760": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "CreateUpdateDelete statements distribution over endpoints",
+            "description": "All should be redirected to the read-write instance, as it's the only one that can handle these."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": {
+                "timePreference": "global_time",
+                "fillSpans": false
+              },
+              "formatting": {
+                "unit": "",
+                "decimalPrecision": "2"
+              },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": {
+                  "fillOnlyBelow": false,
+                  "fillLessThan": ""
+                }
+              },
+              "axes": {
+                "softMin": null,
+                "softMax": null,
+                "isLogScale": false
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list",
+                "customColors": null
+              },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "plugin": {
+                  "kind": "signoz/CompositeQuery",
+                  "spec": {
+                    "queries": [
+                      {
+                        "type": "clickhouse_sql",
+                        "spec": {
+                          "name": "A",
+                          "query": "WITH __resource_filter AS (\n    SELECT fingerprint \n    FROM signoz_traces.distributed_traces_v3_resource \n    WHERE (simpleJSONExtractString(labels, 'service.name') = 'notification-api')\n      AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp \n)\nSELECT\n    toStartOfInterval(timestamp, INTERVAL 1 MINUTE) AS ts,\n    if(attributes_string['net.peer.name'] ILIKE 'read-write-endpoint%', 'Read-Write', 'Read-Only') AS endpoint_type,\n    toFloat64(count()) AS value\nFROM signoz_traces.distributed_signoz_index_v3\nWHERE \n    resource_fingerprint GLOBAL IN __resource_filter\n    AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n    AND timestamp >= $start_datetime \n    AND timestamp <= $end_datetime\n    AND (\n        name ILIKE 'UPDATE%' \n        OR name ILIKE 'INSERT%' \n        OR name ILIKE 'DELETE%'\n    )\n    AND (attributes_string['net.peer.name'] ILIKE 'read-write-endpoint.endpoint.proxy%' OR attributes_string['net.peer.name'] ILIKE 'read-only-endpoint.endpoint.proxy%')\nGROUP BY ts, endpoint_type\nORDER BY ts ASC",
+                          "disabled": false,
+                          "legend": ""
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "links": null
+        }
+      },
+      "fd223d8d-44a5-4f4e-869a-dc06ee632779": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "SELECT statements distribution over endpoints",
+            "description": "This is useful to know if read queries are going to the read-only endpoints. Ideally, these should not go to the read-write instance."
+          },
+          "plugin": {
+            "kind": "signoz/TimeSeriesPanel",
+            "spec": {
+              "visualization": {
+                "timePreference": "global_time",
+                "fillSpans": false
+              },
+              "formatting": {
+                "unit": "",
+                "decimalPrecision": "2"
+              },
+              "chartAppearance": {
+                "lineInterpolation": "spline",
+                "showPoints": false,
+                "lineStyle": "solid",
+                "fillMode": "none",
+                "spanGaps": {
+                  "fillOnlyBelow": false,
+                  "fillLessThan": ""
+                }
+              },
+              "axes": {
+                "softMin": null,
+                "softMax": null,
+                "isLogScale": false
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list",
+                "customColors": null
+              },
+              "thresholds": null
+            }
+          },
+          "queries": [
+            {
+              "kind": "time_series",
+              "spec": {
+                "plugin": {
+                  "kind": "signoz/CompositeQuery",
+                  "spec": {
+                    "queries": [
+                      {
+                        "type": "clickhouse_sql",
+                        "spec": {
+                          "name": "A",
+                          "query": "WITH __resource_filter AS (\n    SELECT fingerprint \n    FROM signoz_traces.distributed_traces_v3_resource \n    WHERE (simpleJSONExtractString(labels, 'service.name') = 'notification-api')\n      AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp \n)\nSELECT\n    toStartOfInterval(timestamp, INTERVAL 1 MINUTE) AS ts,\n    if(attributes_string['net.peer.name'] ILIKE 'read-write-endpoint%', 'Read-Write', 'Read-Only') AS endpoint_type,\n    toFloat64(count()) AS value\nFROM signoz_traces.distributed_signoz_index_v3\nWHERE \n    resource_fingerprint GLOBAL IN __resource_filter\n    AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n    AND timestamp >= $start_datetime \n    AND timestamp <= $end_datetime\n    AND name = 'SELECT NotificationCanadaCaproduction'\n    AND (attributes_string['net.peer.name'] ILIKE 'read-write-endpoint.endpoint.proxy%' OR attributes_string['net.peer.name'] ILIKE 'read-only-endpoint.endpoint.proxy%')\nGROUP BY ts, endpoint_type\nORDER BY ts ASC",
+                          "disabled": false,
+                          "legend": ""
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "links": null
+        }
+      }
+    },
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": ""
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 6,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/fd223d8d-44a5-4f4e-869a-dc06ee632779"
+              }
+            },
+            {
+              "x": 0,
+              "y": 8,
+              "width": 6,
+              "height": 6,
+              "content": {
+                "$ref": "#/spec/panels/d5a4e0ae-3f3f-4bfd-ac4a-a63d35636760"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "duration": "",
+    "refreshInterval": "",
+    "links": null
+  },
+  "tags": [],
+  "image": "/assets/Icons/eight-ball"
+}
