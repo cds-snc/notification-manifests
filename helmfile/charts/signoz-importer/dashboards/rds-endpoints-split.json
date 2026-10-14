@@ -1,4 +1,5 @@
 {
+  "uuid": "1a4a1d3b-6d89-4b9f-b9c0-e4bd06372e0d",
   "spec": {
     "display": {
       "name": "AWS RDS Postgres (endpoints analysis)",
