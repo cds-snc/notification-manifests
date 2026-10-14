@@ -334,7 +334,7 @@ nodes:
       scaleUpPeriodSeconds: 45
     pdb:
       pdbEnabled: true
-      minAvailable: 1
+      maxUnavailable: 1
     service:
       serviceEnabled: true
 
