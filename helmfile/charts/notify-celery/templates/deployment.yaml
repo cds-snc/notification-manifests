@@ -75,7 +75,7 @@ spec:
                 command:
                 - /bin/bash
                 - -c
-                - /app/scripts/run_celery_exit.sh
+                - CELERY_TERMINATE_TIMEOUT={{ $node.deployment.celeryTerminationTimeoutSeconds | default 9 }} /app/scripts/run_celery_exit.sh
           command: ["/bin/sh"]
           args: ["-c", "{{ $node.scriptArg }}"]
           resources:
