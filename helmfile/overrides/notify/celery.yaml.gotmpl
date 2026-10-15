@@ -252,7 +252,7 @@ nodes:
     pdb:
       pdbEnabled: false
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-  jobs-burst:
+  process-jobs-burst:
     deployment:
       deploymentEnabled: true
       terminationGracePeriodSeconds: 2100
