@@ -252,6 +252,30 @@ nodes:
     pdb:
       pdbEnabled: false
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
+  jobs-burst:
+    deployment:
+      deploymentEnabled: true
+      terminationGracePeriodSeconds: 2100
+      celeryTerminationTimeoutSeconds: 2100
+      replicas: 1
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "800Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: true
+      minReplicas: 1
+      maxReplicas: 4
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 1
+      scaleUpPeriodSeconds: 45
+      stabilizationWindowSeconds: 90
+    pdb:
+      pdbEnabled: true
+      minAvailable: 1
   nightly-burst:
     deployment:
       deploymentEnabled: true
