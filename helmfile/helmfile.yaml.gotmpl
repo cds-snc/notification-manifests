@@ -371,7 +371,7 @@ releases:
       category: system
       step: 3
     chart: eks/aws-load-balancer-controller
-    version: 3.5.0
+    version: 3.6.0
     values:
     - ./overrides/system/aws-lb-controller.yaml.gotmpl    
 
@@ -506,7 +506,7 @@ releases:
 
   - name: signoz
     namespace: signoz
-    version: 0.138.0
+    version: 0.145.0
     disableValidationOnInstall: true
     labels:
       app: signoz
@@ -530,7 +530,7 @@ releases:
     - ./overrides/system/signoz.yaml.gotmpl
 
   - name: opentelemetry-operator
-    version: 0.122.0
+    version: 0.124.1
     namespace: signoz
     disableValidationOnInstall: true
     labels:
