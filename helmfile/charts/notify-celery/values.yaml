@@ -132,7 +132,7 @@ nodes:
       hpaEnabled: false
     service:
       serviceEnabled: true
-  # burst CONFIGS
+  # BURST AND ON-DEMAND CONFIGS
   # CELERY FOR CORE TASKS
   core-tasks-burst:
     name: core-tasks-burst
@@ -253,9 +253,40 @@ nodes:
       minAvailable: 2
     service:
       serviceEnabled: true
+  # CELERY FOR JOB TASKS
+  jobs-ondemand:
+    name: jobs-ondemand
+    scriptArg: "sh /app/scripts/run_celery_jobs.sh"
+    deployment:
+      deploymentEnabled: true
+      priorityClassName: celery
+      terminationGracePeriodSeconds: 300
+      celeryTerminationTimeoutSeconds: 240
+      replicas: 1
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "800Mi"
+        limits:
+          cpu: "550m"
+          memory: "1024Mi"
+    autoscaling:
+      hpaEnabled: false
+      minReplicas: 1
+      maxReplicas: 1
+      targetCPUUtilizationPercentage: 25
+      scaleUpPodsValue: 1
+      scaleUpPeriodSeconds: 45
+    pdb:
+      pdbEnabled: true
+      minAvailable: 1
+    service:
+      serviceEnabled: true
   # CELERY FOR NIGHTLY TASKS
-  nightly-burst:
-    name: nightly-burst
+  nightly-ondemand:
+    name: nightly-ondemand
     scriptArg: "sh /app/scripts/run_celery_nightly.sh"
     deployment:
       deploymentEnabled: true
