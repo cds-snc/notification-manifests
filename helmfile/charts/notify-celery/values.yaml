@@ -260,8 +260,8 @@ nodes:
     deployment:
       deploymentEnabled: true
       priorityClassName: celery
-      terminationGracePeriodSeconds: 2100
-      celeryTerminationTimeoutSeconds: 2100
+      terminationGracePeriodSeconds: 300
+      celeryTerminationTimeoutSeconds: 240
       replicas: 1
       nodeSelector:
         eks.amazonaws.com/capacityType: ON_DEMAND
@@ -273,9 +273,9 @@ nodes:
           cpu: "550m"
           memory: "1024Mi"
     autoscaling:
-      hpaEnabled: true
+      hpaEnabled: false
       minReplicas: 1
-      maxReplicas: 4
+      maxReplicas: 1
       targetCPUUtilizationPercentage: 25
       scaleUpPodsValue: 1
       scaleUpPeriodSeconds: 45
