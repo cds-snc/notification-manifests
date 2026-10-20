@@ -78,13 +78,22 @@ if [[ "${MODE}" == "--revert" ]]; then
 fi
 
 ###############################################################################
+# Assume DNS role for the rest of the script (production only)
+###############################################################################
+if [[ "${ENVIRONMENT}" == "production" ]]; then
+  pushd "${TERRAFORM_REPO}/scripts"
+  source ./assumeDnsRole.sh || { echo "ERROR: assumeDnsRole.sh failed — aborting" >&2; popd; exit 1; }
+  popd
+fi
+
+###############################################################################
 # Step 1: admin-tt-step-1 — terragrunt apply (auto-approve)
 ###############################################################################
 echo "==> [Step 1] Checking out admin-tt-step-1 and running terragrunt apply"
 cd "${TERRAFORM_REPO}"
 git checkout admin-tt-step-1
 cd "${TERRAFORM_EKS_DIR}"
-terragrunt apply -auto-approve
+terragrunt apply -auto-approve || { echo "ERROR: terragrunt apply (step 1) failed — aborting" >&2; exit 1; }
 
 ###############################################################################
 # Step 2: admin-tt-step-3 — start terragrunt apply and run helmfile in parallel

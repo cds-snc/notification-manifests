@@ -45,20 +45,21 @@ celeryCommon:
 {{ end }}
   FF_SMS_RATELIMIT: "{{ .StateValues.FF_SMS_RATELIMIT }}"
   FF_IMPROVE_CELERY_WORKER_ISOLATION: "{{ .StateValues.FF_IMPROVE_CELERY_WORKER_ISOLATION }}"
+  TEST_OLD_BOUNCE_RATE: "{{ .StateValues.TEST_OLD_BOUNCE_RATE }}"
 
 celerySecrets: 
   #SECRET_NAME_FOR_ENV_PASSED_TO_CONTAINER: SECRET_NAME_READ_FROM_AWS_SECRETS_MANAGER 
-  ADMIN_CLIENT_SECRET: MANIFEST_ADMIN_CLIENT_SECRET
-  DANGEROUS_SALT: MANIFEST_DANGEROUS_SALT
-  SECRET_KEY: MANIFEST_SECRET_KEY
-  SENDGRID_API_KEY: MANIFEST_SENDGRID_API_KEY
-  SQLALCHEMY_DATABASE_URI: MANIFEST_SQLALCHEMY_DATABASE_URI
-  SQLALCHEMY_DATABASE_READER_URI: MANIFEST_SQLALCHEMY_DATABASE_READER_URI
-  REDIS_URL: MANIFEST_REDIS_URL
-  CACHE_OPS_URL: MANIFEST_CACHE_OPS_URL
+  ADMIN_CLIENT_SECRET: ADMIN_CLIENT_SECRET
+  DANGEROUS_SALT: DANGEROUS_SALT
+  SECRET_KEY: SECRET_KEY
+  SENDGRID_API_KEY: SENDGRID_API_KEY
+  SQLALCHEMY_DATABASE_URI: SQLALCHEMY_DATABASE_URI
+  SQLALCHEMY_DATABASE_READER_URI: SQLALCHEMY_DATABASE_READER_URI
+  REDIS_URL: REDIS_URL
+  CACHE_OPS_URL: CACHE_OPS_URL
 
   # POSTGRES_HOST is used by the init script to verify the database is up
-  POSTGRES_HOST: MANIFEST_POSTGRES_HOST
+  POSTGRES_HOST: POSTGRES_HOST
 
 image: 
   repository: "{{ .StateValues.API_IMAGE_REPOSITORY }}"
@@ -72,8 +73,8 @@ podAnnotations:
 {{ end }}
 
 dockerhub:
-  username: {{ requiredEnv "MANIFEST_DOCKER_HUB_USERNAME" }}
-  pat: {{ requiredEnv "MANIFEST_DOCKER_HUB_PAT" }}
+  username: {{ requiredEnv "DOCKER_HUB_USERNAME" }}
+  pat: {{ requiredEnv "DOCKER_HUB_PAT" }}
 
 {{ if ne .Environment.Name "production" }}
 defaultVerticalPodAutoscaler:
@@ -141,21 +142,6 @@ nodes:
     pdb:
       pdbEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minAvailable: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-  sms-send-ratelimit-static:
-    deployment:
-      deploymentEnabled: {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }} true {{ else }} false {{ end }}
-      terminationGracePeriodSeconds: {{ if eq .Environment.Name "production" }} 60 {{ else if eq .Environment.Name "staging" }} 60 {{ else }} 60 {{ end }}
-      resources:
-        requests:
-          cpu: {{ if eq .Environment.Name "production" }} "100m" {{ else if eq .Environment.Name "staging" }} "100m" {{ else }} "100m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "800Mi" {{ else if eq .Environment.Name "staging" }} "800Mi" {{ else }} "800Mi" {{ end }}
-        limits:
-          cpu: {{ if eq .Environment.Name "production" }} "700m" {{ else if eq .Environment.Name "staging" }} "700m" {{ else }} "550m" {{ end }}
-          memory: {{ if eq .Environment.Name "production" }} "1024Mi" {{ else if eq .Environment.Name "staging" }} "1024Mi" {{ else }} "1024Mi" {{ end }}
-      replicas: {{ if eq .Environment.Name "dev" }} 1 {{ else }} 7 {{ end }}
-    pdb:
-      pdbEnabled: {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }} false {{ else }} false {{ end }}
-      minAvailable: {{ if or (eq .Environment.Name "dev") (eq .Environment.Name "staging") }} 1 {{ else }} 1 {{ end }}
   periodic-static:
     deployment:
       deploymentEnabled: true
@@ -255,9 +241,9 @@ nodes:
     autoscaling:
       hpaEnabled: {{ if eq .Environment.Name "production" }} true {{ else if eq .Environment.Name "staging" }} true {{ else }} true {{ end }}
       minReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
-      maxReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 2 {{ else }} 2 {{ end }}
+      maxReplicas: {{ if eq .Environment.Name "production" }} 2 {{ else if eq .Environment.Name "staging" }} 3 {{ else }} 2 {{ end }}
       targetCPUUtilizationPercentage: {{ if eq .Environment.Name "production" }} 25 {{ else if eq .Environment.Name "staging" }} 25 {{ else }} 25 {{ end }}
-      scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 6 {{ else }} 6 {{ end }}
+      scaleUpPodsValue: {{ if eq .Environment.Name "production" }} 6 {{ else if eq .Environment.Name "staging" }} 7 {{ else }} 6 {{ end }}
       scaleUpPeriodSeconds: {{ if eq .Environment.Name "production" }} 45 {{ else if eq .Environment.Name "staging" }} 45 {{ else }} 45 {{ end }}
       stabilizationWindowSeconds: {{ if eq .Environment.Name "production" }} 90 {{ else if eq .Environment.Name "staging" }} 90 {{ else }} 90 {{ end }}
     pdb:

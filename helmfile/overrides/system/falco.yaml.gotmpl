@@ -15,7 +15,8 @@ falcosidekick:
           paths:
             - path: /
     redis:
-      storageClass: gp2
+      storageClass: notify
+      storageSize: "100Gi"
   config:
     existingSecret: falco-config-secrets
     aws:
@@ -41,5 +42,5 @@ secretProviderClass:
   enabled: true
   provider: aws
   secrets: 
-    FALCOSIDEKICK_UI_USER: MANIFEST_FALCO_CREDENTIALS
-    SLACK_WEBHOOKURL: MANIFEST_FALCO_SLACK_WEBHOOK_URL
+    FALCOSIDEKICK_UI_USER: FALCO_CREDENTIALS
+    SLACK_WEBHOOKURL: FALCO_SLACK_WEBHOOK_URL
