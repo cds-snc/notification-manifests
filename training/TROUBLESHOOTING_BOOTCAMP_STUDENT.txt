@@ -1,0 +1,137 @@
+Kubernetes Troubleshooting Bootcamp — Student Syllabus
+
+8 weekly sessions. Each session you'll be handed a broken environment and asked to diagnose
+and fix it. No instructions, no hints — just you, kubectl, and the repo.
+
+Namespace for everything: notification-canada-ca
+
+------------------------------------------------------------------------
+
+Week 1 — "Why Won't It Start?"
+
+You'll learn: How to read pod status, understand the container lifecycle, and find error
+details in Kubernetes events.
+
+New commands: kubectl get pods, kubectl describe pod
+
+------------------------------------------------------------------------
+
+Week 2 — "It Starts But Then Dies"
+
+You'll learn: How to read application logs, including logs from a container that already
+crashed. How environment variables get into a pod and how to inspect them.
+
+New commands: kubectl logs, kubectl logs --previous
+
+------------------------------------------------------------------------
+
+Week 3 — "It Works Fine, Then Dies Randomly"
+
+You'll learn: How Kubernetes enforces CPU and memory limits on containers, what happens
+when those limits are breached, and how to measure live resource usage.
+
+New commands: kubectl top pods, kubectl top nodes
+
+------------------------------------------------------------------------
+
+Week 4 — "Pods Are Running But Nobody Can Reach Them"
+
+You'll learn: The difference between a pod that is running and a pod that is ready to
+serve traffic. How Kubernetes decides which pods receive requests.
+
+New commands: kubectl get endpoints, kubectl port-forward
+
+------------------------------------------------------------------------
+
+Week 5 — "Deployment Is Stuck — Nothing Is Updating"
+
+You'll learn: How rolling updates work, what can block them, and how to safely roll back
+a deployment that's gone wrong.
+
+New commands: kubectl rollout status, kubectl rollout undo, kubectl get pdb
+
+------------------------------------------------------------------------
+
+Week 6 — "Pod Won't Start at All — Not Even an Error"
+
+You'll learn: How this stack retrieves secrets from AWS Secrets Manager, how that process
+can fail silently before the application even starts, and where to look when there are no
+application logs to read.
+
+New commands: kubectl get secretproviderclass, kubectl describe secretproviderclass
+
+------------------------------------------------------------------------
+
+Week 7 — "The App Works But Notifications Aren't Being Sent"
+
+You'll learn: How to debug a failure that spans multiple services. The API looks healthy —
+the problem is somewhere else. You'll need to figure out which component is broken and
+correlate logs across multiple pods.
+
+New commands: kubectl logs -l <selector>, kubectl logs -f
+
+------------------------------------------------------------------------
+
+Week 8 — Full System Triage
+
+You'll learn: How to approach an incident where multiple things are broken at the same
+time, how to prioritize what to fix first, and how to work as a team under pressure.
+
+New commands: kubectl get all — plus everything from the previous 7 weeks.
+
+------------------------------------------------------------------------
+
+Command Reference
+
+You'll build this up over the 8 weeks. Here's what you'll have by the end:
+
+  Pod status
+    kubectl get pods -n notification-canada-ca
+    kubectl get pods -n notification-canada-ca -w
+    kubectl get all -n notification-canada-ca
+    kubectl describe pod <pod-name> -n notification-canada-ca
+    kubectl logs <pod-name> -n notification-canada-ca
+    kubectl logs <pod-name> -n notification-canada-ca --previous
+
+  Exec into a running pod
+    kubectl exec -it <pod-name> -n notification-canada-ca -- /bin/sh
+
+  Services & networking
+    kubectl get svc -n notification-canada-ca
+    kubectl get endpoints -n notification-canada-ca
+    kubectl port-forward <pod-name> 8080:6011 -n notification-canada-ca
+
+  Resources
+    kubectl top pods -n notification-canada-ca
+    kubectl top nodes
+
+  Deployments & rollouts
+    kubectl get deployments -n notification-canada-ca
+    kubectl rollout status deployment/<name> -n notification-canada-ca
+    kubectl rollout undo deployment/<name> -n notification-canada-ca
+
+  Policy
+    kubectl get pdb -n notification-canada-ca
+    kubectl describe pdb <name> -n notification-canada-ca
+    kubectl get hpa -n notification-canada-ca
+
+  Secrets
+    kubectl get secretproviderclass -n notification-canada-ca
+    kubectl describe secretproviderclass <name> -n notification-canada-ca
+
+  Events (sorted by time)
+    kubectl get events -n notification-canada-ca --sort-by='.lastTimestamp'
+
+  Helmfile — deploying changes
+    helmfile -e <env> list                        see all releases and sync status
+    helmfile -e <env> diff   -l app=notify-api    preview what will change (do this first)
+    helmfile -e <env> apply  -l app=notify-api    deploy an app
+    helmfile -e <env> template -l app=notify-api  render to raw K8s YAML without deploying
+
+  Helm — inspecting what's currently live
+  (helmfile wraps helm; use these to query what's actually running on the cluster)
+    helm list -n notification-canada-ca                         all deployed releases
+    helm get values notify-api -n notification-canada-ca        values used in the live deployment
+    helm get values notify-api -n notification-canada-ca --all  includes chart defaults
+    helm history notify-api -n notification-canada-ca           deployment history
+    helm rollback notify-api -n notification-canada-ca          roll back to previous version
