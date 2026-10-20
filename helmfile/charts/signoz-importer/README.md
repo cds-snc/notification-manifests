@@ -50,12 +50,14 @@ helmfile -e <environment> apply
 1. Dashboard JSON files are stored in ConfigMaps
 2. A Helm hook Job runs after install/upgrade
 3. The Job waits for SigNoz to be ready
-4. Dashboards are imported via SigNoz API
+4. Dashboards are imported via the SigNoz v2 API
 5. Job cleans up automatically after 5 minutes
 
 ## Notes
 
 - The chart uses a post-install/post-upgrade hook, so dashboards are imported after SigNoz is deployed
 - Failed dashboard imports don't fail the entire job (continues with remaining dashboards)
+- Legacy dashboard exports are converted by SigNoz when created through the v2 API
+- Existing dashboards are matched by title and left unchanged; v2 PUT requires a v2-format payload
 - Old import jobs are automatically cleaned up
 - Dashboard files in `dashboards/` directory are packaged with the chart

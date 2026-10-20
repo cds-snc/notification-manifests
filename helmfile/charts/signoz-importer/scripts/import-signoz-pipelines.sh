@@ -54,7 +54,6 @@ http_code="$(curl -s -o "$tmp_response" -w "%{http_code}" -X POST \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -H "SIGNOZ-API-KEY: $SIGNOZ_API_KEY" \
-  -H "Authorization: Bearer $SIGNOZ_API_KEY" \
   --data-binary "@$tmp_payload" \
   "${SIGNOZ_URL%/}/api/v1/logs/pipelines")"
 

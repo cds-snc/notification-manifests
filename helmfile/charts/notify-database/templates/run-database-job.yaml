@@ -35,7 +35,7 @@ spec:
                   key: POSTGRES_HOST
       containers:
         - name: db-migration
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
           command: ["poetry"]
           args: ["run", "flask", "db", "{{ .Values.database.args }}"]
           env:
