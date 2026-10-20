@@ -1,0 +1,86 @@
+nameOverride: ""
+fullnameOverride: ""
+
+signoz:
+  # In-cluster URL used by the headless browser
+  url: "http://signoz:8080"
+  # URL used for links in the email
+  publicUrl: ""
+  # For self-signed certificates on the SigNoz URL
+  ignoreTlsErrors: false
+
+schedule: "0 12 * * 1-5"
+timeZone: "Etc/UTC"
+
+# Dashboards to capture. id is the UUID in the dashboard URL (/dashboard/<id>).
+dashboards: []
+  # - title: Notify API traces
+  #   id: 00000000-0000-0000-0000-000000000000
+  #   relativeTime: 24h
+  #   # Dashboard variable values, passed in the URL `variables` param
+  #   variables:
+  #     k8s.namespace.name: notification-canada-ca
+
+defaultRelativeTime: 24h
+
+screenshot:
+  viewportWidth: 1920
+  viewportHeight: 2400
+  # Extra wait after network idle so panel queries finish rendering
+  settleSeconds: 20
+
+# GC Notify email. Screenshots are attached as PNGs (max 10 files, 6MB total per email).
+email:
+  apiUrl: ""
+  templateId: ""
+  recipients: []
+
+# Names of the AWS Secrets Manager secrets, mounted via the CSI driver
+secrets:
+  notifyApiKey: SIGNOZ_REPORT_NOTIFY_API_KEY
+  signozEmail: SIGNOZ_REPORT_EMAIL
+  signozPassword: SIGNOZ_REPORT_PASSWORD
+
+# Playwright version; must match the image tag so the bundled browsers are used
+playwright:
+  version: "1.52.0"
+
+image:
+  repository: mcr.microsoft.com/playwright
+  # Defaults to v<playwright.version>-noble
+  tag: ""
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: ""
+  # IRSA role needs secretsmanager:GetSecretValue on the secrets above
+  annotations: {}
+
+cronjob:
+  # Stops scheduled runs; manual `kubectl create job --from` still works
+  suspend: false
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  backoffLimit: 1
+  activeDeadlineSeconds: 900
+  ttlSecondsAfterFinished: 86400
+
+podSecurityContext:
+  runAsNonRoot: true
+  # pwuser in the Playwright image
+  runAsUser: 1001
+  runAsGroup: 1001
+  fsGroup: 1001
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+nodeSelector: {}
+tolerations: []
