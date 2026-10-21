@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/base:0-debian@sha256:514d9a94b7f68d49bbf22f15dd82cb75cf0467763e96fc12682a07826bd13b04
+FROM mcr.microsoft.com/devcontainers/base:bookworm@sha256:9a5942e64b35c5497c591b9bf177f4a3002d43440bf0a5e1a14fc34667b1a5c1
 
 ARG KUBENS_VERSION
 
@@ -48,7 +48,8 @@ RUN git clone -b v${KUBENS_VERSION} --single-branch https://github.com/ahmetb/ku
     && ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 
 # Install AWS CLI v2 (non-interactive, install dir + symlink)
-RUN AWS_ZIP_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; \
+RUN AWS_ARCH="$(uname -m)"; \
+    AWS_ZIP_URL="https://awscli.amazonaws.com/awscli-exe-linux-${AWS_ARCH}.zip"; \
     curl -fsSL -o /tmp/awscliv2.zip "$AWS_ZIP_URL"; \
     if curl -fsSL -o /tmp/awscliv2.zip.sha256 "${AWS_ZIP_URL}.sha256"; then \
         expected=$(cut -d' ' -f1 /tmp/awscliv2.zip.sha256); \
@@ -62,7 +63,7 @@ RUN AWS_ZIP_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; \
 
 # Install Helm
 RUN HELM_VERSION="v3.21.3"; \
-    ARCH="linux-amd64"; \
+    ARCH="linux-$(dpkg --print-architecture)"; \
     TARBALL="helm-${HELM_VERSION}-${ARCH}.tar.gz"; \
     URL="https://get.helm.sh/${TARBALL}"; \
     curl -fsSLO "$URL"; \
@@ -75,8 +76,8 @@ RUN HELM_VERSION="v3.21.3"; \
     rm -rf "${TARBALL}" "${TARBALL}.sha256" "${ARCH}"
 
 # Install Helmfile
-RUN curl -LO https://github.com/helmfile/helmfile/releases/download/v0.151.0/helmfile_0.151.0_linux_amd64.tar.gz
-RUN tar -zxvf helmfile_0.151.0_linux_amd64.tar.gz
+RUN curl -LO https://github.com/helmfile/helmfile/releases/download/v0.151.0/helmfile_0.151.0_linux_$(dpkg --print-architecture).tar.gz
+RUN tar -zxvf helmfile_0.151.0_linux_$(dpkg --print-architecture).tar.gz
 RUN sudo chmod +x helmfile
 RUN sudo mv helmfile /usr/local/bin/helmfile
 
