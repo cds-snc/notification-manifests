@@ -27,77 +27,31 @@ jobs:
       # API_DOCKER_TAG
       # DOCUMENT_DOWNLOAD_DOCKER_TAG
       # DOCUMENTATION_DOCKER_TAG
-      # IPV4_DOCKER_TAG
-      # BLAZER_DOCKER_TAG
-      # GOOGLE_CIDR_DOCKER_TAG
+        # BLAZER_DOCKER_TAG
+        # GOOGLE_CIDR_DOCKER_TAG
       # HEARTBEAT_DOCKER_TAG
       # SES_RECEIVING_EMAILS_DOCKER_TAG
       # SNS_TO_SQS_SMS_CALLBACKS_DOCKER_TAG
-      # PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG
+        # PINPOINT_TO_SQS_SMS_CALLBACKS_DOCKER_TAG
       # SES_TO_SQS_EMAIL_CALLBACKS_DOCKER_TAG
       # SYSTEM_STATUS_DOCKER_TAG
       - name: Update the docker tag in staging.env and dev.env
-        env:
-          COMPONENT: ${{ github.event.client_payload.component }}
-          DOCKER_TAG: ${{ github.event.client_payload.docker_tag }}
-          EVENT_ACTION: ${{ github.event.action }}
         run: |
-          python3 - <<'PY'
-          import os
-          import re
-          from pathlib import Path
-
-          docker_tag = os.environ["DOCKER_TAG"]
-          if not re.fullmatch(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}", docker_tag):
-              raise SystemExit("Invalid Docker image tag")
-
-          event_action = os.environ["EVENT_ACTION"]
-          if event_action == "update-lambda-image-tags":
-              components = (
-                  "BLAZER",
-                  "GOOGLE_CIDR",
-                  "HEARTBEAT",
-                  "SES_RECEIVING_EMAILS",
-                  "SNS_TO_SQS_SMS_CALLBACKS",
-                  "PINPOINT_TO_SQS_SMS_CALLBACKS",
-                  "SYSTEM_STATUS",
-                  "SES_TO_SQS_EMAIL_CALLBACKS",
-              )
-          elif event_action == "update-docker-image":
-              component = os.environ["COMPONENT"]
-              if not re.fullmatch(r"[A-Z][A-Z0-9_]*", component):
-                  raise SystemExit("Invalid component name")
-              components = (component,)
-          else:
-              raise SystemExit(f"Unsupported repository dispatch action: {event_action}")
-
-          files = (
-              Path("helmfile/overrides/staging.env"),
-              Path("helmfile/overrides/dev.env"),
-          )
-          for component in components:
-              key = f"{component}_DOCKER_TAG"
-              pattern = re.compile(
-                  rf"^([ \t]*{re.escape(key)}:[ \t]*)\"[^\"\r\n]*\"([ \t]*)(\r?)$",
-                  re.MULTILINE,
-              )
-              for path in files:
-                  with path.open(encoding="utf-8", newline="") as file:
-                      contents = file.read()
-                  matches = list(pattern.finditer(contents))
-                  if len(matches) != 1:
-                      raise SystemExit(f"Expected exactly one {key} in {path}; found {len(matches)}")
-                  updated, count = pattern.subn(
-                      lambda match: f'{match.group(1)}"{docker_tag}"{match.group(2)}{match.group(3)}',
-                      contents,
-                      count=1,
-                  )
-                  if count != 1:
-                      raise SystemExit(f"Could not update {key} in {path}")
-                  with path.open("w", encoding="utf-8", newline="") as file:
-                      file.write(updated)
-                  print(f"Updated {key} in {path}")
-          PY
+          echo "Updating docker tag in staging.env and dev.env"
+          if [ "${{ github.event.action }}" = "update-lambda-image-tags" ]; then
+            for component in BLAZER GOOGLE_CIDR HEARTBEAT SES_RECEIVING_EMAILS SNS_TO_SQS_SMS_CALLBACKS PINPOINT_TO_SQS_SMS_CALLBACKS SYSTEM_STATUS SES_TO_SQS_EMAIL_CALLBACKS; do
+              for file in helmfile/overrides/staging.env helmfile/overrides/dev.env; do
+                grep -q "^${component}_DOCKER_TAG:" "$file" || { echo "Missing ${component}_DOCKER_TAG in $file" >&2; exit 1; }
+                sed -i 's/^'"$component"'_DOCKER_TAG:.*/'"$component"'_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' "$file"
+              done
+            done
+          else
+            for file in helmfile/overrides/staging.env helmfile/overrides/dev.env; do
+              sed -i 's/^${{ github.event.client_payload.component }}_DOCKER_TAG:.*/${{ github.event.client_payload.component }}_DOCKER_TAG: "'"${{ github.event.client_payload.docker_tag }}"'"/' "$file"
+            done
+          fi
+          cat helmfile/overrides/staging.env
+          cat helmfile/overrides/dev.env
 
       - name: Branch protection OFF
         uses: octokit/request-action@dad4362715b7fb2ddedf9772c8670824af564f0d # v2.4.0
@@ -148,15 +102,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
-  notify-slack:
-    needs: update-image
-    if: ${{ failure() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Notify Slack about failed image-tag update
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        run: |
-          json='{"text":"<!here> IPv4 image-tag update failed in <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|notification-manifests>."}'
-          curl --fail-with-body --silent --show-error --max-time 30 \
-            -X POST -H 'Content-type: application/json' --data "$json" "$SLACK_WEBHOOK"

@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
-  tag: "@sha256:5c6c89dc7bef17efe678f77c19c2113eed901ec6189b1cb09ff0a36fbe610edc"
+  tag: latest
   pullPolicy: IfNotPresent
 
 nameOverride: ""

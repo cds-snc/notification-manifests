@@ -1,2 +1,2 @@
 image:
-  tag: '{{ .StateValues | get "IPV4_DOCKER_TAG" "@sha256:5c6c89dc7bef17efe678f77c19c2113eed901ec6189b1cb09ff0a36fbe610edc" | replace "PLACEHOLDER" "@sha256:5c6c89dc7bef17efe678f77c19c2113eed901ec6189b1cb09ff0a36fbe610edc" }}'
+  tag: "{{ .StateValues.IPV4_DOCKER_TAG }}"

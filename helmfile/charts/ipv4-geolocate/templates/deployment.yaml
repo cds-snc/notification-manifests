@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}{{ if not (hasPrefix "@" .Values.image.tag) }}:{{ end }}{{ .Values.image.tag }}"
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
