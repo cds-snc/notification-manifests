@@ -1,2 +1,4 @@
+{{ if eq .Environment.Name "staging" }}
 image:
   tag: "{{ .StateValues.IPV4_DOCKER_TAG }}"
+{{ end }}
