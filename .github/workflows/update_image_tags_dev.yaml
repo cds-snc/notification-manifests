@@ -6,7 +6,10 @@ on:
     types:
       - update-docker-image-dev
 
-env:
+env: # NODE_OPTIONS/SSL_CERT_*: temporary CA mitigation
+  NODE_OPTIONS: --use-openssl-ca
+  SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  SSL_CERT_DIR: /etc/ssl/certs
   COMPONENT: ${{ github.event.client_payload.component }}
   DOCKER_TAG: ${{ github.event.client_payload.docker_tag }}
 
@@ -15,6 +18,8 @@ jobs:
   update-image:
     runs-on: ubuntu-latest
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
       - name: Obtain a Notify PR Bot GitHub App Installation Access Token
         run: |
           TOKEN="$(npx obtain-github-app-installation-access-token@1.1.0 ci ${{ secrets.PR_BOT_GITHUB_TOKEN }})"

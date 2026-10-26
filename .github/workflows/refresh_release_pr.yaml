@@ -10,6 +10,11 @@ on:
 permissions:
   contents: read
 
+env: # temporary CA mitigation
+  NODE_OPTIONS: --use-openssl-ca
+  SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  SSL_CERT_DIR: /etc/ssl/certs
+
 jobs:
   refresh-release-pr:
     runs-on: ubuntu-latest
@@ -19,6 +24,8 @@ jobs:
       !contains(github.event.pull_request.title, '[MANIFEST]')
 
     steps:
+      - name: Prepare Ubuntu CA trust
+        uses: route06/actions/prepare-ubuntu-ca@aa6b218e4bc5445f54d3649a04297af5e1ce7458 # temporary CA mitigation
       # Generate a bot token that will be used for all workflow actions.
       # This is required as the default repo GITHUB_TOKEN does not trigger new workflow runs.
       - name: Obtain a Notify PR Bot GitHub App Installation Access Token
