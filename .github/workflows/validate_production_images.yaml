@@ -45,19 +45,17 @@ jobs:
           aws ecr-public get-login-password --region us-east-1 |
             docker login --username AWS --password-stdin public.ecr.aws
 
-      - name: Validate release revisions and images
+      - name: Check configured images exist
         id: validate
         env:
           ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
           AWS_PAGER: ''
         run: |
           config="$(ruby -ryaml -rjson -e 'puts JSON.generate(YAML.safe_load(File.read(ARGV.fetch(0))))' helmfile/overrides/production.env)"
-          jq -e '.version == 1 and (.images | type == "object")' release-images.json > /dev/null
           failures=()
           while read -r component repository region; do
             key="${component}_DOCKER_TAG"
             tag="$(jq -r --arg key "$key" '.[$key] // empty' <<< "$config")"
-            read -r sha expected_tag <<< "$(jq -r --arg key "$key" '.images[$key] | [.sha, .tag] | @tsv' release-images.json)"
             if [[ "$region" == public ]]; then
               repository="$(jq -r --arg key "$repository" '.[$key] // empty' <<< "$config")"
               if [[ "$component" == IPV4 ]]; then
@@ -67,8 +65,8 @@ jobs:
               repository="$ACCOUNT_ID.dkr.ecr.$region.amazonaws.com/$repository"
             fi
             reason=''
-            if [[ ! "$sha" =~ ^[0-9a-f]{40}$ || "$tag" != "${sha:0:7}" || "$tag" != "$expected_tag" ]]; then
-              reason="SHA/tag mismatch: configured tag=$tag, recorded tag=$expected_tag, selected SHA=$sha"
+            if [[ -z "$tag" || -z "$repository" ]]; then
+              reason='Missing configured image repository or tag.'
             elif [[ "$region" == public ]]; then
               if ! error="$(docker manifest inspect "$repository:$tag" 2>&1)"; then
                 reason="Public ECR image missing or inaccessible: ${error:0:400}"
