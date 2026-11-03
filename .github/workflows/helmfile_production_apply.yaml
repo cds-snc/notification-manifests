@@ -22,10 +22,13 @@ permissions:
 
 jobs:
   validate-images:
-    uses: ./.github/workflows/validate_production_images.yaml
+    uses: ./.github/workflows/validate_release_images.yaml
     with:
+      environment: production
       role-name: notification-manifests-helmfile-production-apply
-    secrets: inherit
+    secrets:
+      AWS_ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
   pre-apply-snapshot:
     needs: validate-images

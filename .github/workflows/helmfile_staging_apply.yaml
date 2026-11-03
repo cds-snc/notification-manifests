@@ -26,7 +26,17 @@ permissions:
   pull-requests: write
 
 jobs:
+  validate-images:
+    uses: ./.github/workflows/validate_release_images.yaml
+    with:
+      environment: staging
+      role-name: notification-manifests-helmfile-staging-apply
+    secrets:
+      AWS_ACCOUNT_ID: ${{ secrets.STAGING_AWS_ACCOUNT_ID }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
   pre-apply-snapshot:
+    needs: validate-images
     uses: ./.github/workflows/velero_snapshot.yaml
     with:
       environment: staging
@@ -233,8 +243,8 @@ jobs:
           aws ecs wait services-stable --cluster blazer --services blazer
 
   notify-slack:
-    needs: [helmfile-apply, lambda-deploy, blazer-deploy]
-    if: ${{ failure() }}
+    needs: [validate-images, helmfile-apply, lambda-deploy, blazer-deploy]
+    if: ${{ failure() && needs.validate-images.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Prepare Ubuntu CA trust

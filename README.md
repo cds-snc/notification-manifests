@@ -9,13 +9,15 @@ This repository uses Helm and Helmfile to manage the deployments of all notify c
 
 The notify API is deployed as a Kubernetes pod and is managed via Helm.
 
-## Production image validation
+## Image validation
 
-The production image workflow checks that the image tags in production configuration
-exist in public/private ECR across all 14 image-region targets. Failure blocks the
-production release before snapshots or deployment and notifies Slack with the
-affected image and reason. This check does not run during production planning.
-No separate HEAD comparison, release record, or release-bot change is required.
+Staging and production apply share a workflow that checks their configured image
+tags exist in public/private ECR across all 14 image-region targets, using each
+environment's AWS account and deployment role. Failure stops before snapshots or
+deployment and notifies Slack with the environment, affected image, and reason.
+Neither plan workflow runs this check. No separate HEAD comparison, release record,
+or release-bot change is required. To test safely, temporarily configure a nonexistent
+staging image tag instead of deleting a potentially shared image, then restore it.
 
 ## How are environment variables added and set?
 
