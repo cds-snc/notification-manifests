@@ -17,7 +17,15 @@ permissions:
   pull-requests: write
 
 jobs:
+  validate-images:
+    if: github.event.pull_request.base.ref == 'main' && (contains(github.event.pull_request.title, '[AUTO-PR]') || contains(github.event.pull_request.title, '[MANIFEST]'))
+    uses: ./.github/workflows/validate_production_images.yaml
+    with:
+      role-name: notification-manifests-helmfile-diff
+    secrets: inherit
+
   helmfile-diff:
+    needs: validate-images
     runs-on: ubuntu-latest
     if: github.event.pull_request.base.ref == 'main' && (contains(github.event.pull_request.title, '[AUTO-PR]') || contains(github.event.pull_request.title, '[MANIFEST]'))
     steps:

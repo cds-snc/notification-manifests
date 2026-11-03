@@ -21,7 +21,14 @@ permissions:
   pull-requests: write
 
 jobs:
+  validate-images:
+    uses: ./.github/workflows/validate_production_images.yaml
+    with:
+      role-name: notification-manifests-helmfile-production-apply
+    secrets: inherit
+
   pre-apply-snapshot:
+    needs: validate-images
     uses: ./.github/workflows/velero_snapshot.yaml
     with:
       environment: production
@@ -229,8 +236,8 @@ jobs:
           aws ecs wait services-stable --cluster blazer --services blazer
 
   notify-slack:
-    needs: [helmfile-apply, lambda-deploy, blazer-deploy]
-    if: ${{ failure() }}
+    needs: [validate-images, helmfile-apply, lambda-deploy, blazer-deploy]
+    if: ${{ failure() && needs.validate-images.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Prepare Ubuntu CA trust

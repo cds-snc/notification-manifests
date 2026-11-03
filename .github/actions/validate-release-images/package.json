@@ -1,0 +1,10 @@
+{
+  "name": "validate-release-images",
+  "private": true,
+  "scripts": {
+    "test": "node --test validate.test.cjs"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
+  }
+}

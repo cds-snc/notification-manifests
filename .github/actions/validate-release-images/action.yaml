@@ -1,0 +1,26 @@
+name: Validate release images
+description: Check selected production revisions, configured tags, and registry manifests
+inputs:
+  aws-account-id:
+    description: Production account containing private ECR images
+    required: true
+outputs:
+  failures:
+    description: Actionable image validation failure details
+    value: ${{ steps.validate.outputs.failures }}
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: '24.22.1'
+    - name: Install validation dependencies
+      shell: bash
+      run: npm ci --ignore-scripts --prefix "$GITHUB_ACTION_PATH"
+    - name: Validate selected production images
+      id: validate
+      shell: bash
+      env:
+        PRODUCTION_AWS_ACCOUNT_ID: ${{ inputs.aws-account-id }}
+      run: node "$GITHUB_ACTION_PATH/validate.cjs"
