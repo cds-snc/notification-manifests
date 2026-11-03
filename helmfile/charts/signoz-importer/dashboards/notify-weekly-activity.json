@@ -1,0 +1,549 @@
+{
+  "description": "Observed inbound API and Admin request spans over the last seven days, compared side by side, excluding the /_status health-check route. Trace sampling and retention affect counts; these are not guaranteed total requests. Daily bars are fixed 24-hour query buckets, not Toronto calendar days.",
+  "layout": [
+    { "h": 4, "i": "api-weekly-total", "moved": false, "static": false, "w": 3, "x": 0, "y": 0 },
+    { "h": 4, "i": "api-weekly-apdex", "moved": false, "static": false, "w": 3, "x": 3, "y": 0 },
+    { "h": 4, "i": "admin-weekly-total", "moved": false, "static": false, "w": 3, "x": 6, "y": 0 },
+    { "h": 4, "i": "admin-weekly-apdex", "moved": false, "static": false, "w": 3, "x": 9, "y": 0 },
+    { "h": 4, "i": "api-weekly-response-time", "moved": false, "static": false, "w": 3, "x": 0, "y": 4 },
+    { "h": 4, "i": "api-weekly-error-rate", "moved": false, "static": false, "w": 3, "x": 3, "y": 4 },
+    { "h": 4, "i": "admin-weekly-response-time", "moved": false, "static": false, "w": 3, "x": 6, "y": 4 },
+    { "h": 4, "i": "admin-weekly-error-rate", "moved": false, "static": false, "w": 3, "x": 9, "y": 4 },
+    { "h": 6, "i": "api-weekly-comparison", "moved": false, "static": false, "w": 6, "x": 0, "y": 8 },
+    { "h": 6, "i": "admin-weekly-comparison", "moved": false, "static": false, "w": 6, "x": 6, "y": 8 },
+    { "h": 7, "i": "api-weekly-daily", "moved": false, "static": false, "w": 6, "x": 0, "y": 14 },
+    { "h": 7, "i": "admin-weekly-daily", "moved": false, "static": false, "w": 6, "x": 6, "y": 14 },
+    { "h": 7, "i": "api-weekly-hourly", "moved": false, "static": false, "w": 6, "x": 0, "y": 21 },
+    { "h": 7, "i": "admin-weekly-hourly", "moved": false, "static": false, "w": 6, "x": 6, "y": 21 },
+    { "h": 9, "i": "api-weekly-report", "moved": false, "static": false, "w": 12, "x": 0, "y": 28 },
+    { "h": 9, "i": "admin-weekly-report", "moved": false, "static": false, "w": 12, "x": 0, "y": 37 }
+  ],
+  "name": "",
+  "panelMap": {},
+  "tags": ["notification-api", "notification-admin", "traces", "weekly", "activity"],
+  "title": "Notify API and Admin Weekly Activity",
+  "uploadedGrafana": false,
+  "uuid": "8bdf7ac5-2a3d-4c45-87b6-6047904dce01",
+  "variables": {},
+  "version": "v5",
+  "widgets": [
+    {
+      "description": "Count of observed SERVER spans for notification-api over the last seven days. Excludes database, internal, and outbound client spans. Trace sampling and retention can reduce counts; missing telemetry is not zero traffic.",
+      "id": "api-weekly-total",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "value",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "service.name = 'notification-api' AND kind = 2 AND (http.route NOT EXISTS OR http.route != '/_status')" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Observed inbound requests",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "stepInterval": 3600
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "api-weekly-total-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "API requests",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Count of observed notification-api SERVER spans in fixed 24-hour buckets. These are not America/Toronto calendar days; edge buckets may be partial, and DST days can be 23 or 25 hours. Trace sampling and retention affect counts. Missing telemetry is not zero traffic.",
+      "id": "api-weekly-daily",
+      "customLegendColors": { "API requests / 24-hour bucket": "#3B82F6" },
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "bar",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "service.name = 'notification-api' AND kind = 2 AND (http.route NOT EXISTS OR http.route != '/_status')" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "API requests / 24-hour bucket",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "stepInterval": 86400
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "api-weekly-daily-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "API - daily activity - observed requests per 24-hour bucket",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Count of observed notification-api SERVER spans in hourly buckets over the last seven days. Shows within-day traffic patterns hidden by daily totals. Edge buckets may be partial. Trace sampling and retention affect counts. Missing telemetry is not zero traffic.",
+      "id": "api-weekly-hourly",
+      "customLegendColors": { "API requests / hour": "#3B82F6" },
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "bar",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "service.name = 'notification-api' AND kind = 2 AND (http.route NOT EXISTS OR http.route != '/_status')" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "API requests / hour",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "stepInterval": 3600
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "api-weekly-hourly-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "API - hourly activity - observed requests over last 7 days",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Count of observed SERVER spans for notification-admin over the last seven days. Excludes database, internal, and outbound client spans. Trace sampling and retention can reduce counts; missing telemetry is not zero traffic.",
+      "id": "admin-weekly-total",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "value",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "service.name = 'notification-admin' AND kind = 2 AND (http.route NOT EXISTS OR http.route != '/_status')" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Observed inbound requests",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "stepInterval": 3600
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "admin-weekly-total-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "Admin requests",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Count of observed notification-admin SERVER spans in fixed 24-hour buckets. These are not America/Toronto calendar days; edge buckets may be partial, and DST days can be 23 or 25 hours. Trace sampling and retention affect counts. Missing telemetry is not zero traffic.",
+      "id": "admin-weekly-daily",
+      "customLegendColors": { "Admin requests / 24-hour bucket": "#F97316" },
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "bar",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "service.name = 'notification-admin' AND kind = 2 AND (http.route NOT EXISTS OR http.route != '/_status')" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Admin requests / 24-hour bucket",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "stepInterval": 86400
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "admin-weekly-daily-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "Admin - daily activity - observed requests per 24-hour bucket",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Count of observed notification-admin SERVER spans in hourly buckets over the last seven days. Shows within-day traffic patterns hidden by daily totals. Edge buckets may be partial. Trace sampling and retention affect counts. Missing telemetry is not zero traffic.",
+      "id": "admin-weekly-hourly",
+      "customLegendColors": { "Admin requests / hour": "#F97316" },
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "bar",
+      "query": {
+        "builder": {
+          "queryData": [
+            {
+              "aggregations": [{ "expression": "count()" }],
+              "dataSource": "traces",
+              "disabled": false,
+              "expression": "A",
+              "filter": { "expression": "service.name = 'notification-admin' AND kind = 2 AND (http.route NOT EXISTS OR http.route != '/_status')" },
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Admin requests / hour",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "reduceTo": "sum",
+              "stepInterval": 3600
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "id": "admin-weekly-hourly-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "builder"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "Admin - hourly activity - observed requests over last 7 days",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Weekly request-weighted Apdex (0-1), provisional T=1s: satisfied <=1s, tolerating >1s through 4s. Errors and HTTP 5xx are always frustrated. Uses observed API SERVER spans, excluding /_status; sampling and retention affect the score. No requests returns no score.",
+      "id": "api-weekly-apdex",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "value",
+      "decimalPrecision": 3,
+      "query": {
+        "builder": { "queryData": [], "queryFormulas": [] },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "API Apdex",
+            "name": "A",
+            "query": "WITH resource_filter AS (\n  SELECT fingerprint\n  FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-api'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n)\nSELECT\n  toDateTime($start_timestamp) AS ts,\n  (countIf(NOT has_error AND response_status_code NOT LIKE '5%' AND duration_nano <= 1000000000)\n   + 0.5 * countIf(NOT has_error AND response_status_code NOT LIKE '5%' AND duration_nano > 1000000000 AND duration_nano <= 4000000000))\n  / nullIf(count(), 0) AS value\nFROM signoz_traces.distributed_signoz_index_v3\nWHERE resource_fingerprint GLOBAL IN resource_filter\n  AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n  AND timestamp >= $start_datetime AND timestamp < $end_datetime\n  AND kind = 2\n  AND attributes_string['http.route'] != '/_status'"
+          }
+        ],
+        "id": "api-weekly-apdex-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "API Apdex",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Weekly request-weighted Apdex (0-1), provisional T=500ms: satisfied <=500ms, tolerating >500ms through 2s. Errors and HTTP 5xx are always frustrated. Uses observed Admin SERVER spans, excluding /_status; sampling and retention affect the score. No requests returns no score.",
+      "id": "admin-weekly-apdex",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "value",
+      "decimalPrecision": 3,
+      "query": {
+        "builder": { "queryData": [], "queryFormulas": [] },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "Admin Apdex",
+            "name": "A",
+            "query": "WITH resource_filter AS (\n  SELECT fingerprint\n  FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-admin'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n)\nSELECT\n  toDateTime($start_timestamp) AS ts,\n  (countIf(NOT has_error AND response_status_code NOT LIKE '5%' AND duration_nano <= 500000000)\n   + 0.5 * countIf(NOT has_error AND response_status_code NOT LIKE '5%' AND duration_nano > 500000000 AND duration_nano <= 2000000000))\n  / nullIf(count(), 0) AS value\nFROM signoz_traces.distributed_signoz_index_v3\nWHERE resource_fingerprint GLOBAL IN resource_filter\n  AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n  AND timestamp >= $start_datetime AND timestamp < $end_datetime\n  AND kind = 2\n  AND attributes_string['http.route'] != '/_status'"
+          }
+        ],
+        "id": "admin-weekly-apdex-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "Admin Apdex",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Mean duration in milliseconds across all observed API SERVER spans over the last seven days, excluding /_status. Includes failed requests. Computed across requests, not an average of hourly means. Sampling and retention affect the result. No requests returns no value.",
+      "id": "api-weekly-response-time",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "value",
+      "decimalPrecision": 1,
+      "query": {
+        "builder": { "queryData": [], "queryFormulas": [] },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "API average response time",
+            "name": "A",
+            "query": "WITH resource_filter AS (\n  SELECT fingerprint\n  FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-api'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n)\nSELECT\n  toDateTime($start_timestamp) AS ts,\n  sum(toFloat64(duration_nano)) / nullIf(count(), 0) / 1000000 AS value\nFROM signoz_traces.distributed_signoz_index_v3\nWHERE resource_fingerprint GLOBAL IN resource_filter\n  AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n  AND timestamp >= $start_datetime AND timestamp < $end_datetime\n  AND kind = 2\n  AND attributes_string['http.route'] != '/_status'"
+          }
+        ],
+        "id": "api-weekly-response-time-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "API avg response",
+      "yAxisUnit": "ms"
+    },
+    {
+      "description": "Mean duration in milliseconds across all observed Admin SERVER spans over the last seven days, excluding /_status. Includes failed requests. Computed across requests, not an average of hourly means. Sampling and retention affect the result. No requests returns no value.",
+      "id": "admin-weekly-response-time",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "value",
+      "decimalPrecision": 1,
+      "query": {
+        "builder": { "queryData": [], "queryFormulas": [] },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "Admin average response time",
+            "name": "A",
+            "query": "WITH resource_filter AS (\n  SELECT fingerprint\n  FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-admin'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n)\nSELECT\n  toDateTime($start_timestamp) AS ts,\n  sum(toFloat64(duration_nano)) / nullIf(count(), 0) / 1000000 AS value\nFROM signoz_traces.distributed_signoz_index_v3\nWHERE resource_fingerprint GLOBAL IN resource_filter\n  AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n  AND timestamp >= $start_datetime AND timestamp < $end_datetime\n  AND kind = 2\n  AND attributes_string['http.route'] != '/_status'"
+          }
+        ],
+        "id": "admin-weekly-response-time-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "Admin avg response",
+      "yAxisUnit": "ms"
+    },
+    {
+      "description": "Percentage of observed API SERVER spans with has_error or HTTP 5xx over the last seven days, excluding /_status. Each failed request is counted once. Uses the same failure definition as Apdex; HTTP 4xx counts only if marked as an error. Sampling and retention affect the result. No requests returns no value.",
+      "id": "api-weekly-error-rate",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "value",
+      "decimalPrecision": 2,
+      "query": {
+        "builder": { "queryData": [], "queryFormulas": [] },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "API error rate",
+            "name": "A",
+            "query": "WITH resource_filter AS (\n  SELECT fingerprint\n  FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-api'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n)\nSELECT\n  toDateTime($start_timestamp) AS ts,\n  100.0 * countIf(has_error OR response_status_code LIKE '5%') / nullIf(count(), 0) AS value\nFROM signoz_traces.distributed_signoz_index_v3\nWHERE resource_fingerprint GLOBAL IN resource_filter\n  AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n  AND timestamp >= $start_datetime AND timestamp < $end_datetime\n  AND kind = 2\n  AND attributes_string['http.route'] != '/_status'"
+          }
+        ],
+        "id": "api-weekly-error-rate-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "API error rate",
+      "yAxisUnit": "percent"
+    },
+    {
+      "description": "Percentage of observed Admin SERVER spans with has_error or HTTP 5xx over the last seven days, excluding /_status. Each failed request is counted once. Uses the same failure definition as Apdex; HTTP 4xx counts only if marked as an error. Sampling and retention affect the result. No requests returns no value.",
+      "id": "admin-weekly-error-rate",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "value",
+      "decimalPrecision": 2,
+      "query": {
+        "builder": { "queryData": [], "queryFormulas": [] },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "Admin error rate",
+            "name": "A",
+            "query": "WITH resource_filter AS (\n  SELECT fingerprint\n  FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-admin'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n)\nSELECT\n  toDateTime($start_timestamp) AS ts,\n  100.0 * countIf(has_error OR response_status_code LIKE '5%') / nullIf(count(), 0) AS value\nFROM signoz_traces.distributed_signoz_index_v3\nWHERE resource_fingerprint GLOBAL IN resource_filter\n  AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n  AND timestamp >= $start_datetime AND timestamp < $end_datetime\n  AND kind = 2\n  AND attributes_string['http.route'] != '/_status'"
+          }
+        ],
+        "id": "admin-weekly-error-rate-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "Admin error rate",
+      "yAxisUnit": "percent"
+    },
+    {
+      "description": "Last seven days versus the preceding seven days of observed API SERVER spans, excluding /_status. Requests and response-time changes are relative percentages; Apdex is a score difference; error rate is a percentage-point difference. Positive means increased, not necessarily improved. Requires at least 14 days of retained traces and comparable sampling. Missing periods and zero percentage-change baselines show N/A; partial retention cannot be detected automatically.",
+      "id": "api-weekly-comparison",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "table",
+      "query": {
+        "builder": { "queryData": [], "queryFormulas": [] },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": "WITH resource_filter AS (\n  SELECT fingerprint\n  FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-api'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 604800 - 1800 AND $end_timestamp\n), stats AS (\n  SELECT\n    countIf(timestamp >= $start_datetime) AS current_count,\n    countIf(timestamp < $start_datetime) AS previous_count,\n    sumIf(toFloat64(duration_nano), timestamp >= $start_datetime) AS current_duration,\n    sumIf(toFloat64(duration_nano), timestamp < $start_datetime) AS previous_duration,\n    countIf(timestamp >= $start_datetime AND (has_error OR response_status_code LIKE '5%')) AS current_errors,\n    countIf(timestamp < $start_datetime AND (has_error OR response_status_code LIKE '5%')) AS previous_errors,\n    sumIf(if(has_error OR response_status_code LIKE '5%', 0.0, if(duration_nano <= 1000000000, 1.0, if(duration_nano <= 4000000000, 0.5, 0.0))), timestamp >= $start_datetime) AS current_satisfaction,\n    sumIf(if(has_error OR response_status_code LIKE '5%', 0.0, if(duration_nano <= 1000000000, 1.0, if(duration_nano <= 4000000000, 0.5, 0.0))), timestamp < $start_datetime) AS previous_satisfaction\n  FROM signoz_traces.distributed_signoz_index_v3\n  WHERE resource_fingerprint GLOBAL IN resource_filter\n    AND ts_bucket_start BETWEEN $start_timestamp - 604800 - 1800 AND $end_timestamp\n    AND timestamp >= $start_datetime - INTERVAL 7 DAY AND timestamp < $end_datetime\n    AND kind = 2 AND attributes_string['http.route'] != '/_status'\n), metrics AS (\n  SELECT arrayJoin([\n    tuple('Requests', nullIf(toFloat64(current_count), 0), nullIf(toFloat64(previous_count), 0), '', '%', toUInt8(0)),\n    tuple('Apdex', current_satisfaction / nullIf(current_count, 0), previous_satisfaction / nullIf(previous_count, 0), '', ' score', toUInt8(3)),\n    tuple('Avg response', current_duration / nullIf(current_count, 0) / 1000000, previous_duration / nullIf(previous_count, 0) / 1000000, ' ms', '%', toUInt8(2)),\n    tuple('Error rate', 100.0 * current_errors / nullIf(current_count, 0), 100.0 * previous_errors / nullIf(previous_count, 0), '%', ' pp', toUInt8(2))\n  ]) AS metric FROM stats\n)\nSELECT\n  metric.1 AS Metric,\n  ifNull(concat(toString(round(metric.2, metric.6)), metric.4), 'N/A') AS `This week`,\n  ifNull(concat(toString(round(metric.3, metric.6)), metric.4), 'N/A') AS `Previous week`,\n  concat(\n    multiIf(\n      isNull(delta) OR round(delta, if(metric.1 = 'Apdex', 3, 2)) = 0 OR metric.1 = 'Requests', '⚪ ',\n      (metric.1 = 'Apdex' AND delta > 0) OR (metric.1 IN ('Avg response', 'Error rate') AND delta < 0), '🟢 ',\n      '🔴 '\n    ),\n    ifNull(concat(if(round(delta, if(metric.1 = 'Apdex', 3, 2)) > 0, '+', ''), toString(round(delta, if(metric.1 = 'Apdex', 3, 2))), metric.5), 'N/A')\n  ) AS Change\nFROM (\n  SELECT metric,\n    if(metric.5 = '%', 100.0 * (metric.2 - metric.3) / nullIf(metric.3, 0), metric.2 - metric.3) AS delta\n  FROM metrics\n)"
+          }
+        ],
+        "id": "api-weekly-comparison-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "API - week-over-week",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Last seven days versus the preceding seven days of observed Admin SERVER spans, excluding /_status. Requests and response-time changes are relative percentages; Apdex is a score difference; error rate is a percentage-point difference. Positive means increased, not necessarily improved. Requires at least 14 days of retained traces and comparable sampling. Missing periods and zero percentage-change baselines show N/A; partial retention cannot be detected automatically.",
+      "id": "admin-weekly-comparison",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "table",
+      "query": {
+        "builder": { "queryData": [], "queryFormulas": [] },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": "WITH resource_filter AS (\n  SELECT fingerprint\n  FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-admin'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 604800 - 1800 AND $end_timestamp\n), stats AS (\n  SELECT\n    countIf(timestamp >= $start_datetime) AS current_count,\n    countIf(timestamp < $start_datetime) AS previous_count,\n    sumIf(toFloat64(duration_nano), timestamp >= $start_datetime) AS current_duration,\n    sumIf(toFloat64(duration_nano), timestamp < $start_datetime) AS previous_duration,\n    countIf(timestamp >= $start_datetime AND (has_error OR response_status_code LIKE '5%')) AS current_errors,\n    countIf(timestamp < $start_datetime AND (has_error OR response_status_code LIKE '5%')) AS previous_errors,\n    sumIf(if(has_error OR response_status_code LIKE '5%', 0.0, if(duration_nano <= 500000000, 1.0, if(duration_nano <= 2000000000, 0.5, 0.0))), timestamp >= $start_datetime) AS current_satisfaction,\n    sumIf(if(has_error OR response_status_code LIKE '5%', 0.0, if(duration_nano <= 500000000, 1.0, if(duration_nano <= 2000000000, 0.5, 0.0))), timestamp < $start_datetime) AS previous_satisfaction\n  FROM signoz_traces.distributed_signoz_index_v3\n  WHERE resource_fingerprint GLOBAL IN resource_filter\n    AND ts_bucket_start BETWEEN $start_timestamp - 604800 - 1800 AND $end_timestamp\n    AND timestamp >= $start_datetime - INTERVAL 7 DAY AND timestamp < $end_datetime\n    AND kind = 2 AND attributes_string['http.route'] != '/_status'\n), metrics AS (\n  SELECT arrayJoin([\n    tuple('Requests', nullIf(toFloat64(current_count), 0), nullIf(toFloat64(previous_count), 0), '', '%', toUInt8(0)),\n    tuple('Apdex', current_satisfaction / nullIf(current_count, 0), previous_satisfaction / nullIf(previous_count, 0), '', ' score', toUInt8(3)),\n    tuple('Avg response', current_duration / nullIf(current_count, 0) / 1000000, previous_duration / nullIf(previous_count, 0) / 1000000, ' ms', '%', toUInt8(2)),\n    tuple('Error rate', 100.0 * current_errors / nullIf(current_count, 0), 100.0 * previous_errors / nullIf(previous_count, 0), '%', ' pp', toUInt8(2))\n  ]) AS metric FROM stats\n)\nSELECT\n  metric.1 AS Metric,\n  ifNull(concat(toString(round(metric.2, metric.6)), metric.4), 'N/A') AS `This week`,\n  ifNull(concat(toString(round(metric.3, metric.6)), metric.4), 'N/A') AS `Previous week`,\n  concat(\n    multiIf(\n      isNull(delta) OR round(delta, if(metric.1 = 'Apdex', 3, 2)) = 0 OR metric.1 = 'Requests', '⚪ ',\n      (metric.1 = 'Apdex' AND delta > 0) OR (metric.1 IN ('Avg response', 'Error rate') AND delta < 0), '🟢 ',\n      '🔴 '\n    ),\n    ifNull(concat(if(round(delta, if(metric.1 = 'Apdex', 3, 2)) > 0, '+', ''), toString(round(delta, if(metric.1 = 'Apdex', 3, 2))), metric.5), 'N/A')\n  ) AS Change\nFROM (\n  SELECT metric,\n    if(metric.5 = '%', 100.0 * (metric.2 - metric.3) / nullIf(metric.3, 0), metric.2 - metric.3) AS delta\n  FROM metrics\n)"
+          }
+        ],
+        "id": "admin-weekly-comparison-query",
+        "promql": [{ "disabled": false, "legend": "", "name": "A", "query": "" }],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "Admin - week-over-week",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Rolling seven-day daily report for notification-api. Day 1 through Day 8 are Toronto dates (see Period row); edge dates are partial. Summary aggregates all requests, not daily averages. CPU and memory are observed one-minute totals across matching service pods, averaged over available minutes; missing collection can understate totals. DB call avg includes all observed database CLIENT spans, including health-check work, not a database-time percentage. Request rows exclude /_status. Missing observations show N/A. No environment selector; data is scoped to this SigNoz instance.",
+      "id": "api-weekly-report",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "table",
+      "query": {
+        "builder": {
+          "queryData": [],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": "WITH\n  toTimeZone($start_datetime, 'America/Toronto') AS window_start,\n  toTimeZone($end_datetime, 'America/Toronto') AS window_end,\n  toStartOfDay(window_end) AS today,\nresource_filter AS (\n  SELECT fingerprint FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-api'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n),\nperiods AS (\n  SELECT\n    toUInt8(number) AS period,\n    if(number = 8, window_start, greatest(window_start, today - toIntervalDay(7 - toInt32(number)))) AS period_start,\n    if(number = 8, window_end, least(window_end, today - toIntervalDay(6 - toInt32(number)))) AS period_end\n  FROM numbers(9)\n),\nrequests AS (\n  SELECT\n    arrayJoin([toUInt8(7 - dateDiff('day', toTimeZone(timestamp, 'America/Toronto'), today)), toUInt8(8)]) AS period,\n    count() AS request_count,\n    sum(toFloat64(duration_nano)) AS duration_sum,\n    countIf(has_error OR response_status_code LIKE '5%') AS errors,\n    sum(if(has_error OR response_status_code LIKE '5%', 0.0,\n      if(duration_nano <= 1000000000, 1.0, if(duration_nano <= 4000000000, 0.5, 0.0)))) AS satisfaction\n  FROM signoz_traces.distributed_signoz_index_v3\n  WHERE resource_fingerprint GLOBAL IN resource_filter\n    AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n    AND timestamp >= $start_datetime AND timestamp < $end_datetime\n    AND kind = 2 AND attributes_string['http.route'] != '/_status'\n  GROUP BY period\n),\ndatabase_calls AS (\n  SELECT\n    arrayJoin([toUInt8(7 - dateDiff('day', toTimeZone(timestamp, 'America/Toronto'), today)), toUInt8(8)]) AS period,\n    count() AS db_count,\n    sum(toFloat64(duration_nano)) AS db_duration_sum\n  FROM signoz_traces.distributed_signoz_index_v3\n  WHERE resource_fingerprint GLOBAL IN resource_filter\n    AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n    AND timestamp >= $start_datetime AND timestamp < $end_datetime\n    AND kind = 3\n    AND (attributes_string['db.system'] != '' OR attributes_string['db.system.name'] != ''\n      OR attributes_string['db.statement'] != '' OR attributes_string['db.query.text'] != '')\n  GROUP BY period\n),\nmetric_series AS (\n  SELECT DISTINCT metric_name, fingerprint\n  FROM signoz_metrics.time_series_v4_1day\n  WHERE metric_name IN ('k8s.pod.cpu.usage', 'k8s.pod.memory.working_set')\n    AND JSONExtractString(labels, 'k8s.namespace.name') = 'notification-canada-ca'\n    AND match(JSONExtractString(labels, 'k8s.pod.name'), '^notify-api-')\n),\npod_minutes AS (\n  SELECT metric_name, fingerprint, intDiv(unix_milli, 60000) * 60000 AS minute_ms,\n    avg(value) AS pod_value\n  FROM signoz_metrics.distributed_samples_v4\n  WHERE metric_name IN ('k8s.pod.cpu.usage', 'k8s.pod.memory.working_set')\n    AND (metric_name, fingerprint) GLOBAL IN metric_series\n    AND unix_milli >= $start_timestamp_ms AND unix_milli < $end_timestamp_ms\n  GROUP BY metric_name, fingerprint, minute_ms\n),\nservice_minutes AS (\n  SELECT metric_name, minute_ms, sum(pod_value) AS service_value\n  FROM pod_minutes GROUP BY metric_name, minute_ms\n),\nresources AS (\n  SELECT\n    arrayJoin([toUInt8(7 - dateDiff('day', toTimeZone(fromUnixTimestamp64Milli(minute_ms), 'America/Toronto'), today)), toUInt8(8)]) AS period,\n    countIf(metric_name = 'k8s.pod.cpu.usage') AS cpu_samples,\n    avgIf(service_value, metric_name = 'k8s.pod.cpu.usage') AS cpu_cores,\n    countIf(metric_name = 'k8s.pod.memory.working_set') AS memory_samples,\n    avgIf(service_value, metric_name = 'k8s.pod.memory.working_set') AS memory_bytes\n  FROM service_minutes GROUP BY period\n),\ncells AS (\n  SELECT periods.period AS period, entry.1 AS row_order, entry.2 AS metric, entry.3 AS cell\n  FROM periods\n  LEFT JOIN requests USING period\n  LEFT JOIN database_calls USING period\n  LEFT JOIN resources USING period\n  ARRAY JOIN [\n    tuple(0, 'Period (Toronto)', if(period_end <= period_start, 'N/A',\n      if(periods.period = 8, 'Last 7 days', concat(\n        formatDateTime(period_start, '%a %m-%d', 'America/Toronto'),\n        if(periods.period IN (0, 7), ' (partial)', ''))))),\n    tuple(1, 'Apdex', if(request_count > 0, toString(round(satisfaction / nullIf(request_count, 0), 3)), 'N/A')),\n    tuple(2, 'Resp. time', if(request_count > 0, concat(toString(round(duration_sum / nullIf(request_count, 0) / 1000000, 2)), ' ms'), 'N/A')),\n    tuple(3, 'Throughput', if(request_count > 0 AND period_end > period_start,\n      concat(toString(round(60.0 * request_count / nullIf(toUnixTimestamp(period_end) - toUnixTimestamp(period_start), 0), 2)), ' rpm'), 'N/A')),\n    tuple(4, 'Error rate', if(request_count > 0, concat(toString(round(100.0 * errors / nullIf(request_count, 0), 2)), '%'), 'N/A')),\n    tuple(5, 'CPU (total pods)', if(cpu_samples > 0, concat(toString(round(cpu_cores, 3)), ' cores'), 'N/A')),\n    tuple(6, 'Memory (total pods)', if(memory_samples > 0, concat(toString(round(memory_bytes / 1000000, 2)), ' MB'), 'N/A')),\n    tuple(7, 'DB call avg', if(db_count > 0, concat(toString(round(db_duration_sum / nullIf(db_count, 0) / 1000000, 2)), ' ms'), 'N/A'))\n  ] AS entry\n)\nSELECT metric AS Metric,\n  maxIf(cell, period = 0) AS `Day 1`,\n  maxIf(cell, period = 1) AS `Day 2`,\n  maxIf(cell, period = 2) AS `Day 3`,\n  maxIf(cell, period = 3) AS `Day 4`,\n  maxIf(cell, period = 4) AS `Day 5`,\n  maxIf(cell, period = 5) AS `Day 6`,\n  maxIf(cell, period = 6) AS `Day 7`,\n  maxIf(cell, period = 7) AS `Day 8`,\n  maxIf(cell, period = 8) AS `Summary`\nFROM cells GROUP BY row_order, metric ORDER BY row_order"
+          }
+        ],
+        "id": "api-weekly-report-query",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "API - daily report",
+      "yAxisUnit": "none"
+    },
+    {
+      "description": "Rolling seven-day daily report for notification-admin. Day 1 through Day 8 are Toronto dates (see Period row); edge dates are partial. Summary aggregates all requests, not daily averages. CPU and memory are observed one-minute totals across matching service pods, averaged over available minutes; missing collection can understate totals. DB call avg includes all observed database CLIENT spans, including health-check work, not a database-time percentage. Request rows exclude /_status. Missing observations show N/A. No environment selector; data is scoped to this SigNoz instance.",
+      "id": "admin-weekly-report",
+      "isStacked": false,
+      "nullZeroValues": "null",
+      "opacity": "1",
+      "panelTypes": "table",
+      "query": {
+        "builder": {
+          "queryData": [],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": "WITH\n  toTimeZone($start_datetime, 'America/Toronto') AS window_start,\n  toTimeZone($end_datetime, 'America/Toronto') AS window_end,\n  toStartOfDay(window_end) AS today,\nresource_filter AS (\n  SELECT fingerprint FROM signoz_traces.distributed_traces_v3_resource\n  WHERE simpleJSONExtractString(labels, 'service.name') = 'notification-admin'\n    AND seen_at_ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n),\nperiods AS (\n  SELECT\n    toUInt8(number) AS period,\n    if(number = 8, window_start, greatest(window_start, today - toIntervalDay(7 - toInt32(number)))) AS period_start,\n    if(number = 8, window_end, least(window_end, today - toIntervalDay(6 - toInt32(number)))) AS period_end\n  FROM numbers(9)\n),\nrequests AS (\n  SELECT\n    arrayJoin([toUInt8(7 - dateDiff('day', toTimeZone(timestamp, 'America/Toronto'), today)), toUInt8(8)]) AS period,\n    count() AS request_count,\n    sum(toFloat64(duration_nano)) AS duration_sum,\n    countIf(has_error OR response_status_code LIKE '5%') AS errors,\n    sum(if(has_error OR response_status_code LIKE '5%', 0.0,\n      if(duration_nano <= 500000000, 1.0, if(duration_nano <= 2000000000, 0.5, 0.0)))) AS satisfaction\n  FROM signoz_traces.distributed_signoz_index_v3\n  WHERE resource_fingerprint GLOBAL IN resource_filter\n    AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n    AND timestamp >= $start_datetime AND timestamp < $end_datetime\n    AND kind = 2 AND attributes_string['http.route'] != '/_status'\n  GROUP BY period\n),\ndatabase_calls AS (\n  SELECT\n    arrayJoin([toUInt8(7 - dateDiff('day', toTimeZone(timestamp, 'America/Toronto'), today)), toUInt8(8)]) AS period,\n    count() AS db_count,\n    sum(toFloat64(duration_nano)) AS db_duration_sum\n  FROM signoz_traces.distributed_signoz_index_v3\n  WHERE resource_fingerprint GLOBAL IN resource_filter\n    AND ts_bucket_start BETWEEN $start_timestamp - 1800 AND $end_timestamp\n    AND timestamp >= $start_datetime AND timestamp < $end_datetime\n    AND kind = 3\n    AND (attributes_string['db.system'] != '' OR attributes_string['db.system.name'] != ''\n      OR attributes_string['db.statement'] != '' OR attributes_string['db.query.text'] != '')\n  GROUP BY period\n),\nmetric_series AS (\n  SELECT DISTINCT metric_name, fingerprint\n  FROM signoz_metrics.time_series_v4_1day\n  WHERE metric_name IN ('k8s.pod.cpu.usage', 'k8s.pod.memory.working_set')\n    AND JSONExtractString(labels, 'k8s.namespace.name') = 'notification-canada-ca'\n    AND match(JSONExtractString(labels, 'k8s.pod.name'), '^notify-admin-')\n),\npod_minutes AS (\n  SELECT metric_name, fingerprint, intDiv(unix_milli, 60000) * 60000 AS minute_ms,\n    avg(value) AS pod_value\n  FROM signoz_metrics.distributed_samples_v4\n  WHERE metric_name IN ('k8s.pod.cpu.usage', 'k8s.pod.memory.working_set')\n    AND (metric_name, fingerprint) GLOBAL IN metric_series\n    AND unix_milli >= $start_timestamp_ms AND unix_milli < $end_timestamp_ms\n  GROUP BY metric_name, fingerprint, minute_ms\n),\nservice_minutes AS (\n  SELECT metric_name, minute_ms, sum(pod_value) AS service_value\n  FROM pod_minutes GROUP BY metric_name, minute_ms\n),\nresources AS (\n  SELECT\n    arrayJoin([toUInt8(7 - dateDiff('day', toTimeZone(fromUnixTimestamp64Milli(minute_ms), 'America/Toronto'), today)), toUInt8(8)]) AS period,\n    countIf(metric_name = 'k8s.pod.cpu.usage') AS cpu_samples,\n    avgIf(service_value, metric_name = 'k8s.pod.cpu.usage') AS cpu_cores,\n    countIf(metric_name = 'k8s.pod.memory.working_set') AS memory_samples,\n    avgIf(service_value, metric_name = 'k8s.pod.memory.working_set') AS memory_bytes\n  FROM service_minutes GROUP BY period\n),\ncells AS (\n  SELECT periods.period AS period, entry.1 AS row_order, entry.2 AS metric, entry.3 AS cell\n  FROM periods\n  LEFT JOIN requests USING period\n  LEFT JOIN database_calls USING period\n  LEFT JOIN resources USING period\n  ARRAY JOIN [\n    tuple(0, 'Period (Toronto)', if(period_end <= period_start, 'N/A',\n      if(periods.period = 8, 'Last 7 days', concat(\n        formatDateTime(period_start, '%a %m-%d', 'America/Toronto'),\n        if(periods.period IN (0, 7), ' (partial)', ''))))),\n    tuple(1, 'Apdex', if(request_count > 0, toString(round(satisfaction / nullIf(request_count, 0), 3)), 'N/A')),\n    tuple(2, 'Resp. time', if(request_count > 0, concat(toString(round(duration_sum / nullIf(request_count, 0) / 1000000, 2)), ' ms'), 'N/A')),\n    tuple(3, 'Throughput', if(request_count > 0 AND period_end > period_start,\n      concat(toString(round(60.0 * request_count / nullIf(toUnixTimestamp(period_end) - toUnixTimestamp(period_start), 0), 2)), ' rpm'), 'N/A')),\n    tuple(4, 'Error rate', if(request_count > 0, concat(toString(round(100.0 * errors / nullIf(request_count, 0), 2)), '%'), 'N/A')),\n    tuple(5, 'CPU (total pods)', if(cpu_samples > 0, concat(toString(round(cpu_cores, 3)), ' cores'), 'N/A')),\n    tuple(6, 'Memory (total pods)', if(memory_samples > 0, concat(toString(round(memory_bytes / 1000000, 2)), ' MB'), 'N/A')),\n    tuple(7, 'DB call avg', if(db_count > 0, concat(toString(round(db_duration_sum / nullIf(db_count, 0) / 1000000, 2)), ' ms'), 'N/A'))\n  ] AS entry\n)\nSELECT metric AS Metric,\n  maxIf(cell, period = 0) AS `Day 1`,\n  maxIf(cell, period = 1) AS `Day 2`,\n  maxIf(cell, period = 2) AS `Day 3`,\n  maxIf(cell, period = 3) AS `Day 4`,\n  maxIf(cell, period = 4) AS `Day 5`,\n  maxIf(cell, period = 5) AS `Day 6`,\n  maxIf(cell, period = 6) AS `Day 7`,\n  maxIf(cell, period = 7) AS `Day 8`,\n  maxIf(cell, period = 8) AS `Summary`\nFROM cells GROUP BY row_order, metric ORDER BY row_order"
+          }
+        ],
+        "id": "admin-weekly-report-query",
+        "promql": [
+          {
+            "disabled": false,
+            "legend": "",
+            "name": "A",
+            "query": ""
+          }
+        ],
+        "queryType": "clickhouse_sql"
+      },
+      "thresholds": [],
+      "timePreferance": "LAST_1_WEEK",
+      "title": "Admin - daily report",
+      "yAxisUnit": "none"
+    }
+  ]
+}
