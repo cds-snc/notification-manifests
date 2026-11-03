@@ -11,53 +11,12 @@ The notify API is deployed as a Kubernetes pod and is managed via Helm.
 
 ## Production image validation
 
-Release PR planning and production deployment validate images before cluster
-access, snapshots, database migrations, or application updates. The gate covers
-the 13 Notify release images (14 image/region checks), not third-party platform
-images. API, Celery, and database migrations share the API image.
-
-The release bot supplies `release-images.json` with each selected full commit SHA,
-its seven-character image tag, and source repository. Validation requires the
-recorded tag to match both the selected SHA prefix and the tag in the production
-configuration. Public ECR manifests are checked using Docker after authenticating
-with ECR Public in `us-east-1`. Private ECR images are checked using the production
-OIDC role and `ecr:DescribeImages` in each deployment region: `ca-central-1`,
-`us-east-1`, and `us-west-2`. Existing diff and production apply roles have
-`ReadOnlyAccess` plus ECR Public authentication permissions.
-
-A missing image, revision/tag mismatch, invalid configuration, or inaccessible
-registry blocks release. Slack and the workflow summary identify affected images
-and distinguish missing tags from access/network errors. Setup failures also send
-a Slack notification with a link to the failed run. No images are pulled, pushed,
-retagged, or deployed by validation. Tag existence and SHA-prefix consistency do
-not independently attest the contents of an image.
-
-### Rollout and rollbacks
-
-1. Merge the `notification-pr-bot` revision-record change first.
-2. Run the existing release bot workflow to regenerate the release PR with its
-	revision record, then merge the manifests gate change before releasing.
-3. Confirm the production release PR's image validation passes before merging it.
-
-Missing revision records fail closed, including manual production dispatches.
-For manual releases or rollbacks, update/restore the full revision record and
-production tags together. Validation uses the selected revision, not the current
-component branch HEAD, so an older intended release remains valid if its images
-still exist. Manifest-only releases can retain the existing record when tags do
-not change. Regenerate older release PRs that predate this record.
-
-### Local tests
-
-```shell
-cd .github/actions/validate-release-images
-npm ci --ignore-scripts
-npm test
-```
-
-Tests cover matching images, missing public/private tags, inconsistent SHA/config
-values, registry errors, failure reporting, and production job dependencies. They
-use fixtures and do not require AWS credentials. Live private-registry QA requires
-an authenticated production AWS session; no production deployment is needed.
+The production image workflow compares configured tags with the selected SHAs in
+the release bot's `release-images.json` and checks all 14 public/private ECR
+image-region targets. Failure blocks the production diff/deployment and notifies
+Slack with the affected image and reason. Merge the bot change and regenerate the
+release PR before enabling this gate. For rollbacks, restore the production tags
+and revision record together; current component HEAD is not required.
 
 ## How are environment variables added and set?
 

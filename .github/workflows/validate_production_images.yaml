@@ -47,9 +47,64 @@ jobs:
 
       - name: Validate release revisions and images
         id: validate
-        uses: ./.github/actions/validate-release-images
-        with:
-          aws-account-id: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+        env:
+          ACCOUNT_ID: ${{ secrets.PRODUCTION_AWS_ACCOUNT_ID }}
+          AWS_PAGER: ''
+        run: |
+          config="$(ruby -ryaml -rjson -e 'puts JSON.generate(YAML.safe_load(File.read(ARGV.fetch(0))))' helmfile/overrides/production.env)"
+          jq -e '.version == 1 and (.images | type == "object")' release-images.json > /dev/null
+          failures=()
+          while read -r component repository region; do
+            key="${component}_DOCKER_TAG"
+            tag="$(jq -r --arg key "$key" '.[$key] // empty' <<< "$config")"
+            read -r sha expected_tag <<< "$(jq -r --arg key "$key" '.images[$key] | [.sha, .tag] | @tsv' release-images.json)"
+            if [[ "$region" == public ]]; then
+              repository="$(jq -r --arg key "$repository" '.[$key] // empty' <<< "$config")"
+              if [[ "$component" == IPV4 ]]; then
+                repository="$(ruby -ryaml -e 'puts YAML.safe_load(File.read(ARGV.fetch(0))).fetch("image").fetch("repository")' helmfile/charts/ipv4-geolocate/values.yaml)"
+              fi
+            else
+              repository="$ACCOUNT_ID.dkr.ecr.$region.amazonaws.com/$repository"
+            fi
+            reason=''
+            if [[ ! "$sha" =~ ^[0-9a-f]{40}$ || "$tag" != "${sha:0:7}" || "$tag" != "$expected_tag" ]]; then
+              reason="SHA/tag mismatch: configured tag=$tag, recorded tag=$expected_tag, selected SHA=$sha"
+            elif [[ "$region" == public ]]; then
+              if ! error="$(docker manifest inspect "$repository:$tag" 2>&1)"; then
+                reason="Public ECR image missing or inaccessible: ${error:0:400}"
+              fi
+            elif ! error="$(aws ecr describe-images --region "$region" --registry-id "$ACCOUNT_ID" \
+              --repository-name "${repository#*/}" --image-ids "imageTag=$tag" 2>&1)"; then
+              reason="Private ECR image missing or inaccessible: ${error:0:400}"
+            fi
+            if [[ -n "$reason" ]]; then
+              failures+=("$key ($repository:$tag): $reason")
+            fi
+          done <<'IMAGES'
+          ADMIN ADMIN_IMAGE_REPOSITORY public
+          API API_IMAGE_REPOSITORY public
+          DOCUMENT_DOWNLOAD DOCUMENT_DOWNLOAD_IMAGE_REPOSITORY public
+          DOCUMENTATION DOCUMENTATION_IMAGE_REPOSITORY public
+          IPV4 IPV4_IMAGE_REPOSITORY public
+          BLAZER database-tools/blazer ca-central-1
+          GOOGLE_CIDR lambda/google-cidr ca-central-1
+          HEARTBEAT notify/heartbeat ca-central-1
+          PINPOINT_TO_SQS_SMS_CALLBACKS notify/pinpoint_to_sqs_sms_callbacks ca-central-1
+          PINPOINT_TO_SQS_SMS_CALLBACKS notify/pinpoint_to_sqs_sms_callbacks us-west-2
+          SES_RECEIVING_EMAILS notify/ses_receiving_emails us-east-1
+          SES_TO_SQS_EMAIL_CALLBACKS notify/ses_to_sqs_email_callbacks ca-central-1
+          SNS_TO_SQS_SMS_CALLBACKS notify/sns_to_sqs_sms_callbacks ca-central-1
+          SYSTEM_STATUS notify/system_status ca-central-1
+          IMAGES
+          if (( ${#failures[@]} )); then
+            details="$(printf -- '- %s\n' "${failures[@]}")"
+            delimiter="failures-${RANDOM}-${RANDOM}"
+            printf 'failures<<%s\n%s\n%s\n' "$delimiter" "$details" "$delimiter" >> "$GITHUB_OUTPUT"
+            printf '## Production image validation failed\n%s\n' "$details" >> "$GITHUB_STEP_SUMMARY"
+            echo '::error::Production image validation failed. See the job summary for affected images and reasons.'
+            exit 1
+          fi
+          echo 'All 14 production image/region checks passed.' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Notify Slack when image validation blocks release
         if: ${{ failure() }}
