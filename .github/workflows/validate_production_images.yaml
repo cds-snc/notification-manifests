@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       role-name:
-        description: Existing deployment or diff role used for read-only registry checks
+        description: Production deployment role used for read-only registry checks
         required: true
         type: string
     secrets:

@@ -13,7 +13,8 @@ The notify API is deployed as a Kubernetes pod and is managed via Helm.
 
 The production image workflow checks that the image tags in production configuration
 exist in public/private ECR across all 14 image-region targets. Failure blocks the
-production diff/deployment and notifies Slack with the affected image and reason.
+production release before snapshots or deployment and notifies Slack with the
+affected image and reason. This check does not run during production planning.
 No separate HEAD comparison, release record, or release-bot change is required.
 
 ## How are environment variables added and set?
