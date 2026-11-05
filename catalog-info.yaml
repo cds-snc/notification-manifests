@@ -5,10 +5,9 @@ apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
   name: notification-manifests
-  title: Notification Manifests
   description: >-
     Kubernetes manifest files for notification.canada.ca | Configuration
-    Kubernetes pour notification.canada.ca.
+    Kubernetes pour notification.canada.ca
   annotations:
     github.com/project-slug: cds-snc/notification-manifests
   labels:
