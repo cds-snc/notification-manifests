@@ -11,7 +11,6 @@ metadata:
     Kubernetes pour notification.canada.ca.
   annotations:
     github.com/project-slug: cds-snc/notification-manifests
-    backstage.io/source-location: url:https://github.com/cds-snc/notification-manifests/tree/main/
   labels:
     license: MIT
 spec:
