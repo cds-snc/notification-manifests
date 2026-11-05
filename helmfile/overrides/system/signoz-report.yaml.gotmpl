@@ -1,0 +1,35 @@
+signoz:
+  url: "https://signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}"
+  publicUrl: "https://signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}"
+  ignoreTlsErrors: true
+
+schedule: "0 12 * * 1-5"
+
+# Fill in the dashboard UUIDs from /dashboard/<id> in the SigNoz UI
+dashboards:
+  - title: Kubernetes Pod Metrics - Overall
+    id: 019c772e-bc98-7de0-8e0d-85570c3d16e9
+    relativeTime: 24h
+    variables:
+      k8s.namespace.name: notification-canada-ca
+  - title: The Slowest Elements of the GC Notify Stack
+    id: 019ddaf7-bb4e-7429-bec8-e2874e2ebfdc
+    relativeTime: 24h
+      
+email:
+  apiUrl: "https://api.{{ requiredEnv "BASE_DOMAIN" }}"
+  # Template ID from GC Notify; attachments need no placeholders
+  templateId: "1fc12faa-3bff-4b96-a1d4-863cabef1a27"
+  recipients: ["ben.larabie@cds-snc.ca", "jimmy.royer@cds-snc.ca"]
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/signoz-report-eks-role
+
+nodeSelector:
+  workload-type: signoz
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: signoz
+    effect: NoSchedule
