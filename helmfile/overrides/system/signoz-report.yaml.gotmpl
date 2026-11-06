@@ -19,7 +19,7 @@ dashboards:
 email:
   apiUrl: "https://api.{{ requiredEnv "BASE_DOMAIN" }}"
   # Template ID from GC Notify; attachments need no placeholders
-  templateId: "1fc12faa-3bff-4b96-a1d4-863cabef1a27"
+  templateId: "{{ if eq .Environment.Name "production" }}d84e2fac-fe1a-4880-adf7-7336e20ecd8a{{ else }}ccfbab37-0e93-454c-a0da-69789394035b{{ end }}"
   recipients: ["ben.larabie@cds-snc.ca", "jimmy.royer@cds-snc.ca"]
 
 serviceAccount:
