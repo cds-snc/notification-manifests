@@ -9,6 +9,84 @@ This repository uses Helm and Helmfile to manage the deployments of all notify c
 
 The notify API is deployed as a Kubernetes pod and is managed via Helm.
 
+## Secret scanning
+
+The [TruffleHog workflow](.github/workflows/secret_scanning.yml) runs on every
+pull request, regardless of which files change. Dev apply, staging and production
+diff/apply, and individual staging rollouts must pass the same reusable scan
+before any other jobs run, including image validation and pre-apply snapshots.
+The scanner has read-only repository access and receives no AWS or 1Password
+secrets.
+
+Pull requests scan the PR's commits; pushes scan the pushed commits. Manual,
+repository-dispatch, and local runs scan all available branches and tags.
+Available refs can differ between a local clone and an Actions checkout.
+Potential secrets and scan errors fail the workflow. Credential verification is
+disabled so detected values are not sent to external services. Investigate
+findings and rotate any exposed credentials before retrying.
+
+The [baseline](.github/trufflehog-baseline.json) includes reviewed service-ID
+false positives and a confirmed revoked historical exposure. Reviewed exceptions
+must match an unverified finding's exact detector, commit, file, and SHA-256
+digest of the detected value (`raw_sha256`), with a nonempty `reason`. An explicit
+`"commit": "*"` permits that exact detector/value in that exact file across
+commits only for recurring reviewed non-secret values, such as service IDs or
+documentation placeholders. Active credentials
+must never be baselined. A historical credential may be baselined only after
+confirmed revocation, with an exact commit and a reason recording who confirmed
+revocation and when; describe it as a revoked exposure, not a false positive.
+Hashing is for matching, not a substitute for revocation. Do not copy exceptions
+from other repositories without reviewing findings in this repository.
+
+The [scan script](.github/scripts/scan-secrets.sh) prints finding locations and
+baseline decisions, metrics, and counts without detected values, and adds counts
+to the Actions job summary. Raw findings are stored in private temporary files
+and deleted on exit. With Docker, Node.js, and `jq` installed:
+
+```sh
+bash .github/scripts/scan-secrets.sh
+```
+
+For private local investigation with an installed TruffleHog 3.99.7:
+
+```sh
+bash .github/scripts/scan-secrets.sh --native --output-dir "$HOME/trufflehog-manifests-review"
+```
+
+The output directory must not exist. It is created with private permissions and
+retains `results.jsonl` (including detected values), `errors.log`, `report.json`,
+`validation.log`, and `hashed.jsonl`, even on failure. Do not commit or share
+these files. Both options are forbidden in GitHub Actions. Omit `--native` to use
+the pinned Docker image instead.
+
+Review retained findings interactively, with five historical source lines on
+either side of each hit:
+
+```sh
+bash .github/scripts/review-secrets.sh "$HOME/trufflehog-manifests-review"
+```
+
+The local-only [reviewer](.github/scripts/review-secrets.sh) offers approval as a
+non-secret or confirmed revoked exposure, skip (the default), or quit.
+Every approval requires a reason; revoked exposures also require who confirmed
+revocation and the confirmation date. Approvals save immediately to the baseline
+with exact commits and value hashes, never wildcard commits. Existing baseline
+matches are skipped, so restarting resumes unapproved findings. Source context
+may expose credentials: do not record or share the terminal. Binary source and
+verified findings cannot be approved through this reviewer.
+After reviewing, rerun `bash .github/scripts/scan-secrets.sh --native` to apply
+the updated baseline; the retained report is not modified.
+
+The scanner image is pinned to the TruffleHog 3.99.7 multi-platform manifest
+digest (Linux AMD64/ARM64), matching notification-terraform. When upgrading,
+update the digest, version labels, and regression test together.
+Run the synthetic regression tests without Docker or network access:
+
+```sh
+bash .github/scripts/scan-secrets.test.sh
+bash .github/scripts/review-secrets.test.sh
+```
+
 ## Image validation
 
 Staging and production apply share a workflow that checks their configured image
