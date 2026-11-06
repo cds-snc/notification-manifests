@@ -26,7 +26,13 @@ permissions:
   pull-requests: write
 
 jobs:
+  secret-scanning:
+    uses: ./.github/workflows/secret_scanning.yml
+    permissions:
+      contents: read
+
   validate-images:
+    needs: secret-scanning
     uses: ./.github/workflows/validate_release_images.yaml
     with:
       environment: staging
