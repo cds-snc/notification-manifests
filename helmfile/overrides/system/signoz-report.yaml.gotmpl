@@ -1,0 +1,31 @@
+signoz:
+  url: "https://signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}"
+  publicUrl: "https://signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}"
+  ignoreTlsErrors: true
+
+schedule: "0 9 * * 1"
+timeZone: "America/Toronto"
+
+# Fill in the dashboard UUIDs from /dashboard/<id> in the SigNoz UI
+dashboards:
+  - title: Notify API and Admin Weekly Activity
+    id: 01a1a2cd-eaef-73c6-9474-df9da132ef47
+    relativeTime: 1w
+      
+email:
+  apiUrl: "https://api.{{ requiredEnv "BASE_DOMAIN" }}"
+  # Template ID from GC Notify; attachments need no placeholders  
+  templateId: "{{ if eq .Environment.Name "production" }}d84e2fac-fe1a-4880-adf7-7336e20ecd8a{{ else }}ccfbab37-0e93-454c-a0da-69789394035b{{ end }}"
+  recipients: ["ben.larabie@cds-snc.ca", "jimmy.royer@cds-snc.ca"]
+
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::{{ requiredEnv "AWS_ACCOUNT_ID" }}:role/signoz-report-eks-role
+
+nodeSelector:
+  workload-type: signoz
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: signoz
+    effect: NoSchedule
