@@ -3,22 +3,18 @@ signoz:
   publicUrl: "https://signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}"
   ignoreTlsErrors: true
 
-schedule: "0 12 * * 1-5"
+schedule: "0 9 * * 1"
+timeZone: "America/Toronto"
 
 # Fill in the dashboard UUIDs from /dashboard/<id> in the SigNoz UI
 dashboards:
-  - title: Kubernetes Pod Metrics - Overall
-    id: 019c772e-bc98-7de0-8e0d-85570c3d16e9
-    relativeTime: 24h
-    variables:
-      k8s.namespace.name: notification-canada-ca
-  - title: The Slowest Elements of the GC Notify Stack
-    id: 019ddaf7-bb4e-7429-bec8-e2874e2ebfdc
-    relativeTime: 24h
+  - title: Notify API and Admin Weekly Activity
+    id: 01a1a2cd-eaef-73c6-9474-df9da132ef47
+    relativeTime: 1w
       
 email:
   apiUrl: "https://api.{{ requiredEnv "BASE_DOMAIN" }}"
-  # Template ID from GC Notify; attachments need no placeholders
+  # Template ID from GC Notify; attachments need no placeholders  
   templateId: "{{ if eq .Environment.Name "production" }}d84e2fac-fe1a-4880-adf7-7336e20ecd8a{{ else }}ccfbab37-0e93-454c-a0da-69789394035b{{ end }}"
   recipients: ["ben.larabie@cds-snc.ca", "jimmy.royer@cds-snc.ca"]
 
