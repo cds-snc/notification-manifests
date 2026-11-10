@@ -58,6 +58,8 @@ const browser = await chromium.launch({ args: ['--no-sandbox'] });
 // Container locale is unset, which makes the SigNoz UI crash in Intl.NumberFormat
 const context = await browser.newContext({ viewport, locale: 'en-US', ignoreHTTPSErrors: process.env.SIGNOZ_IGNORE_TLS_ERRORS === 'true' });
 const page = await context.newPage();
+// Production dashboard queries can take longer than Playwright's default 30 seconds.
+page.setDefaultNavigationTimeout(120000);
 page.on('pageerror', (err) => console.error('[pageerror]', err.stack ?? err.message));
 page.on('console', (msg) => msg.type() === 'error' && console.error('[console]', msg.text()));
 page.on('response', (res) => res.status() >= 400 && console.error(`[http ${res.status()}]`, res.request().method(), res.url()));
