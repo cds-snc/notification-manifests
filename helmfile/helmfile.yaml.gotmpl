@@ -584,7 +584,7 @@ releases:
   - name: signoz-report
     version: 0.1.0
     namespace: signoz
-    installed: {{ if eq .Environment.Name "production" }}false{{ else }}true{{ end }}
+    installed: true
     labels:
       app: signoz-report
       tier: apm
