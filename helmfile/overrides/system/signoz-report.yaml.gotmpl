@@ -9,7 +9,7 @@ timeZone: "America/Toronto"
 # Fill in the dashboard UUIDs from /dashboard/<id> in the SigNoz UI
 dashboards:
   - title: Notify API and Admin Weekly Activity
-    id: 01a1a2cd-eaef-73c6-9474-df9da132ef47
+    id: "{{ if eq .Environment.Name "production" }}01a1a6fe-acc5-7640-82c8-8bc78c7a494f{{ else }}01a1a2cd-eaef-73c6-9474-df9da132ef47{{ end }}"
     relativeTime: 1w
       
 email:
