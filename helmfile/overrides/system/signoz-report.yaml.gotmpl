@@ -1,5 +1,6 @@
 signoz:
-  url: "https://signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}"
+  # Bypass the ingress timeout for long-running dashboard queries.
+  url: "http://signoz:8080"
   publicUrl: "https://signoz.{{ requiredEnv "INTERNAL_DNS_FQDN" }}"
   ignoreTlsErrors: true
 
