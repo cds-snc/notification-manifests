@@ -1,0 +1,44 @@
+[
+  {
+    "detector": "Dockerhub",
+    "commit": "*",
+    "file": "helmfile/overrides/dev-auto.env",
+    "raw_sha256": "63970255b076383b4ff6eedfc620d2ae53653c423931f92d382c17eecc06d4b1",
+    "reason": "Reviewed non-secret. Ben Larabie confirmed on 2026-11-06 that this exact value is a service ID, not a DockerHub credential. Allow this recurring false positive in this exact file across commits."
+  },
+  {
+    "detector": "Dockerhub",
+    "commit": "*",
+    "file": "helmfile/overrides/dev.env",
+    "raw_sha256": "63970255b076383b4ff6eedfc620d2ae53653c423931f92d382c17eecc06d4b1",
+    "reason": "Reviewed non-secret. Ben Larabie confirmed on 2026-11-06 that this exact value is a service ID, not a DockerHub credential. Allow this recurring false positive in this exact file across commits."
+  },
+  {
+    "detector": "Dockerhub",
+    "commit": "*",
+    "file": "helmfile/overrides/production.env",
+    "raw_sha256": "396590b766c276755ff3c7da4d29d3beba7832e9e8d716ba1e0742b4b2f0ccca",
+    "reason": "Reviewed non-secret. Ben Larabie confirmed on 2026-11-06 that this exact value is a service ID, not a DockerHub credential. Allow this recurring false positive in this exact file across commits."
+  },
+  {
+    "detector": "Dockerhub",
+    "commit": "*",
+    "file": "helmfile/overrides/sandbox.env",
+    "raw_sha256": "63970255b076383b4ff6eedfc620d2ae53653c423931f92d382c17eecc06d4b1",
+    "reason": "Reviewed non-secret. Ben Larabie confirmed on 2026-11-06 that this exact value is a service ID, not a DockerHub credential. Allow this recurring false positive in this exact file across commits."
+  },
+  {
+    "detector": "Dockerhub",
+    "commit": "*",
+    "file": "helmfile/overrides/staging.env",
+    "raw_sha256": "63970255b076383b4ff6eedfc620d2ae53653c423931f92d382c17eecc06d4b1",
+    "reason": "Reviewed non-secret. Ben Larabie confirmed on 2026-11-06 that this exact value is a service ID, not a DockerHub credential. Allow this recurring false positive in this exact file across commits."
+  },
+  {
+    "detector": "NewRelicLicenseKey",
+    "commit": "dfe93eab02142b1c3f4f800d9f41b219c5f8b14f",
+    "file": "helmfile/overrides/system/newrelic.yaml.gotmpl",
+    "raw_sha256": "d0b818775f31d503b335f0b4f6b8f1f9e0e535ffcfc1f359c619279625e33c4b",
+    "reason": "Revoked historical exposure; revocation confirmed by Ben Larabie on 2026-11-06. Revoked in previous trufflehog findings in TF repo"
+  }
+]

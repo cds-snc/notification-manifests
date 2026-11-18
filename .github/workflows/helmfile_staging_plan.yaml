@@ -17,7 +17,13 @@ permissions:
   pull-requests: write
 
 jobs:
+  secret-scanning:
+    uses: ./.github/workflows/secret_scanning.yml
+    permissions:
+      contents: read
+
   helmfile-diff:
+    needs: secret-scanning
     runs-on: ubuntu-latest
     steps:
       - name: Prepare Ubuntu CA trust

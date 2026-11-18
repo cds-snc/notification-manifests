@@ -1,0 +1,104 @@
+{{- $publicUrl := required "signoz.publicUrl is required" .Values.signoz.publicUrl }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "signoz-report.fullname" . }}
+  labels:
+    {{- include "signoz-report.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.schedule | quote }}
+  timeZone: {{ .Values.timeZone | quote }}
+  suspend: {{ .Values.cronjob.suspend }}
+  concurrencyPolicy: {{ .Values.cronjob.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.cronjob.backoffLimit }}
+      activeDeadlineSeconds: {{ .Values.cronjob.activeDeadlineSeconds }}
+      ttlSecondsAfterFinished: {{ .Values.cronjob.ttlSecondsAfterFinished }}
+      template:
+        metadata:
+          labels:
+            {{- include "signoz-report.selectorLabels" . | nindent 12 }}
+        spec:
+          restartPolicy: Never
+          serviceAccountName: {{ include "signoz-report.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          containers:
+          - name: report
+            image: "{{ .Values.image.repository }}:{{ default (printf "v%s-noble" .Values.playwright.version) .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            env:
+            - name: HOME
+              value: /work
+            - name: SIGNOZ_URL
+              value: {{ .Values.signoz.url | quote }}
+            - name: SIGNOZ_PUBLIC_URL
+              value: {{ $publicUrl | quote }}
+            - name: SIGNOZ_IGNORE_TLS_ERRORS
+              value: {{ .Values.signoz.ignoreTlsErrors | quote }}
+            - name: REPORT_DASHBOARDS
+              value: {{ .Values.dashboards | toJson | quote }}
+            - name: REPORT_DEFAULT_RELATIVE_TIME
+              value: {{ .Values.defaultRelativeTime | quote }}
+            - name: REPORT_VIEWPORT_WIDTH
+              value: {{ .Values.screenshot.viewportWidth | quote }}
+            - name: REPORT_VIEWPORT_HEIGHT
+              value: {{ .Values.screenshot.viewportHeight | quote }}
+            - name: REPORT_SETTLE_SECONDS
+              value: {{ .Values.screenshot.settleSeconds | quote }}
+            - name: NOTIFY_API_URL
+              value: {{ .Values.email.apiUrl | quote }}
+            - name: NOTIFY_TEMPLATE_ID
+              value: {{ .Values.email.templateId | quote }}
+            - name: REPORT_RECIPIENTS
+              value: {{ .Values.email.recipients | toJson | quote }}
+            - name: SECRET_NOTIFY_API_KEY
+              value: {{ .Values.secrets.notifyApiKey | quote }}
+            - name: SECRET_SIGNOZ_EMAIL
+              value: {{ .Values.secrets.signozEmail | quote }}
+            - name: SECRET_SIGNOZ_PASSWORD
+              value: {{ .Values.secrets.signozPassword | quote }}
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              mkdir -p /work && cd /work
+              npm init -y >/dev/null
+              npm install --no-audit --no-fund playwright@{{ .Values.playwright.version }}
+              cp /scripts/report.mjs .
+              node report.mjs
+            resources:
+              {{- toYaml .Values.resources | nindent 14 }}
+            volumeMounts:
+            - name: work
+              mountPath: /work
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+            - name: secrets-store
+              mountPath: /mnt/secrets-store
+              readOnly: true
+          volumes:
+          - name: work
+            emptyDir: {}
+          - name: scripts
+            configMap:
+              name: {{ include "signoz-report.fullname" . }}-scripts
+          - name: secrets-store
+            csi:
+              driver: secrets-store.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: {{ include "signoz-report.fullname" . }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

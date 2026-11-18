@@ -26,7 +26,13 @@ env: # temporary CA mitigation
   SSL_CERT_DIR: /etc/ssl/certs
 
 jobs:
+  secret-scanning:
+    uses: ./.github/workflows/secret_scanning.yml
+    permissions:
+      contents: read
+
   rollout:
+    needs: secret-scanning
     runs-on: ubuntu-latest
     name: Rollout on EKS
     steps:

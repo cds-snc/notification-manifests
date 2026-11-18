@@ -20,7 +20,13 @@ permissions:
   pull-requests: write
 
 jobs:
+  secret-scanning:
+    uses: ./.github/workflows/secret_scanning.yml
+    permissions:
+      contents: read
+
   helmfile-apply:
+    needs: secret-scanning
     runs-on: ubuntu-latest
     steps:
       - name: Prepare Ubuntu CA trust
@@ -107,5 +113,4 @@ jobs:
           helmfile --environment dev -l 'tier=crd' apply
           helmfile --environment dev -l 'app!=notify-database,tier!=crd' apply
           popd
-
 

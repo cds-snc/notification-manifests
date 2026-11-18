@@ -581,6 +581,19 @@ releases:
     values:
     - ./overrides/system/signoz-importer.yaml.gotmpl
 
+  - name: signoz-report
+    version: 0.1.0
+    namespace: signoz
+    installed: true
+    labels:
+      app: signoz-report
+      tier: apm
+      category: system
+      step: 5
+    chart: charts/signoz-report
+    values:
+    - ./overrides/system/signoz-report.yaml.gotmpl
+
   - name: prometheus-cloudwatch-exporter
     namespace: signoz
     disableValidationOnInstall: true
