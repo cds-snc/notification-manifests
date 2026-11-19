@@ -43,7 +43,7 @@ secrets:
 
 # Playwright version; must match the image tag so the bundled browsers are used
 playwright:
-  version: "1.52.0"
+  version: "1.65.1"
 
 image:
   repository: mcr.microsoft.com/playwright
