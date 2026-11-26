@@ -219,7 +219,7 @@ releases:
       category: system
       step: 1
     chart: aws-secrets-manager/secrets-store-csi-driver-provider-aws
-    version: 3.1.2
+    version: 3.2.0
     values:
     - ./overrides/system/aws-secrets.yaml.gotmpl
 
@@ -506,7 +506,7 @@ releases:
 
   - name: signoz
     namespace: signoz
-    version: 0.138.0
+    version: 0.151.0
     disableValidationOnInstall: true
     labels:
       app: signoz
@@ -530,7 +530,7 @@ releases:
     - ./overrides/system/signoz.yaml.gotmpl
 
   - name: opentelemetry-operator
-    version: 0.122.0
+    version: 0.129.1
     namespace: signoz
     disableValidationOnInstall: true
     labels:
